@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Acuros Health — Precision Health Intelligence</title>
+  <meta name="description" content="Evidence-based AI tools built for patients and clinicians. Precision, privacy, and trust at the core."/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
+  <script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{display:['Cormorant Garamond','Georgia','serif'],sans:['DM Sans','sans-serif']}}}}</script>
+  <style>
+    :root{--bg:#f5f5f3;--bg2:#fff;--border:#e2e2de;--text:#181816;--sub:#5a5a54;--mute:#9a9a92;--ac:#0ea5e9;--nav:rgba(245,245,243,.92)}
+    html.dark{--bg:#0d0d0c;--bg2:#141412;--border:#272724;--text:#f0f0ec;--sub:#9a9a92;--mute:#5a5a54;--ac:#38bdf8;--nav:rgba(13,13,12,.92)}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);transition:background .3s,color .3s;overflow-x:hidden}
+    h1,h2,h3,h4{font-family:'Cormorant Garamond',serif;line-height:1.08;letter-spacing:-.015em}
+
+    /* Nav */
+    nav{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--nav);backdrop-filter:blur(20px) saturate(180%);border-bottom:1px solid var(--border);transition:background .3s,border-color .3s}
+    .nav-link{position:relative;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);background:none;border:none;cursor:pointer;padding:0;font-family:inherit;transition:color .2s}
+    .nav-link::after{content:'';position:absolute;left:0;bottom:-2px;width:0;height:1px;background:var(--ac);transition:width .25s}
+    .nav-link:hover::after,.nav-link.active::after{width:100%}
+    .nav-link:hover,.nav-link.active{color:var(--text)}
+
+    /* Pages */
+    .page{display:none}
+    .page.active{display:block;animation:pgIn .4s cubic-bezier(.22,1,.36,1)}
+    @keyframes pgIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+    /* Buttons */
+    .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.7rem 1.75rem;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;border:none;transition:all .22s;text-decoration:none;position:relative;overflow:hidden}
+    .btn::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,.08);opacity:0;transition:opacity .2s}
+    .btn:hover::after{opacity:1}
+    .btn-solid{background:var(--text);color:var(--bg)}
+    .btn-solid:hover{background:var(--ac);color:#fff}
+    .btn-outline{background:transparent;color:var(--text);border:1px solid var(--border)}
+    .btn-outline:hover{border-color:var(--ac);color:var(--ac)}
+    .btn-accent{background:var(--ac);color:#fff}
+    .btn-accent:hover{opacity:.88}
+
+    /* Cards */
+    .card{background:var(--bg2);border:1px solid var(--border);transition:border-color .25s,transform .3s,box-shadow .3s}
+    .card:hover{border-color:var(--ac);transform:translateY(-2px);box-shadow:0 8px 32px rgba(14,165,233,.08)}
+
+    /* Inputs */
+    .inp{width:100%;background:var(--bg);border:1px solid var(--border);padding:.75rem 1rem;font-size:.875rem;color:var(--text);font-family:inherit;outline:none;transition:border-color .2s,box-shadow .2s}
+    .inp:focus{border-color:var(--ac);box-shadow:0 0 0 3px rgba(14,165,233,.1)}
+    .inp::placeholder{color:var(--mute)}
+
+    /* Labels */
+    .lbl{font-family:'DM Sans',sans-serif;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);font-weight:500}
+    .hr{height:1px;background:var(--border)}
+    .num{font-family:'Cormorant Garamond',serif;font-size:.7rem;color:var(--mute);letter-spacing:.1em}
+    .aline{display:block;width:2rem;height:1px;background:var(--ac)}
+
+    /* Status boxes */
+    .err-box{background:#fef2f2;border:1px solid #fecaca;color:#dc2626;padding:.75rem 1rem;font-size:.8rem}
+    html.dark .err-box{background:rgba(220,38,38,.08);border-color:rgba(220,38,38,.25);color:#f87171}
+    .ok-box{background:#f0fdf4;border:1px solid #bbf7d0;color:#15803d;padding:.75rem 1rem;font-size:.8rem}
+    html.dark .ok-box{background:rgba(21,128,61,.08);border-color:rgba(21,128,61,.25);color:#4ade80}
+
+    /* Spinner */
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .spin{width:16px;height:16px;border:2px solid transparent;border-top-color:currentColor;border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
+
+    /* Chat */
+    .bubble{max-width:84%;padding:.875rem 1.125rem;font-size:.875rem;line-height:1.65;animation:pgIn .3s ease}
+    .bubble.ai{background:var(--bg2);border:1px solid var(--border);color:var(--text);align-self:flex-start}
+    .bubble.user{background:var(--text);color:var(--bg);align-self:flex-end}
+    @keyframes dot{0%,80%,100%{opacity:.2}40%{opacity:1}}
+    .thinking span{display:inline-block;width:5px;height:5px;background:var(--ac);border-radius:50%;margin:0 2px;animation:dot 1.4s infinite}
+    .thinking span:nth-child(2){animation-delay:.2s}
+    .thinking span:nth-child(3){animation-delay:.4s}
+
+    /* Hero video */
+    #hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center}
+    #hero-overlay{position:absolute;inset:0;pointer-events:none}
+
+    /* Reveal */
+    .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1)}
+    .reveal.in{opacity:1;transform:none}
+    .d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}.d4{transition-delay:.4s}
+    .stagger-item{opacity:0;transform:translateX(-14px);transition:opacity .5s ease,transform .5s ease}
+    .stagger-item.in{opacity:1;transform:none}
+
+    /* Marquee */
+    @keyframes mq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+    .minner{display:inline-block;animation:mq 36s linear infinite;white-space:nowrap}
+
+    /* Scrollbar */
+    ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+    /* Mobile menu */
+    #mob-menu{display:none;position:fixed;inset:0;z-index:300;background:var(--bg);flex-direction:column;padding:2.5rem}
+    #mob-menu.open{display:flex;animation:pgIn .3s ease}
+
+    /* Auth card */
+    .auth-card{background:var(--bg2);border:1px solid var(--border);width:100%;max-width:420px;padding:2.5rem}
+
+    /* Google btn */
+    .btn-google{display:flex;align-items:center;justify-content:center;gap:.75rem;width:100%;padding:.75rem;background:var(--bg);border:1px solid var(--border);font-size:.85rem;color:var(--text);cursor:pointer;transition:border-color .2s,background .2s;font-family:inherit}
+    .btn-google:hover{border-color:var(--ac);background:var(--bg2)}
+
+    /* Stat */
+    .stat{background:var(--bg2);border:1px solid var(--border);padding:1.5rem;transition:border-color .25s}
+    .stat:hover{border-color:var(--ac)}
+
+    /* Animations */
+    @keyframes pulse{0%,100%{opacity:.25}50%{opacity:.7}}
+    @keyframes glow{0%,100%{box-shadow:0 0 4px 1px rgba(14,165,233,.3)}50%{box-shadow:0 0 14px 5px rgba(14,165,233,.55)}}
+    .glow-dot{animation:glow 2.2s ease infinite}
+    @keyframes shimmer{from{background-position:-200% 0}to{background-position:200% 0}}
+    .shimmer{background:linear-gradient(90deg,var(--border) 25%,var(--bg2) 50%,var(--border) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite}
+    .tlink{color:var(--ac);text-decoration:none;border-bottom:1px solid transparent;transition:border-color .2s}
+    .tlink:hover{border-color:var(--ac)}
+    .hero-title{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(5.5rem,13vw,11rem);line-height:.95;letter-spacing:-.03em}
+
+    /* Mesh pattern */
+    .mesh{background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:52px 52px}
+
+    /* Section bg variations */
+    .bg-dots{background-image:radial-gradient(var(--border) 1px,transparent 1px);background-size:28px 28px}
+    .bg-diag{background-image:repeating-linear-gradient(45deg,var(--border) 0,var(--border) 1px,transparent 0,transparent 50%);background-size:24px 24px}
+    .bg-cross{background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:32px 32px;background-position:center}
+
+    /* Capability row */
+    .cap{border-top:1px solid var(--border);padding:1.1rem 0;display:flex;align-items:baseline;justify-content:space-between;gap:1rem;transition:color .2s,padding-left .2s}
+    .cap:hover{color:var(--ac);padding-left:.5rem}
+
+    /* Legal */
+    .legal h2{font-family:'Cormorant Garamond',serif;font-size:1.45rem;font-weight:400;margin:2.25rem 0 .6rem}
+    .legal p,.legal li{font-size:.88rem;line-height:1.85;color:var(--sub)}
+    .legal ul{padding-left:1.4rem;margin-top:.4rem}
+    .legal li{margin-bottom:.3rem}
+
+    /* Responsive */
+    @media(max-width:900px){.g1m{grid-template-columns:1fr!important}.g2m{grid-template-columns:1fr 1fr!important}.hnm{display:none!important}#mob-btn{display:flex!important}#nav-cta{display:none!important}}
+    @media(max-width:600px){.g2m{grid-template-columns:1fr!important}.hero-title{font-size:clamp(4rem,16vw,6rem)}}
+  </style>
+</head>
+<body>
+
+<!-- ═══ NAV ═══ -->
+<nav id="main-nav">
+  <div style="max-width:1280px;margin:0 auto;padding:0 2rem;height:64px;display:flex;align-items:center;justify-content:space-between">
+    <button onclick="showPage('home')" style="display:flex;align-items:center;gap:.75rem;background:none;border:none;cursor:pointer">
+      <svg width="30" height="30" viewBox="0 0 30 30" fill="none" style="flex-shrink:0">
+        <circle cx="15" cy="15" r="14" stroke="var(--ac)" stroke-width="1.4"/>
+        <path d="M9 20L15 9L21 20M11.5 16.5h7" stroke="var(--text)" stroke-width="1.4" stroke-linecap="round"/>
+      </svg>
+      <div>
+        <div style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:.95rem;letter-spacing:.05em;color:var(--text);line-height:1">ACUROS</div>
+        <div class="lbl" style="font-size:.5rem;letter-spacing:.28em">HEALTH</div>
+      </div>
+    </button>
+    <div style="display:flex;align-items:center;gap:2rem" class="hnm">
+      <button class="nav-link" id="nl-home" onclick="navTo('home')">Home</button>
+      <button class="nav-link" id="nl-ai" onclick="navTo('ai')">AI Assistant</button>
+      <button class="nav-link" id="nl-patient" onclick="navTo('patient')">Patient Portal</button>
+      <button class="nav-link" id="nl-privacy" onclick="navTo('privacy')" style="color:var(--mute);opacity:.6">Privacy</button>
+      <button class="nav-link" id="nl-terms" onclick="navTo('terms')" style="color:var(--mute);opacity:.6">Terms</button>
+    </div>
+    <div style="display:flex;align-items:center;gap:.875rem">
+      <button onclick="toggleTheme()" aria-label="Toggle theme" style="width:36px;height:36px;border:1px solid var(--border);background:none;color:var(--sub);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;font-size:.9rem"><span id="th-icon">☀</span></button>
+      <button onclick="navTo('patient')" class="btn btn-solid" style="padding:.55rem 1.25rem" id="nav-cta">Patient Portal</button>
+      <button onclick="openMob()" style="display:none;background:none;border:none;cursor:pointer;color:var(--text);padding:.25rem" id="mob-btn" aria-label="Menu">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16M4 12h12M4 18h8"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile menu -->
+<div id="mob-menu">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3rem">
+    <span style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--text)">Acuros Health</span>
+    <button onclick="closeMob()" style="background:none;border:none;cursor:pointer;color:var(--text)">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:1.75rem">
+    <button onclick="navTo('home');closeMob()" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;text-align:left;color:var(--text);background:none;border:none;cursor:pointer;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Home</button>
+    <button onclick="navTo('ai');closeMob()" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;text-align:left;color:var(--text);background:none;border:none;cursor:pointer;border-bottom:1px solid var(--border);padding-bottom:1.25rem">AI Assistant</button>
+    <button onclick="navTo('patient');closeMob()" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;text-align:left;color:var(--text);background:none;border:none;cursor:pointer;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Patient Portal</button>
+    <button onclick="navTo('privacy');closeMob()" style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;text-align:left;color:var(--mute);background:none;border:none;cursor:pointer;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Privacy Policy</button>
+    <button onclick="navTo('terms');closeMob()" style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;text-align:left;color:var(--mute);background:none;border:none;cursor:pointer">Terms of Service</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ PAGE: HOME ═══════════════════════════════════════════ -->
+<div id="page-home" class="page active">
+
+  <!-- Hero — full-bleed video -->
+  <section style="position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;padding-bottom:clamp(4rem,7vw,7rem)">
+    <video id="hero-video" autoplay muted loop playsinline preload="auto" aria-hidden="true">
+      <source src="https://files.catbox.moe/orofim.mp4" type="video/mp4"/>
+    </video>
+    <div id="hero-overlay">
+      <!-- bottom fade to bg colour -->
+      <div id="hero-bottom" style="position:absolute;bottom:0;left:0;right:0;height:50%;background:linear-gradient(0deg,var(--bg) 0%,transparent 100%)"></div>
+      <!-- top dark scrim -->
+      <div id="hero-top" style="position:absolute;top:0;left:0;right:0;height:40%;background:linear-gradient(180deg,rgba(0,0,0,.35) 0%,transparent 100%)"></div>
+      <!-- overall tint to protect text legibility -->
+      <div id="hero-tint" style="position:absolute;inset:0;background:rgba(0,0,0,.22)"></div>
+    </div>
+    <!-- Hero content -->
+    <div style="position:relative;z-index:10;max-width:1280px;margin:0 auto;padding:0 2rem;width:100%">
+      <div style="display:flex;align-items:center;gap:.875rem;margin-bottom:2rem;animation:pgIn .8s ease both">
+        <span class="aline"></span>
+        <span class="lbl" style="color:rgba(255,255,255,.7)">Precision Health Intelligence · Canada</span>
+      </div>
+      <h1 class="hero-title" style="color:#fff;margin-bottom:2.5rem;animation:pgIn .9s .1s ease both;text-shadow:0 2px 40px rgba(0,0,0,.4)">
+        Acuros<br/><em style="color:rgba(255,255,255,.65);font-style:italic">Health</em>
+      </h1>
+      <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:2rem;animation:pgIn .9s .2s ease both">
+        <p style="font-size:clamp(.9rem,1.4vw,1.05rem);color:rgba(255,255,255,.8);line-height:1.75;max-width:40ch;font-weight:300;text-shadow:0 1px 12px rgba(0,0,0,.5)">
+          Evidence-based AI tools built for patients and clinicians. Precision, privacy, and trust at the core.
+        </p>
+        <div style="display:flex;gap:.875rem;flex-wrap:wrap">
+          <button onclick="navTo('ai')" class="btn btn-solid">Explore AI</button>
+          <button onclick="navTo('patient')" class="btn" style="background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.35)" onmouseover="this.style.background='rgba(255,255,255,.22)'" onmouseout="this.style.background='rgba(255,255,255,.12)'">Patient Portal</button>
+        </div>
+      </div>
+    </div>
+    <!-- Scroll indicator -->
+    <div style="position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:.5rem;opacity:.45">
+      <div style="width:1px;height:52px;background:#fff;animation:pulse 2.2s ease infinite"></div>
+    </div>
+  </section>
+
+  <!-- Marquee -->
+  <div style="border-top:1px solid var(--border);border-bottom:1px solid var(--border);overflow:hidden;padding:.8rem 0;background:var(--bg2)">
+    <div class="minner" style="font-size:.62rem;letter-spacing:.2em;color:var(--mute)">&nbsp;&nbsp;&nbsp;AI ASSISTANT&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;SYMPTOM LOGIC&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;MEDICATION SAFETY&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;PATIENT PORTAL&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;GROUNDED RETRIEVAL&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;PRIVACY-FIRST&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;PIPEDA COMPLIANT&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;EVIDENCE-BASED&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;AI ASSISTANT&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;SYMPTOM LOGIC&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;MEDICATION SAFETY&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;PATIENT PORTAL&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;GROUNDED RETRIEVAL&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;PRIVACY-FIRST&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;PIPEDA COMPLIANT&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;EVIDENCE-BASED&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;</div>
+  </div>
+
+  <!-- Platform intro — mesh bg -->
+  <section class="mesh" style="padding:7rem 2rem;border-bottom:1px solid var(--border)">
+    <div style="max-width:1280px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center" class="g1m">
+      <div>
+        <div class="lbl reveal" style="margin-bottom:1.5rem">01 — Platform</div>
+        <h2 style="font-size:clamp(2.5rem,5vw,4rem);font-weight:300;color:var(--text)" class="reveal d1">Clarity in a<br/><em>Complex System.</em></h2>
+      </div>
+      <div class="reveal d2">
+        <p style="font-size:.9rem;line-height:1.85;color:var(--sub);margin-bottom:2rem">Acuros bridges raw medical data and human understanding. Whether you're navigating a diagnosis or preparing for an appointment — we deliver precision where it matters.</p>
+        <div>
+          <div class="cap stagger-item"><span style="font-family:'Cormorant Garamond',serif;font-size:1.25rem;color:var(--text)">Translate Medical Reports</span><span class="lbl">Plain English</span></div>
+          <div class="cap stagger-item d1"><span style="font-family:'Cormorant Garamond',serif;font-size:1.25rem;color:var(--text)">Pre-Appointment Preparation</span><span class="lbl">Structured</span></div>
+          <div class="cap stagger-item d2"><span style="font-family:'Cormorant Garamond',serif;font-size:1.25rem;color:var(--text)">Medication Safety Checks</span><span class="lbl">Instant</span></div>
+          <div class="cap stagger-item d3"><span style="font-family:'Cormorant Garamond',serif;font-size:1.25rem;color:var(--text)">AI-Grounded Answers</span><span class="lbl">Evidence-Based</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats — white bg with dots pattern -->
+  <div class="bg-dots" style="border-bottom:1px solid var(--border)">
+    <div style="max-width:1280px;margin:0 auto;padding:0 2rem;display:grid;grid-template-columns:repeat(4,1fr)" class="g2m">
+      <div class="reveal" style="padding:2.75rem 2rem;border-right:1px solid var(--border);text-align:center;background:var(--bg2)"><div style="font-family:'Cormorant Garamond',serif;font-size:3.25rem;font-weight:300;color:var(--ac);line-height:1">99%</div><div style="font-size:.78rem;color:var(--sub);margin-top:.4rem">Evidence-grounded responses</div></div>
+      <div class="reveal d1" style="padding:2.75rem 2rem;border-right:1px solid var(--border);text-align:center;background:var(--bg2)"><div style="font-family:'Cormorant Garamond',serif;font-size:3.25rem;font-weight:300;color:var(--ac);line-height:1">0</div><div style="font-size:.78rem;color:var(--sub);margin-top:.4rem">Data sold to third parties</div></div>
+      <div class="reveal d2" style="padding:2.75rem 2rem;border-right:1px solid var(--border);text-align:center;background:var(--bg2)"><div style="font-family:'Cormorant Garamond',serif;font-size:3.25rem;font-weight:300;color:var(--ac);line-height:1">3</div><div style="font-size:.78rem;color:var(--sub);margin-top:.4rem">Safety review layers</div></div>
+      <div class="reveal d3" style="padding:2.75rem 2rem;text-align:center;background:var(--bg2)"><div style="font-family:'Cormorant Garamond',serif;font-size:3.25rem;font-weight:300;color:var(--ac);line-height:1">CA</div><div style="font-size:.78rem;color:var(--sub);margin-top:.4rem">Data stored in Canada</div></div>
+    </div>
+  </div>
+
+  <!-- 2 portals — bg2 -->
+  <section style="background:var(--bg2);border-bottom:1px solid var(--border)">
+    <div style="max-width:1280px;margin:0 auto;padding:5rem 2rem">
+      <div class="lbl reveal" style="margin-bottom:2.5rem">02 — Access</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem" class="g1m">
+        <div class="card reveal" style="padding:2.5rem;cursor:pointer;position:relative;overflow:hidden" onclick="navTo('ai')">
+          <div style="position:absolute;top:0;right:0;width:120px;height:120px;background:radial-gradient(circle at top right,rgba(14,165,233,.08),transparent 70%)"></div>
+          <div class="lbl" style="color:var(--ac);margin-bottom:1.25rem">AI Assistant</div>
+          <h3 style="font-size:2rem;font-weight:300;color:var(--text);margin-bottom:.875rem">Intelligent Health<br/>Dialogue</h3>
+          <p style="font-size:.85rem;line-height:1.8;color:var(--sub);margin-bottom:2rem">Conversational AI grounded in peer-reviewed literature. Precision answers with transparent sourcing.</p>
+          <span class="btn btn-outline" style="padding:.5rem 1.25rem;font-size:.7rem" onclick="event.stopPropagation();navTo('ai')">Launch AI →</span>
+        </div>
+        <div class="card reveal d1" style="padding:2.5rem;cursor:pointer;position:relative;overflow:hidden" onclick="navTo('patient')">
+          <div style="position:absolute;top:0;right:0;width:120px;height:120px;background:radial-gradient(circle at top right,rgba(14,165,233,.08),transparent 70%)"></div>
+          <div class="lbl" style="color:var(--ac);margin-bottom:1.25rem">Patient Portal</div>
+          <h3 style="font-size:2rem;font-weight:300;color:var(--text);margin-bottom:.875rem">Your Health,<br/>Organised</h3>
+          <p style="font-size:.85rem;line-height:1.8;color:var(--sub);margin-bottom:2rem">Secure records, appointment prep, and medication tracking in one calm, accessible interface.</p>
+          <span class="btn btn-outline" style="padding:.5rem 1.25rem;font-size:.7rem" onclick="event.stopPropagation();navTo('patient')">Enter Portal →</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Principles — diagonal bg -->
+  <section class="bg-diag" style="padding:7rem 2rem;border-bottom:1px solid var(--border)">
+    <div style="max-width:1280px;margin:0 auto">
+      <div class="lbl reveal" style="margin-bottom:2.5rem">03 — Principles</div>
+      <div style="display:flex;flex-wrap:wrap;gap:4rem;align-items:flex-start">
+        <h2 class="reveal" style="font-size:clamp(2.5rem,5vw,4rem);font-weight:300;color:var(--text);flex-shrink:0;max-width:12ch;background:var(--bg);padding:1.5rem 2rem">The Acuros<br/><em>Standard.</em></h2>
+        <div style="flex:1;min-width:280px;display:grid;grid-template-columns:1fr 1fr;gap:2.5rem 4rem" class="reveal d1">
+          <div style="background:var(--bg2);padding:1.5rem;border:1px solid var(--border)"><div class="num" style="margin-bottom:.5rem">01</div><h4 style="font-size:1.35rem;font-weight:300;color:var(--text);margin-bottom:.5rem">Real Workflows</h4><p style="font-size:.83rem;line-height:1.75;color:var(--sub)">Designed for clinical reality — tools that fit naturally into how people already work.</p></div>
+          <div style="background:var(--bg2);padding:1.5rem;border:1px solid var(--border)"><div class="num" style="margin-bottom:.5rem">02</div><h4 style="font-size:1.35rem;font-weight:300;color:var(--text);margin-bottom:.5rem">Human First</h4><p style="font-size:.83rem;line-height:1.75;color:var(--sub)">Technology supports clinical decision-making. It never replaces the clinician.</p></div>
+          <div style="background:var(--bg2);padding:1.5rem;border:1px solid var(--border)"><div class="num" style="margin-bottom:.5rem">03</div><h4 style="font-size:1.35rem;font-weight:300;color:var(--text);margin-bottom:.5rem">Secure Core</h4><p style="font-size:.83rem;line-height:1.75;color:var(--sub)">Privacy is foundational. Aligned to PIPEDA, PHIPA, and Canadian regulatory standards.</p></div>
+          <div style="background:var(--bg2);padding:1.5rem;border:1px solid var(--border)"><div class="num" style="margin-bottom:.5rem">04</div><h4 style="font-size:1.35rem;font-weight:300;color:var(--text);margin-bottom:.5rem">Evidence-Based</h4><p style="font-size:.83rem;line-height:1.75;color:var(--sub)">Every output cross-referenced against peer-reviewed literature.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA — bg2 with cross pattern -->
+  <section class="bg-cross" style="padding:7rem 2rem;border-bottom:1px solid var(--border);text-align:center;background-color:var(--bg2)">
+    <h2 class="reveal" style="font-size:clamp(2.5rem,6vw,5rem);font-weight:300;color:var(--text);margin-bottom:2.5rem">Ready for<br/><em>precision?</em></h2>
+    <div class="reveal d1" style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
+      <button onclick="navTo('ai')" class="btn btn-solid">Try AI Assistant</button>
+      <button onclick="navTo('patient')" class="btn btn-outline">Patient Portal</button>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer style="border-top:1px solid var(--border);background:var(--bg2)">
+    <div style="max-width:1280px;margin:0 auto;padding:2.5rem 2rem">
+      <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:2rem;align-items:flex-start">
+        <div><div style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--text);margin-bottom:.35rem">Acuros Health</div><p style="font-size:.8rem;color:var(--mute)">Precision health intelligence. Canada.</p></div>
+        <div style="display:flex;flex-wrap:wrap;gap:1.5rem">
+          <button onclick="navTo('ai')" class="lbl" style="background:none;border:none;cursor:pointer;color:var(--mute);transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--mute)'">AI Assistant</button>
+          <button onclick="navTo('patient')" class="lbl" style="background:none;border:none;cursor:pointer;color:var(--mute);transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--mute)'">Patient Portal</button>
+          <button onclick="navTo('privacy')" class="lbl" style="background:none;border:none;cursor:pointer;color:var(--mute);transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--mute)'">Privacy</button>
+          <button onclick="navTo('terms')" class="lbl" style="background:none;border:none;cursor:pointer;color:var(--mute);transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--mute)'">Terms</button>
+        </div>
+      </div>
+      <div class="hr" style="margin:1.5rem 0"></div>
+      <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:.5rem">
+        <p style="font-size:.75rem;color:var(--mute)">© 2025 Acuros Health Inc. All rights reserved.</p>
+        <p style="font-size:.75rem;color:var(--mute)">Not a substitute for professional medical advice.</p>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<!-- ═══════════════════════════════════════════ PAGE: AI ═══════════════════════════════════════════ -->
+<div id="page-ai" class="page">
+  <div style="padding-top:4rem">
+
+    <!-- Hero section — mesh bg -->
+    <section class="mesh" style="position:relative;padding:6rem 2rem 5rem;border-bottom:1px solid var(--border);overflow:hidden">
+      <div style="position:relative;max-width:1280px;margin:0 auto">
+        <div class="lbl" style="margin-bottom:1.25rem">AI Assistant</div>
+        <h1 style="font-size:clamp(3rem,7vw,5.5rem);font-weight:300;color:var(--text);margin-bottom:1.25rem">Intelligent Health<br/><em>Dialogue.</em></h1>
+        <p style="font-size:.95rem;color:var(--sub);max-width:44ch;line-height:1.75">Ask medical questions with confidence. Powered by Gemini with evidence-based reasoning, structured logic, and safety governance.</p>
+      </div>
+    </section>
+
+    <!-- Chat section -->
+    <section style="padding:4rem 2rem;max-width:1280px;margin:0 auto">
+      <div style="display:grid;grid-template-columns:3fr 2fr;gap:3rem;align-items:start" class="g1m">
+
+        <!-- Chat widget -->
+        <div>
+          <div class="lbl" style="margin-bottom:1.25rem">Live Assistant</div>
+          <div class="card" style="display:flex;flex-direction:column;height:520px">
+            <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.625rem">
+              <div class="glow-dot" style="width:7px;height:7px;border-radius:50%;background:var(--ac);flex-shrink:0"></div>
+              <span class="lbl">Acuros AI · Gemini-Powered</span>
+              <span id="ai-status" style="margin-left:auto;font-size:.65rem;color:var(--mute)"></span>
+            </div>
+            <div id="chat-msgs" style="flex:1;overflow-y:auto;padding:1.25rem;display:flex;flex-direction:column;gap:.875rem">
+              <div class="bubble ai">Hello — I'm the Acuros AI health assistant. I provide evidence-based health education and information. What would you like to explore today?</div>
+            </div>
+            <div style="padding:.875rem 1.25rem;border-top:1px solid var(--border);display:flex;gap:.625rem">
+              <input id="chat-in" type="text" class="inp" placeholder="Ask a health question…" style="flex:1" onkeydown="if(event.key==='Enter'&&!event.shiftKey)sendChat()"/>
+              <button onclick="sendChat()" class="btn btn-solid" style="padding:.625rem 1.25rem;font-size:.72rem;flex-shrink:0" id="chat-send-btn">Send</button>
+            </div>
+          </div>
+          <!-- Quick prompts -->
+          <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.875rem">
+            <button onclick="preChat('What are common side effects of metformin?')" class="btn btn-outline" style="padding:.4rem .875rem;font-size:.68rem">Metformin effects</button>
+            <button onclick="preChat('How do I read my CBC blood test?')" class="btn btn-outline" style="padding:.4rem .875rem;font-size:.68rem">Read CBC results</button>
+            <button onclick="preChat('What questions should I ask my cardiologist?')" class="btn btn-outline" style="padding:.4rem .875rem;font-size:.68rem">Cardiology prep</button>
+            <button onclick="preChat('What does elevated CRP indicate?')" class="btn btn-outline" style="padding:.4rem .875rem;font-size:.68rem">Elevated CRP</button>
+          </div>
+          <p style="font-size:.72rem;color:var(--mute);margin-top:.75rem">Educational information only. Not a substitute for professional medical advice.</p>
+        </div>
+
+        <!-- How it works sidebar — dots bg -->
+        <div>
+          <div class="lbl" style="margin-bottom:1.25rem">How It Works</div>
+          <div style="background:var(--bg2);border:1px solid var(--border);padding:1.5rem">
+            <div style="padding:1rem 0;border-bottom:1px solid var(--border)"><div class="num" style="margin-bottom:.4rem">01</div><h4 style="font-size:1.2rem;font-weight:300;color:var(--text);margin-bottom:.35rem">Symptom Logic</h4><p style="font-size:.8rem;line-height:1.75;color:var(--sub)">Deterministic reasoning chains minimise hallucination. Every step is structured.</p></div>
+            <div style="padding:1rem 0;border-bottom:1px solid var(--border)"><div class="num" style="margin-bottom:.4rem">02</div><h4 style="font-size:1.2rem;font-weight:300;color:var(--text);margin-bottom:.35rem">Grounded Retrieval</h4><p style="font-size:.8rem;line-height:1.75;color:var(--sub)">Queries cross-referenced against peer-reviewed sources before generation.</p></div>
+            <div style="padding:1rem 0;border-bottom:1px solid var(--border)"><div class="num" style="margin-bottom:.4rem">03</div><h4 style="font-size:1.2rem;font-weight:300;color:var(--text);margin-bottom:.35rem">Safety Governance</h4><p style="font-size:.8rem;line-height:1.75;color:var(--sub)">A secondary review layer intercepts risky advice before it reaches you.</p></div>
+            <div style="padding:1rem 0"><div class="num" style="margin-bottom:.4rem">04</div><h4 style="font-size:1.2rem;font-weight:300;color:var(--text);margin-bottom:.35rem">Session Privacy</h4><p style="font-size:.8rem;line-height:1.75;color:var(--sub)">No conversation stored beyond your session. Zero third-party sharing.</p></div>
+          </div>
+          <div style="margin-top:1.25rem;background:var(--bg2);border:1px solid var(--border);padding:1.25rem">
+            <div class="lbl" style="margin-bottom:.75rem;color:var(--ac)">Want a personal health space?</div>
+            <p style="font-size:.8rem;color:var(--sub);line-height:1.7;margin-bottom:1rem">Sign in to save your history and access your full patient dashboard.</p>
+            <button onclick="navTo('patient')" class="btn btn-outline" style="width:100%;justify-content:center;font-size:.72rem">Go to Patient Portal →</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Use cases — diagonal bg -->
+    <section class="bg-diag" style="border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+      <div style="max-width:1280px;margin:0 auto;padding:4rem 2rem">
+        <div class="lbl" style="margin-bottom:2rem">Use Cases</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem" class="g1m">
+          <div class="card" style="padding:1.75rem;background:var(--bg2)"><h4 style="font-size:1.4rem;font-weight:300;color:var(--text);margin-bottom:.625rem">Report Translation</h4><p style="font-size:.82rem;line-height:1.75;color:var(--sub)">Paste lab results, radiology reports, or discharge summaries for plain-English explanations.</p></div>
+          <div class="card" style="padding:1.75rem;background:var(--bg2)"><h4 style="font-size:1.4rem;font-weight:300;color:var(--text);margin-bottom:.625rem">Appointment Prep</h4><p style="font-size:.82rem;line-height:1.75;color:var(--sub)">Organise symptoms and generate targeted questions before specialist visits.</p></div>
+          <div class="card" style="padding:1.75rem;background:var(--bg2)"><h4 style="font-size:1.4rem;font-weight:300;color:var(--text);margin-bottom:.625rem">Medication Safety</h4><p style="font-size:.82rem;line-height:1.75;color:var(--sub)">Check drug interactions, dosage guidelines, and side effect profiles instantly.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <footer style="border-top:1px solid var(--border);background:var(--bg2)">
+      <div style="max-width:1280px;margin:0 auto;padding:1.75rem 2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
+        <p style="font-size:.75rem;color:var(--mute)">© 2025 Acuros Health Inc.</p>
+        <div style="display:flex;gap:1.5rem">
+          <button onclick="navTo('home')" class="lbl" style="background:none;border:none;cursor:pointer;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Home</button>
+          <button onclick="navTo('patient')" class="lbl" style="background:none;border:none;cursor:pointer;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Patient Portal</button>
+          <button onclick="navTo('privacy')" class="lbl" style="background:none;border:none;cursor:pointer;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Privacy</button>
+          <button onclick="navTo('terms')" class="lbl" style="background:none;border:none;cursor:pointer;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Terms</button>
+        </div>
+      </div>
+    </footer>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ PAGE: PATIENT ═══════════════════════════════════════════ -->
+<div id="page-patient" class="page">
+  <div style="padding-top:4rem">
+
+    <!-- GATE: login/register -->
+    <div id="portal-gate">
+      <section style="min-height:calc(100vh - 4rem);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden">
+        <div class="mesh" style="position:absolute;inset:0;opacity:.4"></div>
+        <div style="position:relative;z-index:10;display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;max-width:1100px;margin:0 auto;padding:4rem 2rem;width:100%" class="g1m">
+
+          <!-- Left: info -->
+          <div>
+            <div class="lbl" style="margin-bottom:1.5rem">Patient Portal</div>
+            <h1 style="font-size:clamp(2.75rem,6vw,4.5rem);font-weight:300;color:var(--text);margin-bottom:1.25rem">Your Health,<br/><em>Organised.</em></h1>
+            <p style="font-size:.9rem;line-height:1.8;color:var(--sub);margin-bottom:2rem;max-width:38ch">A secure, private space to manage your health records, prepare for appointments, and understand your care journey.</p>
+            <div style="display:flex;flex-direction:column;gap:.875rem">
+              <div class="stagger-item" style="display:flex;align-items:baseline;gap:.875rem"><div style="width:1px;height:1rem;background:var(--ac);flex-shrink:0"></div><span style="font-size:.85rem;color:var(--sub)">AI-powered medical report translation</span></div>
+              <div class="stagger-item d1" style="display:flex;align-items:baseline;gap:.875rem"><div style="width:1px;height:1rem;background:var(--ac);flex-shrink:0"></div><span style="font-size:.85rem;color:var(--sub)">Appointment preparation briefs</span></div>
+              <div class="stagger-item d2" style="display:flex;align-items:baseline;gap:.875rem"><div style="width:1px;height:1rem;background:var(--ac);flex-shrink:0"></div><span style="font-size:.85rem;color:var(--sub)">Medication interaction checker</span></div>
+              <div class="stagger-item d3" style="display:flex;align-items:baseline;gap:.875rem"><div style="width:1px;height:1rem;background:var(--ac);flex-shrink:0"></div><span style="font-size:.85rem;color:var(--sub)">PIPEDA-compliant encrypted storage</span></div>
+            </div>
+          </div>
+
+          <!-- Right: auth card -->
+          <div class="auth-card">
+            <h2 style="font-size:1.6rem;font-weight:300;color:var(--text);margin-bottom:.35rem" id="pt-title">Sign In to Your Portal</h2>
+            <p style="font-size:.82rem;color:var(--sub);margin-bottom:1.5rem" id="pt-sub">Access your health records and tools</p>
+            <div id="pt-err" style="display:none;margin-bottom:1rem"></div>
+            <div id="pt-ok" style="display:none;margin-bottom:1rem"></div>
+
+            <!-- Google OAuth -->
+            <button onclick="ptGoogleAuth()" class="btn-google" style="margin-bottom:1.25rem">
+              <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+              Continue with Google
+            </button>
+
+            <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem">
+              <div class="hr" style="flex:1"></div><span style="font-size:.72rem;color:var(--mute)">OR</span><div class="hr" style="flex:1"></div>
+            </div>
+
+            <!-- Login form -->
+            <form id="pt-login" onsubmit="ptLogin(event)" style="display:flex;flex-direction:column;gap:.875rem">
+              <div><label class="lbl" style="display:block;margin-bottom:.35rem">Email Address</label><input type="email" id="pt-email" class="inp" placeholder="name@email.com" required/></div>
+              <div><label class="lbl" style="display:block;margin-bottom:.35rem">Password</label><input type="password" id="pt-pass" class="inp" placeholder="••••••••" required/></div>
+              <button type="submit" class="btn btn-solid" style="width:100%;justify-content:center;margin-top:.25rem" id="pt-li-btn">Sign In</button>
+            </form>
+
+            <!-- Register form (hidden by default) -->
+            <form id="pt-register" onsubmit="ptRegister(event)" style="display:none;flex-direction:column;gap:.875rem">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:.875rem">
+                <div><label class="lbl" style="display:block;margin-bottom:.35rem">First Name</label><input type="text" id="pt-first" class="inp" placeholder="Jane" required/></div>
+                <div><label class="lbl" style="display:block;margin-bottom:.35rem">Last Name</label><input type="text" id="pt-last" class="inp" placeholder="Doe" required/></div>
+              </div>
+              <div><label class="lbl" style="display:block;margin-bottom:.35rem">Patient Code <span style="color:var(--mute);text-transform:none;letter-spacing:0;font-size:.68rem">(from clinic — optional)</span></label><input type="text" id="pt-code" class="inp" placeholder="AH-XXXX"/></div>
+              <div><label class="lbl" style="display:block;margin-bottom:.35rem">Email Address</label><input type="email" id="pt-remail" class="inp" placeholder="name@email.com" required/></div>
+              <div><label class="lbl" style="display:block;margin-bottom:.35rem">Password</label><input type="password" id="pt-rpass" class="inp" placeholder="Min. 8 characters" minlength="8" required/></div>
+              <button type="submit" class="btn btn-solid" style="width:100%;justify-content:center;margin-top:.25rem" id="pt-r-btn">Create Account</button>
+            </form>
+
+            <div style="margin-top:1rem;text-align:center">
+              <button onclick="ptToggle()" id="pt-toggle" style="font-size:.78rem;color:var(--sub);background:none;border:none;cursor:pointer;transition:color .2s" onmouseover="this.style.color='var(--ac)'" onmouseout="this.style.color='var(--sub)'">Don't have an account? Create one</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- DASHBOARD (shown after login) -->
+    <div id="portal-dash" style="display:none">
+
+      <!-- Dash header — dots bg -->
+      <section class="bg-dots" style="border-bottom:1px solid var(--border)">
+        <div style="max-width:1280px;margin:0 auto;padding:2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;background:var(--bg2)">
+          <div>
+            <div class="lbl" style="margin-bottom:.35rem">Patient Portal</div>
+            <h2 style="font-size:1.75rem;font-weight:300;color:var(--text)">Welcome back, <em id="dash-name">Patient</em></h2>
+            <p style="font-size:.8rem;color:var(--mute);margin-top:.2rem" id="dash-email-lbl"></p>
+          </div>
+          <div style="display:flex;gap:.875rem;align-items:center;flex-wrap:wrap">
+            <div id="dash-code-lbl" style="display:none;padding:.5rem 1rem;background:var(--bg);border:1px solid var(--border);font-size:.75rem;color:var(--sub)"></div>
+            <button onclick="navTo('ai')" class="btn btn-outline" style="padding:.5rem 1.25rem;font-size:.72rem">AI Assistant</button>
+            <button onclick="ptLogout()" class="btn btn-outline" style="padding:.5rem 1.25rem;font-size:.72rem">Sign Out</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Dash content -->
+      <section style="max-width:1280px;margin:0 auto;padding:2.5rem 2rem">
+
+        <!-- Stats row -->
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-bottom:2.5rem" class="g1m">
+          <div class="stat"><div class="lbl" style="color:var(--ac);margin-bottom:.75rem">Next Appointment</div><div style="font-family:'Cormorant Garamond',serif;font-size:2.25rem;font-weight:300;color:var(--text);margin-bottom:.25rem">—</div><div style="font-size:.8rem;color:var(--sub)">No upcoming appointments</div></div>
+          <div class="stat"><div class="lbl" style="color:var(--ac);margin-bottom:.75rem">Active Medications</div><div style="font-family:'Cormorant Garamond',serif;font-size:2.25rem;font-weight:300;color:var(--text);margin-bottom:.25rem">—</div><div style="font-size:.8rem;color:var(--sub)">Add medications to track</div></div>
+          <div class="stat"><div class="lbl" style="color:var(--ac);margin-bottom:.75rem">Pending Reports</div><div style="font-family:'Cormorant Garamond',serif;font-size:2.25rem;font-weight:300;color:var(--text);margin-bottom:.25rem">—</div><div style="font-size:.8rem;color:var(--sub)">No reports uploaded yet</div></div>
+        </div>
+
+        <!-- Tools grid -->
+        <div class="lbl" style="margin-bottom:1.25rem">Your Tools</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-bottom:2.5rem" class="g1m">
+          <button onclick="navTo('ai')" class="card" style="padding:1.75rem;text-align:left;cursor:pointer;background:none;width:100%;border-width:1px">
+            <div class="lbl" style="color:var(--ac);margin-bottom:.625rem">AI Assistant</div>
+            <h4 style="font-size:1.3rem;font-weight:300;color:var(--text);margin-bottom:.5rem">Health Dialogue</h4>
+            <p style="font-size:.8rem;line-height:1.7;color:var(--sub)">Ask questions, translate reports, prepare for appointments.</p>
+          </button>
+          <div class="card" style="padding:1.75rem;opacity:.6">
+            <div class="lbl" style="color:var(--mute);margin-bottom:.625rem">Coming Soon</div>
+            <h4 style="font-size:1.3rem;font-weight:300;color:var(--text);margin-bottom:.5rem">Medication Tracker</h4>
+            <p style="font-size:.8rem;line-height:1.7;color:var(--sub)">Review prescriptions and check interactions.</p>
+          </div>
+          <div class="card" style="padding:1.75rem;opacity:.6">
+            <div class="lbl" style="color:var(--mute);margin-bottom:.625rem">Coming Soon</div>
+            <h4 style="font-size:1.3rem;font-weight:300;color:var(--text);margin-bottom:.5rem">Symptom Journal</h4>
+            <p style="font-size:.8rem;line-height:1.7;color:var(--sub)">Log symptoms with timestamps for your care team.</p>
+          </div>
+        </div>
+
+        <!-- Account info -->
+        <div class="lbl" style="margin-bottom:1.25rem">Account</div>
+        <div class="card" style="padding:1.5rem">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
+            <div>
+              <div style="font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:300;color:var(--text);margin-bottom:.25rem" id="dash-full-name">—</div>
+              <div style="font-size:.8rem;color:var(--mute)" id="dash-email-display">—</div>
+            </div>
+            <button onclick="ptLogout()" class="btn btn-outline" style="padding:.5rem 1.25rem;font-size:.72rem">Sign Out</button>
+          </div>
+        </div>
+      </section>
+
+      <footer style="border-top:1px solid var(--border);background:var(--bg2)">
+        <div style="max-width:1280px;margin:0 auto;padding:1.75rem 2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
+          <p style="font-size:.75rem;color:var(--mute)">© 2025 Acuros Health Inc.</p>
+          <div style="display:flex;gap:1.5rem">
+            <button onclick="navTo('privacy')" class="lbl" style="background:none;border:none;cursor:pointer;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Privacy</button>
+            <button onclick="navTo('terms')" class="lbl" style="background:none;border:none;cursor:pointer;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Terms</button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ PAGE: PRIVACY ═══════════════════════════════════════════ -->
+<div id="page-privacy" class="page">
+  <div style="padding-top:4rem">
+    <section style="max-width:780px;margin:0 auto;padding:4rem 2rem">
+      <div class="lbl" style="margin-bottom:1rem">Legal</div>
+      <h1 style="font-size:clamp(2.5rem,5vw,4rem);font-weight:300;color:var(--text);margin-bottom:.5rem">Privacy Policy</h1>
+      <p style="font-size:.82rem;color:var(--mute);margin-bottom:2.5rem">Effective date: January 1, 2025 · Last updated: March 2025</p>
+      <div class="hr" style="margin-bottom:2.5rem"></div>
+      <div class="legal">
+        <p>Acuros Health Inc. ("Acuros") is committed to protecting your personal health information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our platform.</p>
+        <h2>1. Information We Collect</h2><p>We collect information you provide directly, including account registration details, health queries entered into the AI Assistant, medical documents uploaded for translation, appointment notes, and medication information. We also collect technical information automatically solely for security and service improvement.</p>
+        <h2>2. How We Use Your Information</h2><p>We use your information to provide and improve our services, power our AI Assistant, maintain your Patient Portal, and comply with PIPEDA and applicable provincial legislation. We do not sell your health information or use it for advertising.</p>
+        <h2>3. Legal Compliance</h2><p>Acuros operates in compliance with Canada's Personal Information Protection and Electronic Documents Act (PIPEDA) and, where applicable, the Personal Health Information Protection Act (PHIPA) of Ontario.</p>
+        <h2>4. Data Storage and Security</h2><p>All data is stored on Canadian servers with AES-256 encryption at rest, TLS 1.3 in transit, role-based access controls, and regular third-party security audits.</p>
+        <h2>5. AI Data Handling</h2><p>Queries entered into the AI Assistant are processed in real-time and not stored beyond your active session unless explicitly saved. Your queries are never used to train external AI models.</p>
+        <h2>6. Your Rights</h2><p>Under PIPEDA, you have the right to access, correct, and request deletion of your personal information. Contact: <strong>privacy@acuros.ca</strong></p>
+      </div>
+    </section>
+    <footer style="border-top:1px solid var(--border);background:var(--bg2)">
+      <div style="max-width:1280px;margin:0 auto;padding:1.75rem 2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
+        <p style="font-size:.75rem;color:var(--mute)">© 2025 Acuros Health Inc.</p>
+        <button onclick="navTo('home')" class="lbl" style="background:none;border:none;cursor:pointer;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">← Back to Home</button>
+      </div>
+    </footer>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ PAGE: TERMS ═══════════════════════════════════════════ -->
+<div id="page-terms" class="page">
+  <div style="padding-top:4rem">
+    <section style="max-width:780px;margin:0 auto;padding:4rem 2rem">
+      <div class="lbl" style="margin-bottom:1rem">Legal</div>
+      <h1 style="font-size:clamp(2.5rem,5vw,4rem);font-weight:300;color:var(--text);margin-bottom:.5rem">Terms of Service</h1>
+      <p style="font-size:.82rem;color:var(--mute);margin-bottom:2.5rem">Effective date: January 1, 2025 · Last updated: March 2025</p>
+      <div class="hr" style="margin-bottom:2.5rem"></div>
+      <div class="legal">
+        <p>These Terms govern your access to and use of the Acuros Health platform. By accessing our Services, you agree to be bound by these Terms.</p>
+        <h2>1. Not Medical Advice</h2><p>IMPORTANT: Acuros Health provides health education and information tools only. Our platform is NOT a substitute for professional medical advice, diagnosis, or treatment. Always seek the advice of your physician. In an emergency, call emergency services immediately.</p>
+        <h2>2. Eligibility</h2><p>You must be at least 18 years of age to use our Services.</p>
+        <h2>3. Permitted Use</h2><p>You may use our Services for lawful, personal health education purposes. You agree not to reverse-engineer the platform, submit harmful content, or circumvent safety mechanisms.</p>
+        <h2>4. AI-Generated Content</h2><p>AI outputs are not a substitute for professional medical judgment. Acuros makes no warranty regarding the completeness or accuracy of AI-generated responses for your specific clinical situation.</p>
+        <h2>5. Limitation of Liability</h2><p>To the maximum extent permitted by law, Acuros Health Inc. shall not be liable for any indirect, incidental, or consequential damages arising from your use of our Services.</p>
+        <h2>6. Governing Law</h2><p>These Terms are governed by the laws of Ontario and the federal laws of Canada. Contact: <strong>legal@acuros.ca</strong></p>
+      </div>
+    </section>
+    <footer style="border-top:1px solid var(--border);background:var(--bg2)">
+      <div style="max-width:1280px;margin:0 auto;padding:1.75rem 2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
+        <p style="font-size:.75rem;color:var(--mute)">© 2025 Acuros Health Inc.</p>
+        <button onclick="navTo('home')" class="lbl" style="background:none;border:none;cursor:pointer;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">← Back to Home</button>
+      </div>
+    </footer>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ SCRIPTS ═══════════════════════════════════════════ -->
+<script>
+// ─── CONFIG ───
+const CONFIG = {
+  supabaseUrl:  'https://pyexkdoupqzbnrybiubo.supabase.co',
+  supabaseKey:  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB5ZXhrZG91cHF6Ym5yeWJpdWJvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4Mzg4MzYsImV4cCI6MjA4NzQxNDgzNn0.3_dLQEJfmC08A2-hlgOfwlu4ngx7hslUR3Dun4BoXLU',
+  aiApiUrl:     '/api/chat',
+  contactApiUrl:'/api/contact',
+};
+
+// ─── SUPABASE ───
+let sb = null;
+try {
+  if (CONFIG.supabaseKey) sb = window.supabase.createClient(CONFIG.supabaseUrl, CONFIG.supabaseKey);
+} catch(e) { console.warn('[Acuros] Supabase init failed', e); }
+
+let currentUser = null;
+let ptMode = 'login';
+let chatHistory = [];
+
+// ─── THEME ───
+function toggleTheme() {
+  const dark = document.documentElement.classList.toggle('dark');
+  document.getElementById('th-icon').textContent = dark ? '☽' : '☀';
+  localStorage.setItem('ah-theme', dark ? 'dark' : 'light');
+  updateHeroOverlay();
+}
+(function initTheme() {
+  const s = localStorage.getItem('ah-theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  if (s === 'dark' || (!s && prefersDark)) {
+    document.documentElement.classList.add('dark');
+    document.getElementById('th-icon').textContent = '☽';
+  }
+  updateHeroOverlay();
+})();
+
+function updateHeroOverlay() {
+  const dark = document.documentElement.classList.contains('dark');
+  const bottom = document.getElementById('hero-bottom');
+  const tint = document.getElementById('hero-tint');
+  if (!bottom) return;
+  if (dark) {
+    bottom.style.background = 'linear-gradient(0deg,rgba(13,13,12,1) 0%,rgba(13,13,12,.6) 60%,transparent 100%)';
+    tint.style.background = 'rgba(0,0,0,.35)';
+  } else {
+    bottom.style.background = 'linear-gradient(0deg,rgba(245,245,243,1) 0%,rgba(245,245,243,.5) 50%,transparent 100%)';
+    tint.style.background = 'rgba(0,0,0,.18)';
+  }
+}
+
+// ─── ROUTING ───
+function navTo(id) {
+  showPage(id);
+  // Update active nav link
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  const link = document.getElementById('nl-' + id);
+  if (link) link.classList.add('active');
+  closeMob();
+}
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const page = document.getElementById('page-' + id);
+  if (!page) return;
+  page.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  setTimeout(setupReveal, 80);
+  if (id === 'patient') syncPortal();
+}
+function openMob()  { document.getElementById('mob-menu').classList.add('open'); }
+function closeMob() { document.getElementById('mob-menu').classList.remove('open'); }
+
+// ─── REVEAL ANIMATIONS ───
+function setupReveal() {
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.reveal:not(.in), .stagger-item:not(.in)').forEach(el => io.observe(el));
+}
+setupReveal();
+
+// ─── NAV SCROLL SHADOW ───
+window.addEventListener('scroll', () => {
+  document.getElementById('main-nav').style.boxShadow = window.scrollY > 10 ? '0 1px 24px rgba(0,0,0,.08)' : '';
+});
+
+// ─── HELPERS ───
+function showMsg(id, msg, type) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.style.display = 'block';
+  el.className = type === 'err' ? 'err-box' : 'ok-box';
+  el.textContent = msg;
+}
+function hideMsg(...ids) { ids.forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; }); }
+function setBtn(id, loading, label) {
+  const b = document.getElementById(id);
+  if (!b) return;
+  b.disabled = loading;
+  b.innerHTML = loading ? '<span class="spin"></span>' : label;
+}
+
+// ─── PATIENT AUTH ───
+function ptToggle() {
+  ptMode = ptMode === 'login' ? 'register' : 'login';
+  const reg = ptMode === 'register';
+  document.getElementById('pt-login').style.display    = reg ? 'none' : 'flex';
+  document.getElementById('pt-register').style.display = reg ? 'flex' : 'none';
+  document.getElementById('pt-title').textContent  = reg ? 'Create Your Account' : 'Sign In to Your Portal';
+  document.getElementById('pt-sub').textContent    = reg ? 'Enter your details to get started' : 'Access your health records and tools';
+  document.getElementById('pt-toggle').textContent = reg ? 'Already have an account? Sign in' : "Don't have an account? Create one";
+  hideMsg('pt-err', 'pt-ok');
+}
+
+async function ptGoogleAuth() {
+  if (!sb) { showMsg('pt-err', 'Auth not configured — Supabase key missing.', 'err'); return; }
+  try {
+    const { error } = await sb.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: window.location.origin + '/?portal=1' }
+    });
+    if (error) throw error;
+  } catch(err) {
+    showMsg('pt-err', err.message || 'Google sign-in failed.', 'err');
+  }
+}
+
+async function ptLogin(e) {
+  e.preventDefault();
+  hideMsg('pt-err', 'pt-ok');
+  setBtn('pt-li-btn', true, 'Sign In');
+  try {
+    if (sb) {
+      const { data, error } = await sb.auth.signInWithPassword({
+        email:    document.getElementById('pt-email').value,
+        password: document.getElementById('pt-pass').value
+      });
+      if (error) throw error;
+      const { data: profile } = await sb.from('profiles').select('*').eq('id', data.user.id).maybeSingle();
+      currentUser = {
+        id:    data.user.id,
+        email: data.user.email,
+        name:  profile?.name || data.user.user_metadata?.full_name || data.user.email.split('@')[0],
+        first: profile?.first_name || '',
+        last:  profile?.last_name  || '',
+        code:  profile?.patient_code || ''
+      };
+    } else {
+      // Demo mode (no Supabase key)
+      const email = document.getElementById('pt-email').value;
+      currentUser = { id: 'demo', email, name: email.split('@')[0], first: '', last: '', code: '' };
+    }
+    syncPortal();
+  } catch(err) {
+    showMsg('pt-err', err.message || 'Sign in failed. Check your credentials.', 'err');
+  } finally { setBtn('pt-li-btn', false, 'Sign In'); }
+}
+
+async function ptRegister(e) {
+  e.preventDefault();
+  hideMsg('pt-err', 'pt-ok');
+  setBtn('pt-r-btn', true, 'Create Account');
+  const first = document.getElementById('pt-first').value.trim();
+  const last  = document.getElementById('pt-last').value.trim();
+  const code  = document.getElementById('pt-code').value.trim();
+  const email = document.getElementById('pt-remail').value;
+  const pass  = document.getElementById('pt-rpass').value;
+  const name  = (first + ' ' + last).trim();
+  try {
+    if (sb) {
+      const { data, error } = await sb.auth.signUp({
+        email, password: pass, options: { data: { full_name: name } }
+      });
+      if (error) throw error;
+      if (!data.session) {
+        showMsg('pt-ok', 'Account created! Check your email to confirm, then sign in.', 'ok');
+        setBtn('pt-r-btn', false, 'Create Account');
+        return;
+      }
+      await sb.from('profiles').upsert({
+        id: data.user.id, name, first_name: first, last_name: last,
+        patient_code: code, tier: 'free', usage_count: 0
+      });
+      currentUser = { id: data.user.id, email, name, first, last, code };
+    } else {
+      currentUser = { id: 'demo', email, name, first, last, code };
+    }
+    syncPortal();
+  } catch(err) {
+    showMsg('pt-err', err.message || 'Registration failed. Please try again.', 'err');
+  } finally { setBtn('pt-r-btn', false, 'Create Account'); }
+}
+
+async function ptLogout() {
+  if (sb) { try { await sb.auth.signOut(); } catch(e){} }
+  currentUser = null;
+  syncPortal();
+}
+
+function syncPortal() {
+  const gate = document.getElementById('portal-gate');
+  const dash = document.getElementById('portal-dash');
+  if (currentUser) {
+    gate.style.display = 'none';
+    dash.style.display = 'block';
+    const displayName = currentUser.first || currentUser.name || 'Patient';
+    document.getElementById('dash-name').textContent        = displayName;
+    document.getElementById('dash-email-lbl').textContent   = currentUser.email || '';
+    document.getElementById('dash-full-name').textContent   = (currentUser.first && currentUser.last) ? currentUser.first + ' ' + currentUser.last : currentUser.name || '—';
+    document.getElementById('dash-email-display').textContent = currentUser.email || '—';
+    const cl = document.getElementById('dash-code-lbl');
+    if (currentUser.code) { cl.textContent = 'Code: ' + currentUser.code; cl.style.display = 'block'; }
+    else cl.style.display = 'none';
+  } else {
+    gate.style.display = 'block';
+    dash.style.display = 'none';
+    // Reset form state
+    ptMode = 'login';
+    document.getElementById('pt-login').style.display = 'flex';
+    document.getElementById('pt-register').style.display = 'none';
+    document.getElementById('pt-title').textContent = 'Sign In to Your Portal';
+    document.getElementById('pt-sub').textContent = 'Access your health records and tools';
+    document.getElementById('pt-toggle').textContent = "Don't have an account? Create one";
+    hideMsg('pt-err', 'pt-ok');
+  }
+}
+
+// ─── OAUTH CALLBACK (on page load) ───
+(async function checkSession() {
+  if (!sb) return;
+  try {
+    if (window.location.hash?.includes('access_token')) {
+      await new Promise(r => setTimeout(r, 400));
+      window.history.replaceState(null, '', window.location.pathname + window.location.search);
+    }
+    const { data: { session } } = await sb.auth.getSession();
+    if (session?.user) {
+      const { data: profile } = await sb.from('profiles').select('*').eq('id', session.user.id).maybeSingle();
+      currentUser = {
+        id:    session.user.id,
+        email: session.user.email,
+        name:  profile?.name || session.user.user_metadata?.full_name || session.user.email.split('@')[0],
+        first: profile?.first_name || '',
+        last:  profile?.last_name  || '',
+        code:  profile?.patient_code || ''
+      };
+      if (window.location.search.includes('portal=1')) {
+        window.history.replaceState(null, '', window.location.pathname);
+        showPage('patient');
+      }
+    }
+  } catch(e) { console.warn('[Acuros] Session check failed', e); }
+})();
+
+// ─── AI CHAT ───
+async function sendChat() {
+  const inp = document.getElementById('chat-in');
+  const msg = inp.value.trim();
+  if (!msg) return;
+
+  addBubble(msg, 'user');
+  inp.value = '';
+  chatHistory.push({ role: 'user', text: msg });
+
+  // Thinking indicator
+  const thinking = document.createElement('div');
+  thinking.className = 'bubble ai thinking';
+  thinking.innerHTML = '<span></span><span></span><span></span>';
+  document.getElementById('chat-msgs').appendChild(thinking);
+  document.getElementById('chat-msgs').scrollTop = 999999;
+
+  const status = document.getElementById('ai-status');
+  if (status) status.textContent = 'Thinking…';
+  setBtn('chat-send-btn', true, 'Send');
+
+  try {
+    const resp = await fetch(CONFIG.aiApiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: 'general', messages: chatHistory })
+    });
+
+    thinking.remove();
+
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({}));
+      throw new Error(err.error || `API ${resp.status}`);
+    }
+
+    const data = await resp.json();
+    const text = data.text || 'No response received.';
+    chatHistory.push({ role: 'model', text });
+    addBubble(text, 'ai');
+
+    if (data.sources?.length) {
+      const srcDiv = document.createElement('div');
+      srcDiv.style.cssText = 'font-size:.72rem;color:var(--mute);margin-top:-.5rem;align-self:flex-start;padding:0 .25rem';
+      srcDiv.innerHTML = 'Sources: ' + data.sources.slice(0,3).map(s =>
+        `<a href="${s.uri}" target="_blank" style="color:var(--ac);text-decoration:none">${s.title||s.uri}</a>`
+      ).join(', ');
+      document.getElementById('chat-msgs').appendChild(srcDiv);
+    }
+    if (status) status.textContent = data.modelUsed ? `Model: ${data.modelUsed}` : '';
+
+  } catch(err) {
+    thinking.remove();
+    console.error('[Acuros AI]', err);
+    const fallback = localAIResponse(msg);
+    chatHistory.push({ role: 'model', text: fallback });
+    addBubble(fallback + '\n\n⚠ AI unavailable — showing cached response.', 'ai');
+    if (status) status.textContent = 'Offline mode';
+  } finally {
+    setBtn('chat-send-btn', false, 'Send');
+    document.getElementById('chat-msgs').scrollTop = 999999;
+  }
+}
+
+function preChat(q) {
+  const inp = document.getElementById('chat-in');
+  inp.value = q;
+  inp.focus();
+  sendChat();
+}
+
+function addBubble(txt, type) {
+  const msgs = document.getElementById('chat-msgs');
+  const d = document.createElement('div');
+  d.className = 'bubble ' + type;
+  d.style.whiteSpace = 'pre-line';
+  d.textContent = txt;
+  msgs.appendChild(d);
+  msgs.scrollTop = msgs.scrollHeight;
+  return d;
+}
+
+function localAIResponse(msg) {
+  const l = msg.toLowerCase();
+  if (l.includes('metformin'))         return "Metformin is generally well-tolerated. Common side effects include gastrointestinal symptoms — nausea, diarrhea, abdominal discomfort — particularly when starting. Always take with food. Lactic acidosis is a rare but serious risk in patients with renal impairment.\n\n⚠ Educational information only — consult your healthcare provider.";
+  if (l.includes('cbc')||l.includes('blood count')) return "A CBC measures key blood components:\n• Hemoglobin: 120–160 g/L (women), 130–180 g/L (men)\n• WBC: 4.5–11.0 × 10⁹/L\n• Platelets: 150–400 × 10⁹/L\n\nValues outside range are flagged H or L. Discuss with your physician.\n\n⚠ Educational information only.";
+  if (l.includes('cardiolog')||l.includes('heart'))  return "Questions for your cardiologist:\n1. What is my cardiovascular risk score?\n2. What lifestyle changes matter most?\n3. Should I be on preventive medications?\n4. What symptoms require emergency care?\n5. What follow-up testing do I need?\n\n⚠ Educational information only.";
+  if (l.includes('crp'))               return "Elevated CRP indicates systemic inflammation. Causes include infection, autoimmune conditions, inflammatory bowel disease, or tissue injury. High-sensitivity CRP (hs-CRP) is used for cardiovascular risk assessment. Your physician will interpret it with your full history.\n\n⚠ Educational information only.";
+  return "I can provide general health education on that topic. For personalised medical advice, please consult your physician or pharmacist.\n\n⚠ Educational information only — not a substitute for professional medical advice.";
+}
+</script>
+</body>
+</html>
