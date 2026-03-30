@@ -1,9 +1,0 @@
-{
-  "name": "acuros-health",
-  "version": "2.0.0",
-  "description": "Acuros Health — Precision Health Intelligence",
-  "private": true,
-  "engines": {
-    "node": "20.x"
-  }
-}
