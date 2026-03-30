@@ -4,13 +4,6 @@
   "description": "Acuros Health — Precision Health Intelligence",
   "private": true,
   "engines": {
-    "node": ">=18"
-  },
-  "scripts": {
-    "dev": "vercel dev",
-    "deploy": "vercel --prod"
-  },
-  "devDependencies": {
-    "vercel": "^37.0.0"
+    "node": "20.x"
   }
 }
