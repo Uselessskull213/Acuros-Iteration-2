@@ -792,6 +792,8 @@ let currentUser = null, ptMode = 'login', chatHistory = [];
 const CHAT_HISTORY_KEY_PREFIX = 'ah-chat-history-v1';
 const MAX_CHAT_MESSAGES = 20;
 let activeHistoryKey = null;
+const HERO_VIDEO_DARK_SRC = 'https://files.catbox.moe/orofim.mp4';
+const HERO_VIDEO_LIGHT_SRC = 'https://files.catbox.moe/2nitzp.mp4';
 
 // Theme
 function toggleTheme() {
@@ -812,11 +814,21 @@ function toggleTheme() {
 function updateHeroOverlay() {
   const dark = document.documentElement.classList.contains('dark');
   const b = document.getElementById('hero-bottom'), t = document.getElementById('hero-tint');
+  const v = document.getElementById('hero-video');
   if (!b) return;
   b.style.background = dark
     ? 'linear-gradient(0deg,rgba(13,13,12,1) 0%,rgba(13,13,12,.65) 55%,transparent 100%)'
     : 'linear-gradient(0deg,rgba(245,245,243,1) 0%,rgba(245,245,243,.55) 50%,transparent 100%)';
   t.style.background = dark ? 'rgba(0,0,0,.3)' : 'rgba(0,0,0,.12)';
+  if (!v) return;
+  const nextSrc = dark ? HERO_VIDEO_DARK_SRC : HERO_VIDEO_LIGHT_SRC;
+  if (v.dataset.activeSrc === nextSrc) return;
+  v.dataset.activeSrc = nextSrc;
+  const source = v.querySelector('source');
+  if (source) source.src = nextSrc;
+  else v.src = nextSrc;
+  v.load();
+  v.play().catch(() => {});
 }
 
 // Routing
