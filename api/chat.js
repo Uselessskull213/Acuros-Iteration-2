@@ -1,7 +1,8 @@
 // api/chat.js — Vercel Serverless Function
 // Proxies requests to Google Gemini API, keeping the API key server-side.
 
-const rateBucket = new Map();
+import { checkRateLimit } from './_lib/rate-limit.js';
+
 const ALLOWED_TYPES = new Set(['general', 'research', 'symptom', 'medication']);
 const MAX_MESSAGES = 20;
 const MAX_CHARS_PER_MESSAGE = 2000;
@@ -13,15 +14,6 @@ function getClientIp(req) {
   const fwd = req.headers['x-forwarded-for'];
   if (typeof fwd === 'string' && fwd.length) return fwd.split(',')[0].trim();
   return req.socket?.remoteAddress || 'unknown';
-}
-
-function checkRateLimit(key) {
-  const now = Date.now();
-  const bucket = rateBucket.get(key) || [];
-  const fresh = bucket.filter((ts) => now - ts < RATE_LIMIT_WINDOW_MS);
-  fresh.push(now);
-  rateBucket.set(key, fresh);
-  return fresh.length <= RATE_LIMIT_MAX_REQUESTS;
 }
 
 function buildCorsOrigin(req) {
@@ -69,7 +61,13 @@ export default async function handler(req, res) {
   if (!apiKey) return res.status(500).json({ error: 'Gemini API key not configured' });
 
   const ip = getClientIp(req);
-  if (!checkRateLimit(ip)) return res.status(429).json({ error: 'Too many requests. Please try again shortly.' });
+  const rl = await checkRateLimit({
+    route: 'chat',
+    identifier: ip,
+    maxRequests: RATE_LIMIT_MAX_REQUESTS,
+    windowSeconds: Math.floor(RATE_LIMIT_WINDOW_MS / 1000),
+  });
+  if (!rl.allowed) return res.status(429).json({ error: 'Too many requests. Please try again shortly.' });
 
   const { messages = [], type = 'general' } = req.body || {};
   const safeType = ALLOWED_TYPES.has(type) ? type : 'general';

@@ -1,7 +1,8 @@
 // api/contact.js — Vercel Serverless Function
 // Sends contact form emails via Resend, keeping the API key server-side.
 
-const rateBucket = new Map();
+import { checkRateLimit } from './_lib/rate-limit.js';
+
 const RATE_LIMIT_WINDOW_MS = 60 * 1000;
 const RATE_LIMIT_MAX_REQUESTS = 8;
 
@@ -9,15 +10,6 @@ function getClientIp(req) {
   const fwd = req.headers['x-forwarded-for'];
   if (typeof fwd === 'string' && fwd.length) return fwd.split(',')[0].trim();
   return req.socket?.remoteAddress || 'unknown';
-}
-
-function checkRateLimit(key) {
-  const now = Date.now();
-  const bucket = rateBucket.get(key) || [];
-  const fresh = bucket.filter((ts) => now - ts < RATE_LIMIT_WINDOW_MS);
-  fresh.push(now);
-  rateBucket.set(key, fresh);
-  return fresh.length <= RATE_LIMIT_MAX_REQUESTS;
 }
 
 function buildCorsOrigin(req) {
@@ -41,13 +33,20 @@ export default async function handler(req, res) {
 
   const resendKey   = process.env.RESEND_API_KEY;
   const contactTo   = process.env.CONTACT_TO_EMAIL || 'info@acuros.ca';
+  const turnstileSecret = process.env.TURNSTILE_SECRET_KEY;
 
   if (!resendKey) return res.status(500).json({ error: 'Resend API key not configured' });
 
   const ip = getClientIp(req);
-  if (!checkRateLimit(ip)) return res.status(429).json({ error: 'Too many contact requests. Please try again shortly.' });
+  const rl = await checkRateLimit({
+    route: 'contact',
+    identifier: ip,
+    maxRequests: RATE_LIMIT_MAX_REQUESTS,
+    windowSeconds: Math.floor(RATE_LIMIT_WINDOW_MS / 1000),
+  });
+  if (!rl.allowed) return res.status(429).json({ error: 'Too many contact requests. Please try again shortly.' });
 
-  const { name, email, type, message } = req.body || {};
+  const { name, email, type, message, turnstileToken } = req.body || {};
   const safeName = String(name || '').trim().slice(0, 100);
   const safeEmail = String(email || '').trim().slice(0, 160);
   const safeType = String(type || '').trim().slice(0, 80);
@@ -59,6 +58,25 @@ export default async function handler(req, res) {
   }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(safeEmail)) {
     return res.status(400).json({ error: 'Invalid email address' });
+  }
+
+  if (turnstileSecret) {
+    if (!turnstileToken) {
+      return res.status(400).json({ error: 'Verification required. Please complete the security check.' });
+    }
+    const verifyResp = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        secret: turnstileSecret,
+        response: String(turnstileToken),
+        remoteip: ip,
+      }),
+    });
+    const verifyData = await verifyResp.json().catch(() => ({}));
+    if (!verifyResp.ok || !verifyData.success) {
+      return res.status(400).json({ error: 'Security verification failed. Please try again.' });
+    }
   }
 
   const subject = safeType
