@@ -33,7 +33,6 @@ export default async function handler(req, res) {
 
   const resendKey   = process.env.RESEND_API_KEY;
   const contactTo   = process.env.CONTACT_TO_EMAIL || 'info@acuros.ca';
-  const turnstileSecret = process.env.TURNSTILE_SECRET_KEY;
 
   if (!resendKey) return res.status(500).json({ error: 'Resend API key not configured' });
 
@@ -46,7 +45,7 @@ export default async function handler(req, res) {
   });
   if (!rl.allowed) return res.status(429).json({ error: 'Too many contact requests. Please try again shortly.' });
 
-  const { name, email, type, message, turnstileToken } = req.body || {};
+  const { name, email, type, message, honeypot, formTs } = req.body || {};
   const safeName = String(name || '').trim().slice(0, 100);
   const safeEmail = String(email || '').trim().slice(0, 160);
   const safeType = String(type || '').trim().slice(0, 80);
@@ -60,23 +59,14 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Invalid email address' });
   }
 
-  if (turnstileSecret) {
-    if (!turnstileToken) {
-      return res.status(400).json({ error: 'Verification required. Please complete the security check.' });
-    }
-    const verifyResp = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams({
-        secret: turnstileSecret,
-        response: String(turnstileToken),
-        remoteip: ip,
-      }),
-    });
-    const verifyData = await verifyResp.json().catch(() => ({}));
-    if (!verifyResp.ok || !verifyData.success) {
-      return res.status(400).json({ error: 'Security verification failed. Please try again.' });
-    }
+  if (typeof honeypot === 'string' && honeypot.trim().length > 0) {
+    return res.status(400).json({ error: 'Invalid submission.' });
+  }
+
+  const startedAt = Number(formTs || 0);
+  const elapsedMs = Date.now() - startedAt;
+  if (!startedAt || elapsedMs < 2000 || elapsedMs > 24 * 60 * 60 * 1000) {
+    return res.status(400).json({ error: 'Please take a moment and try again.' });
   }
 
   const subject = safeType

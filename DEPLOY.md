@@ -53,8 +53,6 @@ In Vercel dashboard → your project → **Settings → Environment Variables**,
 | `ALLOWED_ORIGINS`   | `https://acuros.ca,https://www.acuros.ca` (optional) | Production, Preview  |
 | `UPSTASH_REDIS_REST_URL` | `https://...upstash.io`    | Production, Preview  |
 | `UPSTASH_REDIS_REST_TOKEN` | `your_upstash_token`      | Production, Preview  |
-| `TURNSTILE_SITE_KEY` | `0x4AAAA...` (public)         | Production, Preview  |
-| `TURNSTILE_SECRET_KEY` | `0x4AAAA...` (secret)        | Production, Preview  |
 
 After adding variables, go to **Deployments → Redeploy** (latest deployment) to apply them.
 
@@ -104,8 +102,6 @@ CONTACT_TO_EMAIL=info@acuros.ca
 ALLOWED_ORIGINS=http://localhost:3000
 UPSTASH_REDIS_REST_URL=https://your-db.upstash.io
 UPSTASH_REDIS_REST_TOKEN=your_upstash_token
-TURNSTILE_SITE_KEY=0x4AAAA...
-TURNSTILE_SECRET_KEY=0x4AAAA...
 ```
 
 ---
