@@ -358,6 +358,47 @@
     </div>
   </section>
 
+  <!-- Contact -->
+  <section style="border-bottom:1px solid var(--border);background:var(--bg2)">
+    <div style="max-width:1280px;margin:0 auto;padding:4rem 2rem;display:grid;grid-template-columns:1fr 1fr;gap:2rem" class="g1m">
+      <div>
+        <div class="lbl" style="margin-bottom:1rem">Contact</div>
+        <h3 style="font-size:2rem;font-weight:300;color:var(--text);margin-bottom:1rem">Talk to the team.</h3>
+        <p style="font-size:.85rem;line-height:1.85;color:var(--sub);max-width:40ch">
+          Questions about patient support, clinic onboarding, or partnership opportunities? Send us a note and we will follow up.
+        </p>
+      </div>
+      <div class="card" style="padding:1.5rem">
+        <div id="ct-err" style="display:none;margin-bottom:1rem"></div>
+        <div id="ct-ok" style="display:none;margin-bottom:1rem"></div>
+        <form onsubmit="submitContact(event)" style="display:flex;flex-direction:column;gap:.875rem">
+          <div>
+            <label class="lbl" style="display:block;margin-bottom:.35rem">Name</label>
+            <input id="ct-name" type="text" class="inp" placeholder="Jane Doe" required maxlength="100"/>
+          </div>
+          <div>
+            <label class="lbl" style="display:block;margin-bottom:.35rem">Email</label>
+            <input id="ct-email" type="email" class="inp" placeholder="name@email.com" required maxlength="160"/>
+          </div>
+          <div>
+            <label class="lbl" style="display:block;margin-bottom:.35rem">Type</label>
+            <select id="ct-type" class="inp">
+              <option value="">General inquiry</option>
+              <option value="Patient support">Patient support</option>
+              <option value="Partnership">Partnership</option>
+              <option value="Clinic onboarding">Clinic onboarding</option>
+            </select>
+          </div>
+          <div>
+            <label class="lbl" style="display:block;margin-bottom:.35rem">Message</label>
+            <textarea id="ct-msg" class="inp" placeholder="How can we help?" rows="4" required maxlength="4000" style="resize:vertical"></textarea>
+          </div>
+          <button id="ct-btn" type="submit" class="btn btn-solid" style="justify-content:center">Send Message</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
   <!-- Footer -->
   <footer style="border-top:1px solid var(--border);background:var(--bg2)">
     <div style="max-width:1280px;margin:0 auto;padding:3rem 2rem">
@@ -447,7 +488,7 @@
             <div style="padding:1.25rem;border-bottom:1px solid var(--border)"><div class="num" style="margin-bottom:.4rem">01</div><h4 style="font-size:1.2rem;font-weight:300;color:var(--text);margin-bottom:.35rem">Symptom Logic</h4><p style="font-size:.8rem;line-height:1.75;color:var(--sub)">Deterministic reasoning chains minimise hallucination. Every step is structured.</p></div>
             <div style="padding:1.25rem;border-bottom:1px solid var(--border)"><div class="num" style="margin-bottom:.4rem">02</div><h4 style="font-size:1.2rem;font-weight:300;color:var(--text);margin-bottom:.35rem">Grounded Retrieval</h4><p style="font-size:.8rem;line-height:1.75;color:var(--sub)">Queries cross-referenced against peer-reviewed sources before generation.</p></div>
             <div style="padding:1.25rem;border-bottom:1px solid var(--border)"><div class="num" style="margin-bottom:.4rem">03</div><h4 style="font-size:1.2rem;font-weight:300;color:var(--text);margin-bottom:.35rem">Safety Governance</h4><p style="font-size:.8rem;line-height:1.75;color:var(--sub)">A secondary review layer intercepts risky advice before it reaches you.</p></div>
-            <div style="padding:1.25rem"><div class="num" style="margin-bottom:.4rem">04</div><h4 style="font-size:1.2rem;font-weight:300;color:var(--text);margin-bottom:.35rem">Session Privacy</h4><p style="font-size:.8rem;line-height:1.75;color:var(--sub)">No conversation stored beyond your session. Zero third-party sharing.</p></div>
+            <div style="padding:1.25rem"><div class="num" style="margin-bottom:.4rem">04</div><h4 style="font-size:1.2rem;font-weight:300;color:var(--text);margin-bottom:.35rem">Session Privacy</h4><p style="font-size:.8rem;line-height:1.75;color:var(--sub)">Conversation history is stored only on your device. Zero third-party sharing.</p></div>
           </div>
           <div style="background:var(--bg2);border:1px solid var(--border);padding:1.25rem">
             <div class="lbl" style="color:var(--ac);margin-bottom:.75rem">Want a personal health space?</div>
@@ -743,6 +784,9 @@ let sb = null;
 try { if (CONFIG.supabaseKey) sb = window.supabase.createClient(CONFIG.supabaseUrl, CONFIG.supabaseKey); } catch(e) {}
 
 let currentUser = null, ptMode = 'login', chatHistory = [];
+const CHAT_HISTORY_KEY_PREFIX = 'ah-chat-history-v1';
+const MAX_CHAT_MESSAGES = 20;
+let activeHistoryKey = null;
 
 // Theme
 function toggleTheme() {
@@ -797,6 +841,8 @@ window.addEventListener('scroll',()=>{ document.getElementById('main-nav').style
 function showMsg(id,msg,type){const el=document.getElementById(id);if(!el)return;el.style.display='block';el.className=type==='err'?'err-box':'ok-box';el.textContent=msg;}
 function hideMsg(...ids){ids.forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});}
 function setBtn(id,loading,label){const b=document.getElementById(id);if(!b)return;b.disabled=loading;b.innerHTML=loading?'<span class="spin"></span>':label;}
+function safeParseJSON(raw,fallback){try{return JSON.parse(raw);}catch(e){return fallback;}}
+function emailLooksValid(email){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email||''));}
 
 // Auth
 function ptToggle() {
@@ -870,6 +916,7 @@ function syncPortal() {
     document.getElementById('pt-toggle').textContent="Don't have an account? Create one";
     hideMsg('pt-err','pt-ok');
   }
+  ensureChatHistoryLoaded();
 }
 
 (async function checkSession() {
@@ -883,33 +930,105 @@ function syncPortal() {
       if(window.location.search.includes('portal=1')){window.history.replaceState(null,'',window.location.pathname);showPage('patient');}
     }
   } catch(e){}
+  finally { syncPortal(); }
 })();
+
+if (sb?.auth?.onAuthStateChange) {
+  sb.auth.onAuthStateChange(async (_event, session) => {
+    if (session?.user) {
+      try {
+        const { data: profile } = await sb.from('profiles').select('*').eq('id', session.user.id).maybeSingle();
+        currentUser = {
+          id: session.user.id,
+          email: session.user.email,
+          name: profile?.name || session.user.user_metadata?.full_name || session.user.email.split('@')[0],
+          first: profile?.first_name || '',
+          last: profile?.last_name || '',
+          code: profile?.patient_code || '',
+        };
+      } catch (_e) {}
+    } else {
+      currentUser = null;
+    }
+    syncPortal();
+  });
+}
+
+function getChatHistoryKey() {
+  return currentUser?.id
+    ? `${CHAT_HISTORY_KEY_PREFIX}:${currentUser.id}`
+    : `${CHAT_HISTORY_KEY_PREFIX}:guest`;
+}
+
+function normalizeChatHistory(raw) {
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .filter((entry) => entry && (entry.role === 'user' || entry.role === 'model') && typeof entry.text === 'string')
+    .map((entry) => ({ role: entry.role, text: entry.text.trim().slice(0, 2000) }))
+    .filter((entry) => entry.text.length > 0)
+    .slice(-MAX_CHAT_MESSAGES);
+}
+
+function saveChatHistory() {
+  const key = getChatHistoryKey();
+  localStorage.setItem(key, JSON.stringify(chatHistory.slice(-MAX_CHAT_MESSAGES)));
+}
+
+function renderChatHistory() {
+  const msgs = document.getElementById('chat-msgs');
+  if (!msgs) return;
+  msgs.innerHTML = '';
+  if (!chatHistory.length) {
+    addBubble("Hello — I'm the Acuros AI health assistant. I provide evidence-based health education and information. What would you like to explore today?", 'ai', false);
+  } else {
+    chatHistory.forEach((entry) => addBubble(entry.text, entry.role === 'user' ? 'user' : 'ai', false));
+  }
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function ensureChatHistoryLoaded(force) {
+  const key = getChatHistoryKey();
+  if (!force && activeHistoryKey === key) return;
+  activeHistoryKey = key;
+  const saved = safeParseJSON(localStorage.getItem(key), []);
+  chatHistory = normalizeChatHistory(saved);
+  renderChatHistory();
+}
 
 // AI Chat
 async function sendChat() {
   const inp=document.getElementById('chat-in'),msg=inp.value.trim();
   if(!msg)return;
-  addBubble(msg,'user'); inp.value=''; chatHistory.push({role:'user',text:msg});
+  ensureChatHistoryLoaded();
+  addBubble(msg,'user'); inp.value=''; chatHistory.push({role:'user',text:msg}); chatHistory = chatHistory.slice(-MAX_CHAT_MESSAGES); saveChatHistory();
   const thinking=document.createElement('div'); thinking.className='bubble ai thinking'; thinking.innerHTML='<span></span><span></span><span></span>';
   document.getElementById('chat-msgs').appendChild(thinking); document.getElementById('chat-msgs').scrollTop=999999;
   const status=document.getElementById('ai-status'); if(status)status.textContent='Thinking…';
   setBtn('chat-send-btn',true,'Send');
   try {
-    const resp=await fetch(CONFIG.aiApiUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type:'general',messages:chatHistory})});
+    const resp=await fetch(CONFIG.aiApiUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type:inferChatType(msg),messages:chatHistory})});
     thinking.remove();
     if(!resp.ok){const err=await resp.json().catch(()=>({}));throw new Error(err.error||`API ${resp.status}`);}
     const data=await resp.json(); const text=data.text||'No response received.';
-    chatHistory.push({role:'model',text}); addBubble(text,'ai');
+    chatHistory.push({role:'model',text}); chatHistory = chatHistory.slice(-MAX_CHAT_MESSAGES); addBubble(text,'ai'); saveChatHistory();
     if(data.sources?.length){const sd=document.createElement('div');sd.style.cssText='font-size:.72rem;color:var(--mute);margin-top:-.5rem;align-self:flex-start;padding:0 .25rem';sd.innerHTML='Sources: '+data.sources.slice(0,3).map(s=>`<a href="${s.uri}" target="_blank" style="color:var(--ac);text-decoration:none">${s.title||s.uri}</a>`).join(', ');document.getElementById('chat-msgs').appendChild(sd);}
     if(status)status.textContent=data.modelUsed?`Model: ${data.modelUsed}`:'';
   } catch(err){
     thinking.remove(); const fallback=localAIResponse(msg); chatHistory.push({role:'model',text:fallback});
+    chatHistory = chatHistory.slice(-MAX_CHAT_MESSAGES); saveChatHistory();
     addBubble(fallback+'\n\n⚠ AI unavailable — showing cached response.','ai'); if(status)status.textContent='Offline mode';
   } finally { setBtn('chat-send-btn',false,'Send'); document.getElementById('chat-msgs').scrollTop=999999; }
 }
 
 function preChat(q){const inp=document.getElementById('chat-in');inp.value=q;inp.focus();sendChat();}
-function addBubble(txt,type){const msgs=document.getElementById('chat-msgs');const d=document.createElement('div');d.className='bubble '+type;d.style.whiteSpace='pre-line';d.textContent=txt;msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;return d;}
+function inferChatType(msg){
+  const l = msg.toLowerCase();
+  if (/\b(study|trial|meta-analysis|systematic review|journal|evidence)\b/.test(l)) return 'research';
+  if (/\b(side effect|dosage|dose|interaction|drug|medication|prescription)\b/.test(l)) return 'medication';
+  if (/\b(symptom|pain|fever|nausea|headache|fatigue|cough)\b/.test(l)) return 'symptom';
+  return 'general';
+}
+function addBubble(txt,type,scroll=true){const msgs=document.getElementById('chat-msgs');const d=document.createElement('div');d.className='bubble '+type;d.style.whiteSpace='pre-line';d.textContent=txt;msgs.appendChild(d);if(scroll)msgs.scrollTop=msgs.scrollHeight;return d;}
 function localAIResponse(msg){
   const l=msg.toLowerCase();
   if(l.includes('metformin'))return"Metformin is generally well-tolerated. Common side effects include gastrointestinal symptoms — nausea, diarrhea, abdominal discomfort — particularly when starting. Always take with food. Lactic acidosis is a rare but serious risk in patients with renal impairment.\n\n⚠ Educational information only — consult your healthcare provider.";
@@ -918,6 +1037,39 @@ function localAIResponse(msg){
   if(l.includes('crp'))return"Elevated CRP indicates systemic inflammation. Causes include infection, autoimmune conditions, inflammatory bowel disease, or tissue injury. hs-CRP is used for cardiovascular risk assessment.\n\n⚠ Educational information only.";
   return"I can provide general health education on that topic. For personalised medical advice, please consult your physician or pharmacist.\n\n⚠ Educational information only — not a substitute for professional medical advice.";
 }
+
+async function submitContact(e){
+  e.preventDefault();
+  hideMsg('ct-err','ct-ok');
+  setBtn('ct-btn',true,'Send Message');
+  const name=document.getElementById('ct-name').value.trim();
+  const email=document.getElementById('ct-email').value.trim();
+  const type=document.getElementById('ct-type').value.trim();
+  const message=document.getElementById('ct-msg').value.trim();
+  if(!name || !email || !message){
+    showMsg('ct-err','Please fill in name, email, and message.','err');
+    setBtn('ct-btn',false,'Send Message');
+    return;
+  }
+  if(!emailLooksValid(email)){
+    showMsg('ct-err','Please enter a valid email address.','err');
+    setBtn('ct-btn',false,'Send Message');
+    return;
+  }
+  try{
+    const resp=await fetch(CONFIG.contactApiUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,email,type,message})});
+    const data=await resp.json().catch(()=>({}));
+    if(!resp.ok) throw new Error(data.error||`API ${resp.status}`);
+    showMsg('ct-ok','Message sent. We will get back to you shortly.','ok');
+    e.target.reset();
+  }catch(err){
+    showMsg('ct-err',err.message||'Unable to send message right now. Please try again shortly.','err');
+  }finally{
+    setBtn('ct-btn',false,'Send Message');
+  }
+}
+
+ensureChatHistoryLoaded(true);
 </script>
 </body>
 </html>

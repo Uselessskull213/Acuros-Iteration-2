@@ -46,10 +46,11 @@ In Vercel dashboard → your project → **Settings → Environment Variables**,
 
 | Variable            | Value                          | Environments         |
 |---------------------|--------------------------------|----------------------|
-| `GEMINI_API_KEY`    | `AIzaSyBcSawpIxie8ZVZvw8NS-...`| Production, Preview  |
-| `RESEND_API_KEY`    | `re_NLSB5fZU_...`              | Production, Preview  |
+| `GEMINI_API_KEY`    | `your_gemini_api_key`          | Production, Preview  |
+| `RESEND_API_KEY`    | `your_resend_api_key`          | Production, Preview  |
 | `CONTACT_TO_EMAIL`  | `info@acuros.ca`               | Production, Preview  |
 | `GEMINI_MODEL`      | `gemini-2.0-flash` (optional)  | Production, Preview  |
+| `ALLOWED_ORIGINS`   | `https://acuros.ca,https://www.acuros.ca` (optional) | Production, Preview  |
 
 After adding variables, go to **Deployments → Redeploy** (latest deployment) to apply them.
 
@@ -93,9 +94,10 @@ This starts a local server at `http://localhost:3000` with all API routes workin
 You'll need a `.env.local` file:
 
 ```
-GEMINI_API_KEY=AIzaSyBcSawpIxie8ZVZvw8NS-TmdZlwar28988
-RESEND_API_KEY=re_NLSB5fZU_EAE2V2xz9THUyF7e3L8URAtY
+GEMINI_API_KEY=your_gemini_api_key
+RESEND_API_KEY=your_resend_api_key
 CONTACT_TO_EMAIL=info@acuros.ca
+ALLOWED_ORIGINS=http://localhost:3000
 ```
 
 ---
