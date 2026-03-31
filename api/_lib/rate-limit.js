@@ -24,7 +24,10 @@ async function runUpstashCommand(command) {
   }
 
   const data = await resp.json();
-  return data?.[0]?.result ?? null;
+  if (!Array.isArray(data) || !data[0] || !Object.prototype.hasOwnProperty.call(data[0], 'result')) {
+    throw new Error('Upstash returned unexpected response shape');
+  }
+  return data[0].result;
 }
 
 function checkMemoryRateLimit(key, maxRequests, windowSeconds) {
@@ -45,7 +48,11 @@ export async function checkRateLimit({ route, identifier, maxRequests, windowSec
 
   if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
     try {
-      const count = Number(await runUpstashCommand(['INCR', key]));
+      const rawCount = await runUpstashCommand(['INCR', key]);
+      const count = Number(rawCount);
+      if (!Number.isFinite(count) || count < 1) {
+        throw new Error(`Invalid Upstash INCR response: ${String(rawCount)}`);
+      }
       if (count === 1) {
         await runUpstashCommand(['EXPIRE', key, String(windowSeconds)]);
       }
