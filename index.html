@@ -823,12 +823,18 @@ function updateHeroOverlay() {
   if (!v) return;
   const nextSrc = dark ? HERO_VIDEO_DARK_SRC : HERO_VIDEO_LIGHT_SRC;
   if (v.dataset.activeSrc === nextSrc) return;
+  const previousSrc = v.dataset.activeSrc || HERO_VIDEO_DARK_SRC;
   v.dataset.activeSrc = nextSrc;
-  const source = v.querySelector('source');
-  if (source) source.src = nextSrc;
-  else v.src = nextSrc;
+  v.innerHTML = `<source src="${nextSrc}" type="video/mp4"/>`;
   v.load();
   v.play().catch(() => {});
+  v.onerror = () => {
+    // Fallback if remote source fails to load in-browser.
+    v.dataset.activeSrc = previousSrc;
+    v.innerHTML = `<source src="${previousSrc}" type="video/mp4"/>`;
+    v.load();
+    v.play().catch(() => {});
+  };
 }
 
 // Routing
