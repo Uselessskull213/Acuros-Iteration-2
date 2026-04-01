@@ -329,6 +329,8 @@
 <script>
 const CONFIG = { contactApiUrl: '/api/contact' };
 
+const HERO_VIDEO_DARK_SRC = '/assets/hero-dark.mp4';
+const HERO_VIDEO_LIGHT_SRC = '/assets/hero-light.mp4';
 function toggleTheme() {
   const dark = document.documentElement.classList.toggle('dark');
   document.getElementById('th-icon').textContent = dark ? '☽' : '☀';
@@ -343,8 +345,6 @@ function toggleTheme() {
   }
   updateHeroOverlay();
 })();
-const HERO_VIDEO_DARK_SRC = '/assets/hero-dark.mp4';
-const HERO_VIDEO_LIGHT_SRC = '/assets/hero-light.mp4';
 function updateHeroOverlay() {
   const dark = document.documentElement.classList.contains('dark');
   const b = document.getElementById('hero-bottom'), t = document.getElementById('hero-tint'), v = document.getElementById('hero-video');
