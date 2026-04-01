@@ -14,8 +14,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
   <script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{display:['Cormorant Garamond','Georgia','serif'],sans:['DM Sans','sans-serif']}}}}</script>
   <style>
-    :root{--bg:#f5f5f3;--bg2:#fff;--border:#e2e2de;--text:#181816;--sub:#5a5a54;--mute:#9a9a92;--ac:#0ea5e9;--nav:rgba(248,248,246,.55);--gold:#C9922A}
-    html.dark{--bg:#0d0d0c;--bg2:#141412;--border:#272724;--text:#f0f0ec;--sub:#9a9a92;--mute:#5a5a54;--ac:#38bdf8;--nav:rgba(13,13,12,.65);--gold:#E2B44A}
+    :root{--bg:#f5f5f3;--bg2:#fff;--border:#e2e2de;--text:#181816;--sub:#5a5a54;--mute:#9a9a92;--ac:#0ea5e9;--nav:rgba(248,248,246,.6);--gold:#C9922A}
+    html.dark{--bg:#0d0d0c;--bg2:#141412;--border:#272724;--text:#f0f0ec;--sub:#9a9a92;--mute:#5a5a54;--ac:#38bdf8;--nav:rgba(13,13,12,.68);--gold:#E2B44A}
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     html{scroll-behavior:smooth}
     body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);transition:background .3s,color .3s;overflow-x:hidden}
@@ -39,7 +39,8 @@
     html:not(.dark) .nav-logo-wrap:hover .nav-logo-name{color:var(--gold)}
     html.dark .nav-logo-wrap:hover .nav-logo-name{color:var(--ac)}
     .nav-logo-sub{font-size:.48rem;letter-spacing:.32em;text-transform:uppercase;color:var(--mute);font-family:'DM Sans',sans-serif;font-weight:500}
-    .nav-link{position:relative;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);background:none;border:none;cursor:pointer;padding:0;font-family:inherit;transition:color .2s;text-decoration:none;display:inline-block}
+    .nav-link{position:relative;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--sub);background:none;border:none;cursor:pointer;padding:0;font-family:inherit;transition:color .2s;text-decoration:none;display:inline-block}
+    html:not(.dark) .nav-link{color:#4a4a44}
     .nav-link::after{content:'';position:absolute;left:0;bottom:-2px;width:0;height:1px;background:var(--ac);transition:width .25s}
     .nav-link:hover::after,.nav-link.active::after{width:100%}
     .nav-link:hover,.nav-link.active{color:var(--text)}
@@ -113,7 +114,7 @@
   <div style="max-width:1280px;margin:0 auto;padding:0 2rem;height:64px;display:flex;align-items:center;justify-content:space-between">
     <a href="/" class="nav-logo-wrap">
       <!-- Light mode: gold circular logo -->
-      <img src="logo-light.svg" alt="Acuros" class="nav-logo-img-light"/>
+      <img src="/assets/logo-gold.jpg" alt="Acuros" class="nav-logo-img-light"/>
       <!-- Dark mode: geometric emblem -->
       <div class="nav-logo-emblem nav-logo-img-dark">
         <img src="logo.png" alt="Acuros" width="22" height="22" style="object-fit:contain;position:relative;z-index:1"/>
