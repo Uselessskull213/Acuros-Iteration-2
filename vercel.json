@@ -1,11 +1,11 @@
 {
   "version": 2,
   "rewrites": [
-    { "source": "/api/:path*", "destination": "/api/:path*" },
-    { "source": "/ai",      "destination": "/ai.html" },
-    { "source": "/patient", "destination": "/patient.html" },
-    { "source": "/privacy", "destination": "/privacy.html" },
-    { "source": "/terms",   "destination": "/terms.html" }
+    { "source": "/api/:path*",       "destination": "/api/:path*" },
+    { "source": "/ai-assistant",     "destination": "/ai.html" },
+    { "source": "/patient-portal",   "destination": "/patient.html" },
+    { "source": "/privacy",          "destination": "/privacy.html" },
+    { "source": "/terms",            "destination": "/terms.html" }
   ],
   "headers": [
     {

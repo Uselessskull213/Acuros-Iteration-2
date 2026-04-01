@@ -76,14 +76,14 @@
     </a>
     <div style="display:flex;align-items:center;gap:2rem" class="hnm">
       <a class="nav-link" href="/">Home</a>
-      <a class="nav-link" href="/ai.html">AI Assistant</a>
-      <a class="nav-link active" href="/patient.html">Patient Portal</a>
-      <a class="nav-link" href="/privacy.html" style="opacity:.55">Privacy</a>
-      <a class="nav-link" href="/terms.html" style="opacity:.55">Terms</a>
+      <a class="nav-link" href="/ai-assistant">AI Assistant</a>
+      <a class="nav-link active" href="/patient-portal">Patient Portal</a>
+      <a class="nav-link" href="/privacy" style="opacity:.55">Privacy</a>
+      <a class="nav-link" href="/terms" style="opacity:.55">Terms</a>
     </div>
     <div style="display:flex;align-items:center;gap:.875rem">
       <button onclick="toggleTheme()" aria-label="Toggle theme" style="width:36px;height:36px;border:1px solid var(--border);background:none;color:var(--sub);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;font-size:.9rem"><span id="th-icon">☀</span></button>
-      <a href="/patient.html" class="btn btn-solid" style="padding:.55rem 1.25rem" id="nav-cta">Patient Portal</a>
+      <a href="/patient-portal" class="btn btn-solid" style="padding:.55rem 1.25rem" id="nav-cta">Patient Portal</a>
       <button onclick="openMob()" style="display:none;background:none;border:none;cursor:pointer;color:var(--text);padding:.25rem" id="mob-btn" aria-label="Menu">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16M4 12h12M4 18h8"/></svg>
       </button>
@@ -101,10 +101,10 @@
   </div>
   <div style="display:flex;flex-direction:column;gap:1.75rem">
     <a href="/"             style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;text-align:left;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Home</a>
-    <a href="/ai.html"      style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;text-align:left;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">AI Assistant</a>
-    <a href="/patient.html" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;text-align:left;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Patient Portal</a>
-    <a href="/privacy.html" style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;text-align:left;color:var(--mute);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Privacy Policy</a>
-    <a href="/terms.html"   style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;text-align:left;color:var(--mute);text-decoration:none">Terms of Service</a>
+    <a href="/ai-assistant"      style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;text-align:left;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">AI Assistant</a>
+    <a href="/patient-portal" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;text-align:left;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Patient Portal</a>
+    <a href="/privacy" style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;text-align:left;color:var(--mute);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Privacy Policy</a>
+    <a href="/terms"   style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;text-align:left;color:var(--mute);text-decoration:none">Terms of Service</a>
   </div>
 </div>
 
@@ -209,7 +209,7 @@
         </div>
         <div style="display:flex;gap:.875rem;align-items:center;flex-wrap:wrap">
           <div id="dash-code-lbl" style="display:none;padding:.5rem 1rem;background:var(--bg);border:1px solid var(--border);font-size:.75rem;color:var(--sub)"></div>
-          <a href="/ai.html" class="btn btn-outline" style="padding:.5rem 1.25rem;font-size:.72rem">AI Assistant</a>
+          <a href="/ai-assistant" class="btn btn-outline" style="padding:.5rem 1.25rem;font-size:.72rem">AI Assistant</a>
           <button onclick="ptLogout()" class="btn btn-outline" style="padding:.5rem 1.25rem;font-size:.72rem">Sign Out</button>
         </div>
       </div>
@@ -232,7 +232,7 @@
 
       <div class="lbl" style="margin-bottom:1.25rem">Your Tools</div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-bottom:2.5rem" class="g1m">
-        <a href="/ai.html" class="card" style="padding:1.75rem;text-align:left;cursor:pointer;background:none;width:100%;text-decoration:none;display:block">
+        <a href="/ai-assistant" class="card" style="padding:1.75rem;text-align:left;cursor:pointer;background:none;width:100%;text-decoration:none;display:block">
           <div class="lbl" style="color:var(--ac);margin-bottom:.625rem">AI Assistant</div>
           <h4 style="font-size:1.3rem;font-weight:300;color:var(--text);margin-bottom:.5rem">Health Dialogue</h4>
           <p style="font-size:.8rem;line-height:1.75;color:var(--sub)">Ask questions, translate reports, prepare for appointments.</p>
@@ -265,8 +265,8 @@
       <div style="max-width:1280px;margin:0 auto;padding:1.75rem 2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
         <p style="font-size:.75rem;color:var(--mute)">© 2025 Acuros Health Inc.</p>
         <div style="display:flex;gap:1.5rem">
-          <a href="/privacy.html" class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Privacy</a>
-          <a href="/terms.html"   class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Terms</a>
+          <a href="/privacy" class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Privacy</a>
+          <a href="/terms"   class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Terms</a>
         </div>
       </div>
     </footer>
@@ -363,7 +363,7 @@ function ptToggle() {
 async function ptGoogleAuth() {
   if (!sb) { showMsg('pt-err', 'Auth not configured.', 'err'); return; }
   try {
-    const { error } = await sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin + '/patient.html?portal=1' } });
+    const { error } = await sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin + '/patient-portal?portal=1' } });
     if (error) throw error;
   } catch (err) { showMsg('pt-err', err.message || 'Google sign-in failed.', 'err'); }
 }
