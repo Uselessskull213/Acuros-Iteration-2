@@ -48,10 +48,12 @@
     @keyframes spin{to{transform:rotate(360deg)}}
     .spin{width:16px;height:16px;border:2px solid transparent;border-top-color:currentColor;border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
     @keyframes pgIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-    .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1)}
+    .reveal{transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1)}
+    .js-reveal .reveal:not(.in){opacity:0;transform:translateY(26px)}
     .reveal.in{opacity:1;transform:none}
     .d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}.d4{transition-delay:.4s}
-    .stagger-item{opacity:0;transform:translateX(-14px);transition:opacity .5s ease,transform .5s ease}
+    .stagger-item{transition:opacity .5s ease,transform .5s ease}
+    .js-reveal .stagger-item:not(.in){opacity:0;transform:translateX(-14px)}
     .stagger-item.in{opacity:1;transform:none}
     @keyframes mq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
     .minner{display:inline-block;animation:mq 36s linear infinite;white-space:nowrap}
@@ -362,18 +364,19 @@ function updateHeroOverlay() {
 function openMob()  { document.getElementById('mob-menu').classList.add('open'); }
 function closeMob() { document.getElementById('mob-menu').classList.remove('open'); }
 window.addEventListener('scroll', () => { document.getElementById('main-nav').style.boxShadow = window.scrollY > 10 ? '0 1px 24px rgba(0,0,0,.08)' : ''; });
+// Enable reveal animations only when JS is ready — fail-open if JS never runs
+document.documentElement.classList.add('js-reveal');
 function setupReveal() {
   if (!('IntersectionObserver' in window)) {
     document.querySelectorAll('.reveal,.stagger-item').forEach(el => el.classList.add('in'));
     return;
   }
-  const io = new IntersectionObserver(entries => { entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }); }, { threshold: 0, rootMargin: '0px 0px -40px 0px' });
+  const io = new IntersectionObserver(entries => { entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }); }, { threshold: 0, rootMargin: '0px 0px -60px 0px' });
   document.querySelectorAll('.reveal:not(.in),.stagger-item:not(.in)').forEach(el => io.observe(el));
 }
-// Run immediately, on DOMContentLoaded, and as a hard fallback after 1.5s
-setupReveal();
-document.addEventListener('DOMContentLoaded', setupReveal);
-setTimeout(() => { document.querySelectorAll('.reveal,.stagger-item').forEach(el => el.classList.add('in')); }, 1500);
+document.addEventListener('DOMContentLoaded', () => { setupReveal(); setTimeout(setupReveal, 200); });
+// Hard fallback: force all visible after 3s in case observer misfires
+setTimeout(() => { document.querySelectorAll('.reveal,.stagger-item').forEach(el => el.classList.add('in')); }, 3000);
 function showMsg(id, msg, type) { const el = document.getElementById(id); if (!el) return; el.style.display = 'block'; el.className = type === 'err' ? 'err-box' : 'ok-box'; el.textContent = msg; }
 function hideMsg(...ids) { ids.forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; }); }
 function setBtn(id, loading, label) { const b = document.getElementById(id); if (!b) return; b.disabled = loading; b.innerHTML = loading ? '<span class="spin"></span>' : label; }
