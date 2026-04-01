@@ -14,13 +14,23 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
   <script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{display:['Cormorant Garamond','Georgia','serif'],sans:['DM Sans','sans-serif']}}}}</script>
   <style>
-    :root{--bg:#f5f5f3;--bg2:#fff;--border:#e2e2de;--text:#181816;--sub:#5a5a54;--mute:#9a9a92;--ac:#0ea5e9;--nav:rgba(245,245,243,.93)}
-    html.dark{--bg:#0d0d0c;--bg2:#141412;--border:#272724;--text:#f0f0ec;--sub:#9a9a92;--mute:#5a5a54;--ac:#38bdf8;--nav:rgba(13,13,12,.93)}
+    :root{--bg:#f5f5f3;--bg2:#fff;--border:#e2e2de;--text:#181816;--sub:#5a5a54;--mute:#9a9a92;--ac:#0ea5e9;--nav:rgba(245,245,243,.72)}
+    html.dark{--bg:#0d0d0c;--bg2:#141412;--border:#272724;--text:#f0f0ec;--sub:#9a9a92;--mute:#5a5a54;--ac:#38bdf8;--nav:rgba(13,13,12,.82)}
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     html{scroll-behavior:smooth}
     body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);transition:background .3s,color .3s;overflow-x:hidden}
     h1,h2,h3,h4{font-family:'Cormorant Garamond',serif;line-height:1.08;letter-spacing:-.015em}
-    nav{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--nav);backdrop-filter:blur(20px) saturate(180%);border-bottom:1px solid var(--border);transition:background .3s,border-color .3s}
+    nav{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--nav);backdrop-filter:blur(24px) saturate(200%);-webkit-backdrop-filter:blur(24px) saturate(200%);border-bottom:1px solid var(--border);transition:background .3s,border-color .3s}
+    .nav-logo-wrap{display:flex;align-items:center;gap:.75rem;text-decoration:none;position:relative}
+    .nav-logo-emblem{position:relative;display:flex;align-items:center;justify-content:center;width:40px;height:40px}
+    .nav-logo-emblem::before,.nav-logo-emblem::after{content:'';position:absolute;border:1px solid var(--border);transition:border-color .3s}
+    .nav-logo-emblem::before{inset:0;transform:rotate(0deg)}
+    .nav-logo-emblem::after{inset:4px;transform:rotate(45deg);border-color:var(--ac);opacity:.4}
+    .nav-logo-wrap:hover .nav-logo-emblem::after{opacity:.8;transform:rotate(45deg) scale(1.05)}
+    .nav-logo-text-wrap{display:flex;flex-direction:column;gap:1px}
+    .nav-logo-name{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:.95rem;letter-spacing:.1em;color:var(--text);line-height:1;transition:color .2s}
+    .nav-logo-sub{font-size:.48rem;letter-spacing:.32em;text-transform:uppercase;color:var(--mute);font-family:'DM Sans',sans-serif;font-weight:500}
+    .nav-logo-wrap:hover .nav-logo-name{color:var(--ac)}
     .nav-link{position:relative;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);background:none;border:none;cursor:pointer;padding:0;font-family:inherit;transition:color .2s;text-decoration:none;display:inline-block}
     .nav-link::after{content:'';position:absolute;left:0;bottom:-2px;width:0;height:1px;background:var(--ac);transition:width .25s}
     .nav-link:hover::after,.nav-link.active::after{width:100%}
@@ -30,7 +40,8 @@
     .btn:hover::after{opacity:1}
     .btn-solid{background:var(--text);color:var(--bg)}
     .btn-solid:hover{background:var(--ac);color:#fff}
-    .btn-outline{background:transparent;color:var(--text);border:1px solid var(--border)}
+    .btn-outline{background:transparent;color:var(--text);border:1px solid rgba(24,24,22,.25)}
+    html.dark .btn-outline{border-color:rgba(240,240,236,.2)}
     .btn-outline:hover{border-color:var(--ac);color:var(--ac)}
     .card{background:var(--bg2);border:1px solid var(--border);transition:border-color .25s,transform .3s,box-shadow .3s}
     .card:hover{border-color:var(--ac);transform:translateY(-2px);box-shadow:0 8px 32px rgba(14,165,233,.08)}
@@ -86,11 +97,13 @@
 <!-- NAV -->
 <nav id="main-nav">
   <div style="max-width:1280px;margin:0 auto;padding:0 2rem;height:64px;display:flex;align-items:center;justify-content:space-between">
-    <a href="/" style="display:flex;align-items:center;gap:.75rem;text-decoration:none">
-      <img src="logo.png" alt="Acuros" width="32" height="32" style="flex-shrink:0;object-fit:contain"/>
-      <div>
-        <div style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:.95rem;letter-spacing:.05em;color:var(--text);line-height:1">ACUROS</div>
-        <div class="lbl" style="font-size:.5rem;letter-spacing:.28em">HEALTH</div>
+    <a href="/" class="nav-logo-wrap">
+      <div class="nav-logo-emblem">
+        <img src="logo.png" alt="Acuros" width="24" height="24" style="flex-shrink:0;object-fit:contain;position:relative;z-index:1"/>
+      </div>
+      <div class="nav-logo-text-wrap">
+        <span class="nav-logo-name">ACUROS</span>
+        <span class="nav-logo-sub">HEALTH</span>
       </div>
     </a>
     <div style="display:flex;align-items:center;gap:2rem" class="hnm">
@@ -150,7 +163,7 @@
       </p>
       <div style="display:flex;gap:.875rem;flex-wrap:wrap">
         <a href="/ai-assistant" class="btn btn-solid">Explore AI</a>
-        <a href="/patient-portal" class="btn" style="background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.35)" onmouseover="this.style.background='rgba(255,255,255,.22)'" onmouseout="this.style.background='rgba(255,255,255,.12)'">Patient Portal</a>
+        <a href="/patient-portal" class="btn" style="background:rgba(0,0,0,.28);color:#fff;border:1px solid rgba(255,255,255,.4);backdrop-filter:blur(4px)" onmouseover="this.style.background='rgba(0,0,0,.42)'" onmouseout="this.style.background='rgba(0,0,0,.28)'">Patient Portal</a>
       </div>
     </div>
   </div>
