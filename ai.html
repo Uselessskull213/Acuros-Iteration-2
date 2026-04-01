@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>AI Assistant — Acuros Health</title>
+  <link rel="icon" type="image/png" href="favicon.png"/>
+  <link rel="apple-touch-icon" href="favicon.png"/>
+  <meta name="description" content="Ask medical questions with confidence. Powered by Gemini with evidence-based reasoning."/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
+  <script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{display:['Cormorant Garamond','Georgia','serif'],sans:['DM Sans','sans-serif']}}}}</script>
+  <style>
+    :root{--bg:#f5f5f3;--bg2:#fff;--border:#e2e2de;--text:#181816;--sub:#5a5a54;--mute:#9a9a92;--ac:#0ea5e9;--nav:rgba(245,245,243,.93)}
+    html.dark{--bg:#0d0d0c;--bg2:#141412;--border:#272724;--text:#f0f0ec;--sub:#9a9a92;--mute:#5a5a54;--ac:#38bdf8;--nav:rgba(13,13,12,.93)}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);transition:background .3s,color .3s;overflow-x:hidden}
+    h1,h2,h3,h4{font-family:'Cormorant Garamond',serif;line-height:1.08;letter-spacing:-.015em}
+    nav{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--nav);backdrop-filter:blur(20px) saturate(180%);border-bottom:1px solid var(--border);transition:background .3s,border-color .3s}
+    .nav-link{position:relative;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);background:none;border:none;cursor:pointer;padding:0;font-family:inherit;transition:color .2s;text-decoration:none;display:inline-block}
+    .nav-link::after{content:'';position:absolute;left:0;bottom:-2px;width:0;height:1px;background:var(--ac);transition:width .25s}
+    .nav-link:hover::after,.nav-link.active::after{width:100%}
+    .nav-link:hover,.nav-link.active{color:var(--text)}
+    .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.7rem 1.75rem;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;border:none;transition:all .22s;text-decoration:none;position:relative;overflow:hidden}
+    .btn::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,.08);opacity:0;transition:opacity .2s}
+    .btn:hover::after{opacity:1}
+    .btn-solid{background:var(--text);color:var(--bg)}
+    .btn-solid:hover{background:var(--ac);color:#fff}
+    .btn-outline{background:transparent;color:var(--text);border:1px solid var(--border)}
+    .btn-outline:hover{border-color:var(--ac);color:var(--ac)}
+    .card{background:var(--bg2);border:1px solid var(--border);transition:border-color .25s,transform .3s,box-shadow .3s}
+    .card:hover{border-color:var(--ac);transform:translateY(-2px);box-shadow:0 8px 32px rgba(14,165,233,.08)}
+    .inp{width:100%;background:var(--bg);border:1px solid var(--border);padding:.75rem 1rem;font-size:.875rem;color:var(--text);font-family:inherit;outline:none;transition:border-color .2s,box-shadow .2s}
+    .inp:focus{border-color:var(--ac);box-shadow:0 0 0 3px rgba(14,165,233,.1)}
+    .inp::placeholder{color:var(--mute)}
+    .lbl{font-family:'DM Sans',sans-serif;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);font-weight:500}
+    .hr{height:1px;background:var(--border)}
+    .num{font-family:'Cormorant Garamond',serif;font-size:.7rem;color:var(--mute);letter-spacing:.1em}
+    .aline{display:block;width:2rem;height:1px;background:var(--ac)}
+    .err-box{background:#fef2f2;border:1px solid #fecaca;color:#dc2626;padding:.75rem 1rem;font-size:.8rem}
+    html.dark .err-box{background:rgba(220,38,38,.08);border-color:rgba(220,38,38,.25);color:#f87171}
+    .ok-box{background:#f0fdf4;border:1px solid #bbf7d0;color:#15803d;padding:.75rem 1rem;font-size:.8rem}
+    html.dark .ok-box{background:rgba(21,128,61,.08);border-color:rgba(21,128,61,.25);color:#4ade80}
+    .warn-box{background:#fffbeb;border:1px solid #fde68a;color:#92400e;padding:.75rem 1rem;font-size:.8rem}
+    html.dark .warn-box{background:rgba(146,64,14,.08);border-color:rgba(253,230,138,.25);color:#fcd34d}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .spin{width:16px;height:16px;border:2px solid transparent;border-top-color:currentColor;border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
+    @keyframes pgIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+    .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1)}
+    .reveal.in{opacity:1;transform:none}
+    .d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}
+    @keyframes dot{0%,80%,100%{opacity:.2}40%{opacity:1}}
+    .bubble{max-width:84%;padding:.875rem 1.125rem;font-size:.875rem;line-height:1.65;animation:pgIn .3s ease}
+    .bubble.ai{background:var(--bg2);border:1px solid var(--border);color:var(--text);align-self:flex-start}
+    .bubble.user{background:var(--text);color:var(--bg);align-self:flex-end}
+    .thinking span{display:inline-block;width:5px;height:5px;background:var(--ac);border-radius:50%;margin:0 2px;animation:dot 1.4s infinite}
+    .thinking span:nth-child(2){animation-delay:.2s}
+    .thinking span:nth-child(3){animation-delay:.4s}
+    @keyframes glow{0%,100%{box-shadow:0 0 4px 1px rgba(14,165,233,.3)}50%{box-shadow:0 0 14px 5px rgba(14,165,233,.55)}}
+    .glow-dot{animation:glow 2.2s ease infinite}
+    .mesh{background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:52px 52px}
+    .bg-dots{background-image:radial-gradient(var(--border) 1px,transparent 1px);background-size:28px 28px}
+    .img-panel{position:relative;overflow:hidden;background:#0a0f1a}
+    .img-panel img{width:100%;height:100%;object-fit:cover;object-position:center;opacity:.75;transition:opacity .4s,transform .6s}
+    .img-panel:hover img{opacity:.9;transform:scale(1.02)}
+    .img-panel-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(14,165,233,.08) 0%,rgba(0,0,0,.3) 100%)}
+    #mob-menu{display:none;position:fixed;inset:0;z-index:300;background:var(--bg);flex-direction:column;padding:2.5rem}
+    #mob-menu.open{display:flex;animation:pgIn .3s ease}
+    /* Guest limit overlay */
+    #limit-overlay{display:none;position:absolute;inset:0;background:rgba(var(--bg-rgb,245,245,243),.96);backdrop-filter:blur(8px);z-index:10;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:2rem;gap:1.25rem}
+    html.dark #limit-overlay{background:rgba(13,13,12,.96)}
+    #limit-overlay.show{display:flex}
+    @media(max-width:900px){.g1m{grid-template-columns:1fr!important}.hnm{display:none!important}#mob-btn{display:flex!important}#nav-cta{display:none!important}}
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="main-nav">
+  <div style="max-width:1280px;margin:0 auto;padding:0 2rem;height:64px;display:flex;align-items:center;justify-content:space-between">
+    <a href="/" style="display:flex;align-items:center;gap:.75rem;text-decoration:none">
+      <img src="logo.png" alt="Acuros" width="32" height="32" style="flex-shrink:0;object-fit:contain"/>
+      <div>
+        <div style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:.95rem;letter-spacing:.05em;color:var(--text);line-height:1">ACUROS</div>
+        <div class="lbl" style="font-size:.5rem;letter-spacing:.28em">HEALTH</div>
+      </div>
+    </a>
+    <div style="display:flex;align-items:center;gap:2rem" class="hnm">
+      <a class="nav-link" href="/">Home</a>
+      <a class="nav-link active" href="/ai.html">AI Assistant</a>
+      <a class="nav-link" href="/patient.html">Patient Portal</a>
+      <a class="nav-link" href="/privacy.html" style="opacity:.55">Privacy</a>
+      <a class="nav-link" href="/terms.html" style="opacity:.55">Terms</a>
+    </div>
+    <div style="display:flex;align-items:center;gap:.875rem">
+      <button onclick="toggleTheme()" aria-label="Toggle theme" style="width:36px;height:36px;border:1px solid var(--border);background:none;color:var(--sub);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;font-size:.9rem"><span id="th-icon">☀</span></button>
+      <a href="/patient.html" class="btn btn-solid" style="padding:.55rem 1.25rem" id="nav-cta">Patient Portal</a>
+      <button onclick="openMob()" style="display:none;background:none;border:none;cursor:pointer;color:var(--text);padding:.25rem" id="mob-btn" aria-label="Menu">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16M4 12h12M4 18h8"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile menu -->
+<div id="mob-menu">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3rem">
+    <span style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--text)">Acuros Health</span>
+    <button onclick="closeMob()" style="background:none;border:none;cursor:pointer;color:var(--text)">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:1.75rem">
+    <a href="/"             style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;text-align:left;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Home</a>
+    <a href="/ai.html"      style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;text-align:left;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">AI Assistant</a>
+    <a href="/patient.html" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;text-align:left;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Patient Portal</a>
+    <a href="/privacy.html" style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;text-align:left;color:var(--mute);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Privacy Policy</a>
+    <a href="/terms.html"   style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;text-align:left;color:var(--mute);text-decoration:none">Terms of Service</a>
+  </div>
+</div>
+
+<div style="padding-top:4rem">
+
+  <!-- Hero -->
+  <section style="position:relative;padding:7rem 2rem 6rem;border-bottom:1px solid var(--border);overflow:hidden;min-height:360px;display:flex;align-items:flex-end">
+    <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1400&q=80&auto=format&fit=crop" alt="Forest blue" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(0.35) brightness(0.18)"/>
+    <div style="position:absolute;inset:0;background:linear-gradient(0deg,var(--bg) 0%,rgba(0,0,0,.5) 100%)"></div>
+    <div class="mesh" style="position:absolute;inset:0;opacity:.2"></div>
+    <div style="position:relative;max-width:1280px;margin:0 auto;width:100%">
+      <div class="lbl" style="margin-bottom:1.25rem;color:var(--ac)">AI Assistant</div>
+      <h1 style="font-size:clamp(3rem,7vw,5.5rem);font-weight:300;color:var(--text);margin-bottom:1.25rem">Intelligent Health<br/><em>Dialogue.</em></h1>
+      <p style="font-size:.95rem;color:var(--sub);max-width:46ch;line-height:1.8">Ask medical questions with confidence. Powered by Gemini with evidence-based reasoning, structured logic, and safety governance.</p>
+    </div>
+  </section>
+
+  <!-- Chat section -->
+  <section style="padding:4rem 2rem;max-width:1280px;margin:0 auto">
+    <div style="display:grid;grid-template-columns:3fr 2fr;gap:3rem;align-items:start" class="g1m">
+      <div>
+        <div class="lbl" style="margin-bottom:1.25rem">Live Assistant</div>
+
+        <!-- Guest 1-message notice (shown only when not in org) -->
+        <div id="guest-notice" style="display:none;margin-bottom:.875rem" class="warn-box">
+          You're using Acuros AI as a guest — <strong>1 free message</strong> per session. <a href="/patient.html" style="color:inherit;font-weight:600;text-decoration:underline">Sign in</a> or join an organization for unlimited access.
+        </div>
+
+        <div class="card" style="display:flex;flex-direction:column;height:540px;position:relative">
+          <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.625rem">
+            <div class="glow-dot" style="width:7px;height:7px;border-radius:50%;background:var(--ac);flex-shrink:0"></div>
+            <span class="lbl">Acuros AI · Gemini-Powered</span>
+            <span id="ai-status" style="margin-left:auto;font-size:.65rem;color:var(--mute)"></span>
+          </div>
+          <div id="chat-msgs" style="flex:1;overflow-y:auto;padding:1.25rem;display:flex;flex-direction:column;gap:.875rem">
+            <div class="bubble ai">Hello — I'm the Acuros AI health assistant. I provide evidence-based health education and information. What would you like to explore today?</div>
+          </div>
+          <div style="padding:.875rem 1.25rem;border-top:1px solid var(--border);display:flex;gap:.625rem">
+            <input id="chat-in" type="text" class="inp" placeholder="Ask a health question…" style="flex:1" onkeydown="if(event.key==='Enter'&&!event.shiftKey)sendChat()"/>
+            <button onclick="sendChat()" class="btn btn-solid" style="padding:.625rem 1.25rem;font-size:.72rem;flex-shrink:0" id="chat-send-btn">Send</button>
+          </div>
+          <!-- Limit overlay shown after 1 guest message -->
+          <div id="limit-overlay">
+            <div style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;color:var(--text);margin-bottom:.25rem">You've used your free message.</div>
+            <p style="font-size:.85rem;color:var(--sub);max-width:34ch;line-height:1.75;margin-bottom:1.5rem">Join an organization or sign in to continue unlimited conversations with Acuros AI.</p>
+            <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center">
+              <a href="/patient.html" class="btn btn-solid">Sign In / Join Org</a>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.875rem">
+          <button onclick="preChat('What are common side effects of metformin?')" class="btn btn-outline" style="padding:.4rem .875rem;font-size:.68rem">Metformin effects</button>
+          <button onclick="preChat('How do I read my CBC blood test?')" class="btn btn-outline" style="padding:.4rem .875rem;font-size:.68rem">Read CBC results</button>
+          <button onclick="preChat('What questions should I ask my cardiologist?')" class="btn btn-outline" style="padding:.4rem .875rem;font-size:.68rem">Cardiology prep</button>
+          <button onclick="preChat('What does elevated CRP indicate?')" class="btn btn-outline" style="padding:.4rem .875rem;font-size:.68rem">Elevated CRP</button>
+        </div>
+        <p style="font-size:.72rem;color:var(--mute);margin-top:.75rem">Educational information only. Not a substitute for professional medical advice.</p>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:1.25rem">
+        <div class="lbl" style="margin-bottom:.25rem">How It Works</div>
+        <div style="background:var(--bg2);border:1px solid var(--border)">
+          <div style="padding:1.25rem;border-bottom:1px solid var(--border)"><div class="num" style="margin-bottom:.4rem">01</div><h4 style="font-size:1.2rem;font-weight:300;color:var(--text);margin-bottom:.35rem">Symptom Logic</h4><p style="font-size:.8rem;line-height:1.75;color:var(--sub)">Deterministic reasoning chains minimise hallucination. Every step is structured.</p></div>
+          <div style="padding:1.25rem;border-bottom:1px solid var(--border)"><div class="num" style="margin-bottom:.4rem">02</div><h4 style="font-size:1.2rem;font-weight:300;color:var(--text);margin-bottom:.35rem">Grounded Retrieval</h4><p style="font-size:.8rem;line-height:1.75;color:var(--sub)">Queries cross-referenced against peer-reviewed sources before generation.</p></div>
+          <div style="padding:1.25rem;border-bottom:1px solid var(--border)"><div class="num" style="margin-bottom:.4rem">03</div><h4 style="font-size:1.2rem;font-weight:300;color:var(--text);margin-bottom:.35rem">Safety Governance</h4><p style="font-size:.8rem;line-height:1.75;color:var(--sub)">A secondary review layer intercepts risky advice before it reaches you.</p></div>
+          <div style="padding:1.25rem"><div class="num" style="margin-bottom:.4rem">04</div><h4 style="font-size:1.2rem;font-weight:300;color:var(--text);margin-bottom:.35rem">Session Privacy</h4><p style="font-size:.8rem;line-height:1.75;color:var(--sub)">Conversation history is stored only on your device. Zero third-party sharing.</p></div>
+        </div>
+        <div style="background:var(--bg2);border:1px solid var(--border);padding:1.25rem">
+          <div class="lbl" style="color:var(--ac);margin-bottom:.75rem">Want unlimited access?</div>
+          <p style="font-size:.8rem;color:var(--sub);line-height:1.75;margin-bottom:1rem">Sign in and join an organization to unlock unlimited AI conversations and your full patient dashboard.</p>
+          <a href="/patient.html" class="btn btn-outline" style="width:100%;justify-content:center;font-size:.72rem">Go to Patient Portal →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Use cases -->
+  <section style="display:grid;grid-template-columns:1fr 2fr;border-top:1px solid var(--border);border-bottom:1px solid var(--border)" class="g1m">
+    <div class="img-panel" style="min-height:360px">
+      <img src="https://images.unsplash.com/photo-1423345810305-b83a872a8344?w=700&q=80&auto=format&fit=crop" alt="Dark forest" loading="lazy"/>
+      <div class="img-panel-overlay"></div>
+      <div style="position:absolute;bottom:2rem;left:2rem"><div class="lbl" style="color:rgba(255,255,255,.45)">Use Cases</div></div>
+    </div>
+    <div class="bg-dots g1m" style="padding:3.5rem 3rem;display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-content:center">
+      <div style="background:var(--bg2);padding:1.5rem;border:1px solid var(--border)"><h4 style="font-size:1.3rem;font-weight:300;color:var(--text);margin-bottom:.5rem">Report Translation</h4><p style="font-size:.8rem;line-height:1.75;color:var(--sub)">Paste lab results or discharge summaries for plain-English explanations.</p></div>
+      <div style="background:var(--bg2);padding:1.5rem;border:1px solid var(--border)"><h4 style="font-size:1.3rem;font-weight:300;color:var(--text);margin-bottom:.5rem">Appointment Prep</h4><p style="font-size:.8rem;line-height:1.75;color:var(--sub)">Organise symptoms and generate targeted questions before specialist visits.</p></div>
+      <div style="background:var(--bg2);padding:1.5rem;border:1px solid var(--border)"><h4 style="font-size:1.3rem;font-weight:300;color:var(--text);margin-bottom:.5rem">Medication Safety</h4><p style="font-size:.8rem;line-height:1.75;color:var(--sub)">Check drug interactions, dosage guidelines, and side effect profiles instantly.</p></div>
+      <div style="background:var(--bg2);padding:1.5rem;border:1px solid var(--border)"><h4 style="font-size:1.3rem;font-weight:300;color:var(--text);margin-bottom:.5rem">Health Education</h4><p style="font-size:.8rem;line-height:1.75;color:var(--sub)">Understand diagnoses, procedures, and treatment options in plain language.</p></div>
+    </div>
+  </section>
+
+  <footer style="border-top:1px solid var(--border);background:var(--bg2)">
+    <div style="max-width:1280px;margin:0 auto;padding:1.75rem 2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
+      <p style="font-size:.75rem;color:var(--mute)">© 2025 Acuros Health Inc.</p>
+      <div style="display:flex;gap:1.5rem">
+        <a href="/"             class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Home</a>
+        <a href="/patient.html" class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Patient Portal</a>
+        <a href="/privacy.html" class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Privacy</a>
+        <a href="/terms.html"   class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Terms</a>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<script>
+const CONFIG = {
+  supabaseUrl: 'https://pyexkdoupqzbnrybiubo.supabase.co',
+  supabaseKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB5ZXhrZG91cHF6Ym5yeWJpdWJvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4Mzg4MzYsImV4cCI6MjA4NzQxNDgzNn0.3_dLQEJfmC08A2-hlgOfwlu4ngx7hslUR3Dun4BoXLU',
+  aiApiUrl: '/api/chat',
+};
+
+let sb = null;
+try { if (CONFIG.supabaseKey) sb = window.supabase.createClient(CONFIG.supabaseUrl, CONFIG.supabaseKey); } catch(e) {}
+
+let currentUser = null;
+let userOrg = null; // org the user belongs to (null = no org)
+let chatHistory = [];
+const CHAT_HISTORY_KEY_PREFIX = 'ah-chat-history-v1';
+const GUEST_MSG_KEY = 'ah-guest-msg-used';
+const MAX_CHAT_MESSAGES = 20;
+const MAX_CHARS_PER_MESSAGE = 2000;
+let activeHistoryKey = null;
+
+// ── Theme ──
+function toggleTheme() {
+  const dark = document.documentElement.classList.toggle('dark');
+  document.getElementById('th-icon').textContent = dark ? '☽' : '☀';
+  localStorage.setItem('ah-theme', dark ? 'dark' : 'light');
+}
+(function initTheme() {
+  const s = localStorage.getItem('ah-theme');
+  if (s === 'dark' || (!s && window.matchMedia('(prefers-color-scheme:dark)').matches)) {
+    document.documentElement.classList.add('dark');
+    document.getElementById('th-icon').textContent = '☽';
+  }
+})();
+
+function openMob()  { document.getElementById('mob-menu').classList.add('open'); }
+function closeMob() { document.getElementById('mob-menu').classList.remove('open'); }
+window.addEventListener('scroll', () => { document.getElementById('main-nav').style.boxShadow = window.scrollY > 10 ? '0 1px 24px rgba(0,0,0,.08)' : ''; });
+
+// ── Auth / org check ──
+function isOrgUser() {
+  // A user is "in an org" if they are logged in AND have a patient_code or org_id set
+  if (!currentUser) return false;
+  return !!(currentUser.org_id || currentUser.code);
+}
+
+function updateGuestUI() {
+  const notice = document.getElementById('guest-notice');
+  if (!notice) return;
+  if (!isOrgUser()) {
+    notice.style.display = 'block';
+  } else {
+    notice.style.display = 'none';
+  }
+}
+
+(async function checkSession() {
+  if (!sb) { updateGuestUI(); return; }
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    if (session?.user) {
+      const { data: profile } = await sb.from('profiles').select('*').eq('id', session.user.id).maybeSingle();
+      currentUser = {
+        id: session.user.id,
+        email: session.user.email,
+        name: profile?.name || session.user.user_metadata?.full_name || session.user.email.split('@')[0],
+        code: profile?.patient_code || '',
+        org_id: profile?.org_id || '',
+      };
+    }
+  } catch (e) {}
+  updateGuestUI();
+  ensureChatHistoryLoaded(true);
+})();
+
+// ── Chat history ──
+function getChatHistoryKey() {
+  return currentUser?.id
+    ? `${CHAT_HISTORY_KEY_PREFIX}:${currentUser.id}`
+    : `${CHAT_HISTORY_KEY_PREFIX}:guest`;
+}
+
+function normalizeChatHistory(raw) {
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .filter(e => e && (e.role === 'user' || e.role === 'model') && typeof e.text === 'string')
+    .map(e => ({ role: e.role, text: e.text.trim().slice(0, MAX_CHARS_PER_MESSAGE) }))
+    .filter(e => e.text.length > 0)
+    .slice(-MAX_CHAT_MESSAGES);
+}
+
+function saveChatHistory() {
+  localStorage.setItem(getChatHistoryKey(), JSON.stringify(chatHistory.slice(-MAX_CHAT_MESSAGES)));
+}
+
+function renderChatHistory() {
+  const msgs = document.getElementById('chat-msgs');
+  if (!msgs) return;
+  msgs.innerHTML = '';
+  if (!chatHistory.length) {
+    addBubble("Hello — I'm the Acuros AI health assistant. I provide evidence-based health education and information. What would you like to explore today?", 'ai', false);
+  } else {
+    chatHistory.forEach(entry => addBubble(entry.text, entry.role === 'user' ? 'user' : 'ai', false));
+  }
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function ensureChatHistoryLoaded(force) {
+  const key = getChatHistoryKey();
+  if (!force && activeHistoryKey === key) return;
+  activeHistoryKey = key;
+  const saved = (() => { try { return JSON.parse(localStorage.getItem(key)); } catch(e) { return []; } })();
+  chatHistory = normalizeChatHistory(saved || []);
+  renderChatHistory();
+}
+
+// ── Guest message limit ──
+function guestMessageUsed() {
+  return localStorage.getItem(GUEST_MSG_KEY) === '1';
+}
+
+function markGuestMessageUsed() {
+  localStorage.setItem(GUEST_MSG_KEY, '1');
+}
+
+function showLimitOverlay() {
+  const overlay = document.getElementById('limit-overlay');
+  if (overlay) overlay.classList.add('show');
+  const input = document.getElementById('chat-in');
+  const btn   = document.getElementById('chat-send-btn');
+  if (input) { input.disabled = true; input.placeholder = 'Join an organization to continue…'; }
+  if (btn)   btn.disabled = true;
+}
+
+// ── AI Chat ──
+async function sendChat() {
+  const inp = document.getElementById('chat-in');
+  const msg = inp.value.trim();
+  if (!msg) return;
+
+  // Guest limit: block if already used 1 message and not in org
+  if (!isOrgUser() && guestMessageUsed()) {
+    showLimitOverlay();
+    return;
+  }
+
+  ensureChatHistoryLoaded();
+  addBubble(msg, 'user');
+  inp.value = '';
+  chatHistory.push({ role: 'user', text: msg });
+  chatHistory = chatHistory.slice(-MAX_CHAT_MESSAGES);
+  saveChatHistory();
+
+  // Mark guest message used before sending
+  if (!isOrgUser()) markGuestMessageUsed();
+
+  const thinking = document.createElement('div');
+  thinking.className = 'bubble ai thinking';
+  thinking.innerHTML = '<span></span><span></span><span></span>';
+  document.getElementById('chat-msgs').appendChild(thinking);
+  document.getElementById('chat-msgs').scrollTop = 999999;
+
+  const status = document.getElementById('ai-status');
+  if (status) status.textContent = 'Thinking…';
+  setBtn('chat-send-btn', true, 'Send');
+
+  try {
+    const resp = await fetch(CONFIG.aiApiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: inferChatType(msg), messages: chatHistory }),
+    });
+    thinking.remove();
+    if (!resp.ok) { const err = await resp.json().catch(() => ({})); throw new Error(err.error || `API ${resp.status}`); }
+    const data = await resp.json();
+    const text = data.text || 'No response received.';
+    chatHistory.push({ role: 'model', text });
+    chatHistory = chatHistory.slice(-MAX_CHAT_MESSAGES);
+    addBubble(text, 'ai');
+    saveChatHistory();
+    if (data.sources?.length) {
+      const sd = document.createElement('div');
+      sd.style.cssText = 'font-size:.72rem;color:var(--mute);margin-top:-.5rem;align-self:flex-start;padding:0 .25rem';
+      sd.innerHTML = 'Sources: ' + data.sources.slice(0, 3).map(s => `<a href="${s.uri}" target="_blank" style="color:var(--ac);text-decoration:none">${s.title || s.uri}</a>`).join(', ');
+      document.getElementById('chat-msgs').appendChild(sd);
+    }
+    if (status) status.textContent = data.modelUsed ? `Model: ${data.modelUsed}` : '';
+  } catch (err) {
+    thinking.remove();
+    const fallback = localAIResponse(msg);
+    chatHistory.push({ role: 'model', text: fallback });
+    chatHistory = chatHistory.slice(-MAX_CHAT_MESSAGES);
+    saveChatHistory();
+    addBubble(fallback + '\n\n⚠ AI unavailable — showing cached response.', 'ai');
+    if (status) status.textContent = 'Offline mode';
+  } finally {
+    setBtn('chat-send-btn', false, 'Send');
+    document.getElementById('chat-msgs').scrollTop = 999999;
+    // Show overlay AFTER response if guest used their 1 message
+    if (!isOrgUser() && guestMessageUsed()) {
+      setTimeout(showLimitOverlay, 1200);
+    }
+  }
+}
+
+function preChat(q) {
+  // Block pre-chat prompts for guests who've used their message
+  if (!isOrgUser() && guestMessageUsed()) { showLimitOverlay(); return; }
+  const inp = document.getElementById('chat-in');
+  inp.value = q; inp.focus(); sendChat();
+}
+
+function inferChatType(msg) {
+  const l = msg.toLowerCase();
+  if (/\b(study|trial|meta-analysis|systematic review|journal|evidence)\b/.test(l)) return 'research';
+  if (/\b(side effect|dosage|dose|interaction|drug|medication|prescription)\b/.test(l)) return 'medication';
+  if (/\b(symptom|pain|fever|nausea|headache|fatigue|cough)\b/.test(l)) return 'symptom';
+  return 'general';
+}
+
+function addBubble(txt, type, scroll = true) {
+  const msgs = document.getElementById('chat-msgs');
+  const d = document.createElement('div');
+  d.className = 'bubble ' + type;
+  d.style.whiteSpace = 'pre-line';
+  d.textContent = txt;
+  msgs.appendChild(d);
+  if (scroll) msgs.scrollTop = msgs.scrollHeight;
+  return d;
+}
+
+function localAIResponse(msg) {
+  const l = msg.toLowerCase();
+  if (l.includes('metformin')) return "Metformin is generally well-tolerated. Common side effects include gastrointestinal symptoms — nausea, diarrhea, abdominal discomfort — particularly when starting. Always take with food. Lactic acidosis is a rare but serious risk in patients with renal impairment.\n\n⚠ Educational information only — consult your healthcare provider.";
+  if (l.includes('cbc') || l.includes('blood count')) return "A CBC measures key blood components:\n• Hemoglobin: 120–160 g/L (women), 130–180 g/L (men)\n• WBC: 4.5–11.0 × 10⁹/L\n• Platelets: 150–400 × 10⁹/L\n\nValues outside range are flagged H or L. Discuss with your physician.\n\n⚠ Educational information only.";
+  if (l.includes('cardiolog') || l.includes('heart')) return "Questions for your cardiologist:\n1. What is my cardiovascular risk score?\n2. What lifestyle changes matter most?\n3. Should I be on preventive medications?\n4. What symptoms require emergency care?\n5. What follow-up testing do I need?\n\n⚠ Educational information only.";
+  if (l.includes('crp')) return "Elevated CRP indicates systemic inflammation. Causes include infection, autoimmune conditions, inflammatory bowel disease, or tissue injury. hs-CRP is used for cardiovascular risk assessment.\n\n⚠ Educational information only.";
+  return "I can provide general health education on that topic. For personalised medical advice, please consult your physician or pharmacist.\n\n⚠ Educational information only — not a substitute for professional medical advice.";
+}
+
+function setBtn(id, loading, label) {
+  const b = document.getElementById(id);
+  if (!b) return;
+  b.disabled = loading;
+  b.innerHTML = loading ? '<span class="spin"></span>' : label;
+}
+
+// On load: if guest already used their message, show overlay immediately
+document.addEventListener('DOMContentLoaded', () => {
+  ensureChatHistoryLoaded(true);
+  if (!isOrgUser() && guestMessageUsed()) {
+    showLimitOverlay();
+  }
+});
+</script>
+</body>
+</html>

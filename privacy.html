@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Privacy Policy — Acuros Health</title>
+  <link rel="icon" type="image/png" href="favicon.png"/>
+  <link rel="apple-touch-icon" href="favicon.png"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
+  <script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{display:['Cormorant Garamond','Georgia','serif'],sans:['DM Sans','sans-serif']}}}}</script>
+  <style>
+    :root{--bg:#f5f5f3;--bg2:#fff;--border:#e2e2de;--text:#181816;--sub:#5a5a54;--mute:#9a9a92;--ac:#0ea5e9;--nav:rgba(245,245,243,.93)}
+    html.dark{--bg:#0d0d0c;--bg2:#141412;--border:#272724;--text:#f0f0ec;--sub:#9a9a92;--mute:#5a5a54;--ac:#38bdf8;--nav:rgba(13,13,12,.93)}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);transition:background .3s,color .3s;overflow-x:hidden}
+    h1,h2,h3,h4{font-family:'Cormorant Garamond',serif;line-height:1.08;letter-spacing:-.015em}
+    nav{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--nav);backdrop-filter:blur(20px) saturate(180%);border-bottom:1px solid var(--border);transition:background .3s,border-color .3s}
+    .nav-link{position:relative;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);background:none;border:none;cursor:pointer;padding:0;font-family:inherit;transition:color .2s;text-decoration:none;display:inline-block}
+    .nav-link::after{content:'';position:absolute;left:0;bottom:-2px;width:0;height:1px;background:var(--ac);transition:width .25s}
+    .nav-link:hover::after,.nav-link.active::after{width:100%}
+    .nav-link:hover,.nav-link.active{color:var(--text)}
+    .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.7rem 1.75rem;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;border:none;transition:all .22s;text-decoration:none;position:relative;overflow:hidden}
+    .btn-solid{background:var(--text);color:var(--bg)}
+    .btn-solid:hover{background:var(--ac);color:#fff}
+    .lbl{font-family:'DM Sans',sans-serif;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);font-weight:500}
+    .hr{height:1px;background:var(--border)}
+    .tlink{color:var(--ac);text-decoration:none;border-bottom:1px solid transparent;transition:border-color .2s}
+    .tlink:hover{border-color:var(--ac)}
+    .mesh{background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:52px 52px}
+    .legal h2{font-family:'Cormorant Garamond',serif;font-size:1.45rem;font-weight:400;margin:2.25rem 0 .6rem;color:var(--text)}
+    .legal p,.legal li{font-size:.88rem;line-height:1.9;color:var(--sub)}
+    .legal ul{padding-left:1.4rem;margin-top:.4rem}
+    .legal li{margin-bottom:.35rem}
+    .legal strong{color:var(--text);font-weight:500}
+    @keyframes pgIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+    #mob-menu{display:none;position:fixed;inset:0;z-index:300;background:var(--bg);flex-direction:column;padding:2.5rem}
+    #mob-menu.open{display:flex;animation:pgIn .3s ease}
+    @media(max-width:900px){.hnm{display:none!important}#mob-btn{display:flex!important}#nav-cta{display:none!important}}
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="main-nav">
+  <div style="max-width:1280px;margin:0 auto;padding:0 2rem;height:64px;display:flex;align-items:center;justify-content:space-between">
+    <a href="/" style="display:flex;align-items:center;gap:.75rem;text-decoration:none">
+      <img src="logo.png" alt="Acuros" width="32" height="32" style="flex-shrink:0;object-fit:contain"/>
+      <div>
+        <div style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:.95rem;letter-spacing:.05em;color:var(--text);line-height:1">ACUROS</div>
+        <div class="lbl" style="font-size:.5rem;letter-spacing:.28em">HEALTH</div>
+      </div>
+    </a>
+    <div style="display:flex;align-items:center;gap:2rem" class="hnm">
+      <a class="nav-link" href="/">Home</a>
+      <a class="nav-link" href="/ai.html">AI Assistant</a>
+      <a class="nav-link" href="/patient.html">Patient Portal</a>
+      <a class="nav-link active" href="/privacy.html" style="opacity:.55">Privacy</a>
+      <a class="nav-link" href="/terms.html" style="opacity:.55">Terms</a>
+    </div>
+    <div style="display:flex;align-items:center;gap:.875rem">
+      <button onclick="toggleTheme()" aria-label="Toggle theme" style="width:36px;height:36px;border:1px solid var(--border);background:none;color:var(--sub);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;font-size:.9rem"><span id="th-icon">☀</span></button>
+      <a href="/patient.html" class="btn btn-solid" style="padding:.55rem 1.25rem" id="nav-cta">Patient Portal</a>
+      <button onclick="openMob()" style="display:none;background:none;border:none;cursor:pointer;color:var(--text);padding:.25rem" id="mob-btn" aria-label="Menu">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16M4 12h12M4 18h8"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+<div id="mob-menu">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3rem">
+    <span style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--text)">Acuros Health</span>
+    <button onclick="closeMob()" style="background:none;border:none;cursor:pointer;color:var(--text)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:1.75rem">
+    <a href="/"             style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Home</a>
+    <a href="/ai.html"      style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">AI Assistant</a>
+    <a href="/patient.html" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Patient Portal</a>
+    <a href="/privacy.html" style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;color:var(--mute);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Privacy Policy</a>
+    <a href="/terms.html"   style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;color:var(--mute);text-decoration:none">Terms of Service</a>
+  </div>
+</div>
+
+<div style="padding-top:4rem">
+  <section style="position:relative;padding:5rem 2rem 4rem;border-bottom:1px solid var(--border);overflow:hidden">
+    <div class="mesh" style="position:absolute;inset:0;opacity:.4"></div>
+    <div style="position:relative;max-width:780px;margin:0 auto">
+      <div class="lbl" style="margin-bottom:1rem">Legal</div>
+      <h1 style="font-size:clamp(2.5rem,5vw,4rem);font-weight:300;color:var(--text);margin-bottom:.5rem">Privacy Policy</h1>
+      <p style="font-size:.82rem;color:var(--mute)">Effective Date: January 28, 2026 · Last Updated: January 28, 2026</p>
+    </div>
+  </section>
+  <section style="max-width:780px;margin:0 auto;padding:4rem 2rem">
+    <div class="legal">
+      <p>Acuros Health ("Acuros," "we," "us," or "our") is committed to protecting privacy and handling personal information responsibly. This Privacy Policy explains how we collect, use, store, and protect information when you visit acuros.ca or interact with our services.</p>
+      <p style="margin-top:.75rem">We design our systems with privacy, security, and data minimization as core principles.</p>
+      <h2>1. Information We Collect</h2>
+      <p><strong>1.1 Information You Provide</strong><br/>We may collect information you voluntarily provide, including name, email address, organization or affiliation, contact details, and information submitted through contact forms or demo requests. We do not require unnecessary personal data to access general site content.</p>
+      <p style="margin-top:.75rem"><strong>1.2 Automatically Collected Information</strong><br/>When you visit our website, we may collect limited technical data, such as IP address, browser type, device information, and pages visited. This data is used solely for security, analytics, and performance improvement.</p>
+      <h2>2. How We Use Information</h2>
+      <p>We use collected information to respond to inquiries and demo requests, communicate about our services, improve website functionality and performance, maintain security and prevent misuse, and comply with legal and regulatory obligations. We do not sell personal information.</p>
+      <h2>3. Healthcare and Sensitive Data</h2>
+      <p>Acuros does not collect personal health information (PHI) through its public website. Any healthcare-related data processed through Acuros platforms is governed by separate agreements and handled in accordance with applicable healthcare privacy laws.</p>
+      <h2>4. Data Sharing and Disclosure</h2>
+      <p>We may share information only with trusted service providers under strict confidentiality obligations, when required by law or legal process, or to protect the rights, safety, or security of Acuros and its users. We do not share data for advertising purposes.</p>
+      <h2>5. Data Security</h2>
+      <p>We implement administrative, technical, and organizational safeguards designed to protect information against unauthorized access, alteration, or disclosure. While no system can guarantee absolute security, we prioritize healthcare-grade security practices.</p>
+      <h2>6. Data Retention</h2>
+      <p>We retain personal information only for as long as necessary to fulfill its purpose, unless a longer retention period is required by law.</p>
+      <h2>7. Your Rights</h2>
+      <p>Depending on your jurisdiction, you may have the right to access your personal information, request correction or deletion, and withdraw consent where applicable. Requests may be submitted through our contact page.</p>
+      <h2>8. Third-Party Links</h2>
+      <p>Our website may contain links to third-party sites. We are not responsible for the privacy practices of external websites.</p>
+      <h2>9. Changes to This Policy</h2>
+      <p>We may update this Privacy Policy periodically. Updates will be posted on this page with a revised effective date.</p>
+      <h2>10. Contact</h2>
+      <p>For privacy-related questions, contact: <strong>info@acuros.ca</strong><br/>Website: <a href="https://acuros.ca" class="tlink">acuros.ca</a></p>
+    </div>
+  </section>
+  <footer style="border-top:1px solid var(--border);background:var(--bg2)">
+    <div style="max-width:1280px;margin:0 auto;padding:1.75rem 2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
+      <p style="font-size:.75rem;color:var(--mute)">© 2025 Acuros Health Inc.</p>
+      <a href="/" class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">← Back to Home</a>
+    </div>
+  </footer>
+</div>
+
+<script>
+function toggleTheme() { const dark = document.documentElement.classList.toggle('dark'); document.getElementById('th-icon').textContent = dark ? '☽' : '☀'; localStorage.setItem('ah-theme', dark ? 'dark' : 'light'); }
+(function initTheme() { const s = localStorage.getItem('ah-theme'); if (s === 'dark' || (!s && window.matchMedia('(prefers-color-scheme:dark)').matches)) { document.documentElement.classList.add('dark'); document.getElementById('th-icon').textContent = '☽'; } })();
+function openMob()  { document.getElementById('mob-menu').classList.add('open'); }
+function closeMob() { document.getElementById('mob-menu').classList.remove('open'); }
+window.addEventListener('scroll', () => { document.getElementById('main-nav').style.boxShadow = window.scrollY > 10 ? '0 1px 24px rgba(0,0,0,.08)' : ''; });
+</script>
+</body>
+</html>
