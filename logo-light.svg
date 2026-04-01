@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <defs>
+    <linearGradient id="goldRing" x1="50" y1="0" x2="150" y2="200" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#F5D78E"/>
+      <stop offset="40%" stop-color="#C9922A"/>
+      <stop offset="70%" stop-color="#E8B84B"/>
+      <stop offset="100%" stop-color="#A0701A"/>
+    </linearGradient>
+    <linearGradient id="goldA" x1="80" y1="30" x2="140" y2="175" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#F5E0A0"/>
+      <stop offset="35%" stop-color="#E2B44A"/>
+      <stop offset="70%" stop-color="#B07B20"/>
+      <stop offset="100%" stop-color="#8A5E10"/>
+    </linearGradient>
+    <linearGradient id="goldStar" x1="68" y1="95" x2="100" y2="140" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFE566"/>
+      <stop offset="50%" stop-color="#D4A020"/>
+      <stop offset="100%" stop-color="#A07010"/>
+    </linearGradient>
+  </defs>
+  <!-- Circle ring -->
+  <circle cx="100" cy="100" r="90" stroke="url(#goldRing)" stroke-width="2.2" fill="none"/>
+  <!-- The A letterform -->
+  <path d="M100 32 L142 165 H128 L116 128 H84 L72 165 H58 Z M88 114 H112 L100 78 Z" fill="url(#goldA)"/>
+  <!-- Sparkle / 4-point star at crossbar -->
+  <path d="M82 121 Q83 108 84 101 Q87 104 100 105 Q87 106 84 121 Z
+           M82 121 Q81 134 80 141 Q83 138 100 137 Q83 136 80 121 Z
+           M118 121 Q117 108 116 101 Q113 104 100 105 Q113 106 116 121 Z
+           M118 121 Q119 134 120 141 Q117 138 100 137 Q117 136 120 121 Z" fill="url(#goldStar)" opacity="0"/>
+  <!-- Cleaner sparkle: 4-pointed star -->
+  <path d="M100 95 L103 108 L116 111 L103 114 L100 127 L97 114 L84 111 L97 108 Z" fill="url(#goldStar)"/>
+</svg>

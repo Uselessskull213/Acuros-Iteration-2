@@ -14,23 +14,31 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
   <script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{display:['Cormorant Garamond','Georgia','serif'],sans:['DM Sans','sans-serif']}}}}</script>
   <style>
-    :root{--bg:#f5f5f3;--bg2:#fff;--border:#e2e2de;--text:#181816;--sub:#5a5a54;--mute:#9a9a92;--ac:#0ea5e9;--nav:rgba(245,245,243,.72)}
-    html.dark{--bg:#0d0d0c;--bg2:#141412;--border:#272724;--text:#f0f0ec;--sub:#9a9a92;--mute:#5a5a54;--ac:#38bdf8;--nav:rgba(13,13,12,.82)}
+    :root{--bg:#f5f5f3;--bg2:#fff;--border:#e2e2de;--text:#181816;--sub:#5a5a54;--mute:#9a9a92;--ac:#0ea5e9;--nav:rgba(248,248,246,.55);--gold:#C9922A}
+    html.dark{--bg:#0d0d0c;--bg2:#141412;--border:#272724;--text:#f0f0ec;--sub:#9a9a92;--mute:#5a5a54;--ac:#38bdf8;--nav:rgba(13,13,12,.65);--gold:#E2B44A}
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     html{scroll-behavior:smooth}
     body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);transition:background .3s,color .3s;overflow-x:hidden}
     h1,h2,h3,h4{font-family:'Cormorant Garamond',serif;line-height:1.08;letter-spacing:-.015em}
-    nav{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--nav);backdrop-filter:blur(24px) saturate(200%);-webkit-backdrop-filter:blur(24px) saturate(200%);border-bottom:1px solid var(--border);transition:background .3s,border-color .3s}
+    nav{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--nav);backdrop-filter:blur(28px) saturate(220%);-webkit-backdrop-filter:blur(28px) saturate(220%);border-bottom:1px solid rgba(226,226,222,.4);transition:background .3s,border-color .3s}
+    html.dark nav{border-bottom-color:rgba(39,39,36,.5)}
     .nav-logo-wrap{display:flex;align-items:center;gap:.75rem;text-decoration:none;position:relative}
-    .nav-logo-emblem{position:relative;display:flex;align-items:center;justify-content:center;width:40px;height:40px}
-    .nav-logo-emblem::before,.nav-logo-emblem::after{content:'';position:absolute;border:1px solid var(--border);transition:border-color .3s}
-    .nav-logo-emblem::before{inset:0;transform:rotate(0deg)}
-    .nav-logo-emblem::after{inset:4px;transform:rotate(45deg);border-color:var(--ac);opacity:.4}
-    .nav-logo-wrap:hover .nav-logo-emblem::after{opacity:.8;transform:rotate(45deg) scale(1.05)}
+    /* Light mode: use the gold circular logo image */
+    .nav-logo-img-light{display:block;width:38px;height:38px;object-fit:contain;transition:opacity .2s}
+    .nav-logo-img-dark{display:none;width:38px;height:38px;object-fit:contain}
+    html.dark .nav-logo-img-light{display:none}
+    html.dark .nav-logo-img-dark{display:block}
+    /* Dark mode fallback emblem */
+    .nav-logo-emblem{position:relative;display:flex;align-items:center;justify-content:center;width:38px;height:38px}
+    .nav-logo-emblem::before,.nav-logo-emblem::after{content:'';position:absolute;border:1px solid var(--border);transition:border-color .3s,opacity .3s}
+    .nav-logo-emblem::before{inset:0}
+    .nav-logo-emblem::after{inset:5px;transform:rotate(45deg);border-color:var(--ac);opacity:.35}
+    .nav-logo-wrap:hover .nav-logo-emblem::after{opacity:.7}
     .nav-logo-text-wrap{display:flex;flex-direction:column;gap:1px}
     .nav-logo-name{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:.95rem;letter-spacing:.1em;color:var(--text);line-height:1;transition:color .2s}
+    html:not(.dark) .nav-logo-wrap:hover .nav-logo-name{color:var(--gold)}
+    html.dark .nav-logo-wrap:hover .nav-logo-name{color:var(--ac)}
     .nav-logo-sub{font-size:.48rem;letter-spacing:.32em;text-transform:uppercase;color:var(--mute);font-family:'DM Sans',sans-serif;font-weight:500}
-    .nav-logo-wrap:hover .nav-logo-name{color:var(--ac)}
     .nav-link{position:relative;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);background:none;border:none;cursor:pointer;padding:0;font-family:inherit;transition:color .2s;text-decoration:none;display:inline-block}
     .nav-link::after{content:'';position:absolute;left:0;bottom:-2px;width:0;height:1px;background:var(--ac);transition:width .25s}
     .nav-link:hover::after,.nav-link.active::after{width:100%}
@@ -44,7 +52,13 @@
     html.dark .btn-outline{border-color:rgba(240,240,236,.2)}
     .btn-outline:hover{border-color:var(--ac);color:var(--ac)}
     .card{background:var(--bg2);border:1px solid var(--border);transition:border-color .25s,transform .3s,box-shadow .3s}
-    .card:hover{border-color:var(--ac);transform:translateY(-2px);box-shadow:0 8px 32px rgba(14,165,233,.08)}
+    .card:hover{border-color:var(--ac);transform:translateY(-2px);box-shadow:0 8px 32px rgba(14,165,233,.1)}
+    /* Principle mini-cards get a subtle top accent line on hover */
+    .principle-card{background:var(--bg2);padding:1.75rem;border:1px solid var(--border);border-top:2px solid transparent;transition:border-color .25s,border-top-color .25s}
+    .principle-card:hover{border-color:var(--border);border-top-color:var(--ac)}
+    /* Compliance rows: left accent stripe instead of full open box */
+    .compliance-row{display:flex;align-items:center;gap:1.25rem;padding:1rem 1rem 1rem 1.25rem;border-left:2px solid transparent;background:var(--bg);border:1px solid var(--border);transition:border-left-color .2s,background .2s}
+    .compliance-row:hover{border-left-color:var(--ac);background:var(--bg2)}
     .inp{width:100%;background:var(--bg);border:1px solid var(--border);padding:.75rem 1rem;font-size:.875rem;color:var(--text);font-family:inherit;outline:none;transition:border-color .2s,box-shadow .2s}
     .inp:focus{border-color:var(--ac);box-shadow:0 0 0 3px rgba(14,165,233,.1)}
     .inp::placeholder{color:var(--mute)}
@@ -98,8 +112,11 @@
 <nav id="main-nav">
   <div style="max-width:1280px;margin:0 auto;padding:0 2rem;height:64px;display:flex;align-items:center;justify-content:space-between">
     <a href="/" class="nav-logo-wrap">
-      <div class="nav-logo-emblem">
-        <img src="logo.png" alt="Acuros" width="24" height="24" style="flex-shrink:0;object-fit:contain;position:relative;z-index:1"/>
+      <!-- Light mode: gold circular logo -->
+      <img src="logo-light.svg" alt="Acuros" class="nav-logo-img-light"/>
+      <!-- Dark mode: geometric emblem -->
+      <div class="nav-logo-emblem nav-logo-img-dark">
+        <img src="logo.png" alt="Acuros" width="22" height="22" style="object-fit:contain;position:relative;z-index:1"/>
       </div>
       <div class="nav-logo-text-wrap">
         <span class="nav-logo-name">ACUROS</span>
@@ -203,15 +220,13 @@
   <div style="max-width:1280px;margin:0 auto;padding:5rem 2rem">
     <div class="lbl reveal" style="margin-bottom:2.5rem">02 — Access</div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem" class="g1m">
-      <a href="/ai-assistant" class="card reveal" style="padding:2.5rem;cursor:pointer;position:relative;overflow:hidden;background:var(--bg2);text-decoration:none;display:block">
-        <div style="position:absolute;top:-40px;right:-40px;width:160px;height:160px;background:radial-gradient(circle,rgba(14,165,233,.1) 0%,transparent 70%);pointer-events:none"></div>
+      <a href="/ai-assistant" class="card reveal" style="padding:2.5rem;cursor:pointer;position:relative;overflow:hidden;background:var(--bg2);text-decoration:none;display:block;border-top:2px solid var(--ac)">
         <div class="lbl" style="color:var(--ac);margin-bottom:1.25rem">AI Assistant</div>
         <h3 style="font-size:2.25rem;font-weight:300;color:var(--text);margin-bottom:.875rem;line-height:1.1">Intelligent Health<br/>Dialogue</h3>
         <p style="font-size:.85rem;line-height:1.85;color:var(--sub);margin-bottom:2rem">Conversational AI grounded in peer-reviewed literature. Precision answers with transparent sourcing and safety governance baked in.</p>
         <span class="btn btn-outline" style="padding:.5rem 1.25rem;font-size:.7rem">Launch AI →</span>
       </a>
-      <a href="/patient-portal" class="card reveal d1" style="padding:2.5rem;cursor:pointer;position:relative;overflow:hidden;background:var(--bg2);text-decoration:none;display:block">
-        <div style="position:absolute;top:-40px;right:-40px;width:160px;height:160px;background:radial-gradient(circle,rgba(14,165,233,.1) 0%,transparent 70%);pointer-events:none"></div>
+      <a href="/patient-portal" class="card reveal d1" style="padding:2.5rem;cursor:pointer;position:relative;overflow:hidden;background:var(--bg2);text-decoration:none;display:block;border-top:2px solid var(--ac)">
         <div class="lbl" style="color:var(--ac);margin-bottom:1.25rem">Patient Portal</div>
         <h3 style="font-size:2.25rem;font-weight:300;color:var(--text);margin-bottom:.875rem;line-height:1.1">Your Health,<br/>Organised</h3>
         <p style="font-size:.85rem;line-height:1.85;color:var(--sub);margin-bottom:2rem">Secure records, appointment prep, and medication tracking in one calm, accessible interface aligned to Canadian privacy standards.</p>
@@ -246,10 +261,10 @@
         <a href="/ai-assistant" class="btn btn-solid reveal d2" style="margin-top:2rem">Try AI Assistant</a>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem" class="reveal d1">
-        <div style="background:var(--bg2);padding:1.75rem;border:1px solid var(--border)"><div class="num" style="margin-bottom:.75rem">01</div><h4 style="font-size:1.35rem;font-weight:300;color:var(--text);margin-bottom:.625rem">Real Workflows</h4><p style="font-size:.82rem;line-height:1.8;color:var(--sub)">Designed for clinical reality — tools that fit naturally into how people already work.</p></div>
-        <div style="background:var(--bg2);padding:1.75rem;border:1px solid var(--border)"><div class="num" style="margin-bottom:.75rem">02</div><h4 style="font-size:1.35rem;font-weight:300;color:var(--text);margin-bottom:.625rem">Human First</h4><p style="font-size:.82rem;line-height:1.8;color:var(--sub)">Technology supports clinical decision-making. It never replaces the clinician.</p></div>
-        <div style="background:var(--bg2);padding:1.75rem;border:1px solid var(--border)"><div class="num" style="margin-bottom:.75rem">03</div><h4 style="font-size:1.35rem;font-weight:300;color:var(--text);margin-bottom:.625rem">Secure Core</h4><p style="font-size:.82rem;line-height:1.8;color:var(--sub)">Privacy is foundational. Aligned to PIPEDA, PHIPA, and Canadian regulatory standards.</p></div>
-        <div style="background:var(--bg2);padding:1.75rem;border:1px solid var(--border)"><div class="num" style="margin-bottom:.75rem">04</div><h4 style="font-size:1.35rem;font-weight:300;color:var(--text);margin-bottom:.625rem">Evidence-Based</h4><p style="font-size:.82rem;line-height:1.8;color:var(--sub)">Every output cross-referenced against peer-reviewed literature.</p></div>
+        <div class="principle-card"><div class="num" style="margin-bottom:.75rem">01</div><h4 style="font-size:1.35rem;font-weight:300;color:var(--text);margin-bottom:.625rem">Real Workflows</h4><p style="font-size:.82rem;line-height:1.8;color:var(--sub)">Designed for clinical reality — tools that fit naturally into how people already work.</p></div>
+        <div class="principle-card"><div class="num" style="margin-bottom:.75rem">02</div><h4 style="font-size:1.35rem;font-weight:300;color:var(--text);margin-bottom:.625rem">Human First</h4><p style="font-size:.82rem;line-height:1.8;color:var(--sub)">Technology supports clinical decision-making. It never replaces the clinician.</p></div>
+        <div class="principle-card"><div class="num" style="margin-bottom:.75rem">03</div><h4 style="font-size:1.35rem;font-weight:300;color:var(--text);margin-bottom:.625rem">Secure Core</h4><p style="font-size:.82rem;line-height:1.8;color:var(--sub)">Privacy is foundational. Aligned to PIPEDA, PHIPA, and Canadian regulatory standards.</p></div>
+        <div class="principle-card"><div class="num" style="margin-bottom:.75rem">04</div><h4 style="font-size:1.35rem;font-weight:300;color:var(--text);margin-bottom:.625rem">Evidence-Based</h4><p style="font-size:.82rem;line-height:1.8;color:var(--sub)">Every output cross-referenced against peer-reviewed literature.</p></div>
       </div>
     </div>
   </div>
@@ -260,17 +275,17 @@
   <div style="padding:4rem 3rem;background:var(--bg2)">
     <div class="lbl reveal" style="margin-bottom:1.5rem">04 — Compliance</div>
     <h2 class="reveal d1" style="font-size:clamp(2rem,4vw,3rem);font-weight:300;color:var(--text);margin-bottom:1.5rem">Built to<br/><em>Canadian Standards.</em></h2>
-    <div style="display:flex;flex-direction:column;gap:1rem" class="reveal d2">
-      <div style="display:flex;align-items:center;gap:1.25rem;padding:1rem;border:1px solid var(--border);background:var(--bg)">
-        <div style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:400;color:var(--text);min-width:80px">PIPEDA</div>
+    <div style="display:flex;flex-direction:column;gap:.75rem" class="reveal d2">
+      <div class="compliance-row">
+        <div style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:400;color:var(--text);min-width:88px">PIPEDA</div>
         <div style="font-size:.8rem;color:var(--sub);line-height:1.6">Federal privacy compliance — Personal Information Protection and Electronic Documents Act</div>
       </div>
-      <div style="display:flex;align-items:center;gap:1.25rem;padding:1rem;border:1px solid var(--border);background:var(--bg)">
-        <div style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:400;color:var(--text);min-width:80px">PHIPA</div>
+      <div class="compliance-row">
+        <div style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:400;color:var(--text);min-width:88px">PHIPA</div>
         <div style="font-size:.8rem;color:var(--sub);line-height:1.6">Ontario health data protection — Personal Health Information Protection Act</div>
       </div>
-      <div style="display:flex;align-items:center;gap:1.25rem;padding:1rem;border:1px solid var(--border);background:var(--bg)">
-        <div style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:400;color:var(--text);min-width:80px">HL7/FHIR</div>
+      <div class="compliance-row">
+        <div style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:400;color:var(--text);min-width:88px">HL7/FHIR</div>
         <div style="font-size:.8rem;color:var(--sub);line-height:1.6">Healthcare interoperability standards for data exchange</div>
       </div>
     </div>
