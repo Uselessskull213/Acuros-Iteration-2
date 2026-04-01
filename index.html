@@ -363,10 +363,10 @@ function openMob()  { document.getElementById('mob-menu').classList.add('open');
 function closeMob() { document.getElementById('mob-menu').classList.remove('open'); }
 window.addEventListener('scroll', () => { document.getElementById('main-nav').style.boxShadow = window.scrollY > 10 ? '0 1px 24px rgba(0,0,0,.08)' : ''; });
 function setupReveal() {
-  const io = new IntersectionObserver(entries => { entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }); }, { threshold: 0.08 });
+  const io = new IntersectionObserver(entries => { entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }); }, { threshold: 0, rootMargin: '0px 0px -40px 0px' });
   document.querySelectorAll('.reveal:not(.in),.stagger-item:not(.in)').forEach(el => io.observe(el));
 }
-setupReveal();
+document.addEventListener('DOMContentLoaded', () => setTimeout(setupReveal, 80));
 function showMsg(id, msg, type) { const el = document.getElementById(id); if (!el) return; el.style.display = 'block'; el.className = type === 'err' ? 'err-box' : 'ok-box'; el.textContent = msg; }
 function hideMsg(...ids) { ids.forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; }); }
 function setBtn(id, loading, label) { const b = document.getElementById(id); if (!b) return; b.disabled = loading; b.innerHTML = loading ? '<span class="spin"></span>' : label; }
