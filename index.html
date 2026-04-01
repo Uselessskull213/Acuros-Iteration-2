@@ -130,7 +130,6 @@
 <!-- Hero -->
 <section style="position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;padding-bottom:clamp(4rem,7vw,7rem)">
   <video id="hero-video" autoplay muted loop playsinline preload="auto" aria-hidden="true">
-    <source src="/assets/hero-dark.mp4" type="video/mp4"/>
   </video>
   <div id="hero-overlay">
     <div id="hero-bottom" style="position:absolute;bottom:0;left:0;right:0;height:55%;background:linear-gradient(0deg,var(--bg) 0%,transparent 100%)"></div>
@@ -355,7 +354,7 @@ function updateHeroOverlay() {
   if (!v) return;
   const nextSrc = dark ? HERO_VIDEO_DARK_SRC : HERO_VIDEO_LIGHT_SRC;
   if (v.dataset.activeSrc === nextSrc) return;
-  const prev = v.dataset.activeSrc || HERO_VIDEO_DARK_SRC;
+  const prev = v.dataset.activeSrc || nextSrc;
   v.dataset.activeSrc = nextSrc;
   v.innerHTML = `<source src="${nextSrc}" type="video/mp4"/>`;
   v.load(); v.play().catch(() => {});
