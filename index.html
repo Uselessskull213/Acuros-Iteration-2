@@ -22,18 +22,9 @@
     h1,h2,h3,h4{font-family:'Cormorant Garamond',serif;line-height:1.08;letter-spacing:-.015em}
     nav{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--nav);backdrop-filter:blur(28px) saturate(220%);-webkit-backdrop-filter:blur(28px) saturate(220%);border-bottom:1px solid rgba(226,226,222,.4);transition:background .3s,border-color .3s}
     html.dark nav{border-bottom-color:rgba(39,39,36,.5)}
-    .nav-logo-wrap{display:flex;align-items:center;gap:.75rem;text-decoration:none;position:relative}
-    /* Light mode: use the gold circular logo image */
-    .nav-logo-img-light{display:block;width:38px;height:38px;object-fit:contain;transition:opacity .2s}
-    .nav-logo-img-dark{display:none;width:38px;height:38px;object-fit:contain}
-    html.dark .nav-logo-img-light{display:none}
-    html.dark .nav-logo-img-dark{display:block}
-    /* Dark mode fallback emblem */
-    .nav-logo-emblem{position:relative;display:flex;align-items:center;justify-content:center;width:38px;height:38px}
-    .nav-logo-emblem::before,.nav-logo-emblem::after{content:'';position:absolute;border:1px solid var(--border);transition:border-color .3s,opacity .3s}
-    .nav-logo-emblem::before{inset:0}
-    .nav-logo-emblem::after{inset:5px;transform:rotate(45deg);border-color:var(--ac);opacity:.35}
-    .nav-logo-wrap:hover .nav-logo-emblem::after{opacity:.7}
+    .nav-logo-wrap{display:flex;align-items:center;gap:.75rem;text-decoration:none}
+    #nav-logo{width:38px;height:38px;object-fit:contain;flex-shrink:0;transition:opacity .2s}
+    .nav-logo-wrap:hover #nav-logo{opacity:.85}
     .nav-logo-text-wrap{display:flex;flex-direction:column;gap:1px}
     .nav-logo-name{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:.95rem;letter-spacing:.1em;color:var(--text);line-height:1;transition:color .2s}
     html:not(.dark) .nav-logo-wrap:hover .nav-logo-name{color:var(--gold)}
@@ -113,12 +104,7 @@
 <nav id="main-nav">
   <div style="max-width:1280px;margin:0 auto;padding:0 2rem;height:64px;display:flex;align-items:center;justify-content:space-between">
     <a href="/" class="nav-logo-wrap">
-      <!-- Light mode: gold circular logo -->
-      <img src="/assets/logo-gold.jpg" alt="Acuros" class="nav-logo-img-light"/>
-      <!-- Dark mode: geometric emblem -->
-      <div class="nav-logo-emblem nav-logo-img-dark">
-        <img src="logo.png" alt="Acuros" width="22" height="22" style="object-fit:contain;position:relative;z-index:1"/>
-      </div>
+      <img id="nav-logo" src="/assets/logo-gold.jpg" alt="Acuros"/>
       <div class="nav-logo-text-wrap">
         <span class="nav-logo-name">ACUROS</span>
         <span class="nav-logo-sub">HEALTH</span>
@@ -360,11 +346,19 @@ const CONFIG = { contactApiUrl: '/api/contact' };
 
 const HERO_VIDEO_DARK_SRC = '/assets/hero-dark.mp4';
 const HERO_VIDEO_LIGHT_SRC = '/assets/hero-light.mp4';
+const LOGO_LIGHT_SRC = '/assets/logo-gold.jpg';
+const LOGO_DARK_SRC = '/logo.png';
+function updateNavLogo() {
+  const logo = document.getElementById('nav-logo');
+  if (!logo) return;
+  logo.src = document.documentElement.classList.contains('dark') ? LOGO_DARK_SRC : LOGO_LIGHT_SRC;
+}
 function toggleTheme() {
   const dark = document.documentElement.classList.toggle('dark');
   document.getElementById('th-icon').textContent = dark ? '☽' : '☀';
   localStorage.setItem('ah-theme', dark ? 'dark' : 'light');
   updateHeroOverlay();
+  updateNavLogo();
 }
 (function initTheme() {
   const s = localStorage.getItem('ah-theme');
@@ -373,6 +367,7 @@ function toggleTheme() {
     document.getElementById('th-icon').textContent = '☽';
   }
   updateHeroOverlay();
+  updateNavLogo();
 })();
 function updateHeroOverlay() {
   const dark = document.documentElement.classList.contains('dark');
