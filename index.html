@@ -22,9 +22,23 @@
     h1,h2,h3,h4{font-family:'Cormorant Garamond',serif;line-height:1.08;letter-spacing:-.015em}
     nav{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--nav);backdrop-filter:blur(28px) saturate(220%);-webkit-backdrop-filter:blur(28px) saturate(220%);border-bottom:1px solid rgba(226,226,222,.4);transition:background .3s,border-color .3s}
     html.dark nav{border-bottom-color:rgba(39,39,36,.5)}
-    .nav-logo-wrap{display:flex;align-items:center;gap:.75rem;text-decoration:none}
-    #nav-logo{width:38px;height:38px;object-fit:contain;flex-shrink:0;transition:opacity .2s}
-    .nav-logo-wrap:hover #nav-logo{opacity:.85}
+    .nav-logo-wrap{display:flex;align-items:center;gap:.875rem;text-decoration:none}
+    .nav-logo-frame{position:relative;width:38px;height:38px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+    /* Four corner ticks — light mode uses gold, dark mode uses accent blue */
+    .nav-logo-frame::before,.nav-logo-frame::after{content:'';position:absolute;width:10px;height:10px;transition:all .3s}
+    .nav-logo-frame::before{top:0;left:0;border-top:1.5px solid var(--gold);border-left:1.5px solid var(--gold)}
+    .nav-logo-frame::after{bottom:0;right:0;border-bottom:1.5px solid var(--gold);border-right:1.5px solid var(--gold)}
+    html.dark .nav-logo-frame::before{border-color:var(--ac)}
+    html.dark .nav-logo-frame::after{border-color:var(--ac)}
+    /* Opposite corners via inner spans */
+    .nav-logo-frame .corner-tr,.nav-logo-frame .corner-bl{position:absolute;width:10px;height:10px;transition:all .3s}
+    .nav-logo-frame .corner-tr{top:0;right:0;border-top:1.5px solid var(--gold);border-right:1.5px solid var(--gold)}
+    .nav-logo-frame .corner-bl{bottom:0;left:0;border-bottom:1.5px solid var(--gold);border-left:1.5px solid var(--gold)}
+    html.dark .nav-logo-frame .corner-tr,html.dark .nav-logo-frame .corner-bl{border-color:var(--ac)}
+    .nav-logo-wrap:hover .nav-logo-frame::before,.nav-logo-wrap:hover .nav-logo-frame::after,
+    .nav-logo-wrap:hover .nav-logo-frame .corner-tr,.nav-logo-wrap:hover .nav-logo-frame .corner-bl{width:13px;height:13px;opacity:.8}
+    #nav-logo{width:38px;height:38px;object-fit:contain;display:block;transition:opacity .2s}
+    .nav-logo-wrap:hover #nav-logo{opacity:.9}
     .nav-logo-text-wrap{display:flex;flex-direction:column;gap:1px}
     .nav-logo-name{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:.95rem;letter-spacing:.1em;color:var(--text);line-height:1;transition:color .2s}
     html:not(.dark) .nav-logo-wrap:hover .nav-logo-name{color:var(--gold)}
@@ -104,7 +118,11 @@
 <nav id="main-nav">
   <div style="max-width:1280px;margin:0 auto;padding:0 2rem;height:64px;display:flex;align-items:center;justify-content:space-between">
     <a href="/" class="nav-logo-wrap">
-      <img id="nav-logo" src="/assets/logo-gold.jpg" alt="Acuros"/>
+      <div class="nav-logo-frame">
+        <span class="corner-tr"></span>
+        <span class="corner-bl"></span>
+        <img id="nav-logo" src="/assets/logo-gold.jpg" alt="Acuros"/>
+      </div>
       <div class="nav-logo-text-wrap">
         <span class="nav-logo-name">ACUROS</span>
         <span class="nav-logo-sub">HEALTH</span>
