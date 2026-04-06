@@ -456,25 +456,26 @@ function syncPortal() {
 // (including processing any hash token from OAuth redirects), so we use it
 // as the single source of truth instead of racing getSession() against the hash.
 if (sb?.auth?.onAuthStateChange) {
-  sb.auth.onAuthStateChange(async (_event, session) => {
+  sb.auth.onAuthStateChange(async (event, session) => {
     if (session?.user) {
       currentUser = {
         id: session.user.id, email: session.user.email,
         name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'User',
         first: '', last: '', code: '', org_id: '',
       };
+      syncPortal();
       try {
         const { data: profile } = await sb.from('profiles').select('*').eq('id', session.user.id).maybeSingle();
-        if (profile) {
+        if (profile && currentUser) {
           currentUser.name = profile.name || currentUser.name;
           currentUser.first = profile.first_name || '';
           currentUser.last = profile.last_name || '';
           currentUser.code = profile.patient_code || '';
           currentUser.org_id = profile.org_id || '';
+          syncPortal();
         }
       } catch (_e) {}
-      syncPortal();
-    } else {
+    } else if (event === 'SIGNED_OUT') {
       currentUser = null;
       syncPortal();
     }

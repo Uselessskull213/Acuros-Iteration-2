@@ -277,7 +277,7 @@ function updateGuestUI() {
 
 let authReady = false;
 if (sb?.auth?.onAuthStateChange) {
-  sb.auth.onAuthStateChange(async (_event, session) => {
+  sb.auth.onAuthStateChange(async (event, session) => {
     if (session?.user) {
       currentUser = {
         id: session.user.id,
@@ -286,23 +286,26 @@ if (sb?.auth?.onAuthStateChange) {
         code: '', org_id: '',
       };
       localStorage.removeItem(GUEST_MSG_KEY);
+      authReady = true;
+      updateGuestUI();
+      ensureChatHistoryLoaded(true);
       try {
         const { data: profile } = await sb.from('profiles').select('*').eq('id', session.user.id).maybeSingle();
-        if (profile) {
+        if (profile && currentUser) {
           currentUser.name = profile.name || currentUser.name;
           currentUser.code = profile.patient_code || '';
           currentUser.org_id = profile.org_id || '';
         }
       } catch (_e) {}
-    } else {
+    } else if (event === 'SIGNED_OUT') {
       currentUser = null;
+      authReady = true;
+      updateGuestUI();
+      ensureChatHistoryLoaded(true);
     }
     if (window.location.hash?.includes('access_token')) {
       window.history.replaceState(null, '', window.location.pathname + window.location.search);
     }
-    authReady = true;
-    updateGuestUI();
-    ensureChatHistoryLoaded(true);
   });
 } else {
   authReady = true;
