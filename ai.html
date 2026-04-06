@@ -279,24 +279,32 @@ function updateGuestUI() {
   }
 }
 
-(async function checkSession() {
-  if (!sb) { updateGuestUI(); return; }
-  try {
-    const { data: { session } } = await sb.auth.getSession();
+if (sb?.auth?.onAuthStateChange) {
+  sb.auth.onAuthStateChange(async (_event, session) => {
     if (session?.user) {
-      const { data: profile } = await sb.from('profiles').select('*').eq('id', session.user.id).maybeSingle();
-      currentUser = {
-        id: session.user.id,
-        email: session.user.email,
-        name: profile?.name || session.user.user_metadata?.full_name || session.user.email.split('@')[0],
-        code: profile?.patient_code || '',
-        org_id: profile?.org_id || '',
-      };
+      try {
+        const { data: profile } = await sb.from('profiles').select('*').eq('id', session.user.id).maybeSingle();
+        currentUser = {
+          id: session.user.id,
+          email: session.user.email,
+          name: profile?.name || session.user.user_metadata?.full_name || session.user.email.split('@')[0],
+          code: profile?.patient_code || '',
+          org_id: profile?.org_id || '',
+        };
+      } catch (_e) {}
+    } else {
+      currentUser = null;
     }
-  } catch (e) {}
+    if (window.location.hash?.includes('access_token')) {
+      window.history.replaceState(null, '', window.location.pathname + window.location.search);
+    }
+    updateGuestUI();
+    ensureChatHistoryLoaded(true);
+  });
+} else {
   updateGuestUI();
   ensureChatHistoryLoaded(true);
-})();
+}
 
 // ── Chat history ──
 function getChatHistoryKey() {
