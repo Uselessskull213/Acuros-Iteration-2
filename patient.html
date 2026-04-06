@@ -452,22 +452,9 @@ function syncPortal() {
 }
 
 // ── Session check ──
-(async function checkSession() {
-  if (!sb) { syncPortal(); return; }
-  try {
-    if (window.location.hash?.includes('access_token')) {
-      await new Promise(r => setTimeout(r, 400));
-      window.history.replaceState(null, '', window.location.pathname + window.location.search);
-    }
-    const { data: { session } } = await sb.auth.getSession();
-    if (session?.user) {
-      const { data: profile } = await sb.from('profiles').select('*').eq('id', session.user.id).maybeSingle();
-      currentUser = { id: session.user.id, email: session.user.email, name: profile?.name || session.user.user_metadata?.full_name || session.user.email.split('@')[0], first: profile?.first_name || '', last: profile?.last_name || '', code: profile?.patient_code || '', org_id: profile?.org_id || '' };
-    }
-  } catch (e) {}
-  finally { syncPortal(); }
-})();
-
+// onAuthStateChange fires synchronously on init with the current session
+// (including processing any hash token from OAuth redirects), so we use it
+// as the single source of truth instead of racing getSession() against the hash.
 if (sb?.auth?.onAuthStateChange) {
   sb.auth.onAuthStateChange(async (_event, session) => {
     if (session?.user) {
@@ -475,9 +462,17 @@ if (sb?.auth?.onAuthStateChange) {
         const { data: profile } = await sb.from('profiles').select('*').eq('id', session.user.id).maybeSingle();
         currentUser = { id: session.user.id, email: session.user.email, name: profile?.name || session.user.user_metadata?.full_name || session.user.email.split('@')[0], first: profile?.first_name || '', last: profile?.last_name || '', code: profile?.patient_code || '', org_id: profile?.org_id || '' };
       } catch (_e) {}
-    } else { currentUser = null; }
+    } else {
+      currentUser = null;
+    }
+    // Clean up the OAuth hash from the URL without triggering a reload
+    if (window.location.hash?.includes('access_token')) {
+      window.history.replaceState(null, '', window.location.pathname + window.location.search);
+    }
     syncPortal();
   });
+} else {
+  syncPortal();
 }
 </script>
 </body>
