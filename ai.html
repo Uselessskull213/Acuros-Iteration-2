@@ -272,11 +272,7 @@ function isOrgUser() {
 function updateGuestUI() {
   const notice = document.getElementById('guest-notice');
   if (!notice) return;
-  if (!isOrgUser()) {
-    notice.style.display = 'block';
-  } else {
-    notice.style.display = 'none';
-  }
+  notice.style.display = currentUser ? 'none' : 'block';
 }
 
 if (sb?.auth?.onAuthStateChange) {
@@ -371,8 +367,7 @@ async function sendChat() {
   const msg = inp.value.trim();
   if (!msg) return;
 
-  // Guest limit: block if already used 1 message and not in org
-  if (!isOrgUser() && guestMessageUsed()) {
+  if (!currentUser && guestMessageUsed()) {
     showLimitOverlay();
     return;
   }
@@ -384,8 +379,7 @@ async function sendChat() {
   chatHistory = chatHistory.slice(-MAX_CHAT_MESSAGES);
   saveChatHistory();
 
-  // Mark guest message used before sending
-  if (!isOrgUser()) markGuestMessageUsed();
+  if (!currentUser) markGuestMessageUsed();
 
   const thinking = document.createElement('div');
   thinking.className = 'bubble ai thinking';
@@ -429,16 +423,14 @@ async function sendChat() {
   } finally {
     setBtn('chat-send-btn', false, 'Send');
     document.getElementById('chat-msgs').scrollTop = 999999;
-    // Show overlay AFTER response if guest used their 1 message
-    if (!isOrgUser() && guestMessageUsed()) {
+    if (!currentUser && guestMessageUsed()) {
       setTimeout(showLimitOverlay, 1200);
     }
   }
 }
 
 function preChat(q) {
-  // Block pre-chat prompts for guests who've used their message
-  if (!isOrgUser() && guestMessageUsed()) { showLimitOverlay(); return; }
+  if (!currentUser && guestMessageUsed()) { showLimitOverlay(); return; }
   const inp = document.getElementById('chat-in');
   inp.value = q; inp.focus(); sendChat();
 }
@@ -481,7 +473,7 @@ function setBtn(id, loading, label) {
 // On load: if guest already used their message, show overlay immediately
 document.addEventListener('DOMContentLoaded', () => {
   ensureChatHistoryLoaded(true);
-  if (!isOrgUser() && guestMessageUsed()) {
+  if (!currentUser && guestMessageUsed()) {
     showLimitOverlay();
   }
 });
