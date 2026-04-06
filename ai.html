@@ -275,18 +275,24 @@ function updateGuestUI() {
   notice.style.display = currentUser ? 'none' : 'block';
 }
 
+let authReady = false;
 if (sb?.auth?.onAuthStateChange) {
   sb.auth.onAuthStateChange(async (_event, session) => {
     if (session?.user) {
+      currentUser = {
+        id: session.user.id,
+        email: session.user.email,
+        name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'User',
+        code: '', org_id: '',
+      };
+      localStorage.removeItem(GUEST_MSG_KEY);
       try {
         const { data: profile } = await sb.from('profiles').select('*').eq('id', session.user.id).maybeSingle();
-        currentUser = {
-          id: session.user.id,
-          email: session.user.email,
-          name: profile?.name || session.user.user_metadata?.full_name || session.user.email.split('@')[0],
-          code: profile?.patient_code || '',
-          org_id: profile?.org_id || '',
-        };
+        if (profile) {
+          currentUser.name = profile.name || currentUser.name;
+          currentUser.code = profile.patient_code || '';
+          currentUser.org_id = profile.org_id || '';
+        }
       } catch (_e) {}
     } else {
       currentUser = null;
@@ -294,10 +300,12 @@ if (sb?.auth?.onAuthStateChange) {
     if (window.location.hash?.includes('access_token')) {
       window.history.replaceState(null, '', window.location.pathname + window.location.search);
     }
+    authReady = true;
     updateGuestUI();
     ensureChatHistoryLoaded(true);
   });
 } else {
+  authReady = true;
   updateGuestUI();
   ensureChatHistoryLoaded(true);
 }
@@ -470,11 +478,10 @@ function setBtn(id, loading, label) {
   b.innerHTML = loading ? '<span class="spin"></span>' : label;
 }
 
-// On load: if guest already used their message, show overlay immediately
 document.addEventListener('DOMContentLoaded', () => {
-  ensureChatHistoryLoaded(true);
-  if (!currentUser && guestMessageUsed()) {
-    showLimitOverlay();
+  if (authReady) {
+    ensureChatHistoryLoaded(true);
+    if (!currentUser && guestMessageUsed()) showLimitOverlay();
   }
 });
 </script>
