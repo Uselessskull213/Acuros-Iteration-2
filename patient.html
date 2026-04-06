@@ -280,7 +280,7 @@ const CONFIG = {
 };
 
 let sb = null;
-try { if (CONFIG.supabaseKey) sb = window.supabase.createClient(CONFIG.supabaseUrl, CONFIG.supabaseKey, { auth: { flowType: 'pkce', persistSession: true, storageKey: 'ah-auth' } }); } catch(e) {}
+try { if (CONFIG.supabaseKey) sb = window.supabase.createClient(CONFIG.supabaseUrl, CONFIG.supabaseKey); } catch(e) {}
 
 let currentUser = null, ptMode = 'login';
 const ORG_BANNER_DISMISSED_KEY = 'ah-org-banner-dismissed';
@@ -455,24 +455,16 @@ function syncPortal() {
 (async function checkSession() {
   if (!sb) { syncPortal(); return; }
   try {
-    // Handle PKCE code exchange (code in query param)
-    const params = new URLSearchParams(window.location.search);
-    const code = params.get('code');
-    if (code) {
-      await sb.auth.exchangeCodeForSession(code);
-      window.history.replaceState(null, '', window.location.pathname);
-    }
-    // Legacy implicit flow fallback (hash token)
     if (window.location.hash?.includes('access_token')) {
-      await new Promise(r => setTimeout(r, 600));
-      window.history.replaceState(null, '', window.location.pathname);
+      await new Promise(r => setTimeout(r, 400));
+      window.history.replaceState(null, '', window.location.pathname + window.location.search);
     }
     const { data: { session } } = await sb.auth.getSession();
     if (session?.user) {
       const { data: profile } = await sb.from('profiles').select('*').eq('id', session.user.id).maybeSingle();
       currentUser = { id: session.user.id, email: session.user.email, name: profile?.name || session.user.user_metadata?.full_name || session.user.email.split('@')[0], first: profile?.first_name || '', last: profile?.last_name || '', code: profile?.patient_code || '', org_id: profile?.org_id || '' };
     }
-  } catch (e) { console.error('[Acuros/auth] Session check error:', e); }
+  } catch (e) {}
   finally { syncPortal(); }
 })();
 
