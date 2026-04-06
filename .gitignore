@@ -5,4 +5,6 @@ node_modules/
 .vercel/
 *.bak
 test.txt
+DEPLOY.md
+*.bak2
 hero-bg.jpg
