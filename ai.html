@@ -233,7 +233,7 @@ const CONFIG = {
 };
 
 let sb = null;
-try { if (CONFIG.supabaseKey) sb = window.supabase.createClient(CONFIG.supabaseUrl, CONFIG.supabaseKey); } catch(e) {}
+try { if (CONFIG.supabaseKey) sb = window.supabase.createClient(CONFIG.supabaseUrl, CONFIG.supabaseKey, { auth: { flowType: 'pkce', persistSession: true, storageKey: 'ah-auth' } }); } catch(e) {}
 
 let currentUser = null;
 let userOrg = null; // org the user belongs to (null = no org)
