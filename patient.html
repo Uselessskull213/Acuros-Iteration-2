@@ -379,7 +379,7 @@ async function joinOrg(e) {
     const { data: org, error: orgErr } = await sb
       .from('organizations')
       .select('id, name, active')
-      .eq('code', code)
+      .filter('code', 'ilike', code)
       .maybeSingle();
     if (orgErr) throw new Error(orgErr.message || 'Could not reach the clinic directory. Please try again.');
     if (!org)        throw new Error('Code not recognized. Please verify the code with your clinic provider.');
