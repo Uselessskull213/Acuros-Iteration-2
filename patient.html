@@ -5,19 +5,11 @@
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-80K00SEBQK');</script>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>Patient Portal — Acuros Health</title>
+  <title>Patient Portal — AAA Clinics × Acuros</title>
   <link rel="icon" type="image/png" href="favicon.png"/>
   <link rel="apple-touch-icon" href="favicon.png"/>
-  <meta name="description" content="Secure patient portal. Manage your health records, prepare for appointments, and understand your care journey."/>
+  <meta name="description" content="Your AAA Clinics patient portal. Book treatments, shop skincare, earn rewards, and access your AI beauty advisor."/>
   <link rel="canonical" href="https://acuros.ca/patient-portal"/>
-  <meta property="og:type" content="website"/>
-  <meta property="og:url" content="https://acuros.ca/patient-portal"/>
-  <meta property="og:title" content="Patient Portal — Acuros Health"/>
-  <meta property="og:description" content="Secure patient portal. Manage your health records, prepare for appointments, and understand your care journey."/>
-  <meta property="og:site_name" content="Acuros Health"/>
-  <meta name="twitter:card" content="summary"/>
-  <meta name="twitter:title" content="Patient Portal — Acuros Health"/>
-  <meta name="twitter:description" content="Secure patient portal. Manage your health records, prepare for appointments, and understand your care journey."/>
   <meta name="robots" content="noindex"/>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
@@ -26,76 +18,145 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
   <script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{display:['Cormorant Garamond','Georgia','serif'],sans:['DM Sans','sans-serif']}}}}</script>
   <style>
-    :root{--bg:#f5f5f3;--bg2:#fff;--border:#e2e2de;--text:#181816;--sub:#5a5a54;--mute:#9a9a92;--ac:#0ea5e9;--nav:rgba(245,245,243,.93)}
-    html.dark{--bg:#0d0d0c;--bg2:#141412;--border:#272724;--text:#f0f0ec;--sub:#9a9a92;--mute:#5a5a54;--ac:#38bdf8;--nav:rgba(13,13,12,.93)}
+    :root{
+      --bg:#FAF8F5;--bg2:#FFFFFF;--border:#EDE8E3;--text:#1A1614;--sub:#6B5E56;
+      --mute:#A89990;--ac:#C9A96E;--rose:#D4A090;--nav:rgba(250,248,245,.93);
+      --gold:#C9A96E;--gold2:#E2C590;
+    }
+    html.dark{
+      --bg:#120E0C;--bg2:#1C1510;--border:#2E2420;--text:#F5F0EA;--sub:#A89990;
+      --mute:#6B5E56;--ac:#E2C590;--rose:#B8806E;--nav:rgba(18,14,12,.93);
+      --gold:#E2C590;--gold2:#C9A96E;
+    }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     html{scroll-behavior:smooth}
     body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);transition:background .3s,color .3s;overflow-x:hidden}
     h1,h2,h3,h4{font-family:'Cormorant Garamond',serif;line-height:1.08;letter-spacing:-.015em}
-    nav{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--nav);backdrop-filter:blur(20px) saturate(180%);border-bottom:1px solid var(--border);transition:background .3s,border-color .3s}
-    .nav-link{position:relative;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);background:none;border:none;cursor:pointer;padding:0;font-family:inherit;transition:color .2s;text-decoration:none;display:inline-block}
+
+    /* Nav */
+    nav{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--nav);backdrop-filter:blur(24px) saturate(180%);border-bottom:1px solid var(--border);transition:background .3s}
+    .nav-link{position:relative;font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);background:none;border:none;cursor:pointer;padding:0;font-family:inherit;transition:color .2s;text-decoration:none;display:inline-block}
     .nav-link::after{content:'';position:absolute;left:0;bottom:-2px;width:0;height:1px;background:var(--ac);transition:width .25s}
     .nav-link:hover::after,.nav-link.active::after{width:100%}
     .nav-link:hover,.nav-link.active{color:var(--text)}
-    .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.7rem 1.75rem;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;border:none;transition:all .22s;text-decoration:none;position:relative;overflow:hidden}
+
+    /* Buttons */
+    .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.7rem 1.75rem;font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;border:none;transition:all .22s;text-decoration:none;position:relative;overflow:hidden}
     .btn::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,.08);opacity:0;transition:opacity .2s}
     .btn:hover::after{opacity:1}
-    .btn-solid{background:var(--text);color:var(--bg)}
-    .btn-solid:hover{background:var(--ac);color:#fff}
+    .btn-gold{background:var(--ac);color:#fff}
+    .btn-gold:hover{background:var(--gold2);color:#fff}
     .btn-outline{background:transparent;color:var(--text);border:1px solid var(--border)}
     .btn-outline:hover{border-color:var(--ac);color:var(--ac)}
-    .card{background:var(--bg2);border:1px solid var(--border);transition:border-color .25s,transform .3s,box-shadow .3s}
-    .card:hover{border-color:var(--ac);transform:translateY(-2px);box-shadow:0 8px 32px rgba(14,165,233,.08)}
+    .btn-dark{background:var(--text);color:var(--bg)}
+    .btn-dark:hover{background:var(--ac);color:#fff}
+
+    /* Cards */
+    .card{background:var(--bg2);border:1px solid var(--border);transition:border-color .25s,transform .25s,box-shadow .25s}
+    .card:hover{border-color:var(--ac);transform:translateY(-2px);box-shadow:0 8px 32px rgba(201,169,110,.12)}
+    .card-flat{background:var(--bg2);border:1px solid var(--border)}
+
+    /* Form inputs */
     .inp{width:100%;background:var(--bg);border:1px solid var(--border);padding:.75rem 1rem;font-size:.875rem;color:var(--text);font-family:inherit;outline:none;transition:border-color .2s,box-shadow .2s}
-    .inp:focus{border-color:var(--ac);box-shadow:0 0 0 3px rgba(14,165,233,.1)}
+    .inp:focus{border-color:var(--ac);box-shadow:0 0 0 3px rgba(201,169,110,.12)}
     .inp::placeholder{color:var(--mute)}
-    .lbl{font-family:'DM Sans',sans-serif;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);font-weight:500}
-    .hr{height:1px;background:var(--border)}
-    .err-box{background:#fef2f2;border:1px solid #fecaca;color:#dc2626;padding:.75rem 1rem;font-size:.8rem}
+
+    /* Labels */
+    .lbl{font-family:'DM Sans',sans-serif;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);font-weight:500}
+
+    /* Messages */
+    .err-box{background:#fef2f2;border:1px solid #fecaca;color:#dc2626;padding:.75rem 1rem;font-size:.8rem;border-radius:2px}
     html.dark .err-box{background:rgba(220,38,38,.08);border-color:rgba(220,38,38,.25);color:#f87171}
-    .ok-box{background:#f0fdf4;border:1px solid #bbf7d0;color:#15803d;padding:.75rem 1rem;font-size:.8rem}
+    .ok-box{background:#f0fdf4;border:1px solid #bbf7d0;color:#15803d;padding:.75rem 1rem;font-size:.8rem;border-radius:2px}
     html.dark .ok-box{background:rgba(21,128,61,.08);border-color:rgba(21,128,61,.25);color:#4ade80}
     .warn-box{background:#fffbeb;border:1px solid #fde68a;color:#92400e;padding:.75rem 1rem;font-size:.8rem}
-    html.dark .warn-box{background:rgba(146,64,14,.08);border-color:rgba(253,230,138,.25);color:#fcd34d}
+
+    /* Spinner */
     @keyframes spin{to{transform:rotate(360deg)}}
     .spin{width:16px;height:16px;border:2px solid transparent;border-top-color:currentColor;border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
+
+    /* Animations */
     @keyframes pgIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+    @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+    .fade-in{animation:pgIn .5s ease both}
+
+    /* Stagger items */
     .stagger-item{opacity:0;transform:translateX(-14px);transition:opacity .5s ease,transform .5s ease}
     .stagger-item.in{opacity:1;transform:none}
-    .mesh{background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:52px 52px}
-    .bg-dots{background-image:radial-gradient(var(--border) 1px,transparent 1px);background-size:28px 28px}
-    .auth-card{background:var(--bg2);border:1px solid var(--border);width:100%;max-width:420px;padding:2.5rem}
+
+    /* Auth card */
+    .auth-card{background:var(--bg2);border:1px solid var(--border);width:100%;max-width:440px;padding:2.5rem}
     .btn-google{display:flex;align-items:center;justify-content:center;gap:.75rem;width:100%;padding:.75rem;background:var(--bg);border:1px solid var(--border);font-size:.85rem;color:var(--text);cursor:pointer;transition:border-color .2s,background .2s;font-family:inherit}
     .btn-google:hover{border-color:var(--ac);background:var(--bg2)}
+
+    /* Org modal */
+    .org-modal-backdrop{position:fixed;inset:0;z-index:400;align-items:center;justify-content:center;background:rgba(0,0,0,.5);backdrop-filter:blur(4px)}
+
+    /* Mobile menu */
     #mob-menu{display:none;position:fixed;inset:0;z-index:300;background:var(--bg);flex-direction:column;padding:2.5rem}
     #mob-menu.open{display:flex;animation:pgIn .3s ease}
-    /* Org join banner */
-    .org-banner{background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--ac);padding:1.25rem 1.5rem;display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap}
+
+    /* Product card */
+    .product-card{background:var(--bg2);border:1px solid var(--border);overflow:hidden;transition:border-color .25s,box-shadow .25s}
+    .product-card:hover{border-color:var(--ac);box-shadow:0 4px 24px rgba(201,169,110,.1)}
+    .product-img{width:100%;height:220px;object-fit:cover;display:block;background:var(--bg);filter:saturate(.85)}
+
+    /* Treatment card */
+    .treatment-card{background:var(--bg2);border:1px solid var(--border);padding:1.75rem;display:flex;flex-direction:column;gap:.875rem;transition:border-color .25s,box-shadow .25s;border-top:2px solid transparent}
+    .treatment-card:hover{border-color:var(--border);border-top-color:var(--ac);box-shadow:0 4px 24px rgba(201,169,110,.1)}
+
+    /* Reward badge */
+    .reward-badge{display:inline-flex;align-items:center;gap:.375rem;padding:.3rem .75rem;font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;font-weight:500;background:linear-gradient(135deg,rgba(201,169,110,.15),rgba(212,160,144,.15));border:1px solid rgba(201,169,110,.3);color:var(--ac)}
+
+    /* Gold divider */
+    .gold-line{height:1px;background:linear-gradient(90deg,transparent,var(--ac),transparent)}
+
+    /* AI Chat Widget */
+    #ai-widget{position:fixed;bottom:2rem;right:2rem;z-index:500}
+    #ai-widget-btn{width:60px;height:60px;border-radius:50%;background:var(--ac);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(201,169,110,.45);transition:transform .2s,box-shadow .2s;color:#fff}
+    #ai-widget-btn:hover{transform:scale(1.07);box-shadow:0 6px 28px rgba(201,169,110,.6)}
+    #ai-panel{display:none;position:absolute;bottom:calc(100% + .875rem);right:0;width:360px;background:var(--bg2);border:1px solid var(--border);box-shadow:0 16px 48px rgba(0,0,0,.18);flex-direction:column;overflow:hidden;animation:slideUp .25s ease}
+    #ai-panel.open{display:flex}
+    #ai-msgs{flex:1;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:.75rem;max-height:340px;min-height:200px}
+    .ai-bubble{max-width:88%;padding:.75rem 1rem;font-size:.825rem;line-height:1.65}
+    .ai-bubble.bot{background:var(--bg);border:1px solid var(--border);color:var(--text);align-self:flex-start}
+    .ai-bubble.usr{background:var(--ac);color:#fff;align-self:flex-end}
+    @keyframes dot{0%,80%,100%{opacity:.2}40%{opacity:1}}
+    .typing span{display:inline-block;width:5px;height:5px;background:var(--ac);border-radius:50%;margin:0 2px;animation:dot 1.4s infinite}
+    .typing span:nth-child(2){animation-delay:.2s}
+    .typing span:nth-child(3){animation-delay:.4s}
+
+    /* Dashboard grid */
+    .dash-grid{display:grid;gap:1.25rem}
+
+    /* Scrollbar */
+    ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
     @media(max-width:900px){.g1m{grid-template-columns:1fr!important}.hnm{display:none!important}#mob-btn{display:flex!important}#nav-cta{display:none!important}}
+    @media(max-width:640px){.g2{grid-template-columns:1fr!important}.g3{grid-template-columns:1fr!important}}
   </style>
 </head>
 <body>
 
 <!-- NAV -->
 <nav id="main-nav">
-  <div style="max-width:1280px;margin:0 auto;padding:0 2rem;height:64px;display:flex;align-items:center;justify-content:space-between">
+  <div style="max-width:1400px;margin:0 auto;padding:0 2rem;height:64px;display:flex;align-items:center;justify-content:space-between">
     <a href="/" style="display:flex;align-items:center;gap:.75rem;text-decoration:none">
-      <img src="logo.png" alt="Acuros" width="32" height="32" style="flex-shrink:0;object-fit:contain"/>
+      <img src="logo.png" alt="Acuros" width="30" height="30" style="flex-shrink:0;object-fit:contain;opacity:.9"/>
       <div>
-        <div style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:.95rem;letter-spacing:.05em;color:var(--text);line-height:1">ACUROS</div>
-        <div class="lbl" style="font-size:.5rem;letter-spacing:.28em">HEALTH</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:.9rem;letter-spacing:.08em;color:var(--text);line-height:1">ACUROS</div>
+        <div class="lbl" style="font-size:.45rem;letter-spacing:.3em">HEALTH</div>
       </div>
     </a>
+    <div id="nav-org-badge" style="display:none;padding:.3rem .875rem;background:rgba(201,169,110,.1);border:1px solid rgba(201,169,110,.3);font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ac)"></div>
     <div style="display:flex;align-items:center;gap:2rem" class="hnm">
       <a class="nav-link" href="/">Home</a>
+      <a class="nav-link active" href="/patient-portal">Portal</a>
       <a class="nav-link" href="/ai-assistant">AI Assistant</a>
-      <a class="nav-link active" href="/patient-portal">Patient Portal</a>
-      <a class="nav-link" href="/privacy" style="opacity:.55">Privacy</a>
-      <a class="nav-link" href="/terms" style="opacity:.55">Terms</a>
     </div>
     <div style="display:flex;align-items:center;gap:.875rem">
-      <button onclick="toggleTheme()" aria-label="Toggle theme" style="width:36px;height:36px;border:1px solid var(--border);background:none;color:var(--sub);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;font-size:.9rem"><span id="th-icon">☀</span></button>
-      <a href="/patient-portal" class="btn btn-solid" style="padding:.55rem 1.25rem" id="nav-cta">Patient Portal</a>
+      <button onclick="toggleTheme()" aria-label="Toggle theme" style="width:34px;height:34px;border:1px solid var(--border);background:none;color:var(--sub);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;font-size:.85rem"><span id="th-icon">☀</span></button>
+      <button id="nav-logout-btn" style="display:none" onclick="ptLogout()" class="btn btn-outline" style="padding:.45rem 1rem">Sign Out</button>
       <button onclick="openMob()" style="display:none;background:none;border:none;cursor:pointer;color:var(--text);padding:.25rem" id="mob-btn" aria-label="Menu">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16M4 12h12M4 18h8"/></svg>
       </button>
@@ -106,67 +167,99 @@
 <!-- Mobile menu -->
 <div id="mob-menu">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3rem">
-    <span style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--text)">Acuros Health</span>
+    <span style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--text)">AAA Clinics Portal</span>
     <button onclick="closeMob()" style="background:none;border:none;cursor:pointer;color:var(--text)">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
     </button>
   </div>
-  <div style="display:flex;flex-direction:column;gap:1.75rem">
-    <a href="/"             style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;text-align:left;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Home</a>
-    <a href="/ai-assistant"      style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;text-align:left;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">AI Assistant</a>
-    <a href="/patient-portal" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;text-align:left;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Patient Portal</a>
-    <a href="/privacy" style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;text-align:left;color:var(--mute);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Privacy Policy</a>
-    <a href="/terms"   style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;text-align:left;color:var(--mute);text-decoration:none">Terms of Service</a>
+  <div style="display:flex;flex-direction:column;gap:1.5rem">
+    <a href="/"             style="font-family:'Cormorant Garamond',serif;font-size:2.25rem;font-weight:300;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1rem">Home</a>
+    <a href="/patient-portal" style="font-family:'Cormorant Garamond',serif;font-size:2.25rem;font-weight:300;color:var(--ac);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1rem">My Portal</a>
+    <a href="/ai-assistant" style="font-family:'Cormorant Garamond',serif;font-size:2.25rem;font-weight:300;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1rem">AI Assistant</a>
+    <button onclick="ptLogout();closeMob()" style="font-family:'Cormorant Garamond',serif;font-size:1.75rem;font-weight:300;color:var(--mute);background:none;border:none;cursor:pointer;text-align:left">Sign Out</button>
   </div>
 </div>
 
 <div style="padding-top:4rem">
 
-  <!-- Login gate -->
+  <!-- ══ LOGIN GATE ══ -->
   <div id="portal-gate">
     <section style="min-height:calc(100vh - 4rem);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden">
-      <img src="https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=1400&q=80&auto=format&fit=crop" alt="Nature dark" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(0.3) brightness(0.12)"/>
-      <div class="mesh" style="position:absolute;inset:0;opacity:.3"></div>
-      <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(14,165,233,.06),rgba(0,0,0,.3))"></div>
+      <img src="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=1600&q=85&auto=format&fit=crop" alt="Skincare" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(0.4) brightness(0.2)"/>
+      <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(201,169,110,.08),rgba(0,0,0,.55))"></div>
+      <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(237,232,227,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(237,232,227,.06) 1px,transparent 1px);background-size:52px 52px;opacity:.4"></div>
+
       <div style="position:relative;z-index:10;display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;max-width:1100px;margin:0 auto;padding:4rem 2rem;width:100%" class="g1m">
-        <div>
-          <div class="lbl" style="margin-bottom:1.5rem;color:var(--ac)">Patient Portal</div>
-          <h1 style="font-size:clamp(2.75rem,6vw,4.5rem);font-weight:300;color:var(--text);margin-bottom:1.25rem">Your Health,<br/><em>Organised.</em></h1>
-          <p style="font-size:.9rem;line-height:1.85;color:var(--sub);margin-bottom:2rem;max-width:38ch">A secure, private space to manage your health records, prepare for appointments, and understand your care journey.</p>
+
+        <!-- Brand panel -->
+        <div class="fade-in">
+          <div style="display:flex;align-items:center;gap:.625rem;margin-bottom:2.5rem">
+            <div style="width:32px;height:1px;background:var(--ac)"></div>
+            <span class="lbl" style="color:rgba(201,169,110,.8)">Powered by Acuros Health</span>
+          </div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:clamp(2.5rem,5vw,4rem);font-weight:300;color:#fff;line-height:1.05;margin-bottom:.75rem">
+            Anti-Aging<br/><em style="color:var(--ac)">Academic Clinic</em>
+          </div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:300;color:rgba(255,255,255,.5);font-style:italic;margin-bottom:2.5rem">Regenerate, not just remodel.</div>
           <div style="display:flex;flex-direction:column;gap:.875rem">
-            <div class="stagger-item" style="display:flex;align-items:baseline;gap:.875rem"><div style="width:1px;height:1rem;background:var(--ac);flex-shrink:0"></div><span style="font-size:.85rem;color:var(--sub)">AI-powered medical report translation</span></div>
-            <div class="stagger-item" style="display:flex;align-items:baseline;gap:.875rem"><div style="width:1px;height:1rem;background:var(--ac);flex-shrink:0"></div><span style="font-size:.85rem;color:var(--sub)">Appointment preparation briefs</span></div>
-            <div class="stagger-item" style="display:flex;align-items:baseline;gap:.875rem"><div style="width:1px;height:1rem;background:var(--ac);flex-shrink:0"></div><span style="font-size:.85rem;color:var(--sub)">Medication interaction checker</span></div>
-            <div class="stagger-item" style="display:flex;align-items:baseline;gap:.875rem"><div style="width:1px;height:1rem;background:var(--ac);flex-shrink:0"></div><span style="font-size:.85rem;color:var(--sub)">PIPEDA-compliant encrypted storage</span></div>
+            <div class="stagger-item" style="display:flex;align-items:center;gap:.875rem">
+              <div style="width:1px;height:1rem;background:var(--ac);flex-shrink:0"></div>
+              <span style="font-size:.82rem;color:rgba(255,255,255,.6)">Book treatments &amp; manage appointments</span>
+            </div>
+            <div class="stagger-item" style="display:flex;align-items:center;gap:.875rem">
+              <div style="width:1px;height:1rem;background:var(--ac);flex-shrink:0"></div>
+              <span style="font-size:.82rem;color:rgba(255,255,255,.6)">Shop medical-grade skincare products</span>
+            </div>
+            <div class="stagger-item" style="display:flex;align-items:center;gap:.875rem">
+              <div style="width:1px;height:1rem;background:var(--ac);flex-shrink:0"></div>
+              <span style="font-size:.82rem;color:rgba(255,255,255,.6)">Earn &amp; redeem loyalty rewards</span>
+            </div>
+            <div class="stagger-item" style="display:flex;align-items:center;gap:.875rem">
+              <div style="width:1px;height:1rem;background:var(--rose);flex-shrink:0"></div>
+              <span style="font-size:.82rem;color:rgba(255,255,255,.6)">24/7 AI beauty &amp; health advisor</span>
+            </div>
           </div>
         </div>
-        <div class="auth-card">
-          <h2 style="font-size:1.6rem;font-weight:300;color:var(--text);margin-bottom:.35rem" id="pt-title">Sign In to Your Portal</h2>
-          <p style="font-size:.82rem;color:var(--sub);margin-bottom:1.5rem" id="pt-sub">Access your health records and tools</p>
+
+        <!-- Auth card -->
+        <div class="auth-card fade-in" style="animation-delay:.15s">
+          <div style="margin-bottom:1.75rem">
+            <div class="lbl" style="color:var(--ac);margin-bottom:.5rem">Patient Portal</div>
+            <h2 style="font-size:1.75rem;font-weight:300;color:var(--text)" id="pt-title">Welcome Back</h2>
+            <p style="font-size:.8rem;color:var(--sub);margin-top:.25rem" id="pt-sub">Sign in to access your clinic portal</p>
+          </div>
+
           <div id="pt-err" style="display:none;margin-bottom:1rem"></div>
           <div id="pt-ok"  style="display:none;margin-bottom:1rem"></div>
-          <button onclick="ptGoogleAuth()" class="btn-google" style="margin-bottom:1.25rem">
+
+          <button onclick="ptGoogleAuth()" class="btn-google" style="margin-bottom:1.25rem;gap:.75rem">
             <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
             Continue with Google
           </button>
+
           <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem">
-            <div class="hr" style="flex:1"></div><span style="font-size:.72rem;color:var(--mute)">OR</span><div class="hr" style="flex:1"></div>
+            <div style="height:1px;flex:1;background:var(--border)"></div>
+            <span style="font-size:.7rem;color:var(--mute)">OR</span>
+            <div style="height:1px;flex:1;background:var(--border)"></div>
           </div>
+
           <form id="pt-login" onsubmit="ptLogin(event)" style="display:flex;flex-direction:column;gap:.875rem">
             <div><label class="lbl" style="display:block;margin-bottom:.35rem">Email Address</label><input type="email" id="pt-email" class="inp" placeholder="name@email.com" required/></div>
             <div><label class="lbl" style="display:block;margin-bottom:.35rem">Password</label><input type="password" id="pt-pass" class="inp" placeholder="••••••••" required/></div>
-            <button type="submit" class="btn btn-solid" style="width:100%;justify-content:center;margin-top:.25rem" id="pt-li-btn">Sign In</button>
+            <button type="submit" class="btn btn-dark" style="width:100%;justify-content:center;margin-top:.25rem" id="pt-li-btn">Sign In</button>
           </form>
+
           <form id="pt-register" onsubmit="ptRegister(event)" style="display:none;flex-direction:column;gap:.875rem">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:.875rem">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
               <div><label class="lbl" style="display:block;margin-bottom:.35rem">First Name</label><input type="text" id="pt-first" class="inp" placeholder="Jane" required/></div>
               <div><label class="lbl" style="display:block;margin-bottom:.35rem">Last Name</label><input type="text" id="pt-last" class="inp" placeholder="Doe" required/></div>
             </div>
-            <div><label class="lbl" style="display:block;margin-bottom:.35rem">Patient Code <span style="color:var(--mute);text-transform:none;letter-spacing:0;font-size:.68rem">(from clinic — optional)</span></label><input type="text" id="pt-code" class="inp" placeholder="AH-XXXX"/></div>
+            <div><label class="lbl" style="display:block;margin-bottom:.35rem">Clinic Code <span style="color:var(--mute);text-transform:none;letter-spacing:0;font-size:.68rem">(from AAA Clinics — optional)</span></label><input type="text" id="pt-code" class="inp" placeholder="AAA-XXXX"/></div>
             <div><label class="lbl" style="display:block;margin-bottom:.35rem">Email Address</label><input type="email" id="pt-remail" class="inp" placeholder="name@email.com" required/></div>
             <div><label class="lbl" style="display:block;margin-bottom:.35rem">Password</label><input type="password" id="pt-rpass" class="inp" placeholder="Min. 8 characters" minlength="8" required/></div>
-            <button type="submit" class="btn btn-solid" style="width:100%;justify-content:center;margin-top:.25rem" id="pt-r-btn">Create Account</button>
+            <button type="submit" class="btn btn-dark" style="width:100%;justify-content:center;margin-top:.25rem" id="pt-r-btn">Create Account</button>
           </form>
+
           <div style="margin-top:1rem;text-align:center">
             <button onclick="ptToggle()" id="pt-toggle" style="font-size:.78rem;color:var(--sub);background:none;border:none;cursor:pointer;transition:color .2s" onmouseover="this.style.color='var(--ac)'" onmouseout="this.style.color='var(--sub)'">Don't have an account? Create one</button>
           </div>
@@ -175,138 +268,329 @@
     </section>
   </div>
 
-  <!-- Dashboard (shown after login) -->
+  <!-- ══ DASHBOARD ══ -->
   <div id="portal-dash" style="display:none">
 
-    <!-- Org join banner — shown when user has no org -->
+    <!-- Org join banner -->
     <div id="org-banner" style="display:none">
-      <div style="max-width:1280px;margin:0 auto;padding:1rem 2rem">
-        <div class="org-banner">
+      <div style="max-width:1400px;margin:0 auto;padding:.875rem 2rem">
+        <div style="display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap;padding:1rem 1.25rem;background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--ac)">
           <div style="flex:1;min-width:200px">
             <div class="lbl" style="color:var(--ac);margin-bottom:.25rem">No Clinic Connected</div>
-            <p style="font-size:.82rem;color:var(--sub);line-height:1.6">Enter the code from your clinic to connect your account, unlock your full portal, and start earning loyalty rewards.</p>
+            <p style="font-size:.8rem;color:var(--sub);line-height:1.6">Enter the code from AAA Clinics to connect your account and unlock your full portal.</p>
           </div>
-          <button onclick="showOrgPrompt()" class="btn btn-solid" style="padding:.55rem 1.25rem;flex-shrink:0">Connect Organization</button>
-          <button onclick="dismissOrgBanner()" style="background:none;border:none;cursor:pointer;color:var(--mute);font-size:.75rem;flex-shrink:0" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--mute)'">Remind me later</button>
+          <button onclick="showOrgPrompt()" class="btn btn-gold" style="padding:.5rem 1.25rem;font-size:.7rem;flex-shrink:0">Enter Clinic Code</button>
+          <button onclick="dismissOrgBanner()" style="background:none;border:none;cursor:pointer;color:var(--mute);font-size:.72rem" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--mute)'">Later</button>
         </div>
       </div>
     </div>
 
     <!-- Org join modal -->
-    <div id="org-modal" style="display:none;position:fixed;inset:0;z-index:400;align-items:center;justify-content:center;background:rgba(0,0,0,.5);backdrop-filter:blur(4px)">
-      <div style="background:var(--bg2);border:1px solid var(--border);width:100%;max-width:440px;padding:2.5rem;position:relative;margin:1.5rem">
+    <div id="org-modal" class="org-modal-backdrop" style="display:none">
+      <div style="background:var(--bg2);border:1px solid var(--border);width:100%;max-width:440px;padding:2.5rem;position:relative;margin:1.5rem;box-shadow:0 24px 64px rgba(0,0,0,.2)">
         <button onclick="hideOrgPrompt()" style="position:absolute;top:1rem;right:1rem;background:none;border:none;cursor:pointer;color:var(--mute)">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
         </button>
-        <div class="lbl" style="color:var(--ac);margin-bottom:.75rem">Connect Your Organization</div>
-        <h3 style="font-size:1.6rem;font-weight:300;color:var(--text);margin-bottom:.75rem">Join your clinic's<br/><em>network.</em></h3>
-        <p style="font-size:.82rem;color:var(--sub);line-height:1.65;margin-bottom:1.5rem">Enter the unique code provided by your clinic to connect your account, unlock your full patient portal, and begin earning loyalty rewards.</p>
+        <div class="lbl" style="color:var(--ac);margin-bottom:.75rem">Connect Your Clinic</div>
+        <h3 style="font-size:1.6rem;font-weight:300;color:var(--text);margin-bottom:.625rem">Join your clinic's<br/><em>patient network.</em></h3>
+        <p style="font-size:.8rem;color:var(--sub);line-height:1.65;margin-bottom:1.5rem">Enter the unique code provided by AAA Clinics to unlock your full portal, loyalty rewards, and treatment history.</p>
         <div id="org-err" style="display:none;margin-bottom:1rem"></div>
         <div id="org-ok"  style="display:none;margin-bottom:1rem"></div>
         <form onsubmit="joinOrg(event)" style="display:flex;flex-direction:column;gap:.875rem">
-          <div><label class="lbl" style="display:block;margin-bottom:.35rem">Patient Code</label><input type="text" id="org-code-inp" class="inp" placeholder="AH-XXXX" required/></div>
-          <button type="submit" class="btn btn-solid" style="width:100%;justify-content:center" id="org-join-btn">Connect</button>
+          <div>
+            <label class="lbl" style="display:block;margin-bottom:.35rem">Clinic Code</label>
+            <input type="text" id="org-code-inp" class="inp" placeholder="AAA-XXXX" required autocomplete="off" style="text-transform:uppercase;letter-spacing:.1em"/>
+          </div>
+          <button type="submit" class="btn btn-gold" style="width:100%;justify-content:center" id="org-join-btn">Connect</button>
         </form>
-        <p style="font-size:.72rem;color:var(--mute);margin-top:1rem">Don't have a code? Ask your healthcare provider for your Acuros patient code.</p>
+        <p style="font-size:.7rem;color:var(--mute);margin-top:1rem">Don't have a code? Ask your AAA Clinics provider at your next appointment.</p>
       </div>
     </div>
 
-    <!-- Header -->
-    <section class="bg-dots" style="border-bottom:1px solid var(--border)">
-      <div style="max-width:1280px;margin:0 auto;padding:2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;background:var(--bg2)">
-        <div>
-          <div class="lbl" style="margin-bottom:.35rem">Patient Portal</div>
-          <h2 style="font-size:1.75rem;font-weight:300;color:var(--text)">Welcome back, <em id="dash-name">Patient</em></h2>
-          <p style="font-size:.8rem;color:var(--mute);margin-top:.2rem" id="dash-email-lbl"></p>
-        </div>
-        <div style="display:flex;gap:.875rem;align-items:center;flex-wrap:wrap">
-          <div id="dash-code-lbl" style="display:none;padding:.5rem 1rem;background:var(--bg);border:1px solid var(--border);font-size:.75rem;color:var(--sub)"></div>
-          <a href="/ai-assistant" class="btn btn-outline" style="padding:.5rem 1.25rem;font-size:.72rem">AI Assistant</a>
-          <button onclick="ptLogout()" class="btn btn-outline" style="padding:.5rem 1.25rem;font-size:.72rem">Sign Out</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- Dashboard content -->
-    <section style="max-width:1280px;margin:0 auto;padding:2.5rem 2rem">
-
-      <!-- Persistent org join prompt (in-dashboard) -->
-      <div id="dash-org-prompt" style="display:none;margin-bottom:2rem">
-        <div style="background:var(--bg2);border:1px solid var(--border);padding:2rem;display:flex;gap:2rem;align-items:center;flex-wrap:wrap">
-          <div style="flex:1;min-width:220px">
-            <div class="lbl" style="color:var(--ac);margin-bottom:.5rem">Complete Your Setup</div>
-            <h3 style="font-size:1.5rem;font-weight:300;color:var(--text);margin-bottom:.5rem">Connect to an organization<br/>for full access.</h3>
-            <p style="font-size:.82rem;color:var(--sub);line-height:1.65">Connecting to a clinic unlocks your complete health timeline, unlimited AI, and shared records with your care team.</p>
-          </div>
-          <button onclick="showOrgPrompt()" class="btn btn-solid">Enter Patient Code</button>
-        </div>
-      </div>
-
-      <div class="lbl" style="margin-bottom:1.25rem">Your Tools</div>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-bottom:2.5rem" class="g1m">
-        <a href="/ai-assistant" class="card" style="padding:1.75rem;text-align:left;cursor:pointer;background:none;width:100%;text-decoration:none;display:block">
-          <div class="lbl" style="color:var(--ac);margin-bottom:.625rem">AI Assistant</div>
-          <h4 style="font-size:1.3rem;font-weight:300;color:var(--text);margin-bottom:.5rem">Health Dialogue</h4>
-          <p style="font-size:.8rem;line-height:1.75;color:var(--sub)">Ask questions, translate reports, prepare for appointments.</p>
-        </a>
-        <div class="card" style="padding:1.75rem;opacity:.55;cursor:not-allowed">
-          <div class="lbl" style="color:var(--mute);margin-bottom:.625rem">Coming Soon</div>
-          <h4 style="font-size:1.3rem;font-weight:300;color:var(--text);margin-bottom:.5rem">Medication Tracker</h4>
-          <p style="font-size:.8rem;line-height:1.75;color:var(--sub)">Review prescriptions and check interactions.</p>
-        </div>
-        <div class="card" style="padding:1.75rem;opacity:.55;cursor:not-allowed">
-          <div class="lbl" style="color:var(--mute);margin-bottom:.625rem">Coming Soon</div>
-          <h4 style="font-size:1.3rem;font-weight:300;color:var(--text);margin-bottom:.5rem">Symptom Journal</h4>
-          <p style="font-size:.8rem;line-height:1.75;color:var(--sub)">Log symptoms with timestamps for your care team.</p>
-        </div>
-      </div>
-
-      <div class="lbl" style="margin-bottom:1.25rem">Account</div>
-      <div class="card" style="padding:1.5rem">
-        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
+    <!-- Dashboard Header -->
+    <section style="background:var(--bg2);border-bottom:1px solid var(--border)">
+      <div style="max-width:1400px;margin:0 auto;padding:2rem">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1.5rem;margin-bottom:2rem">
           <div>
-            <div style="font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:300;color:var(--text);margin-bottom:.25rem" id="dash-full-name">—</div>
-            <div style="font-size:.8rem;color:var(--mute)" id="dash-email-display">—</div>
+            <div class="lbl" style="color:var(--ac);margin-bottom:.5rem">Anti-Aging Academic Clinic</div>
+            <h1 style="font-size:clamp(1.75rem,4vw,2.5rem);font-weight:300;color:var(--text)">Welcome back, <em id="dash-name">Patient</em></h1>
+            <p style="font-size:.8rem;color:var(--mute);margin-top:.25rem" id="dash-email-lbl"></p>
           </div>
-          <button onclick="ptLogout()" class="btn btn-outline" style="padding:.5rem 1.25rem;font-size:.72rem">Sign Out</button>
+          <div style="display:flex;gap:.75rem;align-items:center;flex-wrap:wrap">
+            <div id="dash-org-badge" style="display:none" class="reward-badge"></div>
+            <a href="/ai-assistant" class="btn btn-outline" style="padding:.5rem 1.25rem;font-size:.68rem">AI Assistant</a>
+            <button onclick="ptLogout()" class="btn btn-outline" style="padding:.5rem 1.25rem;font-size:.68rem">Sign Out</button>
+          </div>
+        </div>
+
+        <!-- Rewards / Stats bar -->
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border)" class="g2">
+          <div style="background:var(--bg2);padding:1.25rem 1.5rem">
+            <div class="lbl" style="margin-bottom:.5rem">Loyalty Points</div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;color:var(--ac)">0 <span style="font-size:1rem;color:var(--mute)">pts</span></div>
+          </div>
+          <div style="background:var(--bg2);padding:1.25rem 1.5rem">
+            <div class="lbl" style="margin-bottom:.5rem">Treatments Booked</div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;color:var(--text)">0</div>
+          </div>
+          <div style="background:var(--bg2);padding:1.25rem 1.5rem">
+            <div class="lbl" style="margin-bottom:.5rem">Next Appointment</div>
+            <div style="font-size:.82rem;color:var(--sub);margin-top:.25rem">No upcoming visits</div>
+          </div>
+          <div style="background:var(--bg2);padding:1.25rem 1.5rem">
+            <div class="lbl" style="margin-bottom:.5rem;color:var(--ac)">Rewards Tier</div>
+            <div style="font-size:.8rem;color:var(--sub)">New Member</div>
+          </div>
         </div>
       </div>
     </section>
+
+    <!-- Dashboard Body -->
+    <div style="max-width:1400px;margin:0 auto;padding:2.5rem 2rem">
+
+      <!-- Connect org prompt (in-dash) -->
+      <div id="dash-org-prompt" style="display:none;margin-bottom:2.5rem">
+        <div style="background:var(--bg2);border:1px solid var(--border);padding:2rem;display:grid;grid-template-columns:1fr auto;gap:2rem;align-items:center" class="g1m">
+          <div>
+            <div class="lbl" style="color:var(--ac);margin-bottom:.5rem">Complete Setup</div>
+            <h3 style="font-size:1.4rem;font-weight:300;color:var(--text);margin-bottom:.375rem">Connect to AAA Clinics for full access.</h3>
+            <p style="font-size:.8rem;color:var(--sub);line-height:1.7">Enter your clinic code to unlock your treatment history, loyalty rewards, and personalized care recommendations.</p>
+          </div>
+          <button onclick="showOrgPrompt()" class="btn btn-gold" style="flex-shrink:0">Enter Clinic Code</button>
+        </div>
+      </div>
+
+      <!-- Book Treatments -->
+      <div style="margin-bottom:3rem">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:1.5rem">
+          <div>
+            <div class="lbl" style="color:var(--ac);margin-bottom:.35rem">Treatments</div>
+            <h2 style="font-size:clamp(1.5rem,3vw,2rem);font-weight:300;color:var(--text)">Book a Treatment</h2>
+          </div>
+          <a href="https://aaaclinics.com/pages/contact" target="_blank" rel="noopener noreferrer" class="lbl" style="color:var(--ac);text-decoration:none;transition:opacity .2s" onmouseover="this.style.opacity='.7'" onmouseout="this.style.opacity='1'">View All →</a>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem" class="g2">
+
+          <div class="treatment-card">
+            <div style="width:36px;height:36px;border-radius:50%;background:rgba(201,169,110,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ac)" stroke-width="1.5"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+            </div>
+            <div>
+              <div class="lbl" style="color:var(--ac);margin-bottom:.3rem">Cosmetic Injections</div>
+              <h4 style="font-size:1.2rem;font-weight:300;color:var(--text);margin-bottom:.375rem">Injectables</h4>
+              <p style="font-size:.75rem;line-height:1.75;color:var(--sub)">Botox, Fillers, PRP, Skin Boosters, Belkyra, Radiesse, Sculptra, PDRN</p>
+            </div>
+            <a href="https://aaaclinics.com/pages/contact" target="_blank" rel="noopener noreferrer" class="btn btn-outline" style="padding:.45rem 1rem;font-size:.68rem;margin-top:auto">Book Now →</a>
+          </div>
+
+          <div class="treatment-card">
+            <div style="width:36px;height:36px;border-radius:50%;background:rgba(212,160,144,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--rose)" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <div>
+              <div class="lbl" style="color:var(--rose);margin-bottom:.3rem">Skin Therapy</div>
+              <h4 style="font-size:1.2rem;font-weight:300;color:var(--text);margin-bottom:.375rem">Skin Treatments</h4>
+              <p style="font-size:.75rem;line-height:1.75;color:var(--sub)">Microneedling, Chemical Peel, Exosome, Mesotherapy, Medical-Grade Skincare</p>
+            </div>
+            <a href="https://aaaclinics.com/pages/contact" target="_blank" rel="noopener noreferrer" class="btn btn-outline" style="padding:.45rem 1rem;font-size:.68rem;margin-top:auto">Book Now →</a>
+          </div>
+
+          <div class="treatment-card">
+            <div style="width:36px;height:36px;border-radius:50%;background:rgba(201,169,110,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ac)" stroke-width="1.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </div>
+            <div>
+              <div class="lbl" style="color:var(--ac);margin-bottom:.3rem">Thread Lifting</div>
+              <h4 style="font-size:1.2rem;font-weight:300;color:var(--text);margin-bottom:.375rem">Lift &amp; Contour</h4>
+              <p style="font-size:.75rem;line-height:1.75;color:var(--sub)">Silhouette Soft®, APTOS®, PDO Thread Lift — non-surgical facial contouring</p>
+            </div>
+            <a href="https://aaaclinics.com/pages/contact" target="_blank" rel="noopener noreferrer" class="btn btn-outline" style="padding:.45rem 1rem;font-size:.68rem;margin-top:auto">Book Now →</a>
+          </div>
+
+          <div class="treatment-card">
+            <div style="width:36px;height:36px;border-radius:50%;background:rgba(212,160,144,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--rose)" stroke-width="1.5"><path d="M12 2a5 5 0 015 5v3H7V7a5 5 0 015-5zM5 12h14l-1 10H6L5 12z"/></svg>
+            </div>
+            <div>
+              <div class="lbl" style="color:var(--rose);margin-bottom:.3rem">IV Therapy</div>
+              <h4 style="font-size:1.2rem;font-weight:300;color:var(--text);margin-bottom:.375rem">Drip &amp; Revive</h4>
+              <p style="font-size:.75rem;line-height:1.75;color:var(--sub)">Custom IV vitamin infusions for energy, immunity, hydration &amp; skin radiance</p>
+            </div>
+            <a href="https://aaaclinics.com/pages/contact" target="_blank" rel="noopener noreferrer" class="btn btn-outline" style="padding:.45rem 1rem;font-size:.68rem;margin-top:auto">Book Now →</a>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="gold-line" style="margin-bottom:3rem"></div>
+
+      <!-- Shop Skincare -->
+      <div style="margin-bottom:3rem">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:1.5rem">
+          <div>
+            <div class="lbl" style="color:var(--ac);margin-bottom:.35rem">Skincare Shop</div>
+            <h2 style="font-size:clamp(1.5rem,3vw,2rem);font-weight:300;color:var(--text)">Medical-Grade Products</h2>
+          </div>
+          <a href="https://aaaclinics.com/collections/all" target="_blank" rel="noopener noreferrer" class="lbl" style="color:var(--ac);text-decoration:none;transition:opacity .2s" onmouseover="this.style.opacity='.7'" onmouseout="this.style.opacity='1'">Shop All →</a>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem" class="g2">
+
+          <div class="product-card">
+            <img class="product-img" src="https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=400&q=80&auto=format&fit=crop" alt="Vitamin C Serum"/>
+            <div style="padding:1.25rem">
+              <div class="lbl" style="color:var(--ac);margin-bottom:.375rem">Brightening</div>
+              <h4 style="font-size:1rem;font-weight:400;color:var(--text);margin-bottom:.25rem;font-family:'Cormorant Garamond',serif">Vitamin C Brightening Serum</h4>
+              <p style="font-size:.75rem;color:var(--sub);line-height:1.6;margin-bottom:.875rem">20% L-ascorbic acid with ferulic acid for maximum radiance and antioxidant protection.</p>
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <span style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--text)">$89.00</span>
+                <a href="https://aaaclinics.com/collections/all" target="_blank" rel="noopener noreferrer" class="btn btn-gold" style="padding:.4rem .875rem;font-size:.65rem">Shop →</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="product-card">
+            <img class="product-img" src="https://images.unsplash.com/photo-1631390459696-c9e5ed5bbe37?w=400&q=80&auto=format&fit=crop" alt="Moisturizer"/>
+            <div style="padding:1.25rem">
+              <div class="lbl" style="color:var(--ac);margin-bottom:.375rem">Hydration</div>
+              <h4 style="font-size:1rem;font-weight:400;color:var(--text);margin-bottom:.25rem;font-family:'Cormorant Garamond',serif">Hyaluronic Acid Moisturizer</h4>
+              <p style="font-size:.75rem;color:var(--sub);line-height:1.6;margin-bottom:.875rem">Multi-weight hyaluronic acid complex for deep, lasting hydration at every skin layer.</p>
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <span style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--text)">$65.00</span>
+                <a href="https://aaaclinics.com/collections/all" target="_blank" rel="noopener noreferrer" class="btn btn-gold" style="padding:.4rem .875rem;font-size:.65rem">Shop →</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="product-card">
+            <img class="product-img" src="https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=400&q=80&auto=format&fit=crop" alt="Retinol Cream"/>
+            <div style="padding:1.25rem">
+              <div class="lbl" style="color:var(--rose);margin-bottom:.375rem">Anti-Aging</div>
+              <h4 style="font-size:1rem;font-weight:400;color:var(--text);margin-bottom:.25rem;font-family:'Cormorant Garamond',serif">Retinol Recovery Cream</h4>
+              <p style="font-size:.75rem;color:var(--sub);line-height:1.6;margin-bottom:.875rem">0.5% encapsulated retinol with ceramides for cell renewal with minimal irritation.</p>
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <span style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--text)">$110.00</span>
+                <a href="https://aaaclinics.com/collections/all" target="_blank" rel="noopener noreferrer" class="btn btn-gold" style="padding:.4rem .875rem;font-size:.65rem">Shop →</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="product-card">
+            <img class="product-img" src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=80&auto=format&fit=crop" alt="SPF"/>
+            <div style="padding:1.25rem">
+              <div class="lbl" style="color:var(--ac);margin-bottom:.375rem">Protection</div>
+              <h4 style="font-size:1rem;font-weight:400;color:var(--text);margin-bottom:.25rem;font-family:'Cormorant Garamond',serif">SPF 50 Physical Sunscreen</h4>
+              <p style="font-size:.75rem;color:var(--sub);line-height:1.6;margin-bottom:.875rem">Zinc oxide &amp; titanium dioxide. Invisible finish, reef-safe, ideal post-treatment.</p>
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <span style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--text)">$48.00</span>
+                <a href="https://aaaclinics.com/collections/all" target="_blank" rel="noopener noreferrer" class="btn btn-gold" style="padding:.4rem .875rem;font-size:.65rem">Shop →</a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="gold-line" style="margin-bottom:3rem"></div>
+
+      <!-- Rewards + Account -->
+      <div style="display:grid;grid-template-columns:2fr 1fr;gap:1.5rem;margin-bottom:3rem" class="g1m">
+
+        <!-- Rewards Coming Soon -->
+        <div class="card-flat" style="padding:2rem;position:relative;overflow:hidden">
+          <div style="position:absolute;top:0;right:0;width:200px;height:200px;background:radial-gradient(circle,rgba(201,169,110,.08) 0%,transparent 70%);pointer-events:none"></div>
+          <div class="lbl" style="color:var(--ac);margin-bottom:.875rem">Loyalty &amp; Rewards</div>
+          <h3 style="font-size:1.75rem;font-weight:300;color:var(--text);margin-bottom:.75rem">Earn points.<br/><em>Redeem rewards.</em></h3>
+          <p style="font-size:.82rem;line-height:1.8;color:var(--sub);margin-bottom:1.5rem;max-width:48ch">Coming soon — earn points for every visit, product purchase, and referral. Redeem for clinic credits, complimentary treatments, and exclusive offers from AAA Clinics.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:.625rem;margin-bottom:1.75rem">
+            <span style="display:inline-flex;align-items:center;gap:.375rem;padding:.3rem .75rem;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;background:rgba(201,169,110,.08);border:1px solid rgba(201,169,110,.2);color:var(--ac)">Appointment Check-ins</span>
+            <span style="display:inline-flex;align-items:center;gap:.375rem;padding:.3rem .75rem;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;background:rgba(201,169,110,.08);border:1px solid rgba(201,169,110,.2);color:var(--ac)">Product Purchases</span>
+            <span style="display:inline-flex;align-items:center;gap:.375rem;padding:.3rem .75rem;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;background:rgba(201,169,110,.08);border:1px solid rgba(201,169,110,.2);color:var(--ac)">Referrals</span>
+          </div>
+          <span class="lbl" style="color:var(--mute)">Launching Soon — stay tuned</span>
+        </div>
+
+        <!-- Account card -->
+        <div class="card-flat" style="padding:2rem">
+          <div class="lbl" style="margin-bottom:1rem">Account</div>
+          <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem">
+            <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--ac),var(--rose));display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <span id="dash-avatar" style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:#fff;font-weight:400">P</span>
+            </div>
+            <div>
+              <div style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--text)" id="dash-full-name">—</div>
+              <div style="font-size:.75rem;color:var(--mute)" id="dash-email-display">—</div>
+            </div>
+          </div>
+          <div style="height:1px;background:var(--border);margin-bottom:1.25rem"></div>
+          <div id="dash-clinic-info" style="display:none;margin-bottom:1.25rem">
+            <div class="lbl" style="margin-bottom:.375rem">Connected Clinic</div>
+            <div style="font-size:.82rem;color:var(--sub)" id="dash-org-name-display">—</div>
+          </div>
+          <button onclick="showOrgPrompt()" id="dash-connect-btn" style="display:none;width:100%;margin-bottom:.75rem" class="btn btn-gold btn-sm" style="font-size:.7rem;padding:.5rem 1rem;justify-content:center">Connect Clinic Code</button>
+          <button onclick="ptLogout()" style="width:100%;justify-content:center" class="btn btn-outline" style="font-size:.7rem;padding:.5rem 1rem">Sign Out</button>
+        </div>
+      </div>
+
+    </div><!-- /dash body -->
 
     <footer style="border-top:1px solid var(--border);background:var(--bg2)">
-      <div style="max-width:1280px;margin:0 auto;padding:1.75rem 2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
-        <p style="font-size:.75rem;color:var(--mute)">© 2025 Acuros Health Inc.</p>
+      <div style="max-width:1400px;margin:0 auto;padding:1.5rem 2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
+        <div style="display:flex;align-items:center;gap:1.5rem">
+          <p style="font-size:.7rem;color:var(--mute)">© 2025 Anti-Aging Academic Clinic</p>
+          <span style="font-size:.7rem;color:var(--border)">|</span>
+          <p style="font-size:.7rem;color:var(--mute)">Powered by <a href="/" style="color:var(--ac);text-decoration:none">Acuros Health</a></p>
+        </div>
         <div style="display:flex;gap:1.5rem">
           <a href="/privacy" class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Privacy</a>
           <a href="/terms"   class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Terms</a>
+          <a href="https://aaaclinics.com" target="_blank" rel="noopener noreferrer" class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--ac)'" onmouseout="this.style.color=''">aaaclinics.com</a>
         </div>
       </div>
     </footer>
+  </div><!-- /portal-dash -->
+
+</div><!-- /padding-top -->
+
+<!-- ══ AI ADVISOR WIDGET ══ -->
+<div id="ai-widget">
+  <div id="ai-panel">
+    <div style="padding:.875rem 1.125rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--bg2)">
+      <div style="display:flex;align-items:center;gap:.625rem">
+        <div style="width:8px;height:8px;border-radius:50%;background:var(--ac)"></div>
+        <div>
+          <div style="font-size:.78rem;font-weight:500;color:var(--text);letter-spacing:.03em">AAA Beauty Advisor</div>
+          <div style="font-size:.62rem;color:var(--mute);letter-spacing:.08em;text-transform:uppercase">Powered by Acuros AI</div>
+        </div>
+      </div>
+      <button onclick="toggleAdvisor()" style="background:none;border:none;cursor:pointer;color:var(--mute);padding:.25rem;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--mute)'">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div id="ai-msgs"></div>
+    <div style="padding:.75rem;border-top:1px solid var(--border);display:flex;gap:.5rem;background:var(--bg2)">
+      <input id="ai-inp" type="text" placeholder="Ask about treatments, skincare…" style="flex:1;background:var(--bg);border:1px solid var(--border);padding:.55rem .875rem;font-size:.8rem;color:var(--text);font-family:inherit;outline:none;transition:border-color .2s" onfocus="this.style.borderColor='var(--ac)'" onblur="this.style.borderColor='var(--border)'" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendAdvisorMsg();}"/>
+      <button onclick="sendAdvisorMsg()" style="width:36px;height:36px;background:var(--ac);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s" onmouseover="this.style.background='var(--gold2)'" onmouseout="this.style.background='var(--ac)'">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z"/></svg>
+      </button>
+    </div>
   </div>
+  <button id="ai-widget-btn" onclick="toggleAdvisor()" aria-label="AI Beauty Advisor">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+  </button>
 </div>
 
 <script>
 const CONFIG = {
   supabaseUrl: 'https://pyexkdoupqzbnrybiubo.supabase.co',
   supabaseKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB5ZXhrZG91cHF6Ym5yeWJpdWJvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4Mzg4MzYsImV4cCI6MjA4NzQxNDgzNn0.3_dLQEJfmC08A2-hlgOfwlu4ngx7hslUR3Dun4BoXLU',
+  aiApiUrl: '/api/chat',
 };
 
 let sb = null;
-try { if (CONFIG.supabaseKey) sb = window.supabase.createClient(CONFIG.supabaseUrl, CONFIG.supabaseKey); } catch(e) {}
+try { if (CONFIG.supabaseKey) sb = window.supabase.createClient(CONFIG.supabaseUrl, CONFIG.supabaseKey); } catch(e) { console.error('[Acuros] Supabase init failed', e); }
 
 let currentUser = null, ptMode = 'login';
 const ORG_BANNER_DISMISSED_KEY = 'ah-org-banner-dismissed';
-
-// Fetch profile + org name in one query
-async function fetchProfile(userId) {
-  if (!sb || !userId) return null;
-  const { data } = await sb
-    .from('profiles')
-    .select('*, org:org_id(id, name)')
-    .eq('id', userId)
-    .maybeSingle();
-  return data;
-}
 
 // ── Theme ──
 function toggleTheme() {
@@ -324,61 +608,123 @@ function toggleTheme() {
 
 function openMob()  { document.getElementById('mob-menu').classList.add('open'); }
 function closeMob() { document.getElementById('mob-menu').classList.remove('open'); }
-window.addEventListener('scroll', () => { document.getElementById('main-nav').style.boxShadow = window.scrollY > 10 ? '0 1px 24px rgba(0,0,0,.08)' : ''; });
+window.addEventListener('scroll', () => { document.getElementById('main-nav').style.boxShadow = window.scrollY > 10 ? '0 1px 24px rgba(0,0,0,.06)' : ''; });
 
 // ── Helpers ──
-function showMsg(id, msg, type) { const el = document.getElementById(id); if (!el) return; el.style.display = 'block'; el.className = type === 'err' ? 'err-box' : 'ok-box'; el.textContent = msg; }
+function showMsg(id, msg, type) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.style.display = 'block';
+  el.className = type === 'err' ? 'err-box' : (type === 'warn' ? 'warn-box' : 'ok-box');
+  el.textContent = msg;
+}
 function hideMsg(...ids) { ids.forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; }); }
-function setBtn(id, loading, label) { const b = document.getElementById(id); if (!b) return; b.disabled = loading; b.innerHTML = loading ? '<span class="spin"></span>' : label; }
-
-// ── Org status ──
-function userHasOrg() {
-  if (!currentUser) return false;
-  return !!(currentUser.org_id || currentUser.code);
+function setBtn(id, loading, label) {
+  const b = document.getElementById(id);
+  if (!b) return;
+  b.disabled = loading;
+  b.innerHTML = loading ? '<span class="spin"></span>' : label;
 }
 
-function showOrgPrompt()  { const m = document.getElementById('org-modal'); if (m) m.style.display = 'flex'; }
-function hideOrgPrompt()  { const m = document.getElementById('org-modal'); if (m) m.style.display = 'none'; }
+// ── Fetch profile with org join ──
+async function fetchProfile(userId) {
+  if (!sb || !userId) return null;
+  try {
+    const { data, error } = await sb
+      .from('profiles')
+      .select('*, org:org_id(id, name)')
+      .eq('id', userId)
+      .maybeSingle();
+    if (error) {
+      // Fallback: try without the join if org_id column doesn't exist yet
+      const { data: plain } = await sb.from('profiles').select('*').eq('id', userId).maybeSingle();
+      return plain;
+    }
+    return data;
+  } catch (e) {
+    console.error('[Acuros] fetchProfile error:', e);
+    return null;
+  }
+}
+
+// ── Org status ──
+function userHasOrg() { return !!(currentUser?.org_id || currentUser?.code); }
+
+function showOrgPrompt() {
+  const m = document.getElementById('org-modal');
+  if (m) { m.style.display = 'flex'; hideMsg('org-err', 'org-ok'); }
+}
+function hideOrgPrompt() {
+  const m = document.getElementById('org-modal');
+  if (m) m.style.display = 'none';
+}
 function dismissOrgBanner() {
   localStorage.setItem(ORG_BANNER_DISMISSED_KEY, '1');
   const b = document.getElementById('org-banner');
   if (b) b.style.display = 'none';
 }
 
+// ── Join Org — validates against organizations table ──
 async function joinOrg(e) {
   e.preventDefault();
   hideMsg('org-err', 'org-ok');
-  const code = document.getElementById('org-code-inp').value.trim().toUpperCase();
+  const rawCode = document.getElementById('org-code-inp')?.value ?? '';
+  const code = rawCode.trim().toUpperCase();
   if (!code) { showMsg('org-err', 'Please enter your clinic code.', 'err'); return; }
-  setBtn('org-join-btn', true, 'Connect');
-  try {
-    if (!sb || !currentUser?.id) throw new Error('Not authenticated. Please sign in first.');
 
-    // Validate code against organizations table
+  setBtn('org-join-btn', true, 'Connect');
+
+  // Safety: re-enable button after 15s no matter what
+  const safetyTimer = setTimeout(() => setBtn('org-join-btn', false, 'Connect'), 15000);
+
+  try {
+    if (!sb)             throw new Error('Service unavailable. Please refresh and try again.');
+    if (!currentUser?.id) throw new Error('Not signed in. Please sign in before connecting.');
+
+    // 1. Validate code against organizations table
     const { data: org, error: orgErr } = await sb
       .from('organizations')
       .select('id, name, active')
       .eq('code', code)
       .maybeSingle();
-    if (orgErr) throw orgErr;
-    if (!org) throw new Error('Code not recognized. Please verify the code with your clinic provider.');
-    if (!org.active) throw new Error('This organization code is inactive. Please contact your clinic.');
 
-    // Link patient profile to the validated org
-    const { error: updateErr } = await sb
+    if (orgErr) {
+      console.error('[Acuros] org lookup error:', orgErr);
+      throw new Error(orgErr.message || 'Could not reach the clinic directory. Please try again.');
+    }
+    if (!org)        throw new Error('Code not recognized. Please verify the code with your AAA Clinics provider.');
+    if (!org.active) throw new Error('This clinic code is no longer active. Please contact AAA Clinics.');
+
+    // 2. Link profile to org — try with org_id first, fall back without
+    let linked = false;
+    const { error: e1 } = await sb
       .from('profiles')
       .update({ patient_code: code, org_id: org.id })
       .eq('id', currentUser.id);
-    if (updateErr) throw updateErr;
+    if (e1) {
+      // org_id column may not exist yet — update just the code
+      const { error: e2 } = await sb
+        .from('profiles')
+        .update({ patient_code: code })
+        .eq('id', currentUser.id);
+      if (e2) throw new Error(e2.message || 'Failed to save your clinic connection. Please try again.');
+      linked = true;
+    } else {
+      linked = true;
+    }
 
-    currentUser.code = code;
-    currentUser.org_id = org.id;
-    currentUser.org_name = org.name;
-    showMsg('org-ok', `Connected to ${org.name}. Welcome to your clinic portal!`, 'ok');
-    setTimeout(() => { hideOrgPrompt(); syncPortal(); }, 1600);
+    if (linked) {
+      currentUser.code = code;
+      currentUser.org_id = org.id;
+      currentUser.org_name = org.name;
+      showMsg('org-ok', `Connected to ${org.name}. Welcome to your clinic portal!`, 'ok');
+      setTimeout(() => { hideOrgPrompt(); syncPortal(); }, 1600);
+    }
   } catch (err) {
+    console.error('[Acuros] joinOrg error:', err);
     showMsg('org-err', err.message || 'Connection failed. Please check your code and try again.', 'err');
   } finally {
+    clearTimeout(safetyTimer);
     setBtn('org-join-btn', false, 'Connect');
   }
 }
@@ -389,8 +735,8 @@ function ptToggle() {
   const reg = ptMode === 'register';
   document.getElementById('pt-login').style.display    = reg ? 'none'  : 'flex';
   document.getElementById('pt-register').style.display = reg ? 'flex'  : 'none';
-  document.getElementById('pt-title').textContent   = reg ? 'Create Your Account'     : 'Sign In to Your Portal';
-  document.getElementById('pt-sub').textContent     = reg ? 'Enter your details to get started' : 'Access your health records and tools';
+  document.getElementById('pt-title').textContent   = reg ? 'Create Account'          : 'Welcome Back';
+  document.getElementById('pt-sub').textContent     = reg ? 'Enter your details below' : 'Sign in to access your clinic portal';
   document.getElementById('pt-toggle').textContent  = reg ? 'Already have an account? Sign in' : "Don't have an account? Create one";
   hideMsg('pt-err', 'pt-ok');
 }
@@ -398,7 +744,7 @@ function ptToggle() {
 async function ptGoogleAuth() {
   if (!sb) { showMsg('pt-err', 'Auth not configured.', 'err'); return; }
   try {
-    const { error } = await sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin + '/patient-portal?portal=1' } });
+    const { error } = await sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin + '/patient-portal' } });
     if (error) throw error;
   } catch (err) { showMsg('pt-err', err.message || 'Google sign-in failed.', 'err'); }
 }
@@ -406,113 +752,145 @@ async function ptGoogleAuth() {
 async function ptLogin(e) {
   e.preventDefault(); hideMsg('pt-err', 'pt-ok'); setBtn('pt-li-btn', true, 'Sign In');
   try {
-    if (sb) {
-      const { data, error } = await sb.auth.signInWithPassword({ email: document.getElementById('pt-email').value, password: document.getElementById('pt-pass').value });
-      if (error) throw error;
-      const profile = await fetchProfile(data.user.id);
-      currentUser = {
-        id: data.user.id,
-        email: data.user.email,
-        name: profile?.name || data.user.user_metadata?.full_name || data.user.email.split('@')[0],
-        first: profile?.first_name || '',
-        last: profile?.last_name || '',
-        code: profile?.patient_code || '',
-        org_id: profile?.org_id || '',
-        org_name: profile?.org?.name || '',
-      };
-    } else {
-      const email = document.getElementById('pt-email').value;
-      currentUser = { id: 'demo', email, name: email.split('@')[0], first: '', last: '', code: '', org_id: '', org_name: '' };
-    }
+    if (!sb) throw new Error('Auth service unavailable.');
+    const { data, error } = await sb.auth.signInWithPassword({
+      email: document.getElementById('pt-email').value,
+      password: document.getElementById('pt-pass').value,
+    });
+    if (error) throw error;
+    const profile = await fetchProfile(data.user.id);
+    currentUser = {
+      id: data.user.id, email: data.user.email,
+      name: profile?.name || data.user.user_metadata?.full_name || data.user.email.split('@')[0],
+      first: profile?.first_name || '', last: profile?.last_name || '',
+      code: profile?.patient_code || '', org_id: profile?.org_id || '',
+      org_name: profile?.org?.name || '',
+    };
     syncPortal();
-  } catch (err) { showMsg('pt-err', err.message || 'Sign in failed.', 'err'); }
+  } catch (err) { showMsg('pt-err', err.message || 'Sign in failed. Check your credentials.', 'err'); }
   finally { setBtn('pt-li-btn', false, 'Sign In'); }
 }
 
 async function ptRegister(e) {
   e.preventDefault(); hideMsg('pt-err', 'pt-ok'); setBtn('pt-r-btn', true, 'Create Account');
-  const first = document.getElementById('pt-first').value.trim(), last = document.getElementById('pt-last').value.trim(), code = document.getElementById('pt-code').value.trim(), email = document.getElementById('pt-remail').value, pass = document.getElementById('pt-rpass').value, name = (first + ' ' + last).trim();
+  const first = document.getElementById('pt-first').value.trim();
+  const last  = document.getElementById('pt-last').value.trim();
+  const code  = document.getElementById('pt-code').value.trim();
+  const email = document.getElementById('pt-remail').value;
+  const pass  = document.getElementById('pt-rpass').value;
+  const name  = (first + ' ' + last).trim();
   try {
-    if (sb) {
-      const { data, error } = await sb.auth.signUp({ email, password: pass, options: { data: { full_name: name } } });
-      if (error) throw error;
-      if (!data.session) { showMsg('pt-ok', 'Account created! Check your email to confirm, then sign in.', 'ok'); setBtn('pt-r-btn', false, 'Create Account'); return; }
-      // Validate org code if provided, then upsert profile (best-effort)
-      let regOrgId = '', regOrgName = '', safeCode = code ? code.toUpperCase() : '';
-      if (safeCode) {
-        const { data: org } = await sb.from('organizations').select('id, name').eq('code', safeCode).eq('active', true).maybeSingle().catch(() => ({ data: null }));
+    if (!sb) throw new Error('Auth service unavailable.');
+    const { data, error } = await sb.auth.signUp({ email, password: pass, options: { data: { full_name: name } } });
+    if (error) throw error;
+    if (!data.session) {
+      showMsg('pt-ok', 'Account created! Check your email to confirm, then sign in.', 'ok');
+      setBtn('pt-r-btn', false, 'Create Account'); return;
+    }
+    let regOrgId = '', regOrgName = '', safeCode = code ? code.toUpperCase() : '';
+    if (safeCode && sb) {
+      try {
+        const { data: org } = await sb.from('organizations').select('id, name').eq('code', safeCode).eq('active', true).maybeSingle();
         if (org) { regOrgId = org.id; regOrgName = org.name; } else { safeCode = ''; }
-      }
-      try { await sb.from('profiles').upsert({ id: data.user.id, name, first_name: first, last_name: last, patient_code: safeCode || null, org_id: regOrgId || null, tier: 'free', usage_count: 0 }); } catch (_) {}
-      currentUser = { id: data.user.id, email, name, first, last, code: safeCode, org_id: regOrgId, org_name: regOrgName };
-    } else { currentUser = { id: 'demo', email, name, first, last, code: '', org_id: '', org_name: '' }; }
+      } catch (_) { safeCode = ''; }
+    }
+    try {
+      await sb.from('profiles').upsert({
+        id: data.user.id, name, first_name: first, last_name: last,
+        patient_code: safeCode || null, org_id: regOrgId || null, tier: 'free', usage_count: 0,
+      });
+    } catch (_) {}
+    currentUser = { id: data.user.id, email, name, first, last, code: safeCode, org_id: regOrgId, org_name: regOrgName };
     syncPortal();
-  } catch (err) { showMsg('pt-err', err.message || 'Registration failed.', 'err'); }
+  } catch (err) { showMsg('pt-err', err.message || 'Registration failed. Please try again.', 'err'); }
   finally { setBtn('pt-r-btn', false, 'Create Account'); }
 }
 
 async function ptLogout() {
   if (sb) { try { await sb.auth.signOut(); } catch (e) {} }
-  currentUser = null;
-  syncPortal();
+  currentUser = null; syncPortal();
 }
 
-// ── Portal sync (shows/hides login gate vs dashboard) ──
+// ── Portal sync ──
 function syncPortal() {
-  const gate = document.getElementById('portal-gate'), dash = document.getElementById('portal-dash');
+  const gate = document.getElementById('portal-gate');
+  const dash = document.getElementById('portal-dash');
+  const navLogout = document.getElementById('nav-logout-btn');
+  const navOrgBadge = document.getElementById('nav-org-badge');
+
   if (currentUser) {
     gate.style.display = 'none';
     dash.style.display = 'block';
-    document.getElementById('dash-name').textContent = currentUser.first || currentUser.name || 'Patient';
-    document.getElementById('dash-email-lbl').textContent = currentUser.email || '';
-    document.getElementById('dash-full-name').textContent = (currentUser.first && currentUser.last) ? currentUser.first + ' ' + currentUser.last : currentUser.name || '—';
-    document.getElementById('dash-email-display').textContent = currentUser.email || '—';
-    const cl = document.getElementById('dash-code-lbl');
-    if (currentUser.org_name) { cl.textContent = currentUser.org_name; cl.style.display = 'block'; }
-    else if (currentUser.code) { cl.textContent = 'Code: ' + currentUser.code; cl.style.display = 'block'; }
-    else { cl.style.display = 'none'; }
+    if (navLogout) navLogout.style.display = '';
 
-    // Show org prompts if no org
+    // Name
+    const first = currentUser.first || currentUser.name || 'Patient';
+    document.getElementById('dash-name').textContent = first;
+    document.getElementById('dash-email-lbl').textContent = currentUser.email || '';
+    document.getElementById('dash-full-name').textContent =
+      (currentUser.first && currentUser.last) ? currentUser.first + ' ' + currentUser.last : currentUser.name || '—';
+    document.getElementById('dash-email-display').textContent = currentUser.email || '—';
+
+    // Avatar initial
+    const av = document.getElementById('dash-avatar');
+    if (av) av.textContent = (currentUser.first || currentUser.name || 'P')[0].toUpperCase();
+
+    // Org display
     const hasOrg = userHasOrg();
+    const orgName = currentUser.org_name || (hasOrg ? 'AAA Clinics' : '');
+
+    if (navOrgBadge) { navOrgBadge.textContent = orgName || ''; navOrgBadge.style.display = orgName ? '' : 'none'; }
+
+    const dashOrgBadge = document.getElementById('dash-org-badge');
+    if (dashOrgBadge) { dashOrgBadge.textContent = orgName; dashOrgBadge.style.display = orgName ? '' : 'none'; }
+
+    const clinicInfo = document.getElementById('dash-clinic-info');
+    const orgNameDisplay = document.getElementById('dash-org-name-display');
+    const connectBtn = document.getElementById('dash-connect-btn');
+    if (hasOrg) {
+      if (clinicInfo) clinicInfo.style.display = 'block';
+      if (orgNameDisplay) orgNameDisplay.textContent = orgName || currentUser.code;
+      if (connectBtn) connectBtn.style.display = 'none';
+    } else {
+      if (clinicInfo) clinicInfo.style.display = 'none';
+      if (connectBtn) connectBtn.style.display = 'block';
+    }
+
+    // Org banner / prompt
     const bannerDismissed = localStorage.getItem(ORG_BANNER_DISMISSED_KEY) === '1';
-    const topBanner = document.getElementById('org-banner');
+    const topBanner  = document.getElementById('org-banner');
     const dashPrompt = document.getElementById('dash-org-prompt');
     if (!hasOrg) {
-      if (topBanner) topBanner.style.display = bannerDismissed ? 'none' : 'block';
+      if (topBanner)  topBanner.style.display  = bannerDismissed ? 'none' : 'block';
       if (dashPrompt) dashPrompt.style.display = 'block';
     } else {
-      if (topBanner) topBanner.style.display = 'none';
+      if (topBanner)  topBanner.style.display  = 'none';
       if (dashPrompt) dashPrompt.style.display = 'none';
     }
   } else {
     gate.style.display = 'block';
     dash.style.display = 'none';
+    if (navLogout) navLogout.style.display = 'none';
+    if (navOrgBadge) navOrgBadge.style.display = 'none';
     ptMode = 'login';
     document.getElementById('pt-login').style.display = 'flex';
     document.getElementById('pt-register').style.display = 'none';
-    document.getElementById('pt-title').textContent = 'Sign In to Your Portal';
-    document.getElementById('pt-sub').textContent = 'Access your health records and tools';
+    document.getElementById('pt-title').textContent = 'Welcome Back';
+    document.getElementById('pt-sub').textContent = 'Sign in to access your clinic portal';
     document.getElementById('pt-toggle').textContent = "Don't have an account? Create one";
     hideMsg('pt-err', 'pt-ok');
   }
-  // Stagger animations for login feature list
-  setTimeout(() => {
-    document.querySelectorAll('.stagger-item').forEach((el, i) => {
-      setTimeout(() => el.classList.add('in'), i * 120);
-    });
-  }, 200);
+  // Stagger animations for feature list
+  setTimeout(() => { document.querySelectorAll('.stagger-item').forEach((el, i) => setTimeout(() => el.classList.add('in'), i * 100)); }, 200);
 }
 
-// ── Session check ──
-// onAuthStateChange fires synchronously on init with the current session
-// (including processing any hash token from OAuth redirects), so we use it
-// as the single source of truth instead of racing getSession() against the hash.
+// ── Session ──
 if (sb?.auth?.onAuthStateChange) {
   sb.auth.onAuthStateChange(async (event, session) => {
     if (session?.user) {
       currentUser = {
         id: session.user.id, email: session.user.email,
-        name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'User',
+        name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'Patient',
         first: '', last: '', code: '', org_id: '', org_name: '',
       };
       syncPortal();
@@ -529,8 +907,7 @@ if (sb?.auth?.onAuthStateChange) {
         }
       } catch (_e) {}
     } else if (event === 'SIGNED_OUT') {
-      currentUser = null;
-      syncPortal();
+      currentUser = null; syncPortal();
     }
     if (window.location.hash?.includes('access_token')) {
       window.history.replaceState(null, '', window.location.pathname + window.location.search);
@@ -538,6 +915,74 @@ if (sb?.auth?.onAuthStateChange) {
   });
 } else {
   syncPortal();
+}
+
+// ── AI Advisor Widget ──
+let advisorOpen = false;
+let advisorHistory = [];
+const ADVISOR_WELCOME = "Hello! I'm your AAA Clinics beauty advisor, powered by Acuros AI. I can help you explore our treatments, skincare products, and answer any questions about anti-aging solutions. What can I help you with today?";
+
+function toggleAdvisor() {
+  advisorOpen = !advisorOpen;
+  const panel = document.getElementById('ai-panel');
+  if (advisorOpen) {
+    panel.classList.add('open');
+    if (!document.getElementById('ai-msgs').children.length) addAdvisorBubble(ADVISOR_WELCOME, 'bot');
+    setTimeout(() => document.getElementById('ai-inp')?.focus(), 100);
+  } else {
+    panel.classList.remove('open');
+  }
+}
+
+function addAdvisorBubble(text, role) {
+  const msgs = document.getElementById('ai-msgs');
+  const d = document.createElement('div');
+  d.className = 'ai-bubble ' + role;
+  d.style.whiteSpace = 'pre-line';
+  d.textContent = text;
+  msgs.appendChild(d);
+  msgs.scrollTop = msgs.scrollHeight;
+  return d;
+}
+
+async function sendAdvisorMsg() {
+  const inp = document.getElementById('ai-inp');
+  const msg = inp.value.trim();
+  if (!msg) return;
+  inp.value = '';
+  addAdvisorBubble(msg, 'usr');
+  advisorHistory.push({ role: 'user', text: msg });
+
+  // Typing indicator
+  const thinking = document.createElement('div');
+  thinking.className = 'ai-bubble bot typing';
+  thinking.innerHTML = '<span></span><span></span><span></span>';
+  document.getElementById('ai-msgs').appendChild(thinking);
+  document.getElementById('ai-msgs').scrollTop = 999999;
+
+  try {
+    const resp = await fetch(CONFIG.aiApiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: inferAdvisorType(msg), messages: advisorHistory.slice(-10) }),
+    });
+    thinking.remove();
+    if (!resp.ok) throw new Error('API error');
+    const data = await resp.json();
+    const reply = data.text || 'I apologize — I had trouble generating a response. Please try again.';
+    advisorHistory.push({ role: 'model', text: reply });
+    addAdvisorBubble(reply, 'bot');
+  } catch (_err) {
+    thinking.remove();
+    addAdvisorBubble('I\'m having trouble connecting right now. Please try the full AI Assistant or contact AAA Clinics directly.', 'bot');
+  }
+}
+
+function inferAdvisorType(msg) {
+  const l = msg.toLowerCase();
+  if (/\b(drug|medication|interaction|side effect|dosage)\b/.test(l)) return 'medication';
+  if (/\b(symptom|pain|reaction|swelling|redness)\b/.test(l)) return 'symptom';
+  return 'general';
 }
 </script>
 </body>
