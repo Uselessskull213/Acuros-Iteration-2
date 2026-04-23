@@ -4,7 +4,7 @@ function toSafeKeyPart(value) {
   return String(value || 'unknown').replace(/[^a-zA-Z0-9:_-]/g, '_');
 }
 
-async function runUpstashCommand(command) {
+async function runUpstashPipeline(commands) {
   const url = process.env.UPSTASH_REDIS_REST_URL;
   const token = process.env.UPSTASH_REDIS_REST_TOKEN;
   if (!url || !token) return null;
@@ -15,19 +15,17 @@ async function runUpstashCommand(command) {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify([command]),
+    body: JSON.stringify(commands),
   });
 
   if (!resp.ok) {
     const err = await resp.text().catch(() => 'unknown upstash error');
-    throw new Error(`Upstash command failed: ${resp.status} ${err}`);
+    throw new Error(`Upstash pipeline failed: ${resp.status} ${err}`);
   }
 
   const data = await resp.json();
-  if (!Array.isArray(data) || !data[0] || !Object.prototype.hasOwnProperty.call(data[0], 'result')) {
-    throw new Error('Upstash returned unexpected response shape');
-  }
-  return data[0].result;
+  if (!Array.isArray(data)) throw new Error('Upstash returned unexpected response shape');
+  return data.map((r) => r.result);
 }
 
 function checkMemoryRateLimit(key, maxRequests, windowSeconds) {
@@ -48,13 +46,16 @@ export async function checkRateLimit({ route, identifier, maxRequests, windowSec
 
   if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
     try {
-      const rawCount = await runUpstashCommand(['INCR', key]);
+      // Send INCR and EXPIRE atomically in one pipeline call.
+      // EXPIRE NX only sets the TTL if the key has no expiry — this keeps
+      // the window fixed rather than sliding on every request.
+      const [rawCount] = await runUpstashPipeline([
+        ['INCR', key],
+        ['EXPIRE', key, String(windowSeconds), 'NX'],
+      ]);
       const count = Number(rawCount);
       if (!Number.isFinite(count) || count < 1) {
         throw new Error(`Invalid Upstash INCR response: ${String(rawCount)}`);
-      }
-      if (count === 1) {
-        await runUpstashCommand(['EXPIRE', key, String(windowSeconds)]);
       }
       return { allowed: count <= maxRequests, count };
     } catch (err) {

@@ -430,7 +430,17 @@ async function sendChat() {
     if (data.sources?.length) {
       const sd = document.createElement('div');
       sd.style.cssText = 'font-size:.72rem;color:var(--mute);margin-top:-.5rem;align-self:flex-start;padding:0 .25rem';
-      sd.innerHTML = 'Sources: ' + data.sources.slice(0, 3).map(s => `<a href="${s.uri}" target="_blank" style="color:var(--ac);text-decoration:none">${s.title || s.uri}</a>`).join(', ');
+      sd.appendChild(document.createTextNode('Sources: '));
+      data.sources.slice(0, 3).forEach((s, i) => {
+        if (i > 0) sd.appendChild(document.createTextNode(', '));
+        const a = document.createElement('a');
+        try { a.href = new URL(s.uri).href; } catch (_) { a.href = '#'; }
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.style.cssText = 'color:var(--ac);text-decoration:none';
+        a.textContent = s.title || s.uri;
+        sd.appendChild(a);
+      });
       document.getElementById('chat-msgs').appendChild(sd);
     }
     if (status) status.textContent = data.modelUsed ? `Model: ${data.modelUsed}` : '';

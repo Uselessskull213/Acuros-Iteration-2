@@ -405,7 +405,8 @@ async function ptRegister(e) {
       const { data, error } = await sb.auth.signUp({ email, password: pass, options: { data: { full_name: name } } });
       if (error) throw error;
       if (!data.session) { showMsg('pt-ok', 'Account created! Check your email to confirm, then sign in.', 'ok'); setBtn('pt-r-btn', false, 'Create Account'); return; }
-      await sb.from('profiles').upsert({ id: data.user.id, name, first_name: first, last_name: last, patient_code: code, tier: 'free', usage_count: 0 });
+      // Profile upsert is best-effort — auth is already established, don't block on it
+      try { await sb.from('profiles').upsert({ id: data.user.id, name, first_name: first, last_name: last, patient_code: code, tier: 'free', usage_count: 0 }); } catch (_) {}
       currentUser = { id: data.user.id, email, name, first, last, code, org_id: '' };
     } else { currentUser = { id: 'demo', email, name, first, last, code, org_id: '' }; }
     syncPortal();
