@@ -294,18 +294,19 @@ if (sb?.auth?.onAuthStateChange) {
         id: session.user.id,
         email: session.user.email,
         name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'User',
-        code: '', org_id: '',
+        code: '', org_id: '', org_name: '',
       };
       localStorage.removeItem(GUEST_MSG_KEY);
       authReady = true;
       updateGuestUI();
       ensureChatHistoryLoaded(true);
       try {
-        const { data: profile } = await sb.from('profiles').select('*').eq('id', session.user.id).maybeSingle();
+        const { data: profile } = await sb.from('profiles').select('*, org:org_id(id, name)').eq('id', session.user.id).maybeSingle();
         if (profile && currentUser) {
-          currentUser.name = profile.name || currentUser.name;
-          currentUser.code = profile.patient_code || '';
-          currentUser.org_id = profile.org_id || '';
+          currentUser.name     = profile.name || currentUser.name;
+          currentUser.code     = profile.patient_code || '';
+          currentUser.org_id   = profile.org_id || '';
+          currentUser.org_name = profile.org?.name || '';
         }
       } catch (_e) {}
     } else if (event === 'SIGNED_OUT') {

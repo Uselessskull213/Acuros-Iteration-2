@@ -183,8 +183,8 @@
       <div style="max-width:1280px;margin:0 auto;padding:1rem 2rem">
         <div class="org-banner">
           <div style="flex:1;min-width:200px">
-            <div class="lbl" style="color:var(--ac);margin-bottom:.25rem">No Organization Connected</div>
-            <p style="font-size:.82rem;color:var(--sub);line-height:1.6">You're not connected to a clinic or organization. Connect with a patient code to unlock your full health record and unlimited AI access.</p>
+            <div class="lbl" style="color:var(--ac);margin-bottom:.25rem">No Clinic Connected</div>
+            <p style="font-size:.82rem;color:var(--sub);line-height:1.6">Enter the code from your clinic to connect your account, unlock your full portal, and start earning loyalty rewards.</p>
           </div>
           <button onclick="showOrgPrompt()" class="btn btn-solid" style="padding:.55rem 1.25rem;flex-shrink:0">Connect Organization</button>
           <button onclick="dismissOrgBanner()" style="background:none;border:none;cursor:pointer;color:var(--mute);font-size:.75rem;flex-shrink:0" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--mute)'">Remind me later</button>
@@ -200,7 +200,7 @@
         </button>
         <div class="lbl" style="color:var(--ac);margin-bottom:.75rem">Connect Your Organization</div>
         <h3 style="font-size:1.6rem;font-weight:300;color:var(--text);margin-bottom:.75rem">Join your clinic's<br/><em>network.</em></h3>
-        <p style="font-size:.82rem;color:var(--sub);line-height:1.65;margin-bottom:1.5rem">Enter the patient code provided by your clinic or healthcare provider to connect your account to their organization.</p>
+        <p style="font-size:.82rem;color:var(--sub);line-height:1.65;margin-bottom:1.5rem">Enter the unique code provided by your clinic to connect your account, unlock your full patient portal, and begin earning loyalty rewards.</p>
         <div id="org-err" style="display:none;margin-bottom:1rem"></div>
         <div id="org-ok"  style="display:none;margin-bottom:1rem"></div>
         <form onsubmit="joinOrg(event)" style="display:flex;flex-direction:column;gap:.875rem">
@@ -297,6 +297,17 @@ try { if (CONFIG.supabaseKey) sb = window.supabase.createClient(CONFIG.supabaseU
 let currentUser = null, ptMode = 'login';
 const ORG_BANNER_DISMISSED_KEY = 'ah-org-banner-dismissed';
 
+// Fetch profile + org name in one query
+async function fetchProfile(userId) {
+  if (!sb || !userId) return null;
+  const { data } = await sb
+    .from('profiles')
+    .select('*, org:org_id(id, name)')
+    .eq('id', userId)
+    .maybeSingle();
+  return data;
+}
+
 // ── Theme ──
 function toggleTheme() {
   const dark = document.documentElement.classList.toggle('dark');
@@ -338,23 +349,35 @@ async function joinOrg(e) {
   e.preventDefault();
   hideMsg('org-err', 'org-ok');
   const code = document.getElementById('org-code-inp').value.trim().toUpperCase();
-  if (!code) { showMsg('org-err', 'Please enter a patient code.', 'err'); return; }
+  if (!code) { showMsg('org-err', 'Please enter your clinic code.', 'err'); return; }
   setBtn('org-join-btn', true, 'Connect');
   try {
-    if (sb && currentUser?.id) {
-      const { error } = await sb.from('profiles').update({ patient_code: code }).eq('id', currentUser.id);
-      if (error) throw error;
-      currentUser.code = code;
-      showMsg('org-ok', 'Organization connected successfully!', 'ok');
-      setTimeout(() => { hideOrgPrompt(); syncPortal(); }, 1500);
-    } else {
-      // Demo mode
-      currentUser.code = code;
-      showMsg('org-ok', 'Organization connected!', 'ok');
-      setTimeout(() => { hideOrgPrompt(); syncPortal(); }, 1000);
-    }
+    if (!sb || !currentUser?.id) throw new Error('Not authenticated. Please sign in first.');
+
+    // Validate code against organizations table
+    const { data: org, error: orgErr } = await sb
+      .from('organizations')
+      .select('id, name, active')
+      .eq('code', code)
+      .maybeSingle();
+    if (orgErr) throw orgErr;
+    if (!org) throw new Error('Code not recognized. Please verify the code with your clinic provider.');
+    if (!org.active) throw new Error('This organization code is inactive. Please contact your clinic.');
+
+    // Link patient profile to the validated org
+    const { error: updateErr } = await sb
+      .from('profiles')
+      .update({ patient_code: code, org_id: org.id })
+      .eq('id', currentUser.id);
+    if (updateErr) throw updateErr;
+
+    currentUser.code = code;
+    currentUser.org_id = org.id;
+    currentUser.org_name = org.name;
+    showMsg('org-ok', `Connected to ${org.name}. Welcome to your clinic portal!`, 'ok');
+    setTimeout(() => { hideOrgPrompt(); syncPortal(); }, 1600);
   } catch (err) {
-    showMsg('org-err', err.message || 'Failed to connect. Please check your code.', 'err');
+    showMsg('org-err', err.message || 'Connection failed. Please check your code and try again.', 'err');
   } finally {
     setBtn('org-join-btn', false, 'Connect');
   }
@@ -386,11 +409,20 @@ async function ptLogin(e) {
     if (sb) {
       const { data, error } = await sb.auth.signInWithPassword({ email: document.getElementById('pt-email').value, password: document.getElementById('pt-pass').value });
       if (error) throw error;
-      const { data: profile } = await sb.from('profiles').select('*').eq('id', data.user.id).maybeSingle();
-      currentUser = { id: data.user.id, email: data.user.email, name: profile?.name || data.user.user_metadata?.full_name || data.user.email.split('@')[0], first: profile?.first_name || '', last: profile?.last_name || '', code: profile?.patient_code || '', org_id: profile?.org_id || '' };
+      const profile = await fetchProfile(data.user.id);
+      currentUser = {
+        id: data.user.id,
+        email: data.user.email,
+        name: profile?.name || data.user.user_metadata?.full_name || data.user.email.split('@')[0],
+        first: profile?.first_name || '',
+        last: profile?.last_name || '',
+        code: profile?.patient_code || '',
+        org_id: profile?.org_id || '',
+        org_name: profile?.org?.name || '',
+      };
     } else {
       const email = document.getElementById('pt-email').value;
-      currentUser = { id: 'demo', email, name: email.split('@')[0], first: '', last: '', code: '', org_id: '' };
+      currentUser = { id: 'demo', email, name: email.split('@')[0], first: '', last: '', code: '', org_id: '', org_name: '' };
     }
     syncPortal();
   } catch (err) { showMsg('pt-err', err.message || 'Sign in failed.', 'err'); }
@@ -405,10 +437,15 @@ async function ptRegister(e) {
       const { data, error } = await sb.auth.signUp({ email, password: pass, options: { data: { full_name: name } } });
       if (error) throw error;
       if (!data.session) { showMsg('pt-ok', 'Account created! Check your email to confirm, then sign in.', 'ok'); setBtn('pt-r-btn', false, 'Create Account'); return; }
-      // Profile upsert is best-effort — auth is already established, don't block on it
-      try { await sb.from('profiles').upsert({ id: data.user.id, name, first_name: first, last_name: last, patient_code: code, tier: 'free', usage_count: 0 }); } catch (_) {}
-      currentUser = { id: data.user.id, email, name, first, last, code, org_id: '' };
-    } else { currentUser = { id: 'demo', email, name, first, last, code, org_id: '' }; }
+      // Validate org code if provided, then upsert profile (best-effort)
+      let regOrgId = '', regOrgName = '', safeCode = code ? code.toUpperCase() : '';
+      if (safeCode) {
+        const { data: org } = await sb.from('organizations').select('id, name').eq('code', safeCode).eq('active', true).maybeSingle().catch(() => ({ data: null }));
+        if (org) { regOrgId = org.id; regOrgName = org.name; } else { safeCode = ''; }
+      }
+      try { await sb.from('profiles').upsert({ id: data.user.id, name, first_name: first, last_name: last, patient_code: safeCode || null, org_id: regOrgId || null, tier: 'free', usage_count: 0 }); } catch (_) {}
+      currentUser = { id: data.user.id, email, name, first, last, code: safeCode, org_id: regOrgId, org_name: regOrgName };
+    } else { currentUser = { id: 'demo', email, name, first, last, code: '', org_id: '', org_name: '' }; }
     syncPortal();
   } catch (err) { showMsg('pt-err', err.message || 'Registration failed.', 'err'); }
   finally { setBtn('pt-r-btn', false, 'Create Account'); }
@@ -431,7 +468,9 @@ function syncPortal() {
     document.getElementById('dash-full-name').textContent = (currentUser.first && currentUser.last) ? currentUser.first + ' ' + currentUser.last : currentUser.name || '—';
     document.getElementById('dash-email-display').textContent = currentUser.email || '—';
     const cl = document.getElementById('dash-code-lbl');
-    if (currentUser.code) { cl.textContent = 'Code: ' + currentUser.code; cl.style.display = 'block'; } else cl.style.display = 'none';
+    if (currentUser.org_name) { cl.textContent = currentUser.org_name; cl.style.display = 'block'; }
+    else if (currentUser.code) { cl.textContent = 'Code: ' + currentUser.code; cl.style.display = 'block'; }
+    else { cl.style.display = 'none'; }
 
     // Show org prompts if no org
     const hasOrg = userHasOrg();
@@ -474,17 +513,18 @@ if (sb?.auth?.onAuthStateChange) {
       currentUser = {
         id: session.user.id, email: session.user.email,
         name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'User',
-        first: '', last: '', code: '', org_id: '',
+        first: '', last: '', code: '', org_id: '', org_name: '',
       };
       syncPortal();
       try {
-        const { data: profile } = await sb.from('profiles').select('*').eq('id', session.user.id).maybeSingle();
+        const profile = await fetchProfile(session.user.id);
         if (profile && currentUser) {
-          currentUser.name = profile.name || currentUser.name;
-          currentUser.first = profile.first_name || '';
-          currentUser.last = profile.last_name || '';
-          currentUser.code = profile.patient_code || '';
-          currentUser.org_id = profile.org_id || '';
+          currentUser.name     = profile.name || currentUser.name;
+          currentUser.first    = profile.first_name || '';
+          currentUser.last     = profile.last_name || '';
+          currentUser.code     = profile.patient_code || '';
+          currentUser.org_id   = profile.org_id || '';
+          currentUser.org_name = profile.org?.name || '';
           syncPortal();
         }
       } catch (_e) {}

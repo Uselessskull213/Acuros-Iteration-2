@@ -5,19 +5,19 @@
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-80K00SEBQK');</script>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>Acuros Health — Precision Health Intelligence</title>
+  <title>Acuros Health — Patient Engagement Platform for Clinics</title>
   <link rel="icon" type="image/png" href="favicon.png"/>
   <link rel="apple-touch-icon" href="favicon.png"/>
-  <meta name="description" content="Evidence-based AI tools built for patients and clinicians. Precision, privacy, and trust at the core."/>
+  <meta name="description" content="Give your clinic a branded patient portal with AI health support, loyalty rewards, and secure records. Built for Canadian healthcare providers."/>
   <link rel="canonical" href="https://acuros.ca/"/>
   <meta property="og:type" content="website"/>
   <meta property="og:url" content="https://acuros.ca/"/>
-  <meta property="og:title" content="Acuros Health — Precision Health Intelligence"/>
-  <meta property="og:description" content="Evidence-based AI tools built for patients and clinicians. Precision, privacy, and trust at the core."/>
+  <meta property="og:title" content="Acuros Health — Patient Engagement Platform for Clinics"/>
+  <meta property="og:description" content="Give your clinic a branded patient portal with AI health support, loyalty rewards, and secure records."/>
   <meta property="og:site_name" content="Acuros Health"/>
   <meta name="twitter:card" content="summary"/>
-  <meta name="twitter:title" content="Acuros Health — Precision Health Intelligence"/>
-  <meta name="twitter:description" content="Evidence-based AI tools built for patients and clinicians. Precision, privacy, and trust at the core."/>
+  <meta name="twitter:title" content="Acuros Health — Patient Engagement Platform for Clinics"/>
+  <meta name="twitter:description" content="Give your clinic a branded patient portal with AI health support, loyalty rewards, and secure records."/>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -35,13 +35,11 @@
     html.dark nav{border-bottom-color:rgba(39,39,36,.5)}
     .nav-logo-wrap{display:flex;align-items:center;gap:.875rem;text-decoration:none}
     .nav-logo-frame{position:relative;width:38px;height:38px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
-    /* Four corner ticks — light mode uses gold, dark mode uses accent blue */
     .nav-logo-frame::before,.nav-logo-frame::after{content:'';position:absolute;width:10px;height:10px;transition:all .3s}
     .nav-logo-frame::before{top:0;left:0;border-top:1.5px solid var(--gold);border-left:1.5px solid var(--gold)}
     .nav-logo-frame::after{bottom:0;right:0;border-bottom:1.5px solid var(--gold);border-right:1.5px solid var(--gold)}
     html.dark .nav-logo-frame::before{border-color:var(--ac)}
     html.dark .nav-logo-frame::after{border-color:var(--ac)}
-    /* Opposite corners via inner spans */
     .nav-logo-frame .corner-tr,.nav-logo-frame .corner-bl{position:absolute;width:10px;height:10px;transition:all .3s}
     .nav-logo-frame .corner-tr{top:0;right:0;border-top:1.5px solid var(--gold);border-right:1.5px solid var(--gold)}
     .nav-logo-frame .corner-bl{bottom:0;left:0;border-bottom:1.5px solid var(--gold);border-left:1.5px solid var(--gold)}
@@ -68,12 +66,15 @@
     .btn-outline{background:transparent;color:var(--text);border:1px solid rgba(24,24,22,.25)}
     html.dark .btn-outline{border-color:rgba(240,240,236,.2)}
     .btn-outline:hover{border-color:var(--ac);color:var(--ac)}
+    .btn-ac{background:var(--ac);color:#fff}
+    .btn-ac:hover{background:#0284c7;color:#fff}
     .card{background:var(--bg2);border:1px solid var(--border);transition:border-color .25s,transform .3s,box-shadow .3s}
     .card:hover{border-color:var(--ac);transform:translateY(-2px);box-shadow:0 8px 32px rgba(14,165,233,.1)}
-    /* Principle mini-cards get a subtle top accent line on hover */
     .principle-card{background:var(--bg2);padding:1.75rem;border:1px solid var(--border);border-top:2px solid transparent;transition:border-color .25s,border-top-color .25s}
     .principle-card:hover{border-color:var(--border);border-top-color:var(--ac)}
-    /* Compliance rows: left accent stripe instead of full open box */
+    .step-row{display:flex;align-items:flex-start;gap:2rem;padding:1.75rem 0;border-bottom:1px solid var(--border);transition:padding-left .2s}
+    .step-row:first-child{border-top:1px solid var(--border)}
+    .step-row:hover{padding-left:.75rem}
     .compliance-row{display:flex;align-items:center;gap:1.25rem;padding:1rem 1rem 1rem 1.25rem;border-left:2px solid transparent;background:var(--bg);border:1px solid var(--border);transition:border-left-color .2s,background .2s}
     .compliance-row:hover{border-left-color:var(--ac);background:var(--bg2)}
     .inp{width:100%;background:var(--bg);border:1px solid var(--border);padding:.75rem 1rem;font-size:.875rem;color:var(--text);font-family:inherit;outline:none;transition:border-color .2s,box-shadow .2s}
@@ -119,6 +120,7 @@
     #hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;transform:scaleX(-1);filter:saturate(0.7) brightness(0.55)}
     html.dark #hero-video{transform:scaleX(-1);filter:saturate(0.5) brightness(0.4)}
     #hero-overlay{position:absolute;inset:0;pointer-events:none}
+    .reward-pill{display:inline-flex;align-items:center;gap:.5rem;padding:.35rem .875rem;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;font-weight:500;font-family:'DM Sans',sans-serif;background:var(--bg2);border:1px solid var(--border);color:var(--sub);white-space:nowrap}
     @media(max-width:900px){.g1m{grid-template-columns:1fr!important}.g2m{grid-template-columns:1fr 1fr!important}.hnm{display:none!important}#mob-btn{display:flex!important}#nav-cta{display:none!important}}
     @media(max-width:600px){.g2m{grid-template-columns:1fr!important}.hero-title{font-size:clamp(4rem,16vw,6rem)}}
   </style>
@@ -142,13 +144,13 @@
     <div style="display:flex;align-items:center;gap:2rem" class="hnm">
       <a class="nav-link active" href="/">Home</a>
       <a class="nav-link" href="/ai-assistant">AI Assistant</a>
-      <a class="nav-link" href="/patient-portal">Patient Portal</a>
+      <a class="nav-link" href="/patient-portal">Patient Login</a>
       <a class="nav-link" href="/privacy" style="opacity:.55">Privacy</a>
       <a class="nav-link" href="/terms" style="opacity:.55">Terms</a>
     </div>
     <div style="display:flex;align-items:center;gap:.875rem">
       <button onclick="toggleTheme()" aria-label="Toggle theme" style="width:36px;height:36px;border:1px solid var(--border);background:none;color:var(--sub);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;font-size:.9rem"><span id="th-icon">☀</span></button>
-      <a href="/patient-portal" class="btn btn-solid" style="padding:.55rem 1.25rem" id="nav-cta">Patient Portal</a>
+      <a href="#contact" class="btn btn-solid" style="padding:.55rem 1.25rem" id="nav-cta">Request Demo</a>
       <button onclick="openMob()" style="display:none;background:none;border:none;cursor:pointer;color:var(--text);padding:.25rem" id="mob-btn" aria-label="Menu">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16M4 12h12M4 18h8"/></svg>
       </button>
@@ -166,8 +168,9 @@
   </div>
   <div style="display:flex;flex-direction:column;gap:1.75rem">
     <a href="/"             style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;text-align:left;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Home</a>
-    <a href="/ai-assistant"      style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;text-align:left;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">AI Assistant</a>
-    <a href="/patient-portal" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;text-align:left;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Patient Portal</a>
+    <a href="/ai-assistant" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;text-align:left;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">AI Assistant</a>
+    <a href="/patient-portal" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;text-align:left;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Patient Login</a>
+    <a href="#contact" onclick="closeMob()" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;text-align:left;color:var(--ac);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Request Demo</a>
     <a href="/privacy" style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;text-align:left;color:var(--mute);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Privacy Policy</a>
     <a href="/terms"   style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;text-align:left;color:var(--mute);text-decoration:none">Terms of Service</a>
   </div>
@@ -185,18 +188,18 @@
   <div style="position:relative;z-index:10;max-width:1280px;margin:0 auto;padding:0 2rem;width:100%">
     <div style="display:flex;align-items:center;gap:.875rem;margin-bottom:2rem;animation:pgIn .8s ease both">
       <span class="aline"></span>
-      <span class="lbl" style="color:rgba(255,255,255,.75)">Precision Health Intelligence · Canada</span>
+      <span class="lbl" style="color:rgba(255,255,255,.75)">Patient Engagement Platform · Canada</span>
     </div>
     <h1 class="hero-title" style="color:#fff;margin-bottom:2.5rem;animation:pgIn .9s .1s ease both;text-shadow:0 2px 48px rgba(0,0,0,.5)">
-      Acuros<br/><em style="color:rgba(255,255,255,.6);font-style:italic">Health</em>
+      Power Your<br/><em style="color:rgba(255,255,255,.6);font-style:italic">Practice.</em>
     </h1>
     <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:2rem;animation:pgIn .9s .2s ease both">
-      <p style="font-size:clamp(.9rem,1.4vw,1.05rem);color:rgba(255,255,255,.82);line-height:1.8;max-width:40ch;font-weight:300;text-shadow:0 1px 16px rgba(0,0,0,.5)">
-        Evidence-based AI tools built for patients and clinicians.<br/>Precision, privacy, and trust at the core.
+      <p style="font-size:clamp(.9rem,1.4vw,1.05rem);color:rgba(255,255,255,.82);line-height:1.8;max-width:44ch;font-weight:300;text-shadow:0 1px 16px rgba(0,0,0,.5)">
+        Give your clinic a branded patient portal — AI health guidance, loyalty rewards, and appointment tools that keep patients engaged between every visit.
       </p>
       <div style="display:flex;gap:.875rem;flex-wrap:wrap">
-        <a href="/ai-assistant" class="btn btn-solid">Explore AI</a>
-        <a href="/patient-portal" class="btn" style="background:rgba(0,0,0,.28);color:#fff;border:1px solid rgba(255,255,255,.4);backdrop-filter:blur(4px)" onmouseover="this.style.background='rgba(0,0,0,.42)'" onmouseout="this.style.background='rgba(0,0,0,.28)'">Patient Portal</a>
+        <a href="#contact" class="btn btn-solid">Request a Demo</a>
+        <a href="/patient-portal" class="btn" style="background:rgba(0,0,0,.28);color:#fff;border:1px solid rgba(255,255,255,.4);backdrop-filter:blur(4px)" onmouseover="this.style.background='rgba(0,0,0,.42)'" onmouseout="this.style.background='rgba(0,0,0,.28)'">Patient Login</a>
       </div>
     </div>
   </div>
@@ -207,46 +210,46 @@
 
 <!-- Marquee -->
 <div style="border-top:1px solid var(--border);border-bottom:1px solid var(--border);overflow:hidden;padding:.85rem 0;background:var(--bg2)">
-  <div class="minner" style="font-size:.6rem;letter-spacing:.22em;color:var(--mute)">&nbsp;&nbsp;&nbsp;AI ASSISTANT&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;SYMPTOM LOGIC&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;MEDICATION SAFETY&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;PATIENT PORTAL&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;GROUNDED RETRIEVAL&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;PRIVACY-FIRST&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;PIPEDA COMPLIANT&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;EVIDENCE-BASED&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;ACUROS HEALTH&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;AI ASSISTANT&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;SYMPTOM LOGIC&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;MEDICATION SAFETY&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;PATIENT PORTAL&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;GROUNDED RETRIEVAL&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;PRIVACY-FIRST&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;PIPEDA COMPLIANT&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;EVIDENCE-BASED&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;ACUROS HEALTH&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;</div>
+  <div class="minner" style="font-size:.6rem;letter-spacing:.22em;color:var(--mute)">&nbsp;&nbsp;&nbsp;BRANDED PATIENT PORTAL&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;LOYALTY & REWARDS&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;AI HEALTH ASSISTANT&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;APPOINTMENT PREP&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;CLINIC DASHBOARD&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;PIPEDA COMPLIANT&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;CANADIAN BUILT&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;EVIDENCE-BASED&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;ACUROS HEALTH&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;BRANDED PATIENT PORTAL&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;LOYALTY & REWARDS&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;AI HEALTH ASSISTANT&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;APPOINTMENT PREP&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;CLINIC DASHBOARD&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;PIPEDA COMPLIANT&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;CANADIAN BUILT&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;EVIDENCE-BASED&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;ACUROS HEALTH&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;</div>
 </div>
 
-<!-- Platform intro -->
+<!-- Platform Overview -->
 <section style="border-bottom:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr" class="g1m">
   <div class="img-panel" style="min-height:520px">
     <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=900&q=80&auto=format&fit=crop" alt="Mountain mist" loading="lazy"/>
     <div class="img-panel-overlay"></div>
     <div style="position:absolute;bottom:2rem;left:2rem;right:2rem">
       <div class="lbl" style="color:rgba(255,255,255,.5);margin-bottom:.75rem">01 — Platform</div>
-      <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4vw,3rem);font-weight:300;color:#fff;line-height:1.1">Clarity in a<br/><em>Complex System.</em></h2>
+      <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4vw,3rem);font-weight:300;color:#fff;line-height:1.1">The complete patient<br/><em>engagement stack.</em></h2>
     </div>
   </div>
   <div class="mesh" style="padding:4rem 3rem;display:flex;flex-direction:column;justify-content:center">
-    <p style="font-size:.9rem;line-height:1.9;color:var(--sub);margin-bottom:2.5rem" class="reveal">Acuros bridges raw medical data and human understanding. Whether you're navigating a diagnosis or preparing for an appointment — we deliver precision where it matters.</p>
+    <p style="font-size:.9rem;line-height:1.9;color:var(--sub);margin-bottom:2.5rem" class="reveal">Acuros is a turnkey platform for clinics that want to deliver a premium, connected experience to every patient — from the first appointment to long-term retention.</p>
     <div class="reveal d1">
-      <div class="cap stagger-item"><span style="font-family:'Cormorant Garamond',serif;font-size:1.25rem;color:var(--text)">Translate Medical Reports</span><span class="lbl">Plain English</span></div>
-      <div class="cap stagger-item d1"><span style="font-family:'Cormorant Garamond',serif;font-size:1.25rem;color:var(--text)">Pre-Appointment Preparation</span><span class="lbl">Structured</span></div>
-      <div class="cap stagger-item d2"><span style="font-family:'Cormorant Garamond',serif;font-size:1.25rem;color:var(--text)">Medication Safety Checks</span><span class="lbl">Instant</span></div>
-      <div class="cap stagger-item d3"><span style="font-family:'Cormorant Garamond',serif;font-size:1.25rem;color:var(--text)">AI-Grounded Answers</span><span class="lbl">Evidence-Based</span></div>
+      <div class="cap stagger-item"><span style="font-family:'Cormorant Garamond',serif;font-size:1.25rem;color:var(--text)">Branded Patient Portal</span><span class="lbl">White-Label</span></div>
+      <div class="cap stagger-item d1"><span style="font-family:'Cormorant Garamond',serif;font-size:1.25rem;color:var(--text)">AI Health Assistant</span><span class="lbl">Evidence-Based</span></div>
+      <div class="cap stagger-item d2"><span style="font-family:'Cormorant Garamond',serif;font-size:1.25rem;color:var(--text)">Loyalty & Rewards System</span><span class="lbl">Built-In</span></div>
+      <div class="cap stagger-item d3"><span style="font-family:'Cormorant Garamond',serif;font-size:1.25rem;color:var(--text)">Secure Patient Records</span><span class="lbl">PIPEDA Compliant</span></div>
     </div>
   </div>
 </section>
 
-<!-- 2 portals -->
+<!-- For Clinics / For Patients -->
 <section class="bg-dots" style="border-bottom:1px solid var(--border)">
   <div style="max-width:1280px;margin:0 auto;padding:5rem 2rem">
-    <div class="lbl reveal" style="margin-bottom:2.5rem">02 — Access</div>
+    <div class="lbl reveal" style="margin-bottom:2.5rem">02 — Solutions</div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem" class="g1m">
-      <a href="/ai-assistant" class="card reveal" style="padding:2.5rem;cursor:pointer;position:relative;overflow:hidden;background:var(--bg2);text-decoration:none;display:block;border-top:2px solid var(--ac)">
-        <div class="lbl" style="color:var(--ac);margin-bottom:1.25rem">AI Assistant</div>
-        <h3 style="font-size:2.25rem;font-weight:300;color:var(--text);margin-bottom:.875rem;line-height:1.1">Intelligent Health<br/>Dialogue</h3>
-        <p style="font-size:.85rem;line-height:1.85;color:var(--sub);margin-bottom:2rem">Conversational AI grounded in peer-reviewed literature. Precision answers with transparent sourcing and safety governance baked in.</p>
-        <span class="btn btn-outline" style="padding:.5rem 1.25rem;font-size:.7rem">Launch AI →</span>
+      <a href="#contact" class="card reveal" style="padding:2.5rem;cursor:pointer;position:relative;overflow:hidden;background:var(--bg2);text-decoration:none;display:block;border-top:2px solid var(--ac)">
+        <div class="lbl" style="color:var(--ac);margin-bottom:1.25rem">For Clinics &amp; Providers</div>
+        <h3 style="font-size:2.25rem;font-weight:300;color:var(--text);margin-bottom:.875rem;line-height:1.1">Your clinic.<br/><em>Their experience.</em></h3>
+        <p style="font-size:.85rem;line-height:1.85;color:var(--sub);margin-bottom:2rem">Onboard your patients in minutes with a unique clinic code. Give them a branded portal — AI support, loyalty rewards, appointment tools — all under your practice name.</p>
+        <span class="btn btn-outline" style="padding:.5rem 1.25rem;font-size:.7rem">Request a Demo →</span>
       </a>
       <a href="/patient-portal" class="card reveal d1" style="padding:2.5rem;cursor:pointer;position:relative;overflow:hidden;background:var(--bg2);text-decoration:none;display:block;border-top:2px solid var(--ac)">
-        <div class="lbl" style="color:var(--ac);margin-bottom:1.25rem">Patient Portal</div>
-        <h3 style="font-size:2.25rem;font-weight:300;color:var(--text);margin-bottom:.875rem;line-height:1.1">Your Health,<br/>Organised</h3>
-        <p style="font-size:.85rem;line-height:1.85;color:var(--sub);margin-bottom:2rem">Secure records, appointment prep, and medication tracking in one calm, accessible interface aligned to Canadian privacy standards.</p>
-        <span class="btn btn-outline" style="padding:.5rem 1.25rem;font-size:.7rem">Enter Portal →</span>
+        <div class="lbl" style="color:var(--ac);margin-bottom:1.25rem">For Patients</div>
+        <h3 style="font-size:2.25rem;font-weight:300;color:var(--text);margin-bottom:.875rem;line-height:1.1">Your health.<br/><em>Organised.</em></h3>
+        <p style="font-size:.85rem;line-height:1.85;color:var(--sub);margin-bottom:2rem">Use the code from your clinic to access AI health guidance, track appointments, earn loyalty rewards, and prepare for every visit — all in one secure place.</p>
+        <span class="btn btn-outline" style="padding:.5rem 1.25rem;font-size:.7rem">Patient Login →</span>
       </a>
     </div>
   </div>
@@ -259,37 +262,90 @@
   <div style="position:relative;z-index:10;max-width:900px;margin:0 auto;padding:5rem 2rem;text-align:center">
     <div class="lbl reveal" style="color:rgba(255,255,255,.45);margin-bottom:1.5rem">Our Belief</div>
     <blockquote style="font-family:'Cormorant Garamond',serif;font-size:clamp(1.75rem,4vw,3rem);font-weight:300;color:#fff;line-height:1.25;font-style:italic" class="reveal d1">
-      "Healthcare information is abundant.<br/>Reliable, contextualised, actionable<br/>information is rare."
+      "Modern practices don't just treat patients.<br/>They build relationships that last<br/>between every visit."
     </blockquote>
     <div class="hr reveal d2" style="max-width:60px;margin:2rem auto;background:rgba(255,255,255,.2)"></div>
-    <p style="font-size:.88rem;color:rgba(255,255,255,.6);line-height:1.75" class="reveal d3">Acuros was built to change that — precision where the current system falls short.</p>
+    <p style="font-size:.88rem;color:rgba(255,255,255,.6);line-height:1.75" class="reveal d3">Acuros gives your clinic the tools to make that a reality — without complexity, without compromise.</p>
   </div>
 </section>
 
-<!-- Principles -->
+<!-- How It Works -->
 <section class="bg-diag" style="padding:7rem 2rem;border-bottom:1px solid var(--border)">
   <div style="max-width:1280px;margin:0 auto">
-    <div class="lbl reveal" style="margin-bottom:2.5rem">03 — Principles</div>
+    <div class="lbl reveal" style="margin-bottom:2.5rem">03 — How It Works</div>
     <div style="display:grid;grid-template-columns:5fr 7fr;gap:5rem;align-items:start" class="g1m">
       <div>
-        <h2 class="reveal" style="font-size:clamp(2.5rem,5vw,4rem);font-weight:300;color:var(--text)">The Acuros<br/><em>Standard.</em></h2>
-        <p class="reveal d1" style="font-size:.88rem;line-height:1.85;color:var(--sub);margin-top:1.5rem">Built on the recognition that patients deserve not just information, but understanding — and that clinicians deserve tools that work as hard as they do.</p>
-        <a href="/ai-assistant" class="btn btn-solid reveal d2" style="margin-top:2rem">Try AI Assistant</a>
+        <h2 class="reveal" style="font-size:clamp(2.5rem,5vw,4rem);font-weight:300;color:var(--text)">Up and running<br/><em>in a day.</em></h2>
+        <p class="reveal d1" style="font-size:.88rem;line-height:1.85;color:var(--sub);margin-top:1.5rem">No complex integrations. No EMR migration. Acuros drops into your workflow so your team stays focused on patients — not software.</p>
+        <a href="#contact" class="btn btn-solid reveal d2" style="margin-top:2rem">Request a Demo</a>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem" class="reveal d1">
-        <div class="principle-card"><div class="num" style="margin-bottom:.75rem">01</div><h4 style="font-size:1.35rem;font-weight:300;color:var(--text);margin-bottom:.625rem">Real Workflows</h4><p style="font-size:.82rem;line-height:1.8;color:var(--sub)">Designed for clinical reality — tools that fit naturally into how people already work.</p></div>
-        <div class="principle-card"><div class="num" style="margin-bottom:.75rem">02</div><h4 style="font-size:1.35rem;font-weight:300;color:var(--text);margin-bottom:.625rem">Human First</h4><p style="font-size:.82rem;line-height:1.8;color:var(--sub)">Technology supports clinical decision-making. It never replaces the clinician.</p></div>
-        <div class="principle-card"><div class="num" style="margin-bottom:.75rem">03</div><h4 style="font-size:1.35rem;font-weight:300;color:var(--text);margin-bottom:.625rem">Secure Core</h4><p style="font-size:.82rem;line-height:1.8;color:var(--sub)">Privacy is foundational. Aligned to PIPEDA, PHIPA, and Canadian regulatory standards.</p></div>
-        <div class="principle-card"><div class="num" style="margin-bottom:.75rem">04</div><h4 style="font-size:1.35rem;font-weight:300;color:var(--text);margin-bottom:.625rem">Evidence-Based</h4><p style="font-size:.82rem;line-height:1.8;color:var(--sub)">Every output cross-referenced against peer-reviewed literature.</p></div>
+      <div class="reveal d1">
+        <div class="step-row">
+          <div style="flex-shrink:0;padding-top:.2rem">
+            <div style="font-family:'Cormorant Garamond',serif;font-size:2.25rem;font-weight:300;color:var(--ac);line-height:1">01</div>
+          </div>
+          <div>
+            <h4 style="font-size:1.35rem;font-weight:300;color:var(--text);margin-bottom:.5rem">Register Your Clinic</h4>
+            <p style="font-size:.82rem;line-height:1.8;color:var(--sub)">Your organization is set up with a unique clinic code and access to the Acuros admin dashboard. Everything branded to your practice.</p>
+          </div>
+        </div>
+        <div class="step-row">
+          <div style="flex-shrink:0;padding-top:.2rem">
+            <div style="font-family:'Cormorant Garamond',serif;font-size:2.25rem;font-weight:300;color:var(--ac);line-height:1">02</div>
+          </div>
+          <div>
+            <h4 style="font-size:1.35rem;font-weight:300;color:var(--text);margin-bottom:.5rem">Share Your Patient Code</h4>
+            <p style="font-size:.82rem;line-height:1.8;color:var(--sub)">Patients register using your clinic's unique code. They're instantly connected to your organization's portal — no manual linking needed.</p>
+          </div>
+        </div>
+        <div class="step-row" style="border-bottom:none">
+          <div style="flex-shrink:0;padding-top:.2rem">
+            <div style="font-family:'Cormorant Garamond',serif;font-size:2.25rem;font-weight:300;color:var(--ac);line-height:1">03</div>
+          </div>
+          <div>
+            <h4 style="font-size:1.35rem;font-weight:300;color:var(--text);margin-bottom:.5rem">Patients Engage &amp; Earn</h4>
+            <p style="font-size:.82rem;line-height:1.8;color:var(--sub)">Patients use AI health guidance, prepare for appointments, and earn loyalty rewards — keeping your clinic top of mind between every visit.</p>
+          </div>
+        </div>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- Rewards Platform -->
+<section style="display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--border)" class="g1m">
+  <div style="padding:4rem 3rem;background:var(--bg2)">
+    <div class="lbl reveal" style="margin-bottom:1.5rem">04 — Rewards &amp; Loyalty</div>
+    <h2 class="reveal d1" style="font-size:clamp(2rem,4vw,3rem);font-weight:300;color:var(--text);margin-bottom:1.5rem">Keep patients<br/><em>coming back.</em></h2>
+    <p class="reveal d2" style="font-size:.88rem;line-height:1.85;color:var(--sub);margin-bottom:2rem">Turn routine healthcare into a rewarding experience. Patients earn points for portal activity, appointments, and healthy habits — redeemable for clinic credits, services, or offers you define.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:.625rem" class="reveal d3">
+      <span class="reward-pill">Appointment Check-ins</span>
+      <span class="reward-pill">Portal Engagement</span>
+      <span class="reward-pill">Referrals</span>
+      <span class="reward-pill">Health Milestones</span>
+      <span class="reward-pill">Custom Rewards</span>
+    </div>
+  </div>
+  <div class="img-panel" style="min-height:400px">
+    <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=900&q=80&auto=format&fit=crop" alt="Dark mountain stars" loading="lazy"/>
+    <div class="img-panel-overlay"></div>
+    <div style="position:absolute;bottom:2rem;left:2rem;right:2rem">
+      <p style="font-size:.82rem;color:rgba(255,255,255,.55);line-height:1.75;font-style:italic">A loyalty system designed for healthcare — built around patient wellbeing, not just transactions.</p>
     </div>
   </div>
 </section>
 
 <!-- Compliance -->
 <section style="display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--border)" class="g1m">
+  <div class="img-panel" style="min-height:400px">
+    <img src="https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=900&q=80&auto=format&fit=crop" alt="Nature dark" loading="lazy"/>
+    <div class="img-panel-overlay"></div>
+    <div style="position:absolute;bottom:2rem;left:2rem;right:2rem">
+      <p style="font-size:.82rem;color:rgba(255,255,255,.55);line-height:1.75;font-style:italic">Data stored on Canadian servers. Zero third-party sharing. AES-256 encrypted at rest.</p>
+    </div>
+  </div>
   <div style="padding:4rem 3rem;background:var(--bg2)">
-    <div class="lbl reveal" style="margin-bottom:1.5rem">04 — Compliance</div>
+    <div class="lbl reveal" style="margin-bottom:1.5rem">05 — Compliance</div>
     <h2 class="reveal d1" style="font-size:clamp(2rem,4vw,3rem);font-weight:300;color:var(--text);margin-bottom:1.5rem">Built to<br/><em>Canadian Standards.</em></h2>
     <div style="display:flex;flex-direction:column;gap:.75rem" class="reveal d2">
       <div class="compliance-row">
@@ -302,15 +358,8 @@
       </div>
       <div class="compliance-row">
         <div style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:400;color:var(--text);min-width:88px">HL7/FHIR</div>
-        <div style="font-size:.8rem;color:var(--sub);line-height:1.6">Healthcare interoperability standards for data exchange</div>
+        <div style="font-size:.8rem;color:var(--sub);line-height:1.6">Healthcare interoperability standards for structured data exchange</div>
       </div>
-    </div>
-  </div>
-  <div class="img-panel" style="min-height:400px">
-    <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=900&q=80&auto=format&fit=crop" alt="Dark mountain stars" loading="lazy"/>
-    <div class="img-panel-overlay"></div>
-    <div style="position:absolute;bottom:2rem;left:2rem;right:2rem">
-      <p style="font-size:.82rem;color:rgba(255,255,255,.55);line-height:1.75;font-style:italic">Data stored on Canadian servers. Zero third-party sharing. AES-256 encrypted at rest.</p>
     </div>
   </div>
 </section>
@@ -318,33 +367,58 @@
 <!-- CTA -->
 <section class="mesh" style="padding:8rem 2rem;border-bottom:1px solid var(--border);text-align:center">
   <div class="lbl reveal" style="margin-bottom:1.5rem">Get Started</div>
-  <h2 class="reveal d1" style="font-size:clamp(2.5rem,6vw,5rem);font-weight:300;color:var(--text);margin-bottom:1.5rem">Ready for<br/><em>precision?</em></h2>
-  <p class="reveal d2" style="font-size:.95rem;color:var(--sub);max-width:36ch;margin:0 auto 2.5rem;line-height:1.75">Join patients and clinicians using Acuros to navigate healthcare with confidence.</p>
+  <h2 class="reveal d1" style="font-size:clamp(2.5rem,6vw,5rem);font-weight:300;color:var(--text);margin-bottom:1.5rem">Ready to launch<br/><em>your clinic portal?</em></h2>
+  <p class="reveal d2" style="font-size:.95rem;color:var(--sub);max-width:40ch;margin:0 auto 2.5rem;line-height:1.75">Book a 20-minute demo and see how Acuros transforms your patient engagement — from onboarding to retention.</p>
   <div class="reveal d3" style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
-    <a href="/ai-assistant" class="btn btn-solid">Try AI Assistant</a>
-    <a href="/patient-portal" class="btn btn-outline">Patient Portal</a>
+    <a href="#contact" class="btn btn-solid">Request a Demo</a>
+    <a href="/patient-portal" class="btn btn-outline">Patient Login</a>
   </div>
 </section>
 
 <!-- Contact -->
-<section style="border-bottom:1px solid var(--border);background:var(--bg2)">
-  <div style="max-width:1280px;margin:0 auto;padding:4rem 2rem;display:grid;grid-template-columns:1fr 1fr;gap:2rem" class="g1m">
+<section id="contact" style="border-bottom:1px solid var(--border);background:var(--bg2)">
+  <div style="max-width:1280px;margin:0 auto;padding:5rem 2rem;display:grid;grid-template-columns:1fr 1fr;gap:4rem" class="g1m">
     <div>
-      <div class="lbl" style="margin-bottom:1rem">Contact</div>
-      <h3 style="font-size:2rem;font-weight:300;color:var(--text);margin-bottom:1rem">Talk to the team.</h3>
-      <p style="font-size:.85rem;line-height:1.85;color:var(--sub);max-width:40ch">Questions about patient support, clinic onboarding, or partnership opportunities? Send us a note and we will follow up.</p>
+      <div class="lbl" style="margin-bottom:1rem">Contact &amp; Demo Requests</div>
+      <h3 style="font-size:clamp(2rem,4vw,2.75rem);font-weight:300;color:var(--text);margin-bottom:1.25rem">Let's set up<br/><em>your clinic.</em></h3>
+      <p style="font-size:.85rem;line-height:1.9;color:var(--sub);max-width:38ch;margin-bottom:2rem">Whether you're ready to onboard or just exploring your options — our team will walk you through the platform and get your clinic portal configured from day one.</p>
+      <div style="display:flex;flex-direction:column;gap:.875rem">
+        <div style="display:flex;align-items:baseline;gap:.875rem">
+          <div style="width:1px;height:1rem;background:var(--ac);flex-shrink:0"></div>
+          <span style="font-size:.82rem;color:var(--sub)">20-minute guided demo — no commitment</span>
+        </div>
+        <div style="display:flex;align-items:baseline;gap:.875rem">
+          <div style="width:1px;height:1rem;background:var(--ac);flex-shrink:0"></div>
+          <span style="font-size:.82rem;color:var(--sub)">Same-day clinic code setup after onboarding</span>
+        </div>
+        <div style="display:flex;align-items:baseline;gap:.875rem">
+          <div style="width:1px;height:1rem;background:var(--ac);flex-shrink:0"></div>
+          <span style="font-size:.82rem;color:var(--sub)">Dedicated support during your launch</span>
+        </div>
+      </div>
     </div>
-    <div class="card" style="padding:1.5rem">
+    <div class="card" style="padding:2rem">
       <div id="ct-err" style="display:none;margin-bottom:1rem"></div>
       <div id="ct-ok"  style="display:none;margin-bottom:1rem"></div>
       <form onsubmit="submitContact(event)" style="display:flex;flex-direction:column;gap:.875rem">
-        <div><label class="lbl" style="display:block;margin-bottom:.35rem">Name</label><input id="ct-name" type="text" class="inp" placeholder="Jane Doe" required maxlength="100"/></div>
-        <div><label class="lbl" style="display:block;margin-bottom:.35rem">Email</label><input id="ct-email" type="email" class="inp" placeholder="name@email.com" required maxlength="160"/></div>
-        <div><label class="lbl" style="display:block;margin-bottom:.35rem">Type</label><select id="ct-type" class="inp"><option value="">General inquiry</option><option value="Patient support">Patient support</option><option value="Partnership">Partnership</option><option value="Clinic onboarding">Clinic onboarding</option></select></div>
-        <div><label class="lbl" style="display:block;margin-bottom:.35rem">Message</label><textarea id="ct-msg" class="inp" placeholder="How can we help?" rows="4" required maxlength="4000" style="resize:vertical"></textarea></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.875rem">
+          <div><label class="lbl" style="display:block;margin-bottom:.35rem">Your Name</label><input id="ct-name" type="text" class="inp" placeholder="Jane Doe" required maxlength="100"/></div>
+          <div><label class="lbl" style="display:block;margin-bottom:.35rem">Clinic / Organization</label><input id="ct-clinic" type="text" class="inp" placeholder="Acuros Clinic" maxlength="120"/></div>
+        </div>
+        <div><label class="lbl" style="display:block;margin-bottom:.35rem">Email Address</label><input id="ct-email" type="email" class="inp" placeholder="name@clinic.com" required maxlength="160"/></div>
+        <div><label class="lbl" style="display:block;margin-bottom:.35rem">Inquiry Type</label>
+          <select id="ct-type" class="inp">
+            <option value="Book a Demo">Book a Demo</option>
+            <option value="Clinic Onboarding">Clinic Onboarding</option>
+            <option value="Pricing Inquiry">Pricing Inquiry</option>
+            <option value="Partnership">Partnership</option>
+            <option value="">General Inquiry</option>
+          </select>
+        </div>
+        <div><label class="lbl" style="display:block;margin-bottom:.35rem">Message</label><textarea id="ct-msg" class="inp" placeholder="Tell us about your practice and what you're looking to achieve…" rows="4" required maxlength="4000" style="resize:vertical"></textarea></div>
         <div style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden" aria-hidden="true"><label for="ct-company">Company</label><input id="ct-company" name="company" type="text" tabindex="-1" autocomplete="off"/></div>
         <input id="ct-ts" type="hidden"/>
-        <button id="ct-btn" type="submit" class="btn btn-solid" style="justify-content:center">Send Message</button>
+        <button id="ct-btn" type="submit" class="btn btn-solid" style="justify-content:center;margin-top:.25rem">Send Message</button>
       </form>
     </div>
   </div>
@@ -353,19 +427,38 @@
 <!-- Footer -->
 <footer style="border-top:1px solid var(--border);background:var(--bg2)">
   <div style="max-width:1280px;margin:0 auto;padding:3rem 2rem">
-    <div style="display:grid;grid-template-columns:1fr auto auto auto;gap:4rem;align-items:start;flex-wrap:wrap" class="g1m">
+    <div style="display:grid;grid-template-columns:1fr auto auto auto;gap:4rem;align-items:start" class="g1m">
       <div>
         <div style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--text);margin-bottom:.5rem">Acuros Health</div>
-        <p style="font-size:.8rem;color:var(--mute);line-height:1.7;max-width:26ch">Precision health intelligence. Built in Canada.</p>
+        <p style="font-size:.8rem;color:var(--mute);line-height:1.7;max-width:26ch">Patient engagement platform for modern clinics. Built in Canada.</p>
       </div>
-      <div><div class="lbl" style="margin-bottom:1rem">Platform</div><div style="display:flex;flex-direction:column;gap:.625rem"><a href="/ai-assistant" class="lbl" style="color:var(--sub);text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--sub)'">AI Assistant</a><a href="/patient-portal" class="lbl" style="color:var(--sub);text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--sub)'">Patient Portal</a></div></div>
-      <div><div class="lbl" style="margin-bottom:1rem">Legal</div><div style="display:flex;flex-direction:column;gap:.625rem"><a href="/privacy" class="lbl" style="color:var(--sub);text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--sub)'">Privacy Policy</a><a href="/terms" class="lbl" style="color:var(--sub);text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--sub)'">Terms of Service</a></div></div>
-      <div><div class="lbl" style="margin-bottom:1rem">Contact</div><div style="display:flex;flex-direction:column;gap:.625rem"><a href="mailto:info@acuros.ca" class="lbl" style="color:var(--sub);text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--ac)'" onmouseout="this.style.color='var(--sub)'">info@acuros.ca</a><a href="https://acuros.ca" target="_blank" rel="noopener noreferrer" class="lbl" style="color:var(--sub);text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--ac)'" onmouseout="this.style.color='var(--sub)'">acuros.ca</a></div></div>
+      <div>
+        <div class="lbl" style="margin-bottom:1rem">Platform</div>
+        <div style="display:flex;flex-direction:column;gap:.625rem">
+          <a href="#contact"        class="lbl" style="color:var(--sub);text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--sub)'">Request Demo</a>
+          <a href="/ai-assistant"   class="lbl" style="color:var(--sub);text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--sub)'">AI Assistant</a>
+          <a href="/patient-portal" class="lbl" style="color:var(--sub);text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--sub)'">Patient Login</a>
+        </div>
+      </div>
+      <div>
+        <div class="lbl" style="margin-bottom:1rem">Legal</div>
+        <div style="display:flex;flex-direction:column;gap:.625rem">
+          <a href="/privacy" class="lbl" style="color:var(--sub);text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--sub)'">Privacy Policy</a>
+          <a href="/terms"   class="lbl" style="color:var(--sub);text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--sub)'">Terms of Service</a>
+        </div>
+      </div>
+      <div>
+        <div class="lbl" style="margin-bottom:1rem">Contact</div>
+        <div style="display:flex;flex-direction:column;gap:.625rem">
+          <a href="mailto:info@acuros.ca" class="lbl" style="color:var(--sub);text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--ac)'" onmouseout="this.style.color='var(--sub)'">info@acuros.ca</a>
+          <a href="https://acuros.ca" target="_blank" rel="noopener noreferrer" class="lbl" style="color:var(--sub);text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--ac)'" onmouseout="this.style.color='var(--sub)'">acuros.ca</a>
+        </div>
+      </div>
     </div>
     <div class="hr" style="margin:2rem 0"></div>
     <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:.5rem">
       <p style="font-size:.75rem;color:var(--mute)">© 2025 Acuros Health Inc. All rights reserved.</p>
-      <p style="font-size:.75rem;color:var(--mute)">Not a substitute for professional medical advice.</p>
+      <p style="font-size:.75rem;color:var(--mute)">AI health tools are educational only — not a substitute for professional medical advice.</p>
     </div>
   </div>
 </footer>
@@ -416,7 +509,6 @@ function updateHeroOverlay() {
 function openMob()  { document.getElementById('mob-menu').classList.add('open'); }
 function closeMob() { document.getElementById('mob-menu').classList.remove('open'); }
 window.addEventListener('scroll', () => { document.getElementById('main-nav').style.boxShadow = window.scrollY > 10 ? '0 1px 24px rgba(0,0,0,.08)' : ''; });
-// Enable reveal animations only when JS is ready — fail-open if JS never runs
 document.documentElement.classList.add('js-reveal');
 function setupReveal() {
   if (!('IntersectionObserver' in window)) {
@@ -427,7 +519,6 @@ function setupReveal() {
   document.querySelectorAll('.reveal:not(.in),.stagger-item:not(.in)').forEach(el => io.observe(el));
 }
 document.addEventListener('DOMContentLoaded', () => { setupReveal(); setTimeout(setupReveal, 200); });
-// Hard fallback: force all visible after 3s in case observer misfires
 setTimeout(() => { document.querySelectorAll('.reveal,.stagger-item').forEach(el => el.classList.add('in')); }, 3000);
 function showMsg(id, msg, type) { const el = document.getElementById(id); if (!el) return; el.style.display = 'block'; el.className = type === 'err' ? 'err-box' : 'ok-box'; el.textContent = msg; }
 function hideMsg(...ids) { ids.forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; }); }
@@ -435,8 +526,15 @@ function setBtn(id, loading, label) { const b = document.getElementById(id); if 
 function emailLooksValid(email) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || '')); }
 async function submitContact(e) {
   e.preventDefault(); hideMsg('ct-err', 'ct-ok'); setBtn('ct-btn', true, 'Send Message');
-  const name = document.getElementById('ct-name').value.trim(), email = document.getElementById('ct-email').value.trim(), type = document.getElementById('ct-type').value.trim(), message = document.getElementById('ct-msg').value.trim(), honeypot = document.getElementById('ct-company').value.trim(), formTs = Number(document.getElementById('ct-ts').value || 0);
-  if (!name || !email || !message) { showMsg('ct-err', 'Please fill in name, email, and message.', 'err'); setBtn('ct-btn', false, 'Send Message'); return; }
+  const name    = document.getElementById('ct-name').value.trim();
+  const clinic  = document.getElementById('ct-clinic').value.trim();
+  const email   = document.getElementById('ct-email').value.trim();
+  const type    = document.getElementById('ct-type').value.trim();
+  const msgRaw  = document.getElementById('ct-msg').value.trim();
+  const message = clinic ? `Clinic / Organization: ${clinic}\n\n${msgRaw}` : msgRaw;
+  const honeypot = document.getElementById('ct-company').value.trim();
+  const formTs   = Number(document.getElementById('ct-ts').value || 0);
+  if (!name || !email || !msgRaw) { showMsg('ct-err', 'Please fill in name, email, and message.', 'err'); setBtn('ct-btn', false, 'Send Message'); return; }
   if (!emailLooksValid(email)) { showMsg('ct-err', 'Please enter a valid email address.', 'err'); setBtn('ct-btn', false, 'Send Message'); return; }
   if (honeypot) { showMsg('ct-err', 'Unable to submit right now. Please refresh and try again.', 'err'); setBtn('ct-btn', false, 'Send Message'); return; }
   if (!formTs) { showMsg('ct-err', 'Please retry the form submission.', 'err'); setBtn('ct-btn', false, 'Send Message'); return; }
@@ -444,9 +542,9 @@ async function submitContact(e) {
     const resp = await fetch(CONFIG.contactApiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, email, type, message, honeypot, formTs }) });
     const data = await resp.json().catch(() => ({}));
     if (!resp.ok) throw new Error(data.error || `API ${resp.status}`);
-    showMsg('ct-ok', 'Message sent. We will get back to you shortly.', 'ok');
+    showMsg('ct-ok', 'Message sent — we\'ll be in touch shortly to schedule your demo.', 'ok');
     e.target.reset(); document.getElementById('ct-ts').value = String(Date.now());
-  } catch (err) { showMsg('ct-err', err.message || 'Unable to send message right now. Please try again shortly.', 'err'); }
+  } catch (err) { showMsg('ct-err', err.message || 'Unable to send right now. Please try again shortly.', 'err'); }
   finally { setBtn('ct-btn', false, 'Send Message'); }
 }
 document.getElementById('ct-ts').value = String(Date.now());
