@@ -5,7 +5,8 @@
     { "source": "/ai-assistant",     "destination": "/ai.html" },
     { "source": "/patient-portal",   "destination": "/patient.html" },
     { "source": "/privacy",          "destination": "/privacy.html" },
-    { "source": "/terms",            "destination": "/terms.html" }
+    { "source": "/terms",            "destination": "/terms.html" },
+    { "source": "/aaaclinics-portal","destination": "/portal-aaaclinics.html" }
   ],
   "headers": [
     {
