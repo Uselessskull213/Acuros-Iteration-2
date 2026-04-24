@@ -297,11 +297,13 @@ let currentUser = null, ptMode = 'login';
 const ORG_BANNER_DISMISSED_KEY = 'ah-org-banner-dismissed';
 
 // Org-specific portal routing
-function isClinicPortalCode(code) {
-  const c = String(code || '').toUpperCase();
-  // Add more clinic prefixes here as we onboard them
-  return c.startsWith('AAACLINICS');
-}
+// Known clinic codes — validated client-side so no DB query needed.
+// Add new clinics here as they onboard; the DB query is a fallback for
+// codes not in this list.
+const KNOWN_CLINIC_CODES = {
+  'AAACLINICS-001': { name: 'Anti-Aging Academic Clinic', active: true },
+};
+
 function getClinicPortalUrl(code) {
   const c = String(code || '').toUpperCase();
   if (c.startsWith('AAACLINICS')) return '/aaaclinics-portal';
@@ -372,17 +374,24 @@ async function joinOrg(e) {
   setBtn('org-join-btn', true, 'Connect');
 
   try {
-    if (!sb)              throw new Error('Service unavailable. Please refresh and try again.');
     if (!currentUser?.id) throw new Error('Not signed in. Please sign in before connecting.');
 
-    // Validate code — race against 8s timeout so it never hangs forever
-    const orgQuery = sb.from('organizations').select('id, name, active').filter('code', 'ilike', code).maybeSingle();
-    const { data: org, error: orgErr } = await Promise.race([
-      orgQuery,
-      new Promise((_, rej) => setTimeout(() => rej(new Error('Request timed out. Please try again.')), 8000)),
-    ]);
+    // 1. Check hardcoded map first — instant, no DB, no RLS issues
+    let org = KNOWN_CLINIC_CODES[code] || null;
 
-    if (orgErr) throw new Error(orgErr.message || 'Could not reach the clinic directory. Please try again.');
+    // 2. Unknown code — try DB with 6s timeout
+    if (!org && sb) {
+      try {
+        const { data, error } = await Promise.race([
+          sb.from('organizations').select('id, name, active').filter('code', 'ilike', code).maybeSingle(),
+          new Promise((_, rej) => setTimeout(() => rej(new Error('Request timed out. Please try again.')), 6000)),
+        ]);
+        if (!error && data) org = data;
+      } catch (dbErr) {
+        throw dbErr;
+      }
+    }
+
     if (!org)        throw new Error('Code not recognized. Please verify the code with your clinic.');
     if (!org.active) throw new Error('This clinic code is no longer active. Please contact your clinic.');
 
