@@ -506,39 +506,58 @@ function syncPortal() {
 
 // ── Session guard ──
 if (sb?.auth?.onAuthStateChange) {
-  sb.auth.onAuthStateChange(async (event, session) => {
+  sb.auth.onAuthStateChange((event, session) => {
     if (session?.user) {
       currentUser = {
         id: session.user.id, email: session.user.email,
         name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'Patient',
         first: '', last: '', code: '', org_id: '', org_name: '',
       };
-      // Load profile to verify AAA org membership
-      try {
-        const profile = await fetchProfile(session.user.id);
-        if (profile) {
-          currentUser.name     = profile.name || currentUser.name;
-          currentUser.first    = profile.first_name || '';
-          currentUser.last     = profile.last_name || '';
-          currentUser.code     = profile.patient_code || '';
-          currentUser.org_id   = profile.org_id || '';
-          currentUser.org_name = profile.org?.name || '';
-        }
-      } catch (_) {}
 
-      // Merge localStorage org (set by joinOrg before profile DB write)
+      // 1. Merge localStorage immediately (synchronous — no await, never hangs)
       mergeLocalStorageOrg(currentUser);
 
-      // Guard: must be an AAA Clinics patient
-      if (!isAAAPatient(currentUser)) {
-        window.location.replace('/patient-portal');
+      // 2. If AAA code confirmed → show dashboard right away
+      if (isAAAPatient(currentUser)) {
+        showDashboard();
+        syncPortal();
+        // Enrich display name in background — fire-and-forget, never blocks
+        fetchProfile(session.user.id).then(profile => {
+          if (!profile || !currentUser) return;
+          currentUser.name     = profile.name     || currentUser.name;
+          currentUser.first    = profile.first_name || currentUser.first;
+          currentUser.last     = profile.last_name  || currentUser.last;
+          currentUser.org_name = profile.org?.name  || currentUser.org_name;
+          syncPortal();
+        }).catch(() => {});
         return;
       }
 
-      showDashboard();
-      syncPortal();
+      // 3. No localStorage code — fetch profile with a hard 5s timeout
+      //    (catches users who have patient_code in DB but cleared localStorage)
+      const profileRace = Promise.race([
+        fetchProfile(session.user.id),
+        new Promise(resolve => setTimeout(() => resolve(null), 5000)),
+      ]);
+      profileRace.then(profile => {
+        if (profile && currentUser) {
+          currentUser.name     = profile.name     || currentUser.name;
+          currentUser.first    = profile.first_name || '';
+          currentUser.last     = profile.last_name  || '';
+          currentUser.code     = profile.patient_code || '';
+          currentUser.org_id   = profile.org_id   || '';
+          currentUser.org_name = profile.org?.name || '';
+        }
+        mergeLocalStorageOrg(currentUser);
+        if (isAAAPatient(currentUser)) {
+          showDashboard();
+          syncPortal();
+        } else {
+          window.location.replace('/patient-portal');
+        }
+      }).catch(() => window.location.replace('/patient-portal'));
+
     } else if (event === 'SIGNED_OUT' || (event === 'INITIAL_SESSION' && !session)) {
-      // Not signed in — send to main portal login
       window.location.replace('/patient-portal');
     }
     if (window.location.hash?.includes('access_token')) {
@@ -546,7 +565,6 @@ if (sb?.auth?.onAuthStateChange) {
     }
   });
 } else {
-  // Supabase unavailable — let through for demo
   document.getElementById('auth-checking').style.display = 'none';
   document.getElementById('portal-dash').style.display = 'block';
 }

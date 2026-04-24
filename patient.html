@@ -494,7 +494,9 @@ function syncPortal() {
   const gate = document.getElementById('portal-gate'), dash = document.getElementById('portal-dash');
   if (currentUser) {
     // Redirect clinic-specific patients to their branded portal
-    const portalUrl = getClinicPortalUrl(currentUser.code);
+    // Check profile code first, then localStorage (for users who haven't had profile written yet)
+    const effectiveCode = currentUser.code || localStorage.getItem('ah-org-code') || '';
+    const portalUrl = getClinicPortalUrl(effectiveCode);
     if (portalUrl) { window.location.replace(portalUrl); return; }
 
     gate.style.display = 'none';
