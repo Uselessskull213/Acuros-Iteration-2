@@ -421,8 +421,18 @@ let currentUser = null;
 
 function isAAAPatient(user) {
   if (!user) return false;
-  const code = String(user.code || '').toUpperCase();
-  return code.startsWith('AAACLINICS');
+  // Check profile code
+  if (String(user.code || '').toUpperCase().startsWith('AAACLINICS')) return true;
+  // Fallback: localStorage (written by joinOrg before profile DB write completes)
+  return String(localStorage.getItem('ah-org-code') || '').toUpperCase().startsWith('AAACLINICS');
+}
+
+function mergeLocalStorageOrg(user) {
+  if (!user) return;
+  const lsCode = localStorage.getItem('ah-org-code');
+  const lsId   = localStorage.getItem('ah-org-id');
+  const lsName = localStorage.getItem('ah-org-name');
+  if (lsCode && !user.code) { user.code = lsCode; user.org_id = lsId || ''; user.org_name = lsName || ''; }
 }
 
 // ── Theme ──
@@ -515,6 +525,9 @@ if (sb?.auth?.onAuthStateChange) {
           currentUser.org_name = profile.org?.name || '';
         }
       } catch (_) {}
+
+      // Merge localStorage org (set by joinOrg before profile DB write)
+      mergeLocalStorageOrg(currentUser);
 
       // Guard: must be an AAA Clinics patient
       if (!isAAAPatient(currentUser)) {
