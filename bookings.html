@@ -59,9 +59,10 @@
     .nav-link:hover,.nav-link.active{color:var(--text)}
 
     /* ── Buttons ── */
-    .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.72rem 1.75rem;font-size:.76rem;letter-spacing:.1em;text-transform:uppercase;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;border:none;transition:all .24s cubic-bezier(.22,1,.36,1);text-decoration:none;position:relative;overflow:hidden}
+    .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.72rem 1.75rem;font-size:.76rem;letter-spacing:.1em;text-transform:uppercase;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;border:none;transition:background-color .22s cubic-bezier(.22,1,.36,1),color .22s cubic-bezier(.22,1,.36,1),transform .22s cubic-bezier(.22,1,.36,1),box-shadow .22s cubic-bezier(.22,1,.36,1),border-color .22s cubic-bezier(.22,1,.36,1);text-decoration:none;position:relative;overflow:hidden}
     .btn::before{content:'';position:absolute;inset:0;background:rgba(255,255,255,.1);opacity:0;transition:opacity .2s}
     .btn:hover::before{opacity:1}
+    .btn:not([disabled]):active{transform:scale(0.97);transition-duration:80ms}
     .btn-solid{background:var(--text);color:var(--bg)}
     .btn-solid:hover{background:var(--ac);color:#fff;transform:translateY(-1px)}
     .btn-outline{background:transparent;color:var(--text);border:1px solid rgba(24,24,22,.2)}
@@ -85,7 +86,7 @@
 
     /* ── Reveal system ── */
     @keyframes pgIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-    .rv{opacity:0;transform:translateY(24px);transition:opacity .78s cubic-bezier(.22,1,.36,1),transform .78s cubic-bezier(.22,1,.36,1);will-change:opacity,transform}
+    .rv{opacity:0;transform:translateY(14px);transition:opacity .78s cubic-bezier(.22,1,.36,1),transform .78s cubic-bezier(.22,1,.36,1);will-change:opacity,transform}
     .rv.in{opacity:1;transform:none}
     .rv.d1{transition-delay:.08s}.rv.d2{transition-delay:.16s}.rv.d3{transition-delay:.24s}
     .rv.d4{transition-delay:.32s}.rv.d5{transition-delay:.4s}.rv.d6{transition-delay:.48s}
@@ -162,7 +163,7 @@
       <a class="nav-link" href="/patient-portal">Patient Login</a>
     </div>
     <div style="display:flex;align-items:center;gap:.875rem">
-      <button onclick="toggleTheme()" aria-label="Toggle theme" style="width:36px;height:36px;border:1px solid var(--border);background:none;color:var(--sub);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .22s;font-size:.9rem"><span id="th-icon">☀</span></button>
+      <button onclick="toggleTheme()" aria-label="Toggle theme" style="width:36px;height:36px;border:1px solid var(--border);background:none;color:var(--sub);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .22s,color .22s;font-size:.9rem"><span id="th-icon">☀</span></button>
       <a href="/patient-portal" class="btn btn-solid mag" style="padding:.55rem 1.25rem" id="nav-cta">Patient Login</a>
       <button onclick="openMob()" style="display:none;background:none;border:none;cursor:pointer;color:var(--text);padding:.25rem" id="mob-btn" aria-label="Menu">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16M4 12h12M4 18h8"/></svg>

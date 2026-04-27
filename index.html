@@ -76,7 +76,7 @@
 
     .nav-logo{display:flex;align-items:center;gap:.875rem;text-decoration:none}
     .nav-logo-frame{position:relative;width:36px;height:36px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
-    .nav-logo-frame::before,.nav-logo-frame::after,.nav-logo-frame .c-tr,.nav-logo-frame .c-bl{content:'';position:absolute;width:9px;height:9px;transition:all .32s cubic-bezier(.22,1,.36,1)}
+    .nav-logo-frame::before,.nav-logo-frame::after,.nav-logo-frame .c-tr,.nav-logo-frame .c-bl{content:'';position:absolute;width:9px;height:9px;transition:width .32s cubic-bezier(.22,1,.36,1),height .32s cubic-bezier(.22,1,.36,1),opacity .32s cubic-bezier(.22,1,.36,1)}
     .nav-logo-frame::before{top:0;left:0;border-top:1.5px solid var(--gold);border-left:1.5px solid var(--gold)}
     .nav-logo-frame::after{bottom:0;right:0;border-bottom:1.5px solid var(--gold);border-right:1.5px solid var(--gold)}
     .nav-logo-frame .c-tr{top:0;right:0;border-top:1.5px solid var(--gold);border-right:1.5px solid var(--gold)}
@@ -93,9 +93,10 @@
     .nav-link:hover,.nav-link.active{color:var(--text)}
 
     /* ── Buttons ── */
-    .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.7rem 1.7rem;font-size:.74rem;letter-spacing:.11em;text-transform:uppercase;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;border:none;transition:all .28s cubic-bezier(.22,1,.36,1);text-decoration:none;position:relative;overflow:hidden;will-change:transform}
+    .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.7rem 1.7rem;font-size:.74rem;letter-spacing:.11em;text-transform:uppercase;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;border:none;transition:background-color .22s cubic-bezier(.22,1,.36,1),color .22s cubic-bezier(.22,1,.36,1),transform .22s cubic-bezier(.22,1,.36,1),box-shadow .22s cubic-bezier(.22,1,.36,1),border-color .22s cubic-bezier(.22,1,.36,1);text-decoration:none;position:relative;overflow:hidden}
     .btn::before{content:'';position:absolute;inset:0;background:rgba(255,255,255,.08);opacity:0;transition:opacity .2s}
     .btn:hover::before{opacity:1}
+    .btn:not([disabled]):active{transform:scale(0.97);transition-duration:80ms}
     .btn-solid{background:var(--text);color:var(--bg)}
     .btn-solid:hover{background:var(--ac);color:#fff;transform:translateY(-2px);box-shadow:0 8px 32px rgba(11,122,109,.3)}
     .btn-outline{background:transparent;color:var(--text);border:1px solid rgba(24,24,22,.18)}
@@ -108,12 +109,12 @@
     .hr{height:1px;background:var(--border)}
 
     /* ── Reveal system ── */
-    .rv{opacity:0;transform:translateY(22px);transition:opacity .82s cubic-bezier(.22,1,.36,1),transform .82s cubic-bezier(.22,1,.36,1);will-change:opacity,transform}
+    .rv{opacity:0;transform:translateY(14px);transition:opacity .82s cubic-bezier(.22,1,.36,1),transform .82s cubic-bezier(.22,1,.36,1);will-change:opacity,transform}
     .rv.in{opacity:1;transform:none}
     .rv.d1{transition-delay:.1s}.rv.d2{transition-delay:.2s}.rv.d3{transition-delay:.3s}.rv.d4{transition-delay:.4s}
-    .rv-left{opacity:0;transform:translateX(-28px);transition:opacity .82s cubic-bezier(.22,1,.36,1),transform .82s cubic-bezier(.22,1,.36,1)}
+    .rv-left{opacity:0;transform:translateX(-18px);transition:opacity .82s cubic-bezier(.22,1,.36,1),transform .82s cubic-bezier(.22,1,.36,1)}
     .rv-left.in{opacity:1;transform:none}
-    .rv-right{opacity:0;transform:translateX(28px);transition:opacity .82s cubic-bezier(.22,1,.36,1),transform .82s cubic-bezier(.22,1,.36,1)}
+    .rv-right{opacity:0;transform:translateX(18px);transition:opacity .82s cubic-bezier(.22,1,.36,1),transform .82s cubic-bezier(.22,1,.36,1)}
     .rv-right.in{opacity:1;transform:none}
     .clip-wipe{clip-path:inset(0 100% 0 0);transition:clip-path .9s cubic-bezier(.22,1,.36,1)}
     .clip-wipe.in{clip-path:inset(0 0% 0 0)}
@@ -140,7 +141,7 @@
     .mwrap:hover .minner{animation-play-state:paused}
 
     /* ── Stats ── */
-    .stat-num{font-family:'Cormorant Garamond',serif;font-size:clamp(3.25rem,6.5vw,5.75rem);font-weight:200;color:var(--text);line-height:1;letter-spacing:-.04em}
+    .stat-num{font-family:'Cormorant Garamond',serif;font-size:clamp(3.25rem,6.5vw,5.75rem);font-weight:200;color:var(--text);line-height:1;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
     .stat-cell{padding:2.5rem 2rem;display:flex;flex-direction:column;gap:.625rem;position:relative}
     .stat-cell+.stat-cell::before{content:'';position:absolute;left:0;top:20%;height:60%;width:1px;background:var(--border)}
 
@@ -171,7 +172,7 @@
     /* ── AI Spotlight ── */
     .ai-spot{background:var(--text);color:var(--bg);padding:8rem 2.5rem;position:relative;overflow:hidden}
     .ai-spot-inner{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center}
-    .ai-headline{font-family:'Cormorant Garamond',serif;font-size:clamp(2.75rem,6vw,6rem);font-weight:200;line-height:.96;letter-spacing:-.04em;color:var(--bg)}
+    .ai-headline{font-family:'Cormorant Garamond',serif;font-size:clamp(2.75rem,6vw,6rem);font-weight:200;line-height:.96;letter-spacing:-.04em;color:var(--bg);text-wrap:balance}
     .ai-headline em{color:rgba(238,238,232,.35);font-style:italic}
     .ai-bubbles{display:flex;flex-direction:column;gap:1rem}
     .bubble{padding:1rem 1.375rem;font-size:.82rem;line-height:1.7;max-width:34ch;border-radius:0}
@@ -196,7 +197,7 @@
     .contact-split{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--border)}
     .ct-left{background:var(--text);padding:6rem 5rem;display:flex;flex-direction:column;justify-content:center}
     .ct-right{background:var(--bg2);padding:6rem 5rem;display:flex;flex-direction:column;justify-content:center}
-    .ct-left h3{font-family:'Cormorant Garamond',serif;font-size:clamp(2.25rem,3.8vw,3.75rem);font-weight:200;line-height:1.04;margin:1rem 0 1.5rem;letter-spacing:-.03em;color:var(--bg)}
+    .ct-left h3{font-family:'Cormorant Garamond',serif;font-size:clamp(2.25rem,3.8vw,3.75rem);font-weight:200;line-height:1.04;margin:1rem 0 1.5rem;letter-spacing:-.03em;color:var(--bg);text-wrap:balance}
     .ct-left p{font-size:.85rem;line-height:1.9;color:rgba(238,238,232,.5);max-width:34ch;margin-bottom:2.5rem}
     .ct-left .lbl{color:rgba(238,238,232,.3)}
     .ct-benefit{display:flex;align-items:flex-start;gap:1rem;margin-bottom:1rem}
@@ -213,7 +214,7 @@
     .spin{width:15px;height:15px;border:2px solid transparent;border-top-color:currentColor;border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
 
     /* ── Card tilt ── */
-    .tilt{transition:transform .4s cubic-bezier(.22,1,.36,1),box-shadow .4s;will-change:transform;background:var(--bg2);border:1px solid var(--border)}
+    .tilt{transition:transform .26s cubic-bezier(.22,1,.36,1),box-shadow .26s;will-change:transform;background:var(--bg2);border:1px solid var(--border)}
 
     /* ── Mobile menu ── */
     #mob-menu{display:none;position:fixed;inset:0;z-index:300;background:var(--bg);flex-direction:column;padding:2.5rem}
@@ -292,7 +293,7 @@
       <a class="nav-link" href="/patient-portal">Patient Login</a>
     </div>
     <div style="display:flex;align-items:center;gap:.875rem">
-      <button onclick="toggleTheme()" aria-label="Toggle theme" style="width:36px;height:36px;border:1px solid var(--border);background:none;color:var(--sub);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .22s;font-size:.88rem"><span id="th-icon">☀</span></button>
+      <button onclick="toggleTheme()" aria-label="Toggle theme" style="width:36px;height:36px;border:1px solid var(--border);background:none;color:var(--sub);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .22s,color .22s;font-size:.88rem"><span id="th-icon">☀</span></button>
       <a href="#contact" class="btn btn-solid mag" style="padding:.55rem 1.3rem" id="nav-cta">Request Demo</a>
       <button onclick="openMob()" style="display:none;background:none;border:none;cursor:pointer;color:var(--text);padding:.25rem" id="mob-btn" aria-label="Open menu">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16M4 12h12M4 18h8"/></svg>
@@ -320,7 +321,7 @@
 <!-- ─────────────────────────────────────────────────────────── -->
 <!-- ── HERO ── -->
 <!-- ─────────────────────────────────────────────────────────── -->
-<section style="position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;padding-bottom:clamp(4rem,6.5vw,7rem)">
+<section style="position:relative;min-height:100dvh;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;padding-bottom:clamp(4rem,6.5vw,7rem)">
   <video id="hero-video" autoplay muted loop playsinline preload="auto" aria-hidden="true" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;transform:scaleX(-1);will-change:transform"></video>
   <div id="hero-bottom" style="position:absolute;bottom:0;left:0;right:0;height:65%;pointer-events:none"></div>
   <div style="position:absolute;top:0;left:0;right:0;height:28%;background:linear-gradient(180deg,rgba(0,0,0,.32) 0%,transparent 100%);pointer-events:none"></div>
@@ -382,7 +383,7 @@
       <div class="lbl" style="margin-top:.25rem">Patients engaged</div>
     </div>
     <div class="stat-cell rv d2">
-      <div class="stat-num" data-target="98" data-suffix="%">0%</div>
+      <div class="stat-num">96.3%</div>
       <div class="lbl" style="margin-top:.25rem">Satisfaction rate</div>
     </div>
     <div class="stat-cell rv d3">
@@ -402,7 +403,7 @@
     <div class="pp-overlay"></div>
     <div class="pp-body">
       <span class="pp-tag">For Clinics</span>
-      <h2>Elevate every<br/>patient relationship.</h2>
+      <h2>Strengthen every<br/>patient relationship.</h2>
       <p>Deploy a branded digital portal in under a day — AI guidance, loyalty rewards, and appointment tools built for your practice.</p>
       <span class="pp-cta">Request Demo <span style="font-size:.9rem">→</span></span>
     </div>
