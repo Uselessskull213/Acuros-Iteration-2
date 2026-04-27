@@ -23,28 +23,48 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
   <script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{display:['Cormorant Garamond','Georgia','serif'],sans:['DM Sans','sans-serif']}}}}</script>
   <style>
-    :root{--bg:#f5f5f3;--bg2:#fefefe;--bg3:#efefec;--border:#deded8;--text:#191917;--sub:#5c5b55;--mute:#9a9a90;--ac:#0ea5e9;--gold:#c4902a;--nav:rgba(245,245,243,.95)}
-    html.dark{--bg:#0e0e0c;--bg2:#161614;--bg3:#1c1c1a;--border:#282824;--text:#eeeee8;--sub:#96968e;--mute:#5a5a54;--ac:#38bdf8;--gold:#d4a84a;--nav:rgba(14,14,12,.95)}
+    :root{--bg:#f5f5f3;--bg2:#fefefe;--bg3:#efefec;--border:#deded8;--text:#191917;--sub:#5c5b55;--mute:#9a9a90;--ac:#0ea5e9;--gold:#c4902a;--nav:rgba(245,245,243,.82);--shadow:0 4px 32px rgba(0,0,0,.08)}
+    html.dark{--bg:#0e0e0c;--bg2:#161614;--bg3:#1c1c1a;--border:#282824;--text:#eeeee8;--sub:#96968e;--mute:#5a5a54;--ac:#38bdf8;--gold:#d4a84a;--nav:rgba(14,14,12,.88);--shadow:0 4px 32px rgba(0,0,0,.32)}
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     html{scroll-behavior:smooth}
-    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);transition:background .35s,color .35s;overflow-x:hidden}
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);transition:background .35s,color .35s;overflow-x:hidden;cursor:none}
+    @media(hover:none),(pointer:coarse){body{cursor:auto}}
     h1,h2,h3,h4{font-family:'Cormorant Garamond',serif;line-height:1.06;letter-spacing:-.02em}
-    nav{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--nav);backdrop-filter:blur(28px) saturate(200%);-webkit-backdrop-filter:blur(28px) saturate(200%);border-bottom:1px solid rgba(0,0,0,.06);transition:background .35s}
+
+    /* ── Cursor ── */
+    #cursor-dot{position:fixed;top:0;left:0;width:7px;height:7px;background:var(--text);border-radius:50%;pointer-events:none;z-index:8999;transform:translate(-50%,-50%);transition:background .25s,transform .25s cubic-bezier(.22,1,.36,1);will-change:left,top}
+    #cursor-ring{position:fixed;top:0;left:0;width:34px;height:34px;border:1px solid var(--text);border-radius:50%;pointer-events:none;z-index:8998;transform:translate(-50%,-50%);opacity:.3;transition:width .3s cubic-bezier(.22,1,.36,1),height .3s,opacity .3s,border-color .3s;will-change:left,top}
+    body.c-hover #cursor-dot{transform:translate(-50%,-50%) scale(2.2);background:var(--ac)}
+    #grain{position:fixed;inset:0;z-index:9992;pointer-events:none;opacity:.038;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");background-repeat:repeat;background-size:180px 180px}
+    html.dark #grain{opacity:.06}
+    body.c-hover #cursor-ring{width:56px;height:56px;opacity:.18;border-color:var(--ac)}
+    @media(hover:none),(pointer:coarse){#cursor-dot,#cursor-ring{display:none}}
+
+    /* ── Progress + Nav ── */
+    #scroll-prog{position:fixed;top:0;left:0;z-index:9001;height:1.5px;background:var(--ac);width:0%;transform-origin:left}
+    nav{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--nav);backdrop-filter:blur(28px) saturate(180%);-webkit-backdrop-filter:blur(28px) saturate(180%);border-bottom:1px solid rgba(0,0,0,.06);transition:background .35s,box-shadow .3s}
     html.dark nav{border-bottom-color:rgba(255,255,255,.04)}
+    nav.scrolled{box-shadow:var(--shadow);backdrop-filter:blur(40px) saturate(220%);-webkit-backdrop-filter:blur(40px) saturate(220%)}
+    .nav-inner{height:64px;max-width:1280px;margin:0 auto;padding:0 2rem;display:flex;align-items:center;justify-content:space-between;transition:height .38s cubic-bezier(.22,1,.36,1)}
+    nav.scrolled .nav-inner{height:52px}
+
     .nav-link{position:relative;font-size:.68rem;letter-spacing:.13em;text-transform:uppercase;color:var(--sub);background:none;border:none;cursor:pointer;padding:0;font-family:inherit;transition:color .2s;text-decoration:none;display:inline-block}
     .nav-link::after{content:'';position:absolute;left:0;bottom:-2px;width:0;height:1px;background:var(--ac);transition:width .28s cubic-bezier(.22,1,.36,1)}
     .nav-link:hover::after,.nav-link.active::after{width:100%}
     .nav-link:hover,.nav-link.active{color:var(--text)}
-    .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.72rem 1.75rem;font-size:.76rem;letter-spacing:.1em;text-transform:uppercase;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;border:none;transition:all .24s cubic-bezier(.22,1,.36,1);text-decoration:none;position:relative;overflow:hidden}
+
+    .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.72rem 1.75rem;font-size:.76rem;letter-spacing:.1em;text-transform:uppercase;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;border:none;transition:all .28s cubic-bezier(.22,1,.36,1);text-decoration:none;position:relative;overflow:hidden;will-change:transform}
     .btn::before{content:'';position:absolute;inset:0;background:rgba(255,255,255,.1);opacity:0;transition:opacity .2s}
     .btn:hover::before{opacity:1}
     .btn-solid{background:var(--text);color:var(--bg)}
-    .btn-solid:hover{background:var(--ac);color:#fff;transform:translateY(-1px)}
+    .btn-solid:hover{background:var(--ac);color:#fff;transform:translateY(-2px);box-shadow:0 8px 24px rgba(14,165,233,.25)}
     .btn-outline{background:transparent;color:var(--text);border:1px solid rgba(24,24,22,.2)}
     html.dark .btn-outline{border-color:rgba(238,238,232,.18)}
-    .btn-outline:hover{border-color:var(--ac);color:var(--ac);transform:translateY(-1px)}
-    .card{background:var(--bg2);border:1px solid var(--border);transition:border-color .28s,transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s}
-    .card:hover{border-color:var(--ac);transform:translateY(-2px);box-shadow:0 12px 40px rgba(14,165,233,.08)}
+    .btn-outline:hover{border-color:var(--ac);color:var(--ac);transform:translateY(-2px)}
+    .mag{display:inline-flex;transition:transform .38s cubic-bezier(.22,1,.36,1)}
+
+    .card{background:var(--bg2);border:1px solid var(--border);transition:border-color .28s,transform .4s cubic-bezier(.22,1,.36,1),box-shadow .4s;will-change:transform}
+    .card:hover{border-color:var(--ac);transform:translateY(-3px);box-shadow:0 14px 44px rgba(14,165,233,.09)}
     .inp{width:100%;background:var(--bg3);border:1px solid var(--border);padding:.78rem 1rem;font-size:.875rem;color:var(--text);font-family:inherit;outline:none;transition:border-color .22s,box-shadow .22s}
     .inp:focus{border-color:var(--ac);box-shadow:0 0 0 3px rgba(14,165,233,.12);background:var(--bg2)}
     .inp::placeholder{color:var(--mute)}
@@ -56,28 +76,54 @@
     html.dark .ok-box{background:rgba(21,128,61,.08);border-color:rgba(21,128,61,.25);color:#4ade80}
     .warn-box{background:#fffbeb;border:1px solid #fde68a;color:#92400e;padding:.75rem 1rem;font-size:.8rem}
     html.dark .warn-box{background:rgba(146,64,14,.08);border-color:rgba(253,230,138,.25);color:#fcd34d}
+
     @keyframes spin{to{transform:rotate(360deg)}}
     .spin{width:16px;height:16px;border:2px solid transparent;border-top-color:currentColor;border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
     @keyframes pgIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-    .stagger-item{opacity:0;transform:translateX(-14px);transition:opacity .55s ease,transform .55s ease}
+
+    /* ── Stagger reveals ── */
+    .stagger-item{opacity:0;transform:translateX(-18px);transition:opacity .6s cubic-bezier(.22,1,.36,1),transform .6s cubic-bezier(.22,1,.36,1)}
     .stagger-item.in{opacity:1;transform:none}
+    .rv{opacity:0;transform:translateY(22px);transition:opacity .78s cubic-bezier(.22,1,.36,1),transform .78s cubic-bezier(.22,1,.36,1)}
+    .rv.in{opacity:1;transform:none}
+    .d1{transition-delay:.09s}.d2{transition-delay:.17s}.d3{transition-delay:.25s}.d4{transition-delay:.33s}
+
+    /* ── Bgs ── */
     .mesh{background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:52px 52px}
     .bg-dots{background-image:radial-gradient(var(--border) 1px,transparent 1px);background-size:28px 28px}
-    .auth-card{background:var(--bg2);border:1px solid var(--border);width:100%;max-width:440px;padding:2.75rem}
-    .btn-google{display:flex;align-items:center;justify-content:center;gap:.75rem;width:100%;padding:.78rem;background:var(--bg3);border:1px solid var(--border);font-size:.85rem;color:var(--text);cursor:pointer;transition:border-color .22s,background .22s;font-family:inherit}
-    .btn-google:hover{border-color:var(--ac);background:var(--bg2)}
-    #mob-menu{display:none;position:fixed;inset:0;z-index:300;background:var(--bg);flex-direction:column;padding:2.5rem}
-    #mob-menu.open{display:flex;animation:pgIn .3s ease}
+
+    /* ── Auth card ── */
+    .auth-card{background:var(--bg2);border:1px solid var(--border);width:100%;max-width:440px;padding:2.75rem;animation:pgIn .55s .2s cubic-bezier(.22,1,.36,1) both}
+    .btn-google{display:flex;align-items:center;justify-content:center;gap:.75rem;width:100%;padding:.78rem;background:var(--bg3);border:1px solid var(--border);font-size:.85rem;color:var(--text);cursor:pointer;transition:border-color .22s,background .22s,transform .22s;font-family:inherit}
+    .btn-google:hover{border-color:var(--ac);background:var(--bg2);transform:translateY(-1px)}
+
+    /* ── Org banner ── */
     .org-banner{background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--ac);padding:1.25rem 1.5rem;display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap}
+
+    /* ── Dashboard tool cards ── */
+    .tool-card{background:var(--bg2);border:1px solid var(--border);padding:1.75rem;text-decoration:none;display:block;transition:border-color .28s,transform .4s cubic-bezier(.22,1,.36,1),box-shadow .4s;will-change:transform;opacity:0;transform:translateY(18px)}
+    .tool-card.in{opacity:1;transform:none}
+    .tool-card:hover{border-color:var(--ac);transform:translateY(-4px);box-shadow:0 16px 48px rgba(14,165,233,.1)}
+
+    /* ── Mob menu ── */
+    #mob-menu{display:none;position:fixed;inset:0;z-index:300;background:var(--bg);flex-direction:column;padding:2.5rem}
+    @keyframes mobIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none}}
+    #mob-menu.open{display:flex;animation:mobIn .32s cubic-bezier(.22,1,.36,1)}
+
     ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
     @media(max-width:900px){.g1m{grid-template-columns:1fr!important}.hnm{display:none!important}#mob-btn{display:flex!important}#nav-cta{display:none!important}}
   </style>
 </head>
 <body>
 
+<div id="grain" aria-hidden="true"></div>
+<div id="cursor-dot"></div>
+<div id="cursor-ring"></div>
+<div id="scroll-prog"></div>
+
 <!-- ── NAV ── -->
 <nav id="main-nav">
-  <div style="max-width:1280px;margin:0 auto;padding:0 2rem;height:64px;display:flex;align-items:center;justify-content:space-between">
+  <div class="nav-inner">
     <a href="/" style="display:flex;align-items:center;gap:.875rem;text-decoration:none">
       <img src="logo.png" alt="Acuros" width="36" height="36" style="flex-shrink:0;object-fit:contain"/>
       <div>
@@ -89,12 +135,11 @@
       <a class="nav-link" href="/">Home</a>
       <a class="nav-link" href="/ai-assistant">AI Assistant</a>
       <a class="nav-link" href="/shop">Shop</a>
-      <a class="nav-link" href="/bookings">Bookings</a>
       <a class="nav-link active" href="/patient-portal">Patient Login</a>
     </div>
     <div style="display:flex;align-items:center;gap:.875rem">
       <button onclick="toggleTheme()" aria-label="Toggle theme" style="width:36px;height:36px;border:1px solid var(--border);background:none;color:var(--sub);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .22s;font-size:.9rem"><span id="th-icon">☀</span></button>
-      <a href="/patient-portal" class="btn btn-solid" style="padding:.55rem 1.25rem" id="nav-cta">Patient Portal</a>
+      <a href="/patient-portal" class="btn btn-solid mag" style="padding:.55rem 1.25rem" id="nav-cta">Patient Portal</a>
       <button onclick="openMob()" style="display:none;background:none;border:none;cursor:pointer;color:var(--text);padding:.25rem" id="mob-btn" aria-label="Menu">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16M4 12h12M4 18h8"/></svg>
       </button>
@@ -114,7 +159,6 @@
     <a href="/"             style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Home</a>
     <a href="/ai-assistant" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">AI Assistant</a>
     <a href="/shop"         style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Shop</a>
-    <a href="/bookings"     style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Bookings</a>
     <a href="/patient-portal" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--ac);text-decoration:none">Patient Login</a>
   </div>
 </div>
@@ -129,9 +173,12 @@
       <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(14,165,233,.05),rgba(0,0,0,.28))"></div>
       <div style="position:relative;z-index:10;display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:center;max-width:1100px;margin:0 auto;padding:4rem 2rem;width:100%" class="g1m">
         <div>
-          <div class="lbl" style="margin-bottom:1.5rem;color:var(--ac)">Patient Portal</div>
-          <h1 style="font-size:clamp(2.75rem,6vw,4.5rem);font-weight:300;color:var(--text);margin-bottom:1.25rem">Your Health,<br/><em>Organised.</em></h1>
-          <p style="font-size:.9rem;line-height:1.9;color:var(--sub);margin-bottom:2rem;max-width:38ch">A secure, private space to manage your health records, prepare for appointments, shop clinic-approved products, and book procedures.</p>
+          <div class="lbl rv" style="margin-bottom:1.5rem;color:var(--ac)">Patient Portal</div>
+          <h1 class="rv d1" style="font-size:clamp(2.75rem,6vw,4.5rem);font-weight:300;color:var(--text);margin-bottom:1.25rem">Your Health,<br/><em>Organised.</em></h1>
+          <p class="rv d2" style="font-size:.9rem;line-height:1.9;color:var(--sub);margin-bottom:2rem;max-width:38ch">A secure, private space to manage your health records, prepare for appointments, shop clinic-approved products, and book procedures.</p>
+          <div id="from-bookings-notice" style="display:none;margin-bottom:1.5rem" class="warn-box rv d2">
+            <strong>Clinic connection required.</strong> Please sign in and connect to your clinic to access the Bookings page.
+          </div>
           <div style="display:flex;flex-direction:column;gap:.875rem">
             <div class="stagger-item" style="display:flex;align-items:baseline;gap:.875rem"><div style="width:1px;height:1rem;background:var(--ac);flex-shrink:0"></div><span style="font-size:.84rem;color:var(--sub)">AI-powered medical report translation</span></div>
             <div class="stagger-item" style="display:flex;align-items:baseline;gap:.875rem"><div style="width:1px;height:1rem;background:var(--ac);flex-shrink:0"></div><span style="font-size:.84rem;color:var(--sub)">Appointment preparation briefs</span></div>
@@ -154,7 +201,7 @@
           <form id="pt-login" onsubmit="ptLogin(event)" style="display:flex;flex-direction:column;gap:.875rem">
             <div><label class="lbl" style="display:block;margin-bottom:.4rem">Email Address</label><input type="email" id="pt-email" class="inp" placeholder="name@email.com" required/></div>
             <div><label class="lbl" style="display:block;margin-bottom:.4rem">Password</label><input type="password" id="pt-pass" class="inp" placeholder="••••••••" required/></div>
-            <button type="submit" class="btn btn-solid" style="width:100%;justify-content:center;margin-top:.25rem" id="pt-li-btn">Sign In</button>
+            <button type="submit" class="btn btn-solid mag" style="width:100%;justify-content:center;margin-top:.25rem" id="pt-li-btn">Sign In</button>
           </form>
           <form id="pt-register" onsubmit="ptRegister(event)" style="display:none;flex-direction:column;gap:.875rem">
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:.875rem">
@@ -164,7 +211,7 @@
             <div><label class="lbl" style="display:block;margin-bottom:.4rem">Patient Code <span style="color:var(--mute);text-transform:none;letter-spacing:0;font-size:.68rem">(from clinic — optional)</span></label><input type="text" id="pt-code" class="inp" placeholder="AH-XXXX"/></div>
             <div><label class="lbl" style="display:block;margin-bottom:.4rem">Email Address</label><input type="email" id="pt-remail" class="inp" placeholder="name@email.com" required/></div>
             <div><label class="lbl" style="display:block;margin-bottom:.4rem">Password</label><input type="password" id="pt-rpass" class="inp" placeholder="Min. 8 characters" minlength="8" required/></div>
-            <button type="submit" class="btn btn-solid" style="width:100%;justify-content:center;margin-top:.25rem" id="pt-r-btn">Create Account</button>
+            <button type="submit" class="btn btn-solid mag" style="width:100%;justify-content:center;margin-top:.25rem" id="pt-r-btn">Create Account</button>
           </form>
           <div style="margin-top:1.25rem;text-align:center">
             <button onclick="ptToggle()" id="pt-toggle" style="font-size:.78rem;color:var(--sub);background:none;border:none;cursor:pointer;transition:color .2s" onmouseover="this.style.color='var(--ac)'" onmouseout="this.style.color='var(--sub)'">Don't have an account? Create one</button>
@@ -185,16 +232,16 @@
             <div class="lbl" style="color:var(--ac);margin-bottom:.25rem">No Clinic Connected</div>
             <p style="font-size:.82rem;color:var(--sub);line-height:1.65">Enter the code from your clinic to connect your account, unlock your full portal, and start earning loyalty rewards.</p>
           </div>
-          <button onclick="showOrgPrompt()" class="btn btn-solid" style="padding:.55rem 1.25rem;flex-shrink:0">Connect Organization</button>
-          <button onclick="dismissOrgBanner()" style="background:none;border:none;cursor:pointer;color:var(--mute);font-size:.75rem;flex-shrink:0" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--mute)'">Remind me later</button>
+          <button onclick="showOrgPrompt()" class="btn btn-solid mag" style="padding:.55rem 1.25rem;flex-shrink:0">Connect Organization</button>
+          <button onclick="dismissOrgBanner()" style="background:none;border:none;cursor:pointer;color:var(--mute);font-size:.75rem;flex-shrink:0;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--mute)'">Remind me later</button>
         </div>
       </div>
     </div>
 
     <!-- Org join modal -->
-    <div id="org-modal" style="display:none;position:fixed;inset:0;z-index:400;align-items:center;justify-content:center;background:rgba(0,0,0,.5);backdrop-filter:blur(6px)">
-      <div style="background:var(--bg2);border:1px solid var(--border);width:100%;max-width:440px;padding:2.75rem;position:relative;margin:1.5rem">
-        <button onclick="hideOrgPrompt()" style="position:absolute;top:1rem;right:1rem;background:none;border:none;cursor:pointer;color:var(--mute)">
+    <div id="org-modal" style="display:none;position:fixed;inset:0;z-index:400;align-items:center;justify-content:center;background:rgba(0,0,0,.52);backdrop-filter:blur(8px)">
+      <div style="background:var(--bg2);border:1px solid var(--border);width:100%;max-width:440px;padding:2.75rem;position:relative;margin:1.5rem;animation:pgIn .35s cubic-bezier(.22,1,.36,1)">
+        <button onclick="hideOrgPrompt()" style="position:absolute;top:1rem;right:1rem;background:none;border:none;cursor:pointer;color:var(--mute);transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--mute)'">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
         </button>
         <div class="lbl" style="color:var(--ac);margin-bottom:.75rem">Connect Your Organization</div>
@@ -204,7 +251,7 @@
         <div id="org-ok"  style="display:none;margin-bottom:1rem"></div>
         <form onsubmit="joinOrg(event)" style="display:flex;flex-direction:column;gap:.875rem">
           <div><label class="lbl" style="display:block;margin-bottom:.4rem">Patient Code</label><input type="text" id="org-code-inp" class="inp" placeholder="AH-XXXX" required autocomplete="off" style="text-transform:uppercase;letter-spacing:.08em"/></div>
-          <button type="submit" class="btn btn-solid" style="width:100%;justify-content:center" id="org-join-btn">Connect</button>
+          <button type="submit" class="btn btn-solid mag" style="width:100%;justify-content:center" id="org-join-btn">Connect</button>
         </form>
         <p style="font-size:.72rem;color:var(--mute);margin-top:1rem">Don't have a code? Ask your healthcare provider for your Acuros patient code.</p>
       </div>
@@ -222,7 +269,7 @@
           <div id="dash-code-lbl" style="display:none;padding:.5rem 1rem;background:var(--bg);border:1px solid var(--border);font-size:.75rem;color:var(--sub)"></div>
           <a href="/ai-assistant" class="btn btn-outline" style="padding:.5rem 1.25rem;font-size:.72rem">AI Assistant</a>
           <a href="/shop"         class="btn btn-outline" style="padding:.5rem 1.25rem;font-size:.72rem">Shop</a>
-          <a href="/bookings"     class="btn btn-outline" style="padding:.5rem 1.25rem;font-size:.72rem">Book Procedure</a>
+          <button id="book-btn" onclick="handleBookClick()" class="btn btn-outline" style="padding:.5rem 1.25rem;font-size:.72rem">Book Procedure</button>
           <button onclick="ptLogout()" class="btn btn-outline" style="padding:.5rem 1.25rem;font-size:.72rem">Sign Out</button>
         </div>
       </div>
@@ -239,27 +286,27 @@
             <h3 style="font-size:1.5rem;font-weight:300;color:var(--text);margin-bottom:.5rem">Connect to an organization<br/>for full access.</h3>
             <p style="font-size:.82rem;color:var(--sub);line-height:1.7">Connecting to a clinic unlocks your complete health timeline, unlimited AI, and shared records with your care team.</p>
           </div>
-          <button onclick="showOrgPrompt()" class="btn btn-solid">Enter Patient Code</button>
+          <button onclick="showOrgPrompt()" class="btn btn-solid mag">Enter Patient Code</button>
         </div>
       </div>
 
       <div class="lbl" style="margin-bottom:1.25rem">Your Tools</div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-bottom:2.5rem" class="g1m">
-        <a href="/ai-assistant" class="card" style="padding:1.75rem;text-decoration:none;display:block">
+        <a href="/ai-assistant" class="tool-card" style="transition-delay:.05s">
           <div class="lbl" style="color:var(--ac);margin-bottom:.625rem">AI Assistant</div>
           <h4 style="font-size:1.3rem;font-weight:300;color:var(--text);margin-bottom:.5rem">Health Dialogue</h4>
           <p style="font-size:.8rem;line-height:1.8;color:var(--sub)">Ask questions, translate reports, prepare for appointments.</p>
         </a>
-        <a href="/shop" class="card" style="padding:1.75rem;text-decoration:none;display:block">
+        <a href="/shop" class="tool-card" style="transition-delay:.12s">
           <div class="lbl" style="color:var(--ac);margin-bottom:.625rem">OTC Shop</div>
           <h4 style="font-size:1.3rem;font-weight:300;color:var(--text);margin-bottom:.5rem">Product Shop</h4>
           <p style="font-size:.8rem;line-height:1.8;color:var(--sub)">Browse clinic-approved over-the-counter health products.</p>
         </a>
-        <a href="/bookings" class="card" style="padding:1.75rem;text-decoration:none;display:block">
+        <div class="tool-card" style="transition-delay:.19s;cursor:pointer" onclick="handleBookClick()">
           <div class="lbl" style="color:var(--ac);margin-bottom:.625rem">Bookings</div>
           <h4 style="font-size:1.3rem;font-weight:300;color:var(--text);margin-bottom:.5rem">Book a Procedure</h4>
           <p style="font-size:.8rem;line-height:1.8;color:var(--sub)">Schedule consultations and procedures online.</p>
-        </a>
+        </div>
       </div>
 
       <div class="lbl" style="margin-bottom:1.25rem">Coming Soon</div>
@@ -312,20 +359,40 @@ const ORG_BANNER_DISMISSED_KEY = 'ah-org-banner-dismissed';
 const KNOWN_CLINIC_CODES = { 'AAACLINICS-001': { name: 'Anti-Aging Academic Clinic', active: true } };
 
 function getClinicPortalUrl(code) {
-  const c = String(code || '').toUpperCase();
+  const c = String(code||'').toUpperCase();
   if (c.startsWith('AAACLINICS')) return '/aaaclinics-portal';
   return null;
 }
 
+function userHasOrg() { return !!(currentUser?.org_id||currentUser?.code); }
+
+function handleBookClick() {
+  if (userHasOrg()) {
+    window.location.href = '/bookings';
+  } else {
+    showOrgPrompt();
+    const modal = document.getElementById('org-modal');
+    if (modal) {
+      const notice = document.createElement('div');
+      notice.className = 'warn-box';
+      notice.style.cssText = 'margin-bottom:1rem;font-size:.8rem';
+      notice.innerHTML = '<strong>Clinic connection required</strong> to access Bookings. Enter your patient code below.';
+      const existingNotice = modal.querySelector('.warn-box');
+      if (!existingNotice) modal.querySelector('form').parentNode.insertBefore(notice, modal.querySelector('.lbl'));
+    }
+  }
+}
+
 async function fetchProfile(userId) {
-  if (!sb || !userId) return null;
+  if (!sb||!userId) return null;
   try {
     const { data, error } = await sb.from('profiles').select('*, org:org_id(id, name)').eq('id', userId).maybeSingle();
     if (error) { const { data: plain } = await sb.from('profiles').select('*').eq('id', userId).maybeSingle(); return plain; }
     return data;
-  } catch (e) { return null; }
+  } catch(e) { return null; }
 }
 
+/* ─── Theme ─── */
 function toggleTheme() {
   const dark = document.documentElement.classList.toggle('dark');
   document.getElementById('th-icon').textContent = dark ? '☽' : '☀';
@@ -340,189 +407,169 @@ function toggleTheme() {
 })();
 function openMob()  { document.getElementById('mob-menu').classList.add('open'); document.body.style.overflow='hidden'; }
 function closeMob() { document.getElementById('mob-menu').classList.remove('open'); document.body.style.overflow=''; }
-window.addEventListener('scroll', () => { document.getElementById('main-nav').style.boxShadow = window.scrollY > 10 ? '0 4px 32px rgba(0,0,0,.06)' : ''; });
 
-function showMsg(id, msg, type) { const el = document.getElementById(id); if (!el) return; el.style.display = 'block'; el.className = type === 'err' ? 'err-box' : 'ok-box'; el.textContent = msg; }
-function hideMsg(...ids) { ids.forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; }); }
-function setBtn(id, loading, label) { const b = document.getElementById(id); if (!b) return; b.disabled = loading; b.innerHTML = loading ? '<span class="spin"></span>' : label; }
-function userHasOrg() { return !!(currentUser?.org_id || currentUser?.code); }
-function showOrgPrompt()    { const m = document.getElementById('org-modal'); if (m) m.style.display = 'flex'; hideMsg('org-err','org-ok'); }
-function hideOrgPrompt()    { const m = document.getElementById('org-modal'); if (m) m.style.display = 'none'; }
-function dismissOrgBanner() { localStorage.setItem(ORG_BANNER_DISMISSED_KEY, '1'); const b = document.getElementById('org-banner'); if (b) b.style.display = 'none'; }
+/* ─── Cursor ─── */
+(function initCursor() {
+  if (window.matchMedia('(pointer:coarse),(hover:none)').matches) return;
+  const dot=document.getElementById('cursor-dot'), ring=document.getElementById('cursor-ring');
+  if (!dot||!ring) return;
+  let mx=-100,my=-100,rx=-100,ry=-100;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px';},{passive:true});
+  (function ar(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(ar);})();
+  document.addEventListener('mouseover',e=>{if(e.target.closest('a,button,.btn,.tool-card,.card'))document.body.classList.add('c-hover');});
+  document.addEventListener('mouseout', e=>{if(e.target.closest('a,button,.btn,.tool-card,.card'))document.body.classList.remove('c-hover');});
+})();
+
+/* ─── Scroll Progress + Nav ─── */
+const prog=document.getElementById('scroll-prog'), mainNav=document.getElementById('main-nav');
+window.addEventListener('scroll',()=>{
+  const sy=window.scrollY, total=document.documentElement.scrollHeight-window.innerHeight;
+  if(prog) prog.style.width=(total>0?(sy/total*100):0)+'%';
+  if(mainNav) mainNav.classList.toggle('scrolled',sy>40);
+},{passive:true});
+
+/* ─── Magnetic Buttons ─── */
+document.querySelectorAll('.mag').forEach(el=>{
+  el.addEventListener('mousemove',e=>{const r=el.getBoundingClientRect();el.style.transform=`translate(${(e.clientX-(r.left+r.width/2))*.32}px,${(e.clientY-(r.top+r.height/2))*.32}px)`;});
+  el.addEventListener('mouseleave',()=>{el.style.transform='';});
+});
+
+/* ─── Reveal ─── */
+function setupReveal() {
+  if (!('IntersectionObserver' in window)) { document.querySelectorAll('.rv').forEach(el=>el.classList.add('in')); return; }
+  const io=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:0,rootMargin:'0px 0px -40px 0px'});
+  document.querySelectorAll('.rv:not(.in)').forEach(el=>io.observe(el));
+}
+document.addEventListener('DOMContentLoaded',setupReveal);
+setTimeout(()=>document.querySelectorAll('.rv').forEach(el=>el.classList.add('in')),4000);
+
+/* ─── ?from=bookings param ─── */
+(function checkFromBookings() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('from') === 'bookings') {
+    const notice = document.getElementById('from-bookings-notice');
+    if (notice) notice.style.display = 'block';
+  }
+})();
+
+/* ─── Auth helpers ─── */
+function showMsg(id,msg,type){const el=document.getElementById(id);if(!el)return;el.style.display='block';el.className=type==='err'?'err-box':'ok-box';el.textContent=msg;}
+function hideMsg(...ids){ids.forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});}
+function setBtn(id,loading,label){const b=document.getElementById(id);if(!b)return;b.disabled=loading;b.innerHTML=loading?'<span class="spin"></span>':label;}
+function showOrgPrompt(){const m=document.getElementById('org-modal');if(m)m.style.display='flex';hideMsg('org-err','org-ok');}
+function hideOrgPrompt(){const m=document.getElementById('org-modal');if(m)m.style.display='none';}
+function dismissOrgBanner(){localStorage.setItem(ORG_BANNER_DISMISSED_KEY,'1');const b=document.getElementById('org-banner');if(b)b.style.display='none';}
 
 async function joinOrg(e) {
-  e.preventDefault();
-  hideMsg('org-err', 'org-ok');
-  const rawCode = document.getElementById('org-code-inp')?.value ?? '';
-  const code = rawCode.trim().toUpperCase();
-  if (!code) { showMsg('org-err', 'Please enter your clinic code.', 'err'); return; }
-  setBtn('org-join-btn', true, 'Connect');
+  e.preventDefault(); hideMsg('org-err','org-ok');
+  const rawCode=document.getElementById('org-code-inp')?.value??'', code=rawCode.trim().toUpperCase();
+  if(!code){showMsg('org-err','Please enter your clinic code.','err');return;}
+  setBtn('org-join-btn',true,'Connect');
   try {
     if (!currentUser?.id) throw new Error('Not signed in. Please sign in before connecting.');
-    let org = KNOWN_CLINIC_CODES[code] || null;
-    if (!org && sb) {
-      try {
-        const { data, error } = await Promise.race([
-          sb.from('organizations').select('id, name, active').filter('code', 'ilike', code).maybeSingle(),
-          new Promise((_, rej) => setTimeout(() => rej(new Error('Request timed out. Please try again.')), 6000)),
-        ]);
-        if (!error && data) org = data;
-      } catch (dbErr) { throw dbErr; }
+    let org = KNOWN_CLINIC_CODES[code]||null;
+    if (!org&&sb) {
+      try { const{data,error}=await Promise.race([sb.from('organizations').select('id, name, active').filter('code','ilike',code).maybeSingle(),new Promise((_,rej)=>setTimeout(()=>rej(new Error('Request timed out.')),6000))]); if(!error&&data) org=data; } catch(dbErr){throw dbErr;}
     }
-    if (!org)        throw new Error('Code not recognized. Please verify the code with your clinic.');
-    if (!org.active) throw new Error('This clinic code is no longer active. Please contact your clinic.');
-    localStorage.setItem('ah-org-code', code);
-    localStorage.setItem('ah-org-id',   org.id);
-    localStorage.setItem('ah-org-name',  org.name);
-    (async () => {
-      try {
-        const { error: e1 } = await sb.from('profiles').update({ patient_code: code, org_id: org.id }).eq('id', currentUser.id);
-        if (e1) await sb.from('profiles').update({ patient_code: code }).eq('id', currentUser.id).catch(() => {});
-      } catch (_) {}
-    })();
-    const portalUrl = getClinicPortalUrl(code);
-    setBtn('org-join-btn', false, 'Connect');
-    if (portalUrl) {
-      showMsg('org-ok', `Connected to ${org.name}! Redirecting to your portal…`, 'ok');
-      setTimeout(() => window.location.replace(portalUrl), 1200);
-    } else {
-      currentUser.code = code; currentUser.org_id = org.id; currentUser.org_name = org.name;
-      showMsg('org-ok', `Connected to ${org.name}. Welcome to your clinic portal!`, 'ok');
-      setTimeout(() => { hideOrgPrompt(); syncPortal(); }, 1600);
-    }
-  } catch (err) {
-    showMsg('org-err', err.message || 'Connection failed. Please check your code and try again.', 'err');
-    setBtn('org-join-btn', false, 'Connect');
+    if(!org) throw new Error('Code not recognized. Please verify the code with your clinic.');
+    if(!org.active) throw new Error('This clinic code is no longer active. Please contact your clinic.');
+    localStorage.setItem('ah-org-code',code); localStorage.setItem('ah-org-id',org.id||''); localStorage.setItem('ah-org-name',org.name);
+    (async()=>{try{const{error:e1}=await sb.from('profiles').update({patient_code:code,org_id:org.id}).eq('id',currentUser.id);if(e1)await sb.from('profiles').update({patient_code:code}).eq('id',currentUser.id).catch(()=>{});}catch(_){}})();
+    const portalUrl=getClinicPortalUrl(code);
+    setBtn('org-join-btn',false,'Connect');
+    if(portalUrl){showMsg('org-ok',`Connected to ${org.name}! Redirecting to your portal…`,'ok');setTimeout(()=>window.location.replace(portalUrl),1200);}
+    else{currentUser.code=code;currentUser.org_id=org.id||'';currentUser.org_name=org.name;showMsg('org-ok',`Connected to ${org.name}. Welcome!`,'ok');setTimeout(()=>{hideOrgPrompt();syncPortal();},1600);}
+  } catch(err) {
+    showMsg('org-err',err.message||'Connection failed.','err');
+    setBtn('org-join-btn',false,'Connect');
   }
 }
 
 function ptToggle() {
-  ptMode = ptMode === 'login' ? 'register' : 'login';
-  const reg = ptMode === 'register';
-  document.getElementById('pt-login').style.display    = reg ? 'none' : 'flex';
-  document.getElementById('pt-register').style.display = reg ? 'flex' : 'none';
-  document.getElementById('pt-title').textContent   = reg ? 'Create Your Account'            : 'Sign In to Your Portal';
-  document.getElementById('pt-sub').textContent     = reg ? 'Enter your details to get started' : 'Access your health records and tools';
-  document.getElementById('pt-toggle').textContent  = reg ? 'Already have an account? Sign in'  : "Don't have an account? Create one";
-  hideMsg('pt-err', 'pt-ok');
+  ptMode=ptMode==='login'?'register':'login'; const reg=ptMode==='register';
+  document.getElementById('pt-login').style.display=reg?'none':'flex';
+  document.getElementById('pt-register').style.display=reg?'flex':'none';
+  document.getElementById('pt-title').textContent=reg?'Create Your Account':'Sign In to Your Portal';
+  document.getElementById('pt-sub').textContent=reg?'Enter your details to get started':'Access your health records and tools';
+  document.getElementById('pt-toggle').textContent=reg?'Already have an account? Sign in':"Don't have an account? Create one";
+  hideMsg('pt-err','pt-ok');
 }
 
 async function ptGoogleAuth() {
-  if (!sb) { showMsg('pt-err', 'Auth not configured.', 'err'); return; }
-  try {
-    const { error } = await sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin + '/patient-portal?portal=1' } });
-    if (error) throw error;
-  } catch (err) { showMsg('pt-err', err.message || 'Google sign-in failed.', 'err'); }
+  if(!sb){showMsg('pt-err','Auth not configured.','err');return;}
+  try{const{error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin+'/patient-portal?portal=1'}});if(error)throw error;}
+  catch(err){showMsg('pt-err',err.message||'Google sign-in failed.','err');}
 }
 
 async function ptLogin(e) {
-  e.preventDefault(); hideMsg('pt-err', 'pt-ok'); setBtn('pt-li-btn', true, 'Sign In');
-  try {
-    if (sb) {
-      const { data, error } = await sb.auth.signInWithPassword({ email: document.getElementById('pt-email').value, password: document.getElementById('pt-pass').value });
-      if (error) throw error;
-      const profile = await fetchProfile(data.user.id);
-      currentUser = { id: data.user.id, email: data.user.email, name: profile?.name || data.user.user_metadata?.full_name || data.user.email.split('@')[0], first: profile?.first_name || '', last: profile?.last_name || '', code: profile?.patient_code || '', org_id: profile?.org_id || '', org_name: profile?.org?.name || '' };
-    } else {
-      const email = document.getElementById('pt-email').value;
-      currentUser = { id: 'demo', email, name: email.split('@')[0], first: '', last: '', code: '', org_id: '', org_name: '' };
-    }
+  e.preventDefault();hideMsg('pt-err','pt-ok');setBtn('pt-li-btn',true,'Sign In');
+  try{
+    if(sb){const{data,error}=await sb.auth.signInWithPassword({email:document.getElementById('pt-email').value,password:document.getElementById('pt-pass').value});if(error)throw error;const p=await fetchProfile(data.user.id);currentUser={id:data.user.id,email:data.user.email,name:p?.name||data.user.user_metadata?.full_name||data.user.email.split('@')[0],first:p?.first_name||'',last:p?.last_name||'',code:p?.patient_code||'',org_id:p?.org_id||'',org_name:p?.org?.name||''};}
+    else{const email=document.getElementById('pt-email').value;currentUser={id:'demo',email,name:email.split('@')[0],first:'',last:'',code:'',org_id:'',org_name:''};}
     syncPortal();
-  } catch (err) { showMsg('pt-err', err.message || 'Sign in failed.', 'err'); }
-  finally { setBtn('pt-li-btn', false, 'Sign In'); }
+  }catch(err){showMsg('pt-err',err.message||'Sign in failed.','err');}
+  finally{setBtn('pt-li-btn',false,'Sign In');}
 }
 
 async function ptRegister(e) {
-  e.preventDefault(); hideMsg('pt-err', 'pt-ok'); setBtn('pt-r-btn', true, 'Create Account');
-  const first = document.getElementById('pt-first').value.trim(), last = document.getElementById('pt-last').value.trim(), code = document.getElementById('pt-code').value.trim(), email = document.getElementById('pt-remail').value, pass = document.getElementById('pt-rpass').value, name = (first + ' ' + last).trim();
-  try {
-    if (sb) {
-      const { data, error } = await sb.auth.signUp({ email, password: pass, options: { data: { full_name: name } } });
-      if (error) throw error;
-      if (!data.session) { showMsg('pt-ok', 'Account created! Check your email to confirm, then sign in.', 'ok'); setBtn('pt-r-btn', false, 'Create Account'); return; }
-      let regOrgId = '', regOrgName = '', safeCode = code ? code.toUpperCase() : '';
-      if (safeCode) {
-        const { data: org } = await sb.from('organizations').select('id, name').eq('code', safeCode).eq('active', true).maybeSingle().catch(() => ({ data: null }));
-        if (org) { regOrgId = org.id; regOrgName = org.name; } else { safeCode = ''; }
-      }
-      try { await sb.from('profiles').upsert({ id: data.user.id, name, first_name: first, last_name: last, patient_code: safeCode || null, org_id: regOrgId || null, tier: 'free', usage_count: 0 }); } catch (_) {}
-      currentUser = { id: data.user.id, email, name, first, last, code: safeCode, org_id: regOrgId, org_name: regOrgName };
-    } else { currentUser = { id: 'demo', email, name, first, last, code: '', org_id: '', org_name: '' }; }
+  e.preventDefault();hideMsg('pt-err','pt-ok');setBtn('pt-r-btn',true,'Create Account');
+  const first=document.getElementById('pt-first').value.trim(),last=document.getElementById('pt-last').value.trim(),code=document.getElementById('pt-code').value.trim(),email=document.getElementById('pt-remail').value,pass=document.getElementById('pt-rpass').value,name=(first+' '+last).trim();
+  try{
+    if(sb){const{data,error}=await sb.auth.signUp({email,password:pass,options:{data:{full_name:name}}});if(error)throw error;if(!data.session){showMsg('pt-ok','Account created! Check your email to confirm, then sign in.','ok');setBtn('pt-r-btn',false,'Create Account');return;}let regOrgId='',regOrgName='',safeCode=code?code.toUpperCase():'';if(safeCode){const{data:org}=await sb.from('organizations').select('id, name').eq('code',safeCode).eq('active',true).maybeSingle().catch(()=>({data:null}));if(org){regOrgId=org.id;regOrgName=org.name;}else safeCode='';}try{await sb.from('profiles').upsert({id:data.user.id,name,first_name:first,last_name:last,patient_code:safeCode||null,org_id:regOrgId||null,tier:'free',usage_count:0});}catch(_){}currentUser={id:data.user.id,email,name,first,last,code:safeCode,org_id:regOrgId,org_name:regOrgName};}
+    else{currentUser={id:'demo',email,name,first,last,code:'',org_id:'',org_name:''};}
     syncPortal();
-  } catch (err) { showMsg('pt-err', err.message || 'Registration failed.', 'err'); }
-  finally { setBtn('pt-r-btn', false, 'Create Account'); }
+  }catch(err){showMsg('pt-err',err.message||'Registration failed.','err');}
+  finally{setBtn('pt-r-btn',false,'Create Account');}
 }
 
 async function ptLogout() {
-  if (sb) { try { await sb.auth.signOut(); } catch (e) {} }
-  currentUser = null;
-  syncPortal();
+  if(sb){try{await sb.auth.signOut();}catch(e){}} currentUser=null; syncPortal();
 }
 
 function syncPortal() {
-  const gate = document.getElementById('portal-gate'), dash = document.getElementById('portal-dash');
-  if (currentUser) {
-    const effectiveCode = currentUser.code || localStorage.getItem('ah-org-code') || '';
-    const portalUrl = getClinicPortalUrl(effectiveCode);
-    if (portalUrl) { window.location.replace(portalUrl); return; }
-    gate.style.display = 'none';
-    dash.style.display = 'block';
-    document.getElementById('dash-name').textContent        = currentUser.first || currentUser.name || 'Patient';
-    document.getElementById('dash-email-lbl').textContent   = currentUser.email || '';
-    document.getElementById('dash-full-name').textContent   = (currentUser.first && currentUser.last) ? currentUser.first + ' ' + currentUser.last : currentUser.name || '—';
-    document.getElementById('dash-email-display').textContent = currentUser.email || '—';
-    const cl = document.getElementById('dash-code-lbl');
-    if (currentUser.org_name) { cl.textContent = currentUser.org_name; cl.style.display = 'block'; }
-    else if (currentUser.code) { cl.textContent = 'Code: ' + currentUser.code; cl.style.display = 'block'; }
-    else { cl.style.display = 'none'; }
-    const hasOrg = userHasOrg();
-    const bannerDismissed = localStorage.getItem(ORG_BANNER_DISMISSED_KEY) === '1';
-    const topBanner  = document.getElementById('org-banner');
-    const dashPrompt = document.getElementById('dash-org-prompt');
-    if (!hasOrg) {
-      if (topBanner)  topBanner.style.display  = bannerDismissed ? 'none' : 'block';
-      if (dashPrompt) dashPrompt.style.display  = 'block';
-    } else {
-      if (topBanner)  topBanner.style.display  = 'none';
-      if (dashPrompt) dashPrompt.style.display  = 'none';
-    }
+  const gate=document.getElementById('portal-gate'), dash=document.getElementById('portal-dash');
+  if(currentUser) {
+    const effectiveCode=currentUser.code||localStorage.getItem('ah-org-code')||'';
+    const portalUrl=getClinicPortalUrl(effectiveCode);
+    if(portalUrl){window.location.replace(portalUrl);return;}
+    gate.style.display='none'; dash.style.display='block';
+    document.getElementById('dash-name').textContent=currentUser.first||currentUser.name||'Patient';
+    document.getElementById('dash-email-lbl').textContent=currentUser.email||'';
+    document.getElementById('dash-full-name').textContent=(currentUser.first&&currentUser.last)?currentUser.first+' '+currentUser.last:currentUser.name||'—';
+    document.getElementById('dash-email-display').textContent=currentUser.email||'—';
+    const cl=document.getElementById('dash-code-lbl');
+    if(currentUser.org_name){cl.textContent=currentUser.org_name;cl.style.display='block';}
+    else if(currentUser.code){cl.textContent='Code: '+currentUser.code;cl.style.display='block';}
+    else{cl.style.display='none';}
+    const hasOrg=userHasOrg(), bannerDismissed=localStorage.getItem(ORG_BANNER_DISMISSED_KEY)==='1';
+    const topBanner=document.getElementById('org-banner'), dashPrompt=document.getElementById('dash-org-prompt');
+    if(!hasOrg){if(topBanner) topBanner.style.display=bannerDismissed?'none':'block';if(dashPrompt) dashPrompt.style.display='block';}
+    else{if(topBanner) topBanner.style.display='none';if(dashPrompt) dashPrompt.style.display='none';}
+    /* Animate tool cards */
+    setTimeout(()=>{
+      document.querySelectorAll('.tool-card').forEach((el,i)=>setTimeout(()=>el.classList.add('in'),i*80));
+    }, 150);
   } else {
-    gate.style.display = 'block';
-    dash.style.display = 'none';
-    ptMode = 'login';
-    document.getElementById('pt-login').style.display    = 'flex';
-    document.getElementById('pt-register').style.display = 'none';
-    document.getElementById('pt-title').textContent  = 'Sign In to Your Portal';
-    document.getElementById('pt-sub').textContent    = 'Access your health records and tools';
-    document.getElementById('pt-toggle').textContent = "Don't have an account? Create one";
-    hideMsg('pt-err', 'pt-ok');
+    gate.style.display='block'; dash.style.display='none'; ptMode='login';
+    document.getElementById('pt-login').style.display='flex'; document.getElementById('pt-register').style.display='none';
+    document.getElementById('pt-title').textContent='Sign In to Your Portal'; document.getElementById('pt-sub').textContent='Access your health records and tools';
+    document.getElementById('pt-toggle').textContent="Don't have an account? Create one"; hideMsg('pt-err','pt-ok');
   }
-  setTimeout(() => {
-    document.querySelectorAll('.stagger-item').forEach((el, i) => setTimeout(() => el.classList.add('in'), i * 100));
-  }, 150);
+  /* Stagger feature list */
+  setTimeout(()=>{document.querySelectorAll('.stagger-item').forEach((el,i)=>setTimeout(()=>el.classList.add('in'),i*110));},200);
+  setupReveal();
 }
 
-if (sb?.auth?.onAuthStateChange) {
-  sb.auth.onAuthStateChange(async (event, session) => {
-    if (session?.user) {
-      currentUser = { id: session.user.id, email: session.user.email, name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'User', first: '', last: '', code: '', org_id: '', org_name: '' };
+if(sb?.auth?.onAuthStateChange){
+  sb.auth.onAuthStateChange(async(event,session)=>{
+    if(session?.user){
+      currentUser={id:session.user.id,email:session.user.email,name:session.user.user_metadata?.full_name||session.user.email?.split('@')[0]||'User',first:'',last:'',code:'',org_id:'',org_name:''};
       syncPortal();
-      try {
-        const profile = await fetchProfile(session.user.id);
-        if (profile && currentUser) {
-          currentUser.name = profile.name || currentUser.name;
-          currentUser.first = profile.first_name || '';
-          currentUser.last = profile.last_name || '';
-          currentUser.code = profile.patient_code || '';
-          currentUser.org_id = profile.org_id || '';
-          currentUser.org_name = profile.org?.name || '';
-          syncPortal();
-        }
-      } catch (_e) {}
-    } else if (event === 'SIGNED_OUT') { currentUser = null; syncPortal(); }
-    if (window.location.hash?.includes('access_token')) window.history.replaceState(null, '', window.location.pathname + window.location.search);
+      try{const p=await fetchProfile(session.user.id);if(p&&currentUser){currentUser.name=p.name||currentUser.name;currentUser.first=p.first_name||'';currentUser.last=p.last_name||'';currentUser.code=p.patient_code||'';currentUser.org_id=p.org_id||'';currentUser.org_name=p.org?.name||'';syncPortal();}}catch(_e){}
+    }else if(event==='SIGNED_OUT'){currentUser=null;syncPortal();}
+    if(window.location.hash?.includes('access_token'))window.history.replaceState(null,'',window.location.pathname+window.location.search);
   });
-} else { syncPortal(); }
+}else{syncPortal();}
 </script>
 </body>
 </html>
