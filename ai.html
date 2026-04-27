@@ -25,32 +25,32 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
   <script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{display:['Cormorant Garamond','Georgia','serif'],sans:['DM Sans','sans-serif']}}}}</script>
   <style>
-    :root{--bg:#f5f5f3;--bg2:#fff;--border:#e2e2de;--text:#181816;--sub:#5a5a54;--mute:#9a9a92;--ac:#0ea5e9;--nav:rgba(245,245,243,.93)}
-    html.dark{--bg:#0d0d0c;--bg2:#141412;--border:#272724;--text:#f0f0ec;--sub:#9a9a92;--mute:#5a5a54;--ac:#38bdf8;--nav:rgba(13,13,12,.93)}
+    :root{--bg:#f5f5f3;--bg2:#fefefe;--bg3:#efefec;--border:#deded8;--text:#191917;--sub:#5c5b55;--mute:#9a9a90;--ac:#0ea5e9;--gold:#c4902a;--nav:rgba(245,245,243,.93)}
+    html.dark{--bg:#0e0e0c;--bg2:#161614;--bg3:#1c1c1a;--border:#282824;--text:#eeeee8;--sub:#96968e;--mute:#5a5a54;--ac:#38bdf8;--gold:#d4a84a;--nav:rgba(14,14,12,.93)}
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     html{scroll-behavior:smooth}
-    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);transition:background .3s,color .3s;overflow-x:hidden}
-    h1,h2,h3,h4{font-family:'Cormorant Garamond',serif;line-height:1.08;letter-spacing:-.015em}
-    nav{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--nav);backdrop-filter:blur(20px) saturate(180%);border-bottom:1px solid var(--border);transition:background .3s,border-color .3s}
-    .nav-link{position:relative;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);background:none;border:none;cursor:pointer;padding:0;font-family:inherit;transition:color .2s;text-decoration:none;display:inline-block}
-    .nav-link::after{content:'';position:absolute;left:0;bottom:-2px;width:0;height:1px;background:var(--ac);transition:width .25s}
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);transition:background .35s,color .35s;overflow-x:hidden}
+    h1,h2,h3,h4{font-family:'Cormorant Garamond',serif;line-height:1.06;letter-spacing:-.02em}
+    nav{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--nav);backdrop-filter:blur(28px) saturate(200%);-webkit-backdrop-filter:blur(28px) saturate(200%);border-bottom:1px solid rgba(0,0,0,.06);transition:background .35s}
+    html.dark nav{border-bottom-color:rgba(255,255,255,.04)}
+    .nav-link{position:relative;font-size:.68rem;letter-spacing:.13em;text-transform:uppercase;color:var(--sub);background:none;border:none;cursor:pointer;padding:0;font-family:inherit;transition:color .2s;text-decoration:none;display:inline-block}
+    .nav-link::after{content:'';position:absolute;left:0;bottom:-2px;width:0;height:1px;background:var(--ac);transition:width .28s cubic-bezier(.22,1,.36,1)}
     .nav-link:hover::after,.nav-link.active::after{width:100%}
     .nav-link:hover,.nav-link.active{color:var(--text)}
-    .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.7rem 1.75rem;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;border:none;transition:all .22s;text-decoration:none;position:relative;overflow:hidden}
-    .btn::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,.08);opacity:0;transition:opacity .2s}
-    .btn:hover::after{opacity:1}
+    .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.72rem 1.75rem;font-size:.76rem;letter-spacing:.1em;text-transform:uppercase;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;border:none;transition:all .24s cubic-bezier(.22,1,.36,1);text-decoration:none;position:relative;overflow:hidden}
+    .btn::before{content:'';position:absolute;inset:0;background:rgba(255,255,255,.1);opacity:0;transition:opacity .2s}
+    .btn:hover::before{opacity:1}
     .btn-solid{background:var(--text);color:var(--bg)}
-    .btn-solid:hover{background:var(--ac);color:#fff}
-    .btn-outline{background:transparent;color:var(--text);border:1px solid var(--border)}
-    .btn-outline:hover{border-color:var(--ac);color:var(--ac)}
-    .card{background:var(--bg2);border:1px solid var(--border);transition:border-color .25s,transform .3s,box-shadow .3s}
-    .card:hover{border-color:var(--ac);transform:translateY(-2px);box-shadow:0 8px 32px rgba(14,165,233,.08)}
-    .inp{width:100%;background:var(--bg);border:1px solid var(--border);padding:.75rem 1rem;font-size:.875rem;color:var(--text);font-family:inherit;outline:none;transition:border-color .2s,box-shadow .2s}
-    .inp:focus{border-color:var(--ac);box-shadow:0 0 0 3px rgba(14,165,233,.1)}
+    .btn-solid:hover{background:var(--ac);color:#fff;transform:translateY(-1px)}
+    .btn-outline{background:transparent;color:var(--text);border:1px solid rgba(24,24,22,.2)}
+    html.dark .btn-outline{border-color:rgba(238,238,232,.18)}
+    .btn-outline:hover{border-color:var(--ac);color:var(--ac);transform:translateY(-1px)}
+    .card{background:var(--bg2);border:1px solid var(--border);transition:border-color .28s,box-shadow .3s}
+    .inp{width:100%;background:var(--bg3);border:1px solid var(--border);padding:.78rem 1rem;font-size:.875rem;color:var(--text);font-family:inherit;outline:none;transition:border-color .22s,box-shadow .22s}
+    .inp:focus{border-color:var(--ac);box-shadow:0 0 0 3px rgba(14,165,233,.12);background:var(--bg2)}
     .inp::placeholder{color:var(--mute)}
-    .lbl{font-family:'DM Sans',sans-serif;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);font-weight:500}
+    .lbl{font-family:'DM Sans',sans-serif;font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--mute);font-weight:500}
     .hr{height:1px;background:var(--border)}
-    .num{font-family:'Cormorant Garamond',serif;font-size:.7rem;color:var(--mute);letter-spacing:.1em}
     .aline{display:block;width:2rem;height:1px;background:var(--ac)}
     .err-box{background:#fef2f2;border:1px solid #fecaca;color:#dc2626;padding:.75rem 1rem;font-size:.8rem}
     html.dark .err-box{background:rgba(220,38,38,.08);border-color:rgba(220,38,38,.25);color:#f87171}
@@ -60,56 +60,56 @@
     html.dark .warn-box{background:rgba(146,64,14,.08);border-color:rgba(253,230,138,.25);color:#fcd34d}
     @keyframes spin{to{transform:rotate(360deg)}}
     .spin{width:16px;height:16px;border:2px solid transparent;border-top-color:currentColor;border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
-    @keyframes pgIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-    .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1)}
+    @keyframes pgIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+    .reveal{opacity:0;transform:translateY(26px);transition:opacity .75s cubic-bezier(.22,1,.36,1),transform .75s cubic-bezier(.22,1,.36,1)}
     .reveal.in{opacity:1;transform:none}
     .d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}
     @keyframes dot{0%,80%,100%{opacity:.2}40%{opacity:1}}
-    .bubble{max-width:84%;padding:.875rem 1.125rem;font-size:.875rem;line-height:1.65;animation:pgIn .3s ease}
-    .bubble.ai{background:var(--bg2);border:1px solid var(--border);color:var(--text);align-self:flex-start}
-    .bubble.user{background:var(--text);color:var(--bg);align-self:flex-end}
+    .bubble{max-width:84%;padding:.875rem 1.125rem;font-size:.875rem;line-height:1.7;animation:pgIn .3s ease}
+    .bubble.ai{background:var(--bg2);border:1px solid var(--border);color:var(--text);align-self:flex-start;border-radius:0 6px 6px 6px}
+    .bubble.user{background:var(--text);color:var(--bg);align-self:flex-end;border-radius:6px 0 6px 6px}
     .thinking span{display:inline-block;width:5px;height:5px;background:var(--ac);border-radius:50%;margin:0 2px;animation:dot 1.4s infinite}
     .thinking span:nth-child(2){animation-delay:.2s}
     .thinking span:nth-child(3){animation-delay:.4s}
-    @keyframes glow{0%,100%{box-shadow:0 0 4px 1px rgba(14,165,233,.3)}50%{box-shadow:0 0 14px 5px rgba(14,165,233,.55)}}
+    @keyframes glow{0%,100%{box-shadow:0 0 4px 1px rgba(14,165,233,.28)}50%{box-shadow:0 0 14px 5px rgba(14,165,233,.52)}}
     .glow-dot{animation:glow 2.2s ease infinite}
     .mesh{background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:52px 52px}
     .bg-dots{background-image:radial-gradient(var(--border) 1px,transparent 1px);background-size:28px 28px}
     .img-panel{position:relative;overflow:hidden;background:#0a0f1a}
-    .img-panel img{width:100%;height:100%;object-fit:cover;object-position:center;opacity:.75;transition:opacity .4s,transform .6s}
-    .img-panel:hover img{opacity:.9;transform:scale(1.02)}
-    .img-panel-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(14,165,233,.08) 0%,rgba(0,0,0,.3) 100%)}
+    .img-panel img{width:100%;height:100%;object-fit:cover;object-position:center;opacity:.72;transition:opacity .5s,transform .7s cubic-bezier(.22,1,.36,1)}
+    .img-panel:hover img{opacity:.88;transform:scale(1.03)}
+    .img-panel-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(14,165,233,.07) 0%,rgba(0,0,0,.32) 100%)}
     #mob-menu{display:none;position:fixed;inset:0;z-index:300;background:var(--bg);flex-direction:column;padding:2.5rem}
     #mob-menu.open{display:flex;animation:pgIn .3s ease}
-    /* Guest limit overlay */
-    #limit-overlay{display:none;position:absolute;inset:0;background:rgba(var(--bg-rgb,245,245,243),.96);backdrop-filter:blur(8px);z-index:10;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:2rem;gap:1.25rem}
-    html.dark #limit-overlay{background:rgba(13,13,12,.96)}
+    #limit-overlay{display:none;position:absolute;inset:0;background:rgba(245,245,243,.96);backdrop-filter:blur(10px);z-index:10;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:2rem;gap:1.25rem}
+    html.dark #limit-overlay{background:rgba(14,14,12,.96)}
     #limit-overlay.show{display:flex}
+    ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
     @media(max-width:900px){.g1m{grid-template-columns:1fr!important}.hnm{display:none!important}#mob-btn{display:flex!important}#nav-cta{display:none!important}}
   </style>
 </head>
 <body>
 
-<!-- NAV -->
+<!-- ── NAV ── -->
 <nav id="main-nav">
   <div style="max-width:1280px;margin:0 auto;padding:0 2rem;height:64px;display:flex;align-items:center;justify-content:space-between">
-    <a href="/" style="display:flex;align-items:center;gap:.75rem;text-decoration:none">
-      <img src="logo.png" alt="Acuros" width="32" height="32" style="flex-shrink:0;object-fit:contain"/>
+    <a href="/" style="display:flex;align-items:center;gap:.875rem;text-decoration:none">
+      <img src="logo.png" alt="Acuros" width="36" height="36" style="flex-shrink:0;object-fit:contain"/>
       <div>
-        <div style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:.95rem;letter-spacing:.05em;color:var(--text);line-height:1">ACUROS</div>
-        <div class="lbl" style="font-size:.5rem;letter-spacing:.28em">HEALTH</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:.95rem;letter-spacing:.12em;color:var(--text);line-height:1">ACUROS</div>
+        <div class="lbl" style="font-size:.46rem;letter-spacing:.34em">HEALTH</div>
       </div>
     </a>
     <div style="display:flex;align-items:center;gap:2rem" class="hnm">
       <a class="nav-link" href="/">Home</a>
       <a class="nav-link active" href="/ai-assistant">AI Assistant</a>
-      <a class="nav-link" href="/patient-portal">Patient Portal</a>
-      <a class="nav-link" href="/privacy" style="opacity:.55">Privacy</a>
-      <a class="nav-link" href="/terms" style="opacity:.55">Terms</a>
+      <a class="nav-link" href="/shop">Shop</a>
+      <a class="nav-link" href="/bookings">Bookings</a>
+      <a class="nav-link" href="/patient-portal">Patient Login</a>
     </div>
     <div style="display:flex;align-items:center;gap:.875rem">
-      <button onclick="toggleTheme()" aria-label="Toggle theme" style="width:36px;height:36px;border:1px solid var(--border);background:none;color:var(--sub);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;font-size:.9rem"><span id="th-icon">☀</span></button>
-      <a href="/patient-portal" class="btn btn-solid" style="padding:.55rem 1.25rem" id="nav-cta">Patient Portal</a>
+      <button onclick="toggleTheme()" aria-label="Toggle theme" style="width:36px;height:36px;border:1px solid var(--border);background:none;color:var(--sub);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .22s;font-size:.9rem"><span id="th-icon">☀</span></button>
+      <a href="/patient-portal" class="btn btn-solid" style="padding:.55rem 1.25rem" id="nav-cta">Patient Login</a>
       <button onclick="openMob()" style="display:none;background:none;border:none;cursor:pointer;color:var(--text);padding:.25rem" id="mob-btn" aria-label="Menu">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16M4 12h12M4 18h8"/></svg>
       </button>
@@ -117,7 +117,7 @@
   </div>
 </nav>
 
-<!-- Mobile menu -->
+<!-- ── Mobile Menu ── -->
 <div id="mob-menu">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3rem">
     <span style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--text)">Acuros Health</span>
@@ -125,26 +125,26 @@
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
     </button>
   </div>
-  <div style="display:flex;flex-direction:column;gap:1.75rem">
-    <a href="/"             style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;text-align:left;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Home</a>
-    <a href="/ai-assistant"      style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;text-align:left;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">AI Assistant</a>
-    <a href="/patient-portal" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;text-align:left;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Patient Portal</a>
-    <a href="/privacy" style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;text-align:left;color:var(--mute);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Privacy Policy</a>
-    <a href="/terms"   style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;text-align:left;color:var(--mute);text-decoration:none">Terms of Service</a>
+  <div style="display:flex;flex-direction:column;gap:1.5rem">
+    <a href="/"             style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Home</a>
+    <a href="/ai-assistant" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--ac);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">AI Assistant</a>
+    <a href="/shop"         style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Shop</a>
+    <a href="/bookings"     style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Bookings</a>
+    <a href="/patient-portal" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--text);text-decoration:none">Patient Login</a>
   </div>
 </div>
 
 <div style="padding-top:4rem">
 
   <!-- Hero -->
-  <section style="position:relative;padding:7rem 2rem 6rem;border-bottom:1px solid var(--border);overflow:hidden;min-height:360px;display:flex;align-items:flex-end">
-    <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1400&q=80&auto=format&fit=crop" alt="Forest blue" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(0.35) brightness(0.18)"/>
-    <div style="position:absolute;inset:0;background:linear-gradient(0deg,var(--bg) 0%,rgba(0,0,0,.5) 100%)"></div>
-    <div class="mesh" style="position:absolute;inset:0;opacity:.2"></div>
+  <section style="position:relative;padding:7rem 2rem 5.5rem;border-bottom:1px solid var(--border);overflow:hidden;min-height:340px;display:flex;align-items:flex-end">
+    <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1400&q=80&auto=format&fit=crop" alt="Forest" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(0.3) brightness(0.16)"/>
+    <div style="position:absolute;inset:0;background:linear-gradient(0deg,var(--bg) 0%,rgba(0,0,0,.42) 100%)"></div>
+    <div class="mesh" style="position:absolute;inset:0;opacity:.18"></div>
     <div style="position:relative;max-width:1280px;margin:0 auto;width:100%">
       <div class="lbl" style="margin-bottom:1.25rem;color:var(--ac)">AI Assistant</div>
       <h1 style="font-size:clamp(3rem,7vw,5.5rem);font-weight:300;color:var(--text);margin-bottom:1.25rem">Intelligent Health<br/><em>Dialogue.</em></h1>
-      <p style="font-size:.95rem;color:var(--sub);max-width:46ch;line-height:1.8">Ask medical questions with confidence. Powered by Gemini with evidence-based reasoning, structured logic, and safety governance.</p>
+      <p style="font-size:.95rem;color:var(--sub);max-width:46ch;line-height:1.85">Ask medical questions with confidence. Powered by Gemini with evidence-based reasoning, structured logic, and safety governance.</p>
     </div>
   </section>
 
@@ -154,12 +154,11 @@
       <div>
         <div class="lbl" style="margin-bottom:1.25rem">Live Assistant</div>
 
-        <!-- Guest 1-message notice (shown only when not in org) -->
         <div id="guest-notice" style="display:none;margin-bottom:.875rem" class="warn-box">
           You're using Acuros AI as a guest — <strong>1 free message</strong> per session. <a href="/patient-portal" style="color:inherit;font-weight:600;text-decoration:underline">Sign in</a> or join an organization for unlimited access.
         </div>
 
-        <div class="card" style="display:flex;flex-direction:column;height:540px;position:relative">
+        <div class="card" style="display:flex;flex-direction:column;height:560px;position:relative">
           <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.625rem">
             <div class="glow-dot" style="width:7px;height:7px;border-radius:50%;background:var(--ac);flex-shrink:0"></div>
             <span class="lbl">Acuros AI · Gemini-Powered</span>
@@ -172,13 +171,10 @@
             <input id="chat-in" type="text" class="inp" placeholder="Ask a health question…" style="flex:1" onkeydown="if(event.key==='Enter'&&!event.shiftKey)sendChat()"/>
             <button onclick="sendChat()" class="btn btn-solid" style="padding:.625rem 1.25rem;font-size:.72rem;flex-shrink:0" id="chat-send-btn">Send</button>
           </div>
-          <!-- Limit overlay shown after 1 guest message -->
           <div id="limit-overlay">
             <div style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;color:var(--text);margin-bottom:.25rem">You've used your free message.</div>
-            <p style="font-size:.85rem;color:var(--sub);max-width:34ch;line-height:1.75;margin-bottom:1.5rem">Join an organization or sign in to continue unlimited conversations with Acuros AI.</p>
-            <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center">
-              <a href="/patient-portal" class="btn btn-solid">Sign In / Join Org</a>
-            </div>
+            <p style="font-size:.85rem;color:var(--sub);max-width:34ch;line-height:1.8;margin-bottom:1.5rem">Join an organization or sign in to continue unlimited conversations with Acuros AI.</p>
+            <a href="/patient-portal" class="btn btn-solid">Sign In / Join Org</a>
           </div>
         </div>
 
@@ -194,14 +190,30 @@
       <div style="display:flex;flex-direction:column;gap:1.25rem">
         <div class="lbl" style="margin-bottom:.25rem">How It Works</div>
         <div style="background:var(--bg2);border:1px solid var(--border)">
-          <div style="padding:1.25rem;border-bottom:1px solid var(--border)"><div class="num" style="margin-bottom:.4rem">01</div><h4 style="font-size:1.2rem;font-weight:300;color:var(--text);margin-bottom:.35rem">Symptom Logic</h4><p style="font-size:.8rem;line-height:1.75;color:var(--sub)">Deterministic reasoning chains minimise hallucination. Every step is structured.</p></div>
-          <div style="padding:1.25rem;border-bottom:1px solid var(--border)"><div class="num" style="margin-bottom:.4rem">02</div><h4 style="font-size:1.2rem;font-weight:300;color:var(--text);margin-bottom:.35rem">Grounded Retrieval</h4><p style="font-size:.8rem;line-height:1.75;color:var(--sub)">Queries cross-referenced against peer-reviewed sources before generation.</p></div>
-          <div style="padding:1.25rem;border-bottom:1px solid var(--border)"><div class="num" style="margin-bottom:.4rem">03</div><h4 style="font-size:1.2rem;font-weight:300;color:var(--text);margin-bottom:.35rem">Safety Governance</h4><p style="font-size:.8rem;line-height:1.75;color:var(--sub)">A secondary review layer intercepts risky advice before it reaches you.</p></div>
-          <div style="padding:1.25rem"><div class="num" style="margin-bottom:.4rem">04</div><h4 style="font-size:1.2rem;font-weight:300;color:var(--text);margin-bottom:.35rem">Session Privacy</h4><p style="font-size:.8rem;line-height:1.75;color:var(--sub)">Conversation history is stored only on your device. Zero third-party sharing.</p></div>
+          <div style="padding:1.25rem;border-bottom:1px solid var(--border)">
+            <div class="lbl" style="color:var(--ac);margin-bottom:.4rem">01</div>
+            <h4 style="font-size:1.2rem;font-weight:300;color:var(--text);margin-bottom:.35rem">Symptom Logic</h4>
+            <p style="font-size:.8rem;line-height:1.8;color:var(--sub)">Deterministic reasoning chains minimise hallucination. Every step is structured.</p>
+          </div>
+          <div style="padding:1.25rem;border-bottom:1px solid var(--border)">
+            <div class="lbl" style="color:var(--ac);margin-bottom:.4rem">02</div>
+            <h4 style="font-size:1.2rem;font-weight:300;color:var(--text);margin-bottom:.35rem">Grounded Retrieval</h4>
+            <p style="font-size:.8rem;line-height:1.8;color:var(--sub)">Queries cross-referenced against peer-reviewed sources before generation.</p>
+          </div>
+          <div style="padding:1.25rem;border-bottom:1px solid var(--border)">
+            <div class="lbl" style="color:var(--ac);margin-bottom:.4rem">03</div>
+            <h4 style="font-size:1.2rem;font-weight:300;color:var(--text);margin-bottom:.35rem">Safety Governance</h4>
+            <p style="font-size:.8rem;line-height:1.8;color:var(--sub)">A secondary review layer intercepts risky advice before it reaches you.</p>
+          </div>
+          <div style="padding:1.25rem">
+            <div class="lbl" style="color:var(--ac);margin-bottom:.4rem">04</div>
+            <h4 style="font-size:1.2rem;font-weight:300;color:var(--text);margin-bottom:.35rem">Session Privacy</h4>
+            <p style="font-size:.8rem;line-height:1.8;color:var(--sub)">Conversation history is stored only on your device. Zero third-party sharing.</p>
+          </div>
         </div>
-        <div style="background:var(--bg2);border:1px solid var(--border);padding:1.25rem">
+        <div style="background:var(--bg2);border:1px solid var(--border);padding:1.5rem">
           <div class="lbl" style="color:var(--ac);margin-bottom:.75rem">Want unlimited access?</div>
-          <p style="font-size:.8rem;color:var(--sub);line-height:1.75;margin-bottom:1rem">Sign in and join an organization to unlock unlimited AI conversations and your full patient dashboard.</p>
+          <p style="font-size:.8rem;color:var(--sub);line-height:1.8;margin-bottom:1rem">Sign in and join an organization to unlock unlimited AI conversations and your full patient dashboard.</p>
           <a href="/patient-portal" class="btn btn-outline" style="width:100%;justify-content:center;font-size:.72rem">Go to Patient Portal →</a>
         </div>
       </div>
@@ -213,24 +225,26 @@
     <div class="img-panel" style="min-height:360px">
       <img src="https://images.unsplash.com/photo-1423345810305-b83a872a8344?w=700&q=80&auto=format&fit=crop" alt="Dark forest" loading="lazy"/>
       <div class="img-panel-overlay"></div>
-      <div style="position:absolute;bottom:2rem;left:2rem"><div class="lbl" style="color:rgba(255,255,255,.45)">Use Cases</div></div>
+      <div style="position:absolute;bottom:2rem;left:2rem"><div class="lbl" style="color:rgba(255,255,255,.4)">Use Cases</div></div>
     </div>
     <div class="bg-dots g1m" style="padding:3.5rem 3rem;display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-content:center">
-      <div style="background:var(--bg2);padding:1.5rem;border:1px solid var(--border)"><h4 style="font-size:1.3rem;font-weight:300;color:var(--text);margin-bottom:.5rem">Report Translation</h4><p style="font-size:.8rem;line-height:1.75;color:var(--sub)">Paste lab results or discharge summaries for plain-English explanations.</p></div>
-      <div style="background:var(--bg2);padding:1.5rem;border:1px solid var(--border)"><h4 style="font-size:1.3rem;font-weight:300;color:var(--text);margin-bottom:.5rem">Appointment Prep</h4><p style="font-size:.8rem;line-height:1.75;color:var(--sub)">Organise symptoms and generate targeted questions before specialist visits.</p></div>
-      <div style="background:var(--bg2);padding:1.5rem;border:1px solid var(--border)"><h4 style="font-size:1.3rem;font-weight:300;color:var(--text);margin-bottom:.5rem">Medication Safety</h4><p style="font-size:.8rem;line-height:1.75;color:var(--sub)">Check drug interactions, dosage guidelines, and side effect profiles instantly.</p></div>
-      <div style="background:var(--bg2);padding:1.5rem;border:1px solid var(--border)"><h4 style="font-size:1.3rem;font-weight:300;color:var(--text);margin-bottom:.5rem">Health Education</h4><p style="font-size:.8rem;line-height:1.75;color:var(--sub)">Understand diagnoses, procedures, and treatment options in plain language.</p></div>
+      <div style="background:var(--bg2);padding:1.5rem;border:1px solid var(--border);transition:border-color .22s" onmouseover="this.style.borderColor='var(--ac)'" onmouseout="this.style.borderColor='var(--border)'"><h4 style="font-size:1.3rem;font-weight:300;color:var(--text);margin-bottom:.5rem">Report Translation</h4><p style="font-size:.8rem;line-height:1.8;color:var(--sub)">Paste lab results or discharge summaries for plain-English explanations.</p></div>
+      <div style="background:var(--bg2);padding:1.5rem;border:1px solid var(--border);transition:border-color .22s" onmouseover="this.style.borderColor='var(--ac)'" onmouseout="this.style.borderColor='var(--border)'"><h4 style="font-size:1.3rem;font-weight:300;color:var(--text);margin-bottom:.5rem">Appointment Prep</h4><p style="font-size:.8rem;line-height:1.8;color:var(--sub)">Organise symptoms and generate targeted questions before specialist visits.</p></div>
+      <div style="background:var(--bg2);padding:1.5rem;border:1px solid var(--border);transition:border-color .22s" onmouseover="this.style.borderColor='var(--ac)'" onmouseout="this.style.borderColor='var(--border)'"><h4 style="font-size:1.3rem;font-weight:300;color:var(--text);margin-bottom:.5rem">Medication Safety</h4><p style="font-size:.8rem;line-height:1.8;color:var(--sub)">Check drug interactions, dosage guidelines, and side effect profiles instantly.</p></div>
+      <div style="background:var(--bg2);padding:1.5rem;border:1px solid var(--border);transition:border-color .22s" onmouseover="this.style.borderColor='var(--ac)'" onmouseout="this.style.borderColor='var(--border)'"><h4 style="font-size:1.3rem;font-weight:300;color:var(--text);margin-bottom:.5rem">Health Education</h4><p style="font-size:.8rem;line-height:1.8;color:var(--sub)">Understand diagnoses, procedures, and treatment options in plain language.</p></div>
     </div>
   </section>
 
   <footer style="border-top:1px solid var(--border);background:var(--bg2)">
-    <div style="max-width:1280px;margin:0 auto;padding:1.75rem 2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
-      <p style="font-size:.75rem;color:var(--mute)">© 2025 Acuros Health Inc.</p>
+    <div style="max-width:1280px;margin:0 auto;padding:2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
+      <p style="font-size:.74rem;color:var(--mute)">© 2025 Acuros Health Inc.</p>
       <div style="display:flex;gap:1.5rem">
-        <a href="/"             class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Home</a>
+        <a href="/"               class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Home</a>
+        <a href="/shop"           class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Shop</a>
+        <a href="/bookings"       class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Bookings</a>
         <a href="/patient-portal" class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Patient Portal</a>
-        <a href="/privacy" class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Privacy</a>
-        <a href="/terms"   class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Terms</a>
+        <a href="/privacy"        class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Privacy</a>
+        <a href="/terms"          class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Terms</a>
       </div>
     </div>
   </footer>
@@ -242,12 +256,9 @@ const CONFIG = {
   supabaseKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB5ZXhrZG91cHF6Ym5yeWJpdWJvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4Mzg4MzYsImV4cCI6MjA4NzQxNDgzNn0.3_dLQEJfmC08A2-hlgOfwlu4ngx7hslUR3Dun4BoXLU',
   aiApiUrl: '/api/chat',
 };
-
 let sb = null;
 try { if (CONFIG.supabaseKey) sb = window.supabase.createClient(CONFIG.supabaseUrl, CONFIG.supabaseKey); } catch(e) {}
-
 let currentUser = null;
-let userOrg = null; // org the user belongs to (null = no org)
 let chatHistory = [];
 const CHAT_HISTORY_KEY_PREFIX = 'ah-chat-history-v1';
 const GUEST_MSG_KEY = 'ah-guest-msg-used';
@@ -255,7 +266,6 @@ const MAX_CHAT_MESSAGES = 20;
 const MAX_CHARS_PER_MESSAGE = 2000;
 let activeHistoryKey = null;
 
-// ── Theme ──
 function toggleTheme() {
   const dark = document.documentElement.classList.toggle('dark');
   document.getElementById('th-icon').textContent = dark ? '☽' : '☀';
@@ -268,95 +278,48 @@ function toggleTheme() {
     document.getElementById('th-icon').textContent = '☽';
   }
 })();
+function openMob()  { document.getElementById('mob-menu').classList.add('open'); document.body.style.overflow='hidden'; }
+function closeMob() { document.getElementById('mob-menu').classList.remove('open'); document.body.style.overflow=''; }
+window.addEventListener('scroll', () => { document.getElementById('main-nav').style.boxShadow = window.scrollY > 10 ? '0 4px 32px rgba(0,0,0,.06)' : ''; });
 
-function openMob()  { document.getElementById('mob-menu').classList.add('open'); }
-function closeMob() { document.getElementById('mob-menu').classList.remove('open'); }
-window.addEventListener('scroll', () => { document.getElementById('main-nav').style.boxShadow = window.scrollY > 10 ? '0 1px 24px rgba(0,0,0,.08)' : ''; });
-
-// ── Auth / org check ──
-function isOrgUser() {
-  // A user is "in an org" if they are logged in AND have a patient_code or org_id set
-  if (!currentUser) return false;
-  return !!(currentUser.org_id || currentUser.code);
-}
-
+function isOrgUser() { return !!(currentUser?.org_id || currentUser?.code); }
 function updateGuestUI() {
   const notice = document.getElementById('guest-notice');
-  if (!notice) return;
-  notice.style.display = currentUser ? 'none' : 'block';
+  if (notice) notice.style.display = currentUser ? 'none' : 'block';
 }
 
 let authReady = false;
 if (sb?.auth?.onAuthStateChange) {
   sb.auth.onAuthStateChange(async (event, session) => {
     if (session?.user) {
-      currentUser = {
-        id: session.user.id,
-        email: session.user.email,
-        name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'User',
-        code: '', org_id: '', org_name: '',
-      };
+      currentUser = { id: session.user.id, email: session.user.email, name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'User', code: '', org_id: '', org_name: '' };
       localStorage.removeItem(GUEST_MSG_KEY);
       authReady = true;
       updateGuestUI();
       ensureChatHistoryLoaded(true);
       try {
         const { data: profile } = await sb.from('profiles').select('*, org:org_id(id, name)').eq('id', session.user.id).maybeSingle();
-        if (profile && currentUser) {
-          currentUser.name     = profile.name || currentUser.name;
-          currentUser.code     = profile.patient_code || '';
-          currentUser.org_id   = profile.org_id || '';
-          currentUser.org_name = profile.org?.name || '';
-        }
+        if (profile && currentUser) { currentUser.name = profile.name || currentUser.name; currentUser.code = profile.patient_code || ''; currentUser.org_id = profile.org_id || ''; currentUser.org_name = profile.org?.name || ''; }
       } catch (_e) {}
-    } else if (event === 'SIGNED_OUT') {
-      currentUser = null;
-      authReady = true;
-      updateGuestUI();
-      ensureChatHistoryLoaded(true);
-    }
-    if (window.location.hash?.includes('access_token')) {
-      window.history.replaceState(null, '', window.location.pathname + window.location.search);
-    }
+    } else if (event === 'SIGNED_OUT') { currentUser = null; authReady = true; updateGuestUI(); ensureChatHistoryLoaded(true); }
+    if (window.location.hash?.includes('access_token')) window.history.replaceState(null, '', window.location.pathname + window.location.search);
   });
-} else {
-  authReady = true;
-  updateGuestUI();
-  ensureChatHistoryLoaded(true);
-}
+} else { authReady = true; updateGuestUI(); ensureChatHistoryLoaded(true); }
 
-// ── Chat history ──
-function getChatHistoryKey() {
-  return currentUser?.id
-    ? `${CHAT_HISTORY_KEY_PREFIX}:${currentUser.id}`
-    : `${CHAT_HISTORY_KEY_PREFIX}:guest`;
-}
-
+function getChatHistoryKey() { return currentUser?.id ? `${CHAT_HISTORY_KEY_PREFIX}:${currentUser.id}` : `${CHAT_HISTORY_KEY_PREFIX}:guest`; }
 function normalizeChatHistory(raw) {
   if (!Array.isArray(raw)) return [];
-  return raw
-    .filter(e => e && (e.role === 'user' || e.role === 'model') && typeof e.text === 'string')
-    .map(e => ({ role: e.role, text: e.text.trim().slice(0, MAX_CHARS_PER_MESSAGE) }))
-    .filter(e => e.text.length > 0)
-    .slice(-MAX_CHAT_MESSAGES);
+  return raw.filter(e => e && (e.role === 'user' || e.role === 'model') && typeof e.text === 'string').map(e => ({ role: e.role, text: e.text.trim().slice(0, MAX_CHARS_PER_MESSAGE) })).filter(e => e.text.length > 0).slice(-MAX_CHAT_MESSAGES);
 }
-
-function saveChatHistory() {
-  localStorage.setItem(getChatHistoryKey(), JSON.stringify(chatHistory.slice(-MAX_CHAT_MESSAGES)));
-}
-
+function saveChatHistory() { localStorage.setItem(getChatHistoryKey(), JSON.stringify(chatHistory.slice(-MAX_CHAT_MESSAGES))); }
 function renderChatHistory() {
   const msgs = document.getElementById('chat-msgs');
   if (!msgs) return;
   msgs.innerHTML = '';
-  if (!chatHistory.length) {
-    addBubble("Hello — I'm the Acuros AI health assistant. I provide evidence-based health education and information. What would you like to explore today?", 'ai', false);
-  } else {
-    chatHistory.forEach(entry => addBubble(entry.text, entry.role === 'user' ? 'user' : 'ai', false));
-  }
+  if (!chatHistory.length) { addBubble("Hello — I'm the Acuros AI health assistant. I provide evidence-based health education and information. What would you like to explore today?", 'ai', false); }
+  else { chatHistory.forEach(entry => addBubble(entry.text, entry.role === 'user' ? 'user' : 'ai', false)); }
   msgs.scrollTop = msgs.scrollHeight;
 }
-
 function ensureChatHistoryLoaded(force) {
   const key = getChatHistoryKey();
   if (!force && activeHistoryKey === key) return;
@@ -365,61 +328,39 @@ function ensureChatHistoryLoaded(force) {
   chatHistory = normalizeChatHistory(saved || []);
   renderChatHistory();
 }
-
-// ── Guest message limit ──
-function guestMessageUsed() {
-  return localStorage.getItem(GUEST_MSG_KEY) === '1';
-}
-
-function markGuestMessageUsed() {
-  localStorage.setItem(GUEST_MSG_KEY, '1');
-}
-
+function guestMessageUsed() { return localStorage.getItem(GUEST_MSG_KEY) === '1'; }
+function markGuestMessageUsed() { localStorage.setItem(GUEST_MSG_KEY, '1'); }
 function showLimitOverlay() {
   const overlay = document.getElementById('limit-overlay');
   if (overlay) overlay.classList.add('show');
   const input = document.getElementById('chat-in');
   const btn   = document.getElementById('chat-send-btn');
   if (input) { input.disabled = true; input.placeholder = 'Join an organization to continue…'; }
-  if (btn)   btn.disabled = true;
+  if (btn) btn.disabled = true;
 }
 
-// ── AI Chat ──
 async function sendChat() {
   const inp = document.getElementById('chat-in');
   const msg = inp.value.trim();
   if (!msg) return;
-
-  if (!currentUser && guestMessageUsed()) {
-    showLimitOverlay();
-    return;
-  }
-
+  if (!currentUser && guestMessageUsed()) { showLimitOverlay(); return; }
   ensureChatHistoryLoaded();
   addBubble(msg, 'user');
   inp.value = '';
   chatHistory.push({ role: 'user', text: msg });
   chatHistory = chatHistory.slice(-MAX_CHAT_MESSAGES);
   saveChatHistory();
-
   if (!currentUser) markGuestMessageUsed();
-
   const thinking = document.createElement('div');
   thinking.className = 'bubble ai thinking';
   thinking.innerHTML = '<span></span><span></span><span></span>';
   document.getElementById('chat-msgs').appendChild(thinking);
   document.getElementById('chat-msgs').scrollTop = 999999;
-
   const status = document.getElementById('ai-status');
   if (status) status.textContent = 'Thinking…';
   setBtn('chat-send-btn', true, 'Send');
-
   try {
-    const resp = await fetch(CONFIG.aiApiUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ type: inferChatType(msg), messages: chatHistory }),
-    });
+    const resp = await fetch(CONFIG.aiApiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ type: inferChatType(msg), messages: chatHistory }) });
     thinking.remove();
     if (!resp.ok) { const err = await resp.json().catch(() => ({})); throw new Error(err.error || `API ${resp.status}`); }
     const data = await resp.json();
@@ -436,8 +377,7 @@ async function sendChat() {
         if (i > 0) sd.appendChild(document.createTextNode(', '));
         const a = document.createElement('a');
         try { a.href = new URL(s.uri).href; } catch (_) { a.href = '#'; }
-        a.target = '_blank';
-        a.rel = 'noopener noreferrer';
+        a.target = '_blank'; a.rel = 'noopener noreferrer';
         a.style.cssText = 'color:var(--ac);text-decoration:none';
         a.textContent = s.title || s.uri;
         sd.appendChild(a);
@@ -456,9 +396,7 @@ async function sendChat() {
   } finally {
     setBtn('chat-send-btn', false, 'Send');
     document.getElementById('chat-msgs').scrollTop = 999999;
-    if (!currentUser && guestMessageUsed()) {
-      setTimeout(showLimitOverlay, 1200);
-    }
+    if (!currentUser && guestMessageUsed()) setTimeout(showLimitOverlay, 1200);
   }
 }
 
@@ -504,10 +442,7 @@ function setBtn(id, loading, label) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  if (authReady) {
-    ensureChatHistoryLoaded(true);
-    if (!currentUser && guestMessageUsed()) showLimitOverlay();
-  }
+  if (authReady) { ensureChatHistoryLoaded(true); if (!currentUser && guestMessageUsed()) showLimitOverlay(); }
 });
 </script>
 </body>

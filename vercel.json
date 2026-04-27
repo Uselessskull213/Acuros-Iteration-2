@@ -1,12 +1,14 @@
 {
   "version": 2,
   "rewrites": [
-    { "source": "/api/:path*",       "destination": "/api/:path*" },
-    { "source": "/ai-assistant",     "destination": "/ai.html" },
-    { "source": "/patient-portal",   "destination": "/patient.html" },
-    { "source": "/privacy",          "destination": "/privacy.html" },
-    { "source": "/terms",            "destination": "/terms.html" },
-    { "source": "/aaaclinics-portal","destination": "/portal-aaaclinics.html" }
+    { "source": "/api/:path*",        "destination": "/api/:path*" },
+    { "source": "/ai-assistant",      "destination": "/ai.html" },
+    { "source": "/patient-portal",    "destination": "/patient.html" },
+    { "source": "/shop",              "destination": "/shop.html" },
+    { "source": "/bookings",          "destination": "/bookings.html" },
+    { "source": "/privacy",           "destination": "/privacy.html" },
+    { "source": "/terms",             "destination": "/terms.html" },
+    { "source": "/aaaclinics-portal", "destination": "/portal-aaaclinics.html" }
   ],
   "headers": [
     {
@@ -16,11 +18,11 @@
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "X-Frame-Options", "value": "DENY" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-        { "key": "X-XSS-Protection", "value": "1; mode=block" },
-        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" }
+        { "key": "X-Content-Type-Options",  "value": "nosniff" },
+        { "key": "X-Frame-Options",          "value": "DENY" },
+        { "key": "Referrer-Policy",          "value": "strict-origin-when-cross-origin" },
+        { "key": "X-XSS-Protection",         "value": "1; mode=block" },
+        { "key": "Permissions-Policy",       "value": "camera=(), microphone=(), geolocation=()" }
       ]
     }
   ]

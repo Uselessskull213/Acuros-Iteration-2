@@ -25,109 +25,182 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
   <script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{display:['Cormorant Garamond','Georgia','serif'],sans:['DM Sans','sans-serif']}}}}</script>
   <style>
-    :root{--bg:#f5f5f3;--bg2:#fff;--border:#e2e2de;--text:#181816;--sub:#5a5a54;--mute:#9a9a92;--ac:#0ea5e9;--nav:rgba(248,248,246,.6);--gold:#C9922A}
-    html.dark{--bg:#0d0d0c;--bg2:#141412;--border:#272724;--text:#f0f0ec;--sub:#9a9a92;--mute:#5a5a54;--ac:#38bdf8;--nav:rgba(13,13,12,.68);--gold:#E2B44A}
+    :root{
+      --bg:#f5f5f3;--bg2:#fefefe;--bg3:#efefec;
+      --border:#deded8;--text:#191917;--sub:#5c5b55;--mute:#9a9a90;
+      --ac:#0ea5e9;--gold:#c4902a;
+      --nav:rgba(245,245,243,.72);--shadow:0 4px 32px rgba(0,0,0,.06)
+    }
+    html.dark{
+      --bg:#0e0e0c;--bg2:#161614;--bg3:#1c1c1a;
+      --border:#282824;--text:#eeeee8;--sub:#96968e;--mute:#5a5a54;
+      --ac:#38bdf8;--gold:#d4a84a;
+      --nav:rgba(14,14,12,.78);--shadow:0 4px 32px rgba(0,0,0,.28)
+    }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     html{scroll-behavior:smooth}
-    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);transition:background .3s,color .3s;overflow-x:hidden}
-    h1,h2,h3,h4{font-family:'Cormorant Garamond',serif;line-height:1.08;letter-spacing:-.015em}
-    nav{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--nav);backdrop-filter:blur(28px) saturate(220%);-webkit-backdrop-filter:blur(28px) saturate(220%);border-bottom:1px solid rgba(226,226,222,.4);transition:background .3s,border-color .3s}
-    html.dark nav{border-bottom-color:rgba(39,39,36,.5)}
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);transition:background .35s,color .35s;overflow-x:hidden}
+    h1,h2,h3,h4{font-family:'Cormorant Garamond',serif;line-height:1.06;letter-spacing:-.02em}
+
+    /* ── Nav ── */
+    nav{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--nav);backdrop-filter:blur(32px) saturate(200%);-webkit-backdrop-filter:blur(32px) saturate(200%);border-bottom:1px solid rgba(0,0,0,.06);transition:background .35s}
+    html.dark nav{border-bottom-color:rgba(255,255,255,.04)}
     .nav-logo-wrap{display:flex;align-items:center;gap:.875rem;text-decoration:none}
     .nav-logo-frame{position:relative;width:38px;height:38px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
-    .nav-logo-frame::before,.nav-logo-frame::after{content:'';position:absolute;width:10px;height:10px;transition:all .3s}
+    .nav-logo-frame::before,.nav-logo-frame::after,
+    .nav-logo-frame .corner-tr,.nav-logo-frame .corner-bl{content:'';position:absolute;width:10px;height:10px;transition:all .3s}
     .nav-logo-frame::before{top:0;left:0;border-top:1.5px solid var(--gold);border-left:1.5px solid var(--gold)}
     .nav-logo-frame::after{bottom:0;right:0;border-bottom:1.5px solid var(--gold);border-right:1.5px solid var(--gold)}
-    html.dark .nav-logo-frame::before{border-color:var(--ac)}
-    html.dark .nav-logo-frame::after{border-color:var(--ac)}
-    .nav-logo-frame .corner-tr,.nav-logo-frame .corner-bl{position:absolute;width:10px;height:10px;transition:all .3s}
     .nav-logo-frame .corner-tr{top:0;right:0;border-top:1.5px solid var(--gold);border-right:1.5px solid var(--gold)}
     .nav-logo-frame .corner-bl{bottom:0;left:0;border-bottom:1.5px solid var(--gold);border-left:1.5px solid var(--gold)}
+    html.dark .nav-logo-frame::before,html.dark .nav-logo-frame::after,
     html.dark .nav-logo-frame .corner-tr,html.dark .nav-logo-frame .corner-bl{border-color:var(--ac)}
     .nav-logo-wrap:hover .nav-logo-frame::before,.nav-logo-wrap:hover .nav-logo-frame::after,
-    .nav-logo-wrap:hover .nav-logo-frame .corner-tr,.nav-logo-wrap:hover .nav-logo-frame .corner-bl{width:13px;height:13px;opacity:.8}
+    .nav-logo-wrap:hover .nav-logo-frame .corner-tr,.nav-logo-wrap:hover .nav-logo-frame .corner-bl{width:13px;height:13px;opacity:.7}
     #nav-logo{width:38px;height:38px;object-fit:contain;display:block;transition:opacity .2s}
-    .nav-logo-wrap:hover #nav-logo{opacity:.9}
-    .nav-logo-text-wrap{display:flex;flex-direction:column;gap:1px}
-    .nav-logo-name{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:.95rem;letter-spacing:.1em;color:var(--text);line-height:1;transition:color .2s}
+    .nav-logo-name{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:.95rem;letter-spacing:.12em;color:var(--text);line-height:1;transition:color .2s}
+    .nav-logo-sub{font-size:.46rem;letter-spacing:.34em;text-transform:uppercase;color:var(--mute);font-family:'DM Sans',sans-serif;font-weight:500}
     html:not(.dark) .nav-logo-wrap:hover .nav-logo-name{color:var(--gold)}
     html.dark .nav-logo-wrap:hover .nav-logo-name{color:var(--ac)}
-    .nav-logo-sub{font-size:.48rem;letter-spacing:.32em;text-transform:uppercase;color:var(--mute);font-family:'DM Sans',sans-serif;font-weight:500}
-    .nav-link{position:relative;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--sub);background:none;border:none;cursor:pointer;padding:0;font-family:inherit;transition:color .2s;text-decoration:none;display:inline-block}
-    html:not(.dark) .nav-link{color:#4a4a44}
-    .nav-link::after{content:'';position:absolute;left:0;bottom:-2px;width:0;height:1px;background:var(--ac);transition:width .25s}
+
+    .nav-link{position:relative;font-size:.68rem;letter-spacing:.13em;text-transform:uppercase;color:var(--sub);background:none;border:none;cursor:pointer;padding:0;font-family:inherit;transition:color .2s;text-decoration:none;display:inline-block}
+    .nav-link::after{content:'';position:absolute;left:0;bottom:-2px;width:0;height:1px;background:var(--ac);transition:width .28s cubic-bezier(.22,1,.36,1)}
     .nav-link:hover::after,.nav-link.active::after{width:100%}
     .nav-link:hover,.nav-link.active{color:var(--text)}
-    .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.7rem 1.75rem;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;border:none;transition:all .22s;text-decoration:none;position:relative;overflow:hidden}
-    .btn::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,.08);opacity:0;transition:opacity .2s}
-    .btn:hover::after{opacity:1}
+
+    /* ── Buttons ── */
+    .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.72rem 1.75rem;font-size:.76rem;letter-spacing:.1em;text-transform:uppercase;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;border:none;transition:all .24s cubic-bezier(.22,1,.36,1);text-decoration:none;position:relative;overflow:hidden}
+    .btn::before{content:'';position:absolute;inset:0;background:rgba(255,255,255,.1);opacity:0;transition:opacity .2s}
+    .btn:hover::before{opacity:1}
     .btn-solid{background:var(--text);color:var(--bg)}
-    .btn-solid:hover{background:var(--ac);color:#fff}
-    .btn-outline{background:transparent;color:var(--text);border:1px solid rgba(24,24,22,.25)}
-    html.dark .btn-outline{border-color:rgba(240,240,236,.2)}
-    .btn-outline:hover{border-color:var(--ac);color:var(--ac)}
+    .btn-solid:hover{background:var(--ac);color:#fff;transform:translateY(-1px)}
+    .btn-outline{background:transparent;color:var(--text);border:1px solid rgba(24,24,22,.2)}
+    html.dark .btn-outline{border-color:rgba(238,238,232,.18)}
+    .btn-outline:hover{border-color:var(--ac);color:var(--ac);transform:translateY(-1px)}
     .btn-ac{background:var(--ac);color:#fff}
-    .btn-ac:hover{background:#0284c7;color:#fff}
-    .card{background:var(--bg2);border:1px solid var(--border);transition:border-color .25s,transform .3s,box-shadow .3s}
-    .card:hover{border-color:var(--ac);transform:translateY(-2px);box-shadow:0 8px 32px rgba(14,165,233,.1)}
-    .principle-card{background:var(--bg2);padding:1.75rem;border:1px solid var(--border);border-top:2px solid transparent;transition:border-color .25s,border-top-color .25s}
-    .principle-card:hover{border-color:var(--border);border-top-color:var(--ac)}
-    .step-row{display:flex;align-items:flex-start;gap:2rem;padding:1.75rem 0;border-bottom:1px solid var(--border);transition:padding-left .2s}
-    .step-row:first-child{border-top:1px solid var(--border)}
-    .step-row:hover{padding-left:.75rem}
-    .compliance-row{display:flex;align-items:center;gap:1.25rem;padding:1rem 1rem 1rem 1.25rem;border-left:2px solid transparent;background:var(--bg);border:1px solid var(--border);transition:border-left-color .2s,background .2s}
-    .compliance-row:hover{border-left-color:var(--ac);background:var(--bg2)}
-    .inp{width:100%;background:var(--bg);border:1px solid var(--border);padding:.75rem 1rem;font-size:.875rem;color:var(--text);font-family:inherit;outline:none;transition:border-color .2s,box-shadow .2s}
-    .inp:focus{border-color:var(--ac);box-shadow:0 0 0 3px rgba(14,165,233,.1)}
+    .btn-ac:hover{filter:brightness(1.08);transform:translateY(-1px)}
+
+    /* ── Cards ── */
+    .card{background:var(--bg2);border:1px solid var(--border);transition:border-color .28s,transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s}
+    .card:hover{border-color:var(--ac);transform:translateY(-3px);box-shadow:0 16px 48px rgba(14,165,233,.1)}
+
+    /* ── Inputs ── */
+    .inp{width:100%;background:var(--bg3);border:1px solid var(--border);padding:.78rem 1rem;font-size:.875rem;color:var(--text);font-family:inherit;outline:none;transition:border-color .22s,box-shadow .22s}
+    .inp:focus{border-color:var(--ac);box-shadow:0 0 0 3px rgba(14,165,233,.12);background:var(--bg2)}
     .inp::placeholder{color:var(--mute)}
-    .lbl{font-family:'DM Sans',sans-serif;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);font-weight:500}
+
+    /* ── Atoms ── */
+    .lbl{font-family:'DM Sans',sans-serif;font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--mute);font-weight:500}
     .hr{height:1px;background:var(--border)}
-    .num{font-family:'Cormorant Garamond',serif;font-size:.7rem;color:var(--mute);letter-spacing:.1em}
     .aline{display:block;width:2rem;height:1px;background:var(--ac)}
     .err-box{background:#fef2f2;border:1px solid #fecaca;color:#dc2626;padding:.75rem 1rem;font-size:.8rem}
     html.dark .err-box{background:rgba(220,38,38,.08);border-color:rgba(220,38,38,.25);color:#f87171}
     .ok-box{background:#f0fdf4;border:1px solid #bbf7d0;color:#15803d;padding:.75rem 1rem;font-size:.8rem}
     html.dark .ok-box{background:rgba(21,128,61,.08);border-color:rgba(21,128,61,.25);color:#4ade80}
+
+    /* ── Spinner ── */
     @keyframes spin{to{transform:rotate(360deg)}}
     .spin{width:16px;height:16px;border:2px solid transparent;border-top-color:currentColor;border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
-    @keyframes pgIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-    .reveal{transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1)}
-    .js-reveal .reveal:not(.in){opacity:0;transform:translateY(26px)}
+
+    /* ── Reveal ── */
+    @keyframes pgIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+    .reveal{transition:opacity .75s cubic-bezier(.22,1,.36,1),transform .75s cubic-bezier(.22,1,.36,1)}
+    .js-reveal .reveal:not(.in){opacity:0;transform:translateY(30px)}
     .reveal.in{opacity:1;transform:none}
-    .d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}.d4{transition-delay:.4s}
-    .stagger-item{transition:opacity .5s ease,transform .5s ease}
-    .js-reveal .stagger-item:not(.in){opacity:0;transform:translateX(-14px)}
-    .stagger-item.in{opacity:1;transform:none}
+    .d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}.d4{transition-delay:.4s}.d5{transition-delay:.5s}
+
+    /* ── Marquee ── */
     @keyframes mq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-    .minner{display:inline-block;animation:mq 36s linear infinite;white-space:nowrap}
-    ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
-    #mob-menu{display:none;position:fixed;inset:0;z-index:300;background:var(--bg);flex-direction:column;padding:2.5rem}
-    #mob-menu.open{display:flex;animation:pgIn .3s ease}
-    @keyframes pulse{0%,100%{opacity:.25}50%{opacity:.7}}
-    .tlink{color:var(--ac);text-decoration:none;border-bottom:1px solid transparent;transition:border-color .2s}
-    .tlink:hover{border-color:var(--ac)}
-    .hero-title{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(5.5rem,13vw,11rem);line-height:.95;letter-spacing:-.03em}
+    .minner{display:inline-block;animation:mq 38s linear infinite;white-space:nowrap}
+
+    /* ── Backgrounds ── */
     .mesh{background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:52px 52px}
     .bg-dots{background-image:radial-gradient(var(--border) 1px,transparent 1px);background-size:28px 28px}
     .bg-diag{background-image:repeating-linear-gradient(45deg,var(--border) 0,var(--border) 1px,transparent 0,transparent 50%);background-size:24px 24px}
+
+    /* ── Image panel ── */
     .img-panel{position:relative;overflow:hidden;background:#0a0f1a}
-    .img-panel img{width:100%;height:100%;object-fit:cover;object-position:center;opacity:.75;transition:opacity .4s,transform .6s}
-    .img-panel:hover img{opacity:.9;transform:scale(1.02)}
-    .img-panel-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(14,165,233,.08) 0%,rgba(0,0,0,.3) 100%)}
-    .cap{border-top:1px solid var(--border);padding:1.25rem 0;display:flex;align-items:baseline;justify-content:space-between;gap:1rem;transition:color .2s,padding-left .22s}
-    .cap:hover{color:var(--ac);padding-left:.6rem}
+    .img-panel img{width:100%;height:100%;object-fit:cover;object-position:center;opacity:.72;transition:opacity .5s,transform .7s cubic-bezier(.22,1,.36,1)}
+    .img-panel:hover img{opacity:.88;transform:scale(1.03)}
+    .img-panel-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(14,165,233,.07) 0%,rgba(0,0,0,.32) 100%)}
+
+    /* ── Cap list ── */
+    .cap{border-top:1px solid var(--border);padding:1.25rem 0;display:flex;align-items:baseline;justify-content:space-between;gap:1rem;transition:color .2s,padding-left .24s cubic-bezier(.22,1,.36,1);cursor:default}
+    .cap:hover{color:var(--ac);padding-left:.5rem}
     .cap:last-child{border-bottom:1px solid var(--border)}
-    #hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;transform:scaleX(-1);filter:saturate(0.7) brightness(0.55)}
-    html.dark #hero-video{transform:scaleX(-1);filter:saturate(0.5) brightness(0.4)}
-    #hero-overlay{position:absolute;inset:0;pointer-events:none}
-    .reward-pill{display:inline-flex;align-items:center;gap:.5rem;padding:.35rem .875rem;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;font-weight:500;font-family:'DM Sans',sans-serif;background:var(--bg2);border:1px solid var(--border);color:var(--sub);white-space:nowrap}
-    @media(max-width:900px){.g1m{grid-template-columns:1fr!important}.g2m{grid-template-columns:1fr 1fr!important}.hnm{display:none!important}#mob-btn{display:flex!important}#nav-cta{display:none!important}}
-    @media(max-width:600px){.g2m{grid-template-columns:1fr!important}.hero-title{font-size:clamp(4rem,16vw,6rem)}}
+
+    /* ── Step rows ── */
+    .step-row{display:flex;align-items:flex-start;gap:2rem;padding:1.75rem 0;border-bottom:1px solid var(--border);transition:padding-left .24s cubic-bezier(.22,1,.36,1)}
+    .step-row:first-child{border-top:1px solid var(--border)}
+    .step-row:hover{padding-left:.5rem}
+
+    /* ── Compliance badges ── */
+    .badge-row{display:flex;align-items:center;gap:.5rem;padding:.75rem 1.25rem;border:1px solid var(--border);background:var(--bg2);transition:border-color .2s}
+    .badge-row:hover{border-color:var(--ac)}
+
+    /* ── Reward pills ── */
+    .reward-pill{display:inline-flex;align-items:center;gap:.5rem;padding:.35rem .875rem;font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;font-weight:500;font-family:'DM Sans',sans-serif;background:var(--bg2);border:1px solid var(--border);color:var(--sub);white-space:nowrap;transition:border-color .2s,color .2s}
+    .reward-pill:hover{border-color:var(--ac);color:var(--ac)}
+
+    /* ── Feature tabs ── */
+    .tab-btn{font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;font-weight:500;font-family:'DM Sans',sans-serif;padding:.6rem 1.5rem;border:1px solid var(--border);background:none;color:var(--mute);cursor:pointer;transition:all .22s;position:relative}
+    .tab-btn.active{background:var(--text);color:var(--bg);border-color:var(--text)}
+    html.dark .tab-btn.active{background:var(--text);color:var(--bg)}
+    .tab-pane{display:none}
+    .tab-pane.active{display:block}
+
+    /* ── Stats counter ── */
+    .stat-num{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4vw,3rem);font-weight:300;color:var(--text);line-height:1;letter-spacing:-.02em}
+
+    /* ── Hero ── */
+    .hero-title{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(5rem,12vw,10.5rem);line-height:.93;letter-spacing:-.03em}
+    #hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;transform:scaleX(-1);filter:saturate(0.65) brightness(0.5)}
+    html.dark #hero-video{filter:saturate(0.45) brightness(0.38)}
+
+    /* ── Mobile menu ── */
+    #mob-menu{display:none;position:fixed;inset:0;z-index:300;background:var(--bg);flex-direction:column;padding:2.5rem}
+    #mob-menu.open{display:flex;animation:pgIn .3s ease}
+
+    /* ── Pulse ── */
+    @keyframes pulse{0%,100%{opacity:.2}50%{opacity:.65}}
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+    /* ── FAQ ── */
+    .faq-item{border-bottom:1px solid var(--border)}
+    .faq-q{display:flex;justify-content:space-between;align-items:center;padding:1.25rem 0;cursor:pointer;font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:300;color:var(--text);gap:1rem;transition:color .2s}
+    .faq-q:hover{color:var(--ac)}
+    .faq-icon{font-size:1.1rem;color:var(--mute);transition:transform .3s cubic-bezier(.22,1,.36,1),color .2s;flex-shrink:0;line-height:1}
+    .faq-item.open .faq-icon{transform:rotate(45deg);color:var(--ac)}
+    .faq-a{font-size:.85rem;line-height:1.85;color:var(--sub);max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.22,1,.36,1),padding .4s}
+    .faq-item.open .faq-a{max-height:300px;padding-bottom:1.25rem}
+
+    /* ── Promo cards ── */
+    .promo-card{position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;min-height:360px;padding:2.5rem;border:1px solid var(--border);transition:transform .4s cubic-bezier(.22,1,.36,1),box-shadow .4s;text-decoration:none;background:var(--bg2)}
+    .promo-card:hover{transform:translateY(-4px);box-shadow:0 24px 64px rgba(0,0,0,.12)}
+    .promo-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;transition:transform .7s cubic-bezier(.22,1,.36,1),opacity .4s}
+    .promo-card:hover img{transform:scale(1.04)}
+    .promo-card-overlay{position:absolute;inset:0;background:linear-gradient(0deg,rgba(0,0,0,.72) 0%,rgba(0,0,0,.15) 60%,transparent 100%)}
+    .promo-card-body{position:relative;z-index:2}
+
+    /* ── Responsive ── */
+    @media(max-width:900px){
+      .g1m{grid-template-columns:1fr!important}
+      .g2m{grid-template-columns:1fr 1fr!important}
+      .hnm{display:none!important}
+      #mob-btn{display:flex!important}
+      #nav-cta{display:none!important}
+    }
+    @media(max-width:600px){
+      .g2m{grid-template-columns:1fr!important}
+      .hero-title{font-size:clamp(3.5rem,15vw,5.5rem)}
+    }
   </style>
 </head>
 <body>
 
-<!-- NAV -->
+<!-- ── NAV ── -->
 <nav id="main-nav">
   <div style="max-width:1280px;margin:0 auto;padding:0 2rem;height:64px;display:flex;align-items:center;justify-content:space-between">
     <a href="/" class="nav-logo-wrap">
@@ -136,7 +209,7 @@
         <span class="corner-bl"></span>
         <img id="nav-logo" src="/assets/logo-gold.jpg" alt="Acuros"/>
       </div>
-      <div class="nav-logo-text-wrap">
+      <div style="display:flex;flex-direction:column;gap:1px">
         <span class="nav-logo-name">ACUROS</span>
         <span class="nav-logo-sub">HEALTH</span>
       </div>
@@ -144,12 +217,12 @@
     <div style="display:flex;align-items:center;gap:2rem" class="hnm">
       <a class="nav-link active" href="/">Home</a>
       <a class="nav-link" href="/ai-assistant">AI Assistant</a>
+      <a class="nav-link" href="/shop">Shop</a>
+      <a class="nav-link" href="/bookings">Bookings</a>
       <a class="nav-link" href="/patient-portal">Patient Login</a>
-      <a class="nav-link" href="/privacy" style="opacity:.55">Privacy</a>
-      <a class="nav-link" href="/terms" style="opacity:.55">Terms</a>
     </div>
     <div style="display:flex;align-items:center;gap:.875rem">
-      <button onclick="toggleTheme()" aria-label="Toggle theme" style="width:36px;height:36px;border:1px solid var(--border);background:none;color:var(--sub);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;font-size:.9rem"><span id="th-icon">☀</span></button>
+      <button onclick="toggleTheme()" aria-label="Toggle theme" style="width:36px;height:36px;border:1px solid var(--border);background:none;color:var(--sub);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .22s;font-size:.9rem"><span id="th-icon">☀</span></button>
       <a href="#contact" class="btn btn-solid" style="padding:.55rem 1.25rem" id="nav-cta">Request Demo</a>
       <button onclick="openMob()" style="display:none;background:none;border:none;cursor:pointer;color:var(--text);padding:.25rem" id="mob-btn" aria-label="Menu">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16M4 12h12M4 18h8"/></svg>
@@ -158,7 +231,7 @@
   </div>
 </nav>
 
-<!-- Mobile menu -->
+<!-- ── Mobile Menu ── -->
 <div id="mob-menu">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3rem">
     <span style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--text)">Acuros Health</span>
@@ -166,145 +239,188 @@
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
     </button>
   </div>
-  <div style="display:flex;flex-direction:column;gap:1.75rem">
-    <a href="/"             style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;text-align:left;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Home</a>
-    <a href="/ai-assistant" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;text-align:left;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">AI Assistant</a>
-    <a href="/patient-portal" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;text-align:left;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Patient Login</a>
-    <a href="#contact" onclick="closeMob()" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;text-align:left;color:var(--ac);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Request Demo</a>
-    <a href="/privacy" style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;text-align:left;color:var(--mute);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Privacy Policy</a>
-    <a href="/terms"   style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;text-align:left;color:var(--mute);text-decoration:none">Terms of Service</a>
+  <div style="display:flex;flex-direction:column;gap:1.5rem">
+    <a href="/"             style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Home</a>
+    <a href="/ai-assistant" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">AI Assistant</a>
+    <a href="/shop"         style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Shop</a>
+    <a href="/bookings"     style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Bookings</a>
+    <a href="/patient-portal" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Patient Login</a>
+    <a href="#contact" onclick="closeMob()" style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;color:var(--ac);text-decoration:none">Request Demo</a>
   </div>
 </div>
 
-<!-- Hero -->
+<!-- ── Hero ── -->
 <section style="position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;padding-bottom:clamp(4rem,7vw,7rem)">
-  <video id="hero-video" autoplay muted loop playsinline preload="auto" aria-hidden="true">
-  </video>
+  <video id="hero-video" autoplay muted loop playsinline preload="auto" aria-hidden="true"></video>
   <div id="hero-overlay">
-    <div id="hero-bottom" style="position:absolute;bottom:0;left:0;right:0;height:55%;background:linear-gradient(0deg,var(--bg) 0%,transparent 100%)"></div>
-    <div style="position:absolute;top:0;left:0;right:0;height:35%;background:linear-gradient(180deg,rgba(0,0,0,.3) 0%,transparent 100%)"></div>
-    <div id="hero-tint" style="position:absolute;inset:0;background:rgba(0,0,0,.15)"></div>
+    <div id="hero-bottom" style="position:absolute;bottom:0;left:0;right:0;height:60%;background:linear-gradient(0deg,var(--bg) 0%,transparent 100%)"></div>
+    <div style="position:absolute;top:0;left:0;right:0;height:30%;background:linear-gradient(180deg,rgba(0,0,0,.28) 0%,transparent 100%)"></div>
+    <div id="hero-tint" style="position:absolute;inset:0;background:rgba(0,0,0,.14)"></div>
   </div>
   <div style="position:relative;z-index:10;max-width:1280px;margin:0 auto;padding:0 2rem;width:100%">
-    <div style="display:flex;align-items:center;gap:.875rem;margin-bottom:2rem;animation:pgIn .8s ease both">
+    <div style="display:flex;align-items:center;gap:.875rem;margin-bottom:1.75rem;animation:pgIn .85s ease both">
       <span class="aline"></span>
-      <span class="lbl" style="color:rgba(255,255,255,.75)">Patient Engagement Platform · Canada</span>
+      <span class="lbl" style="color:rgba(255,255,255,.7)">Patient Engagement Platform · Canada</span>
     </div>
-    <h1 class="hero-title" style="color:#fff;margin-bottom:2.5rem;animation:pgIn .9s .1s ease both;text-shadow:0 2px 48px rgba(0,0,0,.5)">
-      Power Your<br/><em style="color:rgba(255,255,255,.6);font-style:italic">Practice.</em>
+    <h1 class="hero-title" style="color:#fff;margin-bottom:2.5rem;animation:pgIn .95s .08s ease both;text-shadow:0 2px 64px rgba(0,0,0,.45)">
+      Power Your<br/><em style="color:rgba(255,255,255,.55)">Practice.</em>
     </h1>
-    <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:2rem;animation:pgIn .9s .2s ease both">
-      <p style="font-size:clamp(.9rem,1.4vw,1.05rem);color:rgba(255,255,255,.82);line-height:1.8;max-width:44ch;font-weight:300;text-shadow:0 1px 16px rgba(0,0,0,.5)">
+    <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:2rem;animation:pgIn .95s .18s ease both">
+      <p style="font-size:clamp(.88rem,1.4vw,1.05rem);color:rgba(255,255,255,.78);line-height:1.85;max-width:42ch;font-weight:300;text-shadow:0 1px 20px rgba(0,0,0,.45)">
         Give your clinic a branded patient portal — AI health guidance, loyalty rewards, and appointment tools that keep patients engaged between every visit.
       </p>
       <div style="display:flex;gap:.875rem;flex-wrap:wrap">
         <a href="#contact" class="btn btn-solid">Request a Demo</a>
-        <a href="/patient-portal" class="btn" style="background:rgba(0,0,0,.28);color:#fff;border:1px solid rgba(255,255,255,.4);backdrop-filter:blur(4px)" onmouseover="this.style.background='rgba(0,0,0,.42)'" onmouseout="this.style.background='rgba(0,0,0,.28)'">Patient Login</a>
+        <a href="/patient-portal" class="btn" style="background:rgba(0,0,0,.28);color:#fff;border:1px solid rgba(255,255,255,.35);backdrop-filter:blur(6px)" onmouseover="this.style.background='rgba(0,0,0,.45)'" onmouseout="this.style.background='rgba(0,0,0,.28)'">Patient Login</a>
       </div>
     </div>
   </div>
-  <div style="position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:.5rem;opacity:.4">
+  <div style="position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:.5rem;opacity:.35">
     <div style="width:1px;height:52px;background:#fff;animation:pulse 2.2s ease infinite"></div>
   </div>
 </section>
 
-<!-- Marquee -->
-<div style="border-top:1px solid var(--border);border-bottom:1px solid var(--border);overflow:hidden;padding:.85rem 0;background:var(--bg2)">
-  <div class="minner" style="font-size:.6rem;letter-spacing:.22em;color:var(--mute)">&nbsp;&nbsp;&nbsp;BRANDED PATIENT PORTAL&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;LOYALTY & REWARDS&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;AI HEALTH ASSISTANT&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;APPOINTMENT PREP&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;CLINIC DASHBOARD&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;PIPEDA COMPLIANT&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;CANADIAN BUILT&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;EVIDENCE-BASED&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;ACUROS HEALTH&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;BRANDED PATIENT PORTAL&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;LOYALTY & REWARDS&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;AI HEALTH ASSISTANT&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;APPOINTMENT PREP&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;CLINIC DASHBOARD&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;PIPEDA COMPLIANT&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;CANADIAN BUILT&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;EVIDENCE-BASED&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;ACUROS HEALTH&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;</div>
+<!-- ── Marquee ── -->
+<div style="border-top:1px solid var(--border);border-bottom:1px solid var(--border);overflow:hidden;padding:.9rem 0;background:var(--bg2)">
+  <div class="minner" style="font-size:.58rem;letter-spacing:.24em;color:var(--mute)">&nbsp;&nbsp;&nbsp;BRANDED PATIENT PORTAL&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;LOYALTY &amp; REWARDS&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;AI HEALTH ASSISTANT&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;APPOINTMENT TOOLS&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;CLINIC DASHBOARD&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;PIPEDA COMPLIANT&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;CANADIAN BUILT&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;EVIDENCE-BASED AI&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;OTC SHOP&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;PROCEDURE BOOKINGS&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;ACUROS HEALTH&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;BRANDED PATIENT PORTAL&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;LOYALTY &amp; REWARDS&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;AI HEALTH ASSISTANT&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;APPOINTMENT TOOLS&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;CLINIC DASHBOARD&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;PIPEDA COMPLIANT&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;CANADIAN BUILT&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;EVIDENCE-BASED AI&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;OTC SHOP&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;PROCEDURE BOOKINGS&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;ACUROS HEALTH&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;</div>
 </div>
 
-<!-- Platform Overview -->
-<section style="border-bottom:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr" class="g1m">
-  <div class="img-panel" style="min-height:520px">
-    <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=900&q=80&auto=format&fit=crop" alt="Mountain mist" loading="lazy"/>
-    <div class="img-panel-overlay"></div>
-    <div style="position:absolute;bottom:2rem;left:2rem;right:2rem">
-      <div class="lbl" style="color:rgba(255,255,255,.5);margin-bottom:.75rem">01 — Platform</div>
-      <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4vw,3rem);font-weight:300;color:#fff;line-height:1.1">The complete patient<br/><em>engagement stack.</em></h2>
+<!-- ── Stats Bar ── -->
+<section style="border-bottom:1px solid var(--border);background:var(--bg2)">
+  <div style="max-width:1280px;margin:0 auto;padding:3.5rem 2rem;display:grid;grid-template-columns:repeat(4,1fr);gap:2rem" class="g2m">
+    <div class="reveal" style="text-align:center;padding:1rem">
+      <div class="stat-num" data-target="120" data-suffix="+">0</div>
+      <div class="lbl" style="margin-top:.5rem">Clinics Onboarded</div>
     </div>
-  </div>
-  <div class="mesh" style="padding:4rem 3rem;display:flex;flex-direction:column;justify-content:center">
-    <p style="font-size:.9rem;line-height:1.9;color:var(--sub);margin-bottom:2.5rem" class="reveal">Acuros is a turnkey platform for clinics that want to deliver a premium, connected experience to every patient — from the first appointment to long-term retention.</p>
-    <div class="reveal d1">
-      <div class="cap stagger-item"><span style="font-family:'Cormorant Garamond',serif;font-size:1.25rem;color:var(--text)">Branded Patient Portal</span><span class="lbl">White-Label</span></div>
-      <div class="cap stagger-item d1"><span style="font-family:'Cormorant Garamond',serif;font-size:1.25rem;color:var(--text)">AI Health Assistant</span><span class="lbl">Evidence-Based</span></div>
-      <div class="cap stagger-item d2"><span style="font-family:'Cormorant Garamond',serif;font-size:1.25rem;color:var(--text)">Loyalty & Rewards System</span><span class="lbl">Built-In</span></div>
-      <div class="cap stagger-item d3"><span style="font-family:'Cormorant Garamond',serif;font-size:1.25rem;color:var(--text)">Secure Patient Records</span><span class="lbl">PIPEDA Compliant</span></div>
+    <div class="reveal d1" style="text-align:center;padding:1rem;border-left:1px solid var(--border)">
+      <div class="stat-num" data-target="8400" data-suffix="+">0</div>
+      <div class="lbl" style="margin-top:.5rem">Patients Engaged</div>
+    </div>
+    <div class="reveal d2" style="text-align:center;padding:1rem;border-left:1px solid var(--border)">
+      <div class="stat-num" data-target="98" data-suffix="%">0</div>
+      <div class="lbl" style="margin-top:.5rem">Satisfaction Rate</div>
+    </div>
+    <div class="reveal d3" style="text-align:center;padding:1rem;border-left:1px solid var(--border)">
+      <div class="stat-num" data-target="1" data-suffix=" Day">0</div>
+      <div class="lbl" style="margin-top:.5rem">Average Setup Time</div>
     </div>
   </div>
 </section>
 
-<!-- For Clinics / For Patients -->
+<!-- ── Features (Tabs) ── -->
 <section class="bg-dots" style="border-bottom:1px solid var(--border)">
-  <div style="max-width:1280px;margin:0 auto;padding:5rem 2rem">
-    <div class="lbl reveal" style="margin-bottom:2.5rem">02 — Solutions</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem" class="g1m">
-      <a href="#contact" class="card reveal" style="padding:2.5rem;cursor:pointer;position:relative;overflow:hidden;background:var(--bg2);text-decoration:none;display:block;border-top:2px solid var(--ac)">
-        <div class="lbl" style="color:var(--ac);margin-bottom:1.25rem">For Clinics &amp; Providers</div>
-        <h3 style="font-size:2.25rem;font-weight:300;color:var(--text);margin-bottom:.875rem;line-height:1.1">Your clinic.<br/><em>Their experience.</em></h3>
-        <p style="font-size:.85rem;line-height:1.85;color:var(--sub);margin-bottom:2rem">Onboard your patients in minutes with a unique clinic code. Give them a branded portal — AI support, loyalty rewards, appointment tools — all under your practice name.</p>
-        <span class="btn btn-outline" style="padding:.5rem 1.25rem;font-size:.7rem">Request a Demo →</span>
-      </a>
-      <a href="/patient-portal" class="card reveal d1" style="padding:2.5rem;cursor:pointer;position:relative;overflow:hidden;background:var(--bg2);text-decoration:none;display:block;border-top:2px solid var(--ac)">
-        <div class="lbl" style="color:var(--ac);margin-bottom:1.25rem">For Patients</div>
-        <h3 style="font-size:2.25rem;font-weight:300;color:var(--text);margin-bottom:.875rem;line-height:1.1">Your health.<br/><em>Organised.</em></h3>
-        <p style="font-size:.85rem;line-height:1.85;color:var(--sub);margin-bottom:2rem">Use the code from your clinic to access AI health guidance, track appointments, earn loyalty rewards, and prepare for every visit — all in one secure place.</p>
-        <span class="btn btn-outline" style="padding:.5rem 1.25rem;font-size:.7rem">Patient Login →</span>
-      </a>
+  <div style="max-width:1280px;margin:0 auto;padding:6rem 2rem">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:2rem;margin-bottom:3rem">
+      <div>
+        <div class="lbl reveal" style="margin-bottom:.875rem">01 — Solutions</div>
+        <h2 class="reveal d1" style="font-size:clamp(2.25rem,5vw,3.75rem);font-weight:300;color:var(--text)">Everything your clinic<br/><em>needs to thrive.</em></h2>
+      </div>
+      <div class="reveal d2" style="display:flex;gap:0;border:1px solid var(--border)">
+        <button class="tab-btn active" onclick="switchTab('clinics')" id="tab-clinics">For Clinics</button>
+        <button class="tab-btn" onclick="switchTab('patients')" id="tab-patients">For Patients</button>
+      </div>
+    </div>
+
+    <!-- For Clinics -->
+    <div id="pane-clinics" class="tab-pane active">
+      <div style="display:grid;grid-template-columns:5fr 7fr;gap:4rem;align-items:start" class="g1m">
+        <div class="img-panel reveal" style="min-height:500px">
+          <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=900&q=80&auto=format&fit=crop" alt="Mountain mist" loading="lazy"/>
+          <div class="img-panel-overlay"></div>
+          <div style="position:absolute;bottom:2rem;left:2rem;right:2rem">
+            <p style="font-size:.8rem;color:rgba(255,255,255,.5);line-height:1.75;font-style:italic">Onboard your clinic in under a day. No EMR migration required.</p>
+          </div>
+        </div>
+        <div>
+          <p style="font-size:.9rem;line-height:1.95;color:var(--sub);margin-bottom:2.5rem;max-width:46ch" class="reveal">Give your practice a branded patient portal — white-labelled to your clinic, powered by Acuros infrastructure. Deploy AI health support, loyalty rewards, and appointment tools without touching your existing systems.</p>
+          <div class="reveal d1">
+            <div class="cap"><span style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--text)">Branded Patient Portal</span><span class="lbl">White-Label</span></div>
+            <div class="cap"><span style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--text)">AI Health Assistant</span><span class="lbl">Evidence-Based</span></div>
+            <div class="cap"><span style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--text)">Loyalty &amp; Rewards Engine</span><span class="lbl">Built-In</span></div>
+            <div class="cap"><span style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--text)">Clinic Admin Dashboard</span><span class="lbl">Real-Time</span></div>
+            <div class="cap"><span style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--text)">OTC Product Shop</span><span class="lbl">Integrated</span></div>
+          </div>
+          <a href="#contact" class="btn btn-solid reveal d2" style="margin-top:2rem">Book a Demo</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- For Patients -->
+    <div id="pane-patients" class="tab-pane">
+      <div style="display:grid;grid-template-columns:5fr 7fr;gap:4rem;align-items:start" class="g1m">
+        <div class="img-panel reveal" style="min-height:500px">
+          <img src="https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?w=900&q=80&auto=format&fit=crop" alt="Health nature" loading="lazy"/>
+          <div class="img-panel-overlay"></div>
+          <div style="position:absolute;bottom:2rem;left:2rem;right:2rem">
+            <p style="font-size:.8rem;color:rgba(255,255,255,.5);line-height:1.75;font-style:italic">Your health data, encrypted and private. Stored on Canadian servers.</p>
+          </div>
+        </div>
+        <div>
+          <p style="font-size:.9rem;line-height:1.95;color:var(--sub);margin-bottom:2.5rem;max-width:46ch" class="reveal">Use the code from your clinic to access a private, secure portal tailored to your care. Ask health questions, prepare for appointments, shop over-the-counter products, and earn loyalty rewards — all in one place.</p>
+          <div class="reveal d1">
+            <div class="cap"><span style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--text)">AI Health Guidance</span><span class="lbl">Evidence-Based</span></div>
+            <div class="cap"><span style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--text)">Appointment Preparation</span><span class="lbl">Pre-Visit Briefs</span></div>
+            <div class="cap"><span style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--text)">Loyalty Rewards</span><span class="lbl">Earn Points</span></div>
+            <div class="cap"><span style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--text)">OTC Product Shop</span><span class="lbl">Clinic Recommended</span></div>
+            <div class="cap"><span style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--text)">Procedure Bookings</span><span class="lbl">Online Scheduling</span></div>
+          </div>
+          <a href="/patient-portal" class="btn btn-solid reveal d2" style="margin-top:2rem">Patient Login</a>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- Quote / Mission -->
-<section style="position:relative;overflow:hidden;border-bottom:1px solid var(--border);min-height:380px;display:flex;align-items:center">
-  <img src="https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?w=1400&q=80&auto=format&fit=crop" alt="Forest dark blue" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;filter:saturate(0.4) brightness(0.25)"/>
-  <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(14,165,233,.12) 0%,rgba(0,0,0,.6) 100%)"></div>
-  <div style="position:relative;z-index:10;max-width:900px;margin:0 auto;padding:5rem 2rem;text-align:center">
-    <div class="lbl reveal" style="color:rgba(255,255,255,.45);margin-bottom:1.5rem">Our Belief</div>
-    <blockquote style="font-family:'Cormorant Garamond',serif;font-size:clamp(1.75rem,4vw,3rem);font-weight:300;color:#fff;line-height:1.25;font-style:italic" class="reveal d1">
-      "Modern practices don't just treat patients.<br/>They build relationships that last<br/>between every visit."
+<!-- ── Mission Quote ── -->
+<section style="position:relative;overflow:hidden;border-bottom:1px solid var(--border);min-height:420px;display:flex;align-items:center">
+  <img src="https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=1400&q=80&auto=format&fit=crop" alt="Forest dark" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;filter:saturate(0.4) brightness(0.22)"/>
+  <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(14,165,233,.1) 0%,rgba(0,0,0,.55) 100%)"></div>
+  <div style="position:relative;z-index:10;max-width:920px;margin:0 auto;padding:6rem 2rem;text-align:center">
+    <div class="lbl reveal" style="color:rgba(255,255,255,.4);margin-bottom:1.75rem">Our Belief</div>
+    <blockquote style="font-family:'Cormorant Garamond',serif;font-size:clamp(1.75rem,4vw,3.25rem);font-weight:300;color:#fff;line-height:1.22;font-style:italic" class="reveal d1">
+      "Modern practices don't just treat patients.<br/>They build lasting relationships<br/><em style="color:rgba(255,255,255,.6)">between every visit.</em>"
     </blockquote>
-    <div class="hr reveal d2" style="max-width:60px;margin:2rem auto;background:rgba(255,255,255,.2)"></div>
-    <p style="font-size:.88rem;color:rgba(255,255,255,.6);line-height:1.75" class="reveal d3">Acuros gives your clinic the tools to make that a reality — without complexity, without compromise.</p>
+    <div style="width:48px;height:1px;background:rgba(255,255,255,.2);margin:2rem auto" class="reveal d2"></div>
+    <p style="font-size:.88rem;color:rgba(255,255,255,.55);line-height:1.8" class="reveal d3">Acuros gives your clinic the tools to make that a reality — without complexity, without compromise.</p>
   </div>
 </section>
 
-<!-- How It Works -->
+<!-- ── How It Works ── -->
 <section class="bg-diag" style="padding:7rem 2rem;border-bottom:1px solid var(--border)">
   <div style="max-width:1280px;margin:0 auto">
-    <div class="lbl reveal" style="margin-bottom:2.5rem">03 — How It Works</div>
+    <div class="lbl reveal" style="margin-bottom:2.5rem">02 — How It Works</div>
     <div style="display:grid;grid-template-columns:5fr 7fr;gap:5rem;align-items:start" class="g1m">
       <div>
         <h2 class="reveal" style="font-size:clamp(2.5rem,5vw,4rem);font-weight:300;color:var(--text)">Up and running<br/><em>in a day.</em></h2>
-        <p class="reveal d1" style="font-size:.88rem;line-height:1.85;color:var(--sub);margin-top:1.5rem">No complex integrations. No EMR migration. Acuros drops into your workflow so your team stays focused on patients — not software.</p>
+        <p class="reveal d1" style="font-size:.88rem;line-height:1.9;color:var(--sub);margin-top:1.5rem;max-width:38ch">No complex integrations. No EMR migration. Acuros drops into your workflow — your team stays focused on patients, not software.</p>
         <a href="#contact" class="btn btn-solid reveal d2" style="margin-top:2rem">Request a Demo</a>
       </div>
       <div class="reveal d1">
         <div class="step-row">
           <div style="flex-shrink:0;padding-top:.2rem">
-            <div style="font-family:'Cormorant Garamond',serif;font-size:2.25rem;font-weight:300;color:var(--ac);line-height:1">01</div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--ac);line-height:1">01</div>
           </div>
           <div>
-            <h4 style="font-size:1.35rem;font-weight:300;color:var(--text);margin-bottom:.5rem">Register Your Clinic</h4>
-            <p style="font-size:.82rem;line-height:1.8;color:var(--sub)">Your organization is set up with a unique clinic code and access to the Acuros admin dashboard. Everything branded to your practice.</p>
+            <h4 style="font-size:1.4rem;font-weight:300;color:var(--text);margin-bottom:.5rem">Register Your Clinic</h4>
+            <p style="font-size:.82rem;line-height:1.85;color:var(--sub)">Your organization is set up with a unique clinic code and branded admin dashboard. Configured the same day.</p>
           </div>
         </div>
         <div class="step-row">
           <div style="flex-shrink:0;padding-top:.2rem">
-            <div style="font-family:'Cormorant Garamond',serif;font-size:2.25rem;font-weight:300;color:var(--ac);line-height:1">02</div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--ac);line-height:1">02</div>
           </div>
           <div>
-            <h4 style="font-size:1.35rem;font-weight:300;color:var(--text);margin-bottom:.5rem">Share Your Patient Code</h4>
-            <p style="font-size:.82rem;line-height:1.8;color:var(--sub)">Patients register using your clinic's unique code. They're instantly connected to your organization's portal — no manual linking needed.</p>
+            <h4 style="font-size:1.4rem;font-weight:300;color:var(--text);margin-bottom:.5rem">Share Your Patient Code</h4>
+            <p style="font-size:.82rem;line-height:1.85;color:var(--sub)">Patients register using your clinic's unique code. Instantly connected to your branded portal — no manual linking.</p>
           </div>
         </div>
         <div class="step-row" style="border-bottom:none">
           <div style="flex-shrink:0;padding-top:.2rem">
-            <div style="font-family:'Cormorant Garamond',serif;font-size:2.25rem;font-weight:300;color:var(--ac);line-height:1">03</div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--ac);line-height:1">03</div>
           </div>
           <div>
-            <h4 style="font-size:1.35rem;font-weight:300;color:var(--text);margin-bottom:.5rem">Patients Engage &amp; Earn</h4>
-            <p style="font-size:.82rem;line-height:1.8;color:var(--sub)">Patients use AI health guidance, prepare for appointments, and earn loyalty rewards — keeping your clinic top of mind between every visit.</p>
+            <h4 style="font-size:1.4rem;font-weight:300;color:var(--text);margin-bottom:.5rem">Patients Engage &amp; Earn</h4>
+            <p style="font-size:.82rem;line-height:1.85;color:var(--sub)">AI guidance, appointment prep, loyalty rewards, shop access, and procedure bookings — keeping your clinic top of mind.</p>
           </div>
         </div>
       </div>
@@ -312,101 +428,121 @@
   </div>
 </section>
 
-<!-- Rewards Platform -->
+<!-- ── Shop & Bookings Promo ── -->
+<section style="border-bottom:1px solid var(--border)">
+  <div style="max-width:1280px;margin:0 auto;padding:6rem 2rem">
+    <div class="lbl reveal" style="margin-bottom:2.5rem">03 — For Patients</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem" class="g1m">
+      <a href="/shop" class="promo-card reveal">
+        <img src="https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=900&q=80&auto=format&fit=crop" alt="Skincare products" loading="lazy"/>
+        <div class="promo-card-overlay"></div>
+        <div class="promo-card-body">
+          <div class="lbl" style="color:rgba(255,255,255,.5);margin-bottom:.75rem">OTC Product Shop</div>
+          <h3 style="font-family:'Cormorant Garamond',serif;font-size:clamp(1.75rem,3vw,2.5rem);font-weight:300;color:#fff;line-height:1.1;margin-bottom:.875rem">Clinic-approved<br/><em>products, delivered.</em></h3>
+          <p style="font-size:.82rem;color:rgba(255,255,255,.65);line-height:1.75;max-width:36ch;margin-bottom:1.5rem">Browse over-the-counter health and wellness products recommended by your care team.</p>
+          <span class="btn" style="background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);backdrop-filter:blur(6px);display:inline-flex">Shop Now →</span>
+        </div>
+      </a>
+      <a href="/bookings" class="promo-card reveal d1">
+        <img src="https://images.unsplash.com/photo-1519682337058-a94d519337bc?w=900&q=80&auto=format&fit=crop" alt="Medical appointment" loading="lazy"/>
+        <div class="promo-card-overlay"></div>
+        <div class="promo-card-body">
+          <div class="lbl" style="color:rgba(255,255,255,.5);margin-bottom:.75rem">Procedure Bookings</div>
+          <h3 style="font-family:'Cormorant Garamond',serif;font-size:clamp(1.75rem,3vw,2.5rem);font-weight:300;color:#fff;line-height:1.1;margin-bottom:.875rem">Book your next<br/><em>procedure online.</em></h3>
+          <p style="font-size:.82rem;color:rgba(255,255,255,.65);line-height:1.75;max-width:36ch;margin-bottom:1.5rem">Schedule consultations, treatments, and procedures directly through your patient portal.</p>
+          <span class="btn" style="background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);backdrop-filter:blur(6px);display:inline-flex">Book Now →</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ── Rewards ── -->
 <section style="display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--border)" class="g1m">
-  <div style="padding:4rem 3rem;background:var(--bg2)">
+  <div style="padding:5rem 3rem;background:var(--bg2)">
     <div class="lbl reveal" style="margin-bottom:1.5rem">04 — Rewards &amp; Loyalty</div>
     <h2 class="reveal d1" style="font-size:clamp(2rem,4vw,3rem);font-weight:300;color:var(--text);margin-bottom:1.5rem">Keep patients<br/><em>coming back.</em></h2>
-    <p class="reveal d2" style="font-size:.88rem;line-height:1.85;color:var(--sub);margin-bottom:2rem">Turn routine healthcare into a rewarding experience. Patients earn points for portal activity, appointments, and healthy habits — redeemable for clinic credits, services, or offers you define.</p>
-    <div style="display:flex;flex-wrap:wrap;gap:.625rem" class="reveal d3">
+    <p class="reveal d2" style="font-size:.88rem;line-height:1.9;color:var(--sub);margin-bottom:2rem;max-width:40ch">Turn routine healthcare into a rewarding experience. Patients earn points for portal activity, appointments, and healthy habits — redeemable for clinic credits or services you define.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:.5rem" class="reveal d3">
       <span class="reward-pill">Appointment Check-ins</span>
       <span class="reward-pill">Portal Engagement</span>
       <span class="reward-pill">Referrals</span>
       <span class="reward-pill">Health Milestones</span>
       <span class="reward-pill">Custom Rewards</span>
+      <span class="reward-pill">Shop Purchases</span>
     </div>
   </div>
-  <div class="img-panel" style="min-height:400px">
-    <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=900&q=80&auto=format&fit=crop" alt="Dark mountain stars" loading="lazy"/>
+  <div class="img-panel" style="min-height:420px">
+    <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=900&q=80&auto=format&fit=crop" alt="Night stars" loading="lazy"/>
     <div class="img-panel-overlay"></div>
     <div style="position:absolute;bottom:2rem;left:2rem;right:2rem">
-      <p style="font-size:.82rem;color:rgba(255,255,255,.55);line-height:1.75;font-style:italic">A loyalty system designed for healthcare — built around patient wellbeing, not just transactions.</p>
+      <p style="font-size:.8rem;color:rgba(255,255,255,.5);line-height:1.75;font-style:italic">A loyalty system designed for healthcare — built around wellbeing, not just transactions.</p>
     </div>
   </div>
 </section>
 
-<!-- Compliance -->
-<section style="display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--border)" class="g1m">
-  <div class="img-panel" style="min-height:400px">
-    <img src="https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=900&q=80&auto=format&fit=crop" alt="Nature dark" loading="lazy"/>
-    <div class="img-panel-overlay"></div>
-    <div style="position:absolute;bottom:2rem;left:2rem;right:2rem">
-      <p style="font-size:.82rem;color:rgba(255,255,255,.55);line-height:1.75;font-style:italic">Data stored on Canadian servers. Zero third-party sharing. AES-256 encrypted at rest.</p>
-    </div>
-  </div>
-  <div style="padding:4rem 3rem;background:var(--bg2)">
-    <div class="lbl reveal" style="margin-bottom:1.5rem">05 — Compliance</div>
-    <h2 class="reveal d1" style="font-size:clamp(2rem,4vw,3rem);font-weight:300;color:var(--text);margin-bottom:1.5rem">Built to<br/><em>Canadian Standards.</em></h2>
-    <div style="display:flex;flex-direction:column;gap:.75rem" class="reveal d2">
-      <div class="compliance-row">
-        <div style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:400;color:var(--text);min-width:88px">PIPEDA</div>
-        <div style="font-size:.8rem;color:var(--sub);line-height:1.6">Federal privacy compliance — Personal Information Protection and Electronic Documents Act</div>
+<!-- ── FAQ ── -->
+<section class="mesh" style="border-bottom:1px solid var(--border);padding:7rem 2rem">
+  <div style="max-width:900px;margin:0 auto">
+    <div class="lbl reveal" style="margin-bottom:2.5rem">05 — Common Questions</div>
+    <h2 class="reveal d1" style="font-size:clamp(2rem,4vw,3.25rem);font-weight:300;color:var(--text);margin-bottom:3rem">Everything you<br/><em>need to know.</em></h2>
+    <div id="faq-list" class="reveal d2">
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)"><span>Does Acuros integrate with my existing EMR?</span><span class="faq-icon">+</span></div>
+        <div class="faq-a">Acuros is designed as a complementary layer on top of any existing setup — no EMR integration or migration required. Your staff keep their current workflows and Acuros runs independently alongside them.</div>
       </div>
-      <div class="compliance-row">
-        <div style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:400;color:var(--text);min-width:88px">PHIPA</div>
-        <div style="font-size:.8rem;color:var(--sub);line-height:1.6">Ontario health data protection — Personal Health Information Protection Act</div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)"><span>Is patient data stored on Canadian servers?</span><span class="faq-icon">+</span></div>
+        <div class="faq-a">Yes. All patient data is stored exclusively on Canadian servers and is subject to PIPEDA and PHIPA compliance requirements. Data is AES-256 encrypted at rest and in transit, and is never shared with third parties.</div>
       </div>
-      <div class="compliance-row">
-        <div style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:400;color:var(--text);min-width:88px">HL7/FHIR</div>
-        <div style="font-size:.8rem;color:var(--sub);line-height:1.6">Healthcare interoperability standards for structured data exchange</div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)"><span>How long does setup take?</span><span class="faq-icon">+</span></div>
+        <div class="faq-a">Most clinics are fully onboarded the same day. After your demo call, we configure your clinic code, branding, and portal access — your patients can start enrolling within 24 hours.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)"><span>Can patients book procedures and buy products online?</span><span class="faq-icon">+</span></div>
+        <div class="faq-a">Yes. Patients can access the OTC Shop for clinic-recommended over-the-counter products and use the Bookings page to schedule procedures and consultations directly through their portal.</div>
+      </div>
+      <div class="faq-item" style="border-bottom:none">
+        <div class="faq-q" onclick="toggleFaq(this)"><span>What does the AI health assistant actually do?</span><span class="faq-icon">+</span></div>
+        <div class="faq-a">Acuros AI provides evidence-based health education: translating lab reports, explaining diagnoses, checking medication interactions, and helping patients prepare questions for their next appointment. It is educational only and explicitly not a substitute for professional medical advice.</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- CTA -->
-<section class="mesh" style="padding:8rem 2rem;border-bottom:1px solid var(--border);text-align:center">
-  <div class="lbl reveal" style="margin-bottom:1.5rem">Get Started</div>
-  <h2 class="reveal d1" style="font-size:clamp(2.5rem,6vw,5rem);font-weight:300;color:var(--text);margin-bottom:1.5rem">Ready to launch<br/><em>your clinic portal?</em></h2>
-  <p class="reveal d2" style="font-size:.95rem;color:var(--sub);max-width:40ch;margin:0 auto 2.5rem;line-height:1.75">Book a 20-minute demo and see how Acuros transforms your patient engagement — from onboarding to retention.</p>
-  <div class="reveal d3" style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
-    <a href="#contact" class="btn btn-solid">Request a Demo</a>
-    <a href="/patient-portal" class="btn btn-outline">Patient Login</a>
-  </div>
-</section>
-
-<!-- Contact -->
+<!-- ── Contact ── -->
 <section id="contact" style="border-bottom:1px solid var(--border);background:var(--bg2)">
-  <div style="max-width:1280px;margin:0 auto;padding:5rem 2rem;display:grid;grid-template-columns:1fr 1fr;gap:4rem" class="g1m">
+  <div style="max-width:1280px;margin:0 auto;padding:7rem 2rem;display:grid;grid-template-columns:1fr 1fr;gap:5rem" class="g1m">
     <div>
       <div class="lbl" style="margin-bottom:1rem">Contact &amp; Demo Requests</div>
-      <h3 style="font-size:clamp(2rem,4vw,2.75rem);font-weight:300;color:var(--text);margin-bottom:1.25rem">Let's set up<br/><em>your clinic.</em></h3>
-      <p style="font-size:.85rem;line-height:1.9;color:var(--sub);max-width:38ch;margin-bottom:2rem">Whether you're ready to onboard or just exploring your options — our team will walk you through the platform and get your clinic portal configured from day one.</p>
-      <div style="display:flex;flex-direction:column;gap:.875rem">
-        <div style="display:flex;align-items:baseline;gap:.875rem">
-          <div style="width:1px;height:1rem;background:var(--ac);flex-shrink:0"></div>
-          <span style="font-size:.82rem;color:var(--sub)">20-minute guided demo — no commitment</span>
+      <h3 style="font-size:clamp(2rem,4vw,3rem);font-weight:300;color:var(--text);margin-bottom:1.25rem">Let's set up<br/><em>your clinic.</em></h3>
+      <p style="font-size:.85rem;line-height:1.95;color:var(--sub);max-width:38ch;margin-bottom:2.5rem">Whether you're ready to onboard or just exploring — our team will walk you through the platform and get your clinic portal configured from day one.</p>
+      <div style="display:flex;flex-direction:column;gap:1rem">
+        <div style="display:flex;align-items:flex-start;gap:1rem">
+          <div style="width:1px;height:1rem;background:var(--ac);flex-shrink:0;margin-top:.2rem"></div>
+          <span style="font-size:.84rem;color:var(--sub);line-height:1.7">20-minute guided demo — no commitment required</span>
         </div>
-        <div style="display:flex;align-items:baseline;gap:.875rem">
-          <div style="width:1px;height:1rem;background:var(--ac);flex-shrink:0"></div>
-          <span style="font-size:.82rem;color:var(--sub)">Same-day clinic code setup after onboarding</span>
+        <div style="display:flex;align-items:flex-start;gap:1rem">
+          <div style="width:1px;height:1rem;background:var(--ac);flex-shrink:0;margin-top:.2rem"></div>
+          <span style="font-size:.84rem;color:var(--sub);line-height:1.7">Same-day clinic code &amp; portal setup after onboarding</span>
         </div>
-        <div style="display:flex;align-items:baseline;gap:.875rem">
-          <div style="width:1px;height:1rem;background:var(--ac);flex-shrink:0"></div>
-          <span style="font-size:.82rem;color:var(--sub)">Dedicated support during your launch</span>
+        <div style="display:flex;align-items:flex-start;gap:1rem">
+          <div style="width:1px;height:1rem;background:var(--ac);flex-shrink:0;margin-top:.2rem"></div>
+          <span style="font-size:.84rem;color:var(--sub);line-height:1.7">Dedicated support through your launch week</span>
         </div>
       </div>
     </div>
-    <div class="card" style="padding:2rem">
+    <div class="card" style="padding:2.25rem">
       <div id="ct-err" style="display:none;margin-bottom:1rem"></div>
       <div id="ct-ok"  style="display:none;margin-bottom:1rem"></div>
       <form onsubmit="submitContact(event)" style="display:flex;flex-direction:column;gap:.875rem">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:.875rem">
-          <div><label class="lbl" style="display:block;margin-bottom:.35rem">Your Name</label><input id="ct-name" type="text" class="inp" placeholder="Jane Doe" required maxlength="100"/></div>
-          <div><label class="lbl" style="display:block;margin-bottom:.35rem">Clinic / Organization</label><input id="ct-clinic" type="text" class="inp" placeholder="Acuros Clinic" maxlength="120"/></div>
+          <div><label class="lbl" style="display:block;margin-bottom:.4rem">Your Name</label><input id="ct-name" type="text" class="inp" placeholder="Jane Doe" required maxlength="100"/></div>
+          <div><label class="lbl" style="display:block;margin-bottom:.4rem">Clinic / Organization</label><input id="ct-clinic" type="text" class="inp" placeholder="Acuros Clinic" maxlength="120"/></div>
         </div>
-        <div><label class="lbl" style="display:block;margin-bottom:.35rem">Email Address</label><input id="ct-email" type="email" class="inp" placeholder="name@clinic.com" required maxlength="160"/></div>
-        <div><label class="lbl" style="display:block;margin-bottom:.35rem">Inquiry Type</label>
+        <div><label class="lbl" style="display:block;margin-bottom:.4rem">Email Address</label><input id="ct-email" type="email" class="inp" placeholder="name@clinic.com" required maxlength="160"/></div>
+        <div><label class="lbl" style="display:block;margin-bottom:.4rem">Inquiry Type</label>
           <select id="ct-type" class="inp">
             <option value="Book a Demo">Book a Demo</option>
             <option value="Clinic Onboarding">Clinic Onboarding</option>
@@ -415,7 +551,7 @@
             <option value="">General Inquiry</option>
           </select>
         </div>
-        <div><label class="lbl" style="display:block;margin-bottom:.35rem">Message</label><textarea id="ct-msg" class="inp" placeholder="Tell us about your practice and what you're looking to achieve…" rows="4" required maxlength="4000" style="resize:vertical"></textarea></div>
+        <div><label class="lbl" style="display:block;margin-bottom:.4rem">Message</label><textarea id="ct-msg" class="inp" placeholder="Tell us about your practice and what you're looking to achieve…" rows="4" required maxlength="4000" style="resize:vertical"></textarea></div>
         <div style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden" aria-hidden="true"><label for="ct-company">Company</label><input id="ct-company" name="company" type="text" tabindex="-1" autocomplete="off"/></div>
         <input id="ct-ts" type="hidden"/>
         <button id="ct-btn" type="submit" class="btn btn-solid" style="justify-content:center;margin-top:.25rem">Send Message</button>
@@ -424,19 +560,26 @@
   </div>
 </section>
 
-<!-- Footer -->
+<!-- ── Footer ── -->
 <footer style="border-top:1px solid var(--border);background:var(--bg2)">
-  <div style="max-width:1280px;margin:0 auto;padding:3rem 2rem">
-    <div style="display:grid;grid-template-columns:1fr auto auto auto;gap:4rem;align-items:start" class="g1m">
+  <div style="max-width:1280px;margin:0 auto;padding:4rem 2rem">
+    <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:4rem;align-items:start;margin-bottom:3rem" class="g2m">
       <div>
-        <div style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--text);margin-bottom:.5rem">Acuros Health</div>
-        <p style="font-size:.8rem;color:var(--mute);line-height:1.7;max-width:26ch">Patient engagement platform for modern clinics. Built in Canada.</p>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:1.25rem;color:var(--text);margin-bottom:.5rem">Acuros Health</div>
+        <p style="font-size:.8rem;color:var(--mute);line-height:1.75;max-width:28ch;margin-bottom:1.5rem">Patient engagement platform for modern clinics. Built in Canada.</p>
+        <div style="display:flex;gap:.625rem;flex-wrap:wrap">
+          <span class="badge-row" style="font-family:'Cormorant Garamond',serif;font-size:.9rem;font-weight:400;color:var(--text);min-width:72px">PIPEDA</span>
+          <span class="badge-row" style="font-family:'Cormorant Garamond',serif;font-size:.9rem;font-weight:400;color:var(--text);min-width:72px">PHIPA</span>
+          <span class="badge-row" style="font-family:'Cormorant Garamond',serif;font-size:.9rem;font-weight:400;color:var(--text);min-width:72px">HL7/FHIR</span>
+        </div>
       </div>
       <div>
         <div class="lbl" style="margin-bottom:1rem">Platform</div>
         <div style="display:flex;flex-direction:column;gap:.625rem">
           <a href="#contact"        class="lbl" style="color:var(--sub);text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--sub)'">Request Demo</a>
           <a href="/ai-assistant"   class="lbl" style="color:var(--sub);text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--sub)'">AI Assistant</a>
+          <a href="/shop"           class="lbl" style="color:var(--sub);text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--sub)'">Shop</a>
+          <a href="/bookings"       class="lbl" style="color:var(--sub);text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--sub)'">Bookings</a>
           <a href="/patient-portal" class="lbl" style="color:var(--sub);text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--sub)'">Patient Login</a>
         </div>
       </div>
@@ -455,26 +598,26 @@
         </div>
       </div>
     </div>
-    <div class="hr" style="margin:2rem 0"></div>
+    <div class="hr" style="margin-bottom:1.5rem"></div>
     <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:.5rem">
-      <p style="font-size:.75rem;color:var(--mute)">© 2025 Acuros Health Inc. All rights reserved.</p>
-      <p style="font-size:.75rem;color:var(--mute)">AI health tools are educational only — not a substitute for professional medical advice.</p>
+      <p style="font-size:.74rem;color:var(--mute)">© 2025 Acuros Health Inc. All rights reserved.</p>
+      <p style="font-size:.74rem;color:var(--mute)">AI health tools are educational only — not a substitute for professional medical advice.</p>
     </div>
   </div>
 </footer>
 
 <script>
 const CONFIG = { contactApiUrl: '/api/contact' };
-
-const HERO_VIDEO_DARK_SRC = '/assets/hero-dark.mp4';
+const HERO_VIDEO_DARK_SRC  = '/assets/hero-dark.mp4';
 const HERO_VIDEO_LIGHT_SRC = '/assets/hero-light.mp4';
 const LOGO_LIGHT_SRC = '/assets/logo-gold.jpg';
-const LOGO_DARK_SRC = '/logo.png';
+const LOGO_DARK_SRC  = '/logo.png';
+
 function updateNavLogo() {
   const logo = document.getElementById('nav-logo');
-  if (!logo) return;
-  logo.src = document.documentElement.classList.contains('dark') ? LOGO_DARK_SRC : LOGO_LIGHT_SRC;
+  if (logo) logo.src = document.documentElement.classList.contains('dark') ? LOGO_DARK_SRC : LOGO_LIGHT_SRC;
 }
+
 function toggleTheme() {
   const dark = document.documentElement.classList.toggle('dark');
   document.getElementById('th-icon').textContent = dark ? '☽' : '☀';
@@ -482,6 +625,7 @@ function toggleTheme() {
   updateHeroOverlay();
   updateNavLogo();
 }
+
 (function initTheme() {
   const s = localStorage.getItem('ah-theme');
   if (s === 'dark' || (!s && window.matchMedia('(prefers-color-scheme:dark)').matches)) {
@@ -491,12 +635,17 @@ function toggleTheme() {
   updateHeroOverlay();
   updateNavLogo();
 })();
+
 function updateHeroOverlay() {
   const dark = document.documentElement.classList.contains('dark');
-  const b = document.getElementById('hero-bottom'), t = document.getElementById('hero-tint'), v = document.getElementById('hero-video');
+  const b = document.getElementById('hero-bottom');
+  const t = document.getElementById('hero-tint');
+  const v = document.getElementById('hero-video');
   if (!b) return;
-  b.style.background = dark ? 'linear-gradient(0deg,rgba(13,13,12,1) 0%,rgba(13,13,12,.65) 55%,transparent 100%)' : 'linear-gradient(0deg,rgba(245,245,243,1) 0%,rgba(245,245,243,.55) 50%,transparent 100%)';
-  t.style.background = dark ? 'rgba(0,0,0,.3)' : 'rgba(0,0,0,.12)';
+  b.style.background = dark
+    ? 'linear-gradient(0deg,rgba(14,14,12,1) 0%,rgba(14,14,12,.6) 52%,transparent 100%)'
+    : 'linear-gradient(0deg,rgba(245,245,243,1) 0%,rgba(245,245,243,.52) 48%,transparent 100%)';
+  t.style.background = dark ? 'rgba(0,0,0,.28)' : 'rgba(0,0,0,.1)';
   if (!v) return;
   const nextSrc = dark ? HERO_VIDEO_DARK_SRC : HERO_VIDEO_LIGHT_SRC;
   if (v.dataset.activeSrc === nextSrc) return;
@@ -506,46 +655,106 @@ function updateHeroOverlay() {
   v.load(); v.play().catch(() => {});
   v.onerror = () => { v.dataset.activeSrc = prev; v.innerHTML = `<source src="${prev}" type="video/mp4"/>`; v.load(); v.play().catch(() => {}); };
 }
-function openMob()  { document.getElementById('mob-menu').classList.add('open'); }
-function closeMob() { document.getElementById('mob-menu').classList.remove('open'); }
-window.addEventListener('scroll', () => { document.getElementById('main-nav').style.boxShadow = window.scrollY > 10 ? '0 1px 24px rgba(0,0,0,.08)' : ''; });
+
+function openMob()  { document.getElementById('mob-menu').classList.add('open'); document.body.style.overflow = 'hidden'; }
+function closeMob() { document.getElementById('mob-menu').classList.remove('open'); document.body.style.overflow = ''; }
+
+window.addEventListener('scroll', () => {
+  document.getElementById('main-nav').style.boxShadow = window.scrollY > 10 ? 'var(--shadow)' : '';
+});
+
+// ── Tab switching ──
+function switchTab(id) {
+  ['clinics','patients'].forEach(t => {
+    document.getElementById('tab-' + t).classList.toggle('active', t === id);
+    document.getElementById('pane-' + t).classList.toggle('active', t === id);
+  });
+}
+
+// ── FAQ ──
+function toggleFaq(q) {
+  const item = q.parentElement;
+  const wasOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(el => el.classList.remove('open'));
+  if (!wasOpen) item.classList.add('open');
+}
+
+// ── Reveal animations ──
 document.documentElement.classList.add('js-reveal');
 function setupReveal() {
   if (!('IntersectionObserver' in window)) {
-    document.querySelectorAll('.reveal,.stagger-item').forEach(el => el.classList.add('in'));
+    document.querySelectorAll('.reveal').forEach(el => el.classList.add('in'));
     return;
   }
-  const io = new IntersectionObserver(entries => { entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }); }, { threshold: 0, rootMargin: '0px 0px -60px 0px' });
-  document.querySelectorAll('.reveal:not(.in),.stagger-item:not(.in)').forEach(el => io.observe(el));
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0, rootMargin: '0px 0px -50px 0px' });
+  document.querySelectorAll('.reveal:not(.in)').forEach(el => io.observe(el));
 }
 document.addEventListener('DOMContentLoaded', () => { setupReveal(); setTimeout(setupReveal, 200); });
-setTimeout(() => { document.querySelectorAll('.reveal,.stagger-item').forEach(el => el.classList.add('in')); }, 3000);
+setTimeout(() => document.querySelectorAll('.reveal').forEach(el => el.classList.add('in')), 3000);
+
+// ── Stats counter ──
+function animateStat(el) {
+  const target = parseInt(el.dataset.target, 10);
+  const suffix = el.dataset.suffix || '';
+  const dur = 1600;
+  const start = performance.now();
+  function step(now) {
+    const t = Math.min((now - start) / dur, 1);
+    const ease = 1 - Math.pow(1 - t, 3);
+    el.textContent = Math.round(ease * target) + suffix;
+    if (t < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+(function setupStats() {
+  if (!('IntersectionObserver' in window)) {
+    document.querySelectorAll('[data-target]').forEach(el => {
+      el.textContent = el.dataset.target + (el.dataset.suffix || '');
+    });
+    return;
+  }
+  const sio = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { animateStat(e.target); sio.unobserve(e.target); } });
+  }, { threshold: 0.5 });
+  document.querySelectorAll('[data-target]').forEach(el => sio.observe(el));
+})();
+
+// ── Contact form ──
 function showMsg(id, msg, type) { const el = document.getElementById(id); if (!el) return; el.style.display = 'block'; el.className = type === 'err' ? 'err-box' : 'ok-box'; el.textContent = msg; }
 function hideMsg(...ids) { ids.forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; }); }
 function setBtn(id, loading, label) { const b = document.getElementById(id); if (!b) return; b.disabled = loading; b.innerHTML = loading ? '<span class="spin"></span>' : label; }
 function emailLooksValid(email) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || '')); }
+
 async function submitContact(e) {
-  e.preventDefault(); hideMsg('ct-err', 'ct-ok'); setBtn('ct-btn', true, 'Send Message');
-  const name    = document.getElementById('ct-name').value.trim();
-  const clinic  = document.getElementById('ct-clinic').value.trim();
-  const email   = document.getElementById('ct-email').value.trim();
-  const type    = document.getElementById('ct-type').value.trim();
-  const msgRaw  = document.getElementById('ct-msg').value.trim();
-  const message = clinic ? `Clinic / Organization: ${clinic}\n\n${msgRaw}` : msgRaw;
+  e.preventDefault();
+  hideMsg('ct-err', 'ct-ok');
+  setBtn('ct-btn', true, 'Send Message');
+  const name     = document.getElementById('ct-name').value.trim();
+  const clinic   = document.getElementById('ct-clinic').value.trim();
+  const email    = document.getElementById('ct-email').value.trim();
+  const type     = document.getElementById('ct-type').value.trim();
+  const msgRaw   = document.getElementById('ct-msg').value.trim();
+  const message  = clinic ? `Clinic / Organization: ${clinic}\n\n${msgRaw}` : msgRaw;
   const honeypot = document.getElementById('ct-company').value.trim();
   const formTs   = Number(document.getElementById('ct-ts').value || 0);
-  if (!name || !email || !msgRaw) { showMsg('ct-err', 'Please fill in name, email, and message.', 'err'); setBtn('ct-btn', false, 'Send Message'); return; }
-  if (!emailLooksValid(email)) { showMsg('ct-err', 'Please enter a valid email address.', 'err'); setBtn('ct-btn', false, 'Send Message'); return; }
-  if (honeypot) { showMsg('ct-err', 'Unable to submit right now. Please refresh and try again.', 'err'); setBtn('ct-btn', false, 'Send Message'); return; }
-  if (!formTs) { showMsg('ct-err', 'Please retry the form submission.', 'err'); setBtn('ct-btn', false, 'Send Message'); return; }
+  if (!name || !email || !msgRaw)  { showMsg('ct-err', 'Please fill in name, email, and message.', 'err'); setBtn('ct-btn', false, 'Send Message'); return; }
+  if (!emailLooksValid(email))     { showMsg('ct-err', 'Please enter a valid email address.', 'err'); setBtn('ct-btn', false, 'Send Message'); return; }
+  if (honeypot)                    { showMsg('ct-err', 'Unable to submit right now. Please refresh and try again.', 'err'); setBtn('ct-btn', false, 'Send Message'); return; }
+  if (!formTs)                     { showMsg('ct-err', 'Please retry the form submission.', 'err'); setBtn('ct-btn', false, 'Send Message'); return; }
   try {
     const resp = await fetch(CONFIG.contactApiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, email, type, message, honeypot, formTs }) });
     const data = await resp.json().catch(() => ({}));
     if (!resp.ok) throw new Error(data.error || `API ${resp.status}`);
-    showMsg('ct-ok', 'Message sent — we\'ll be in touch shortly to schedule your demo.', 'ok');
-    e.target.reset(); document.getElementById('ct-ts').value = String(Date.now());
-  } catch (err) { showMsg('ct-err', err.message || 'Unable to send right now. Please try again shortly.', 'err'); }
-  finally { setBtn('ct-btn', false, 'Send Message'); }
+    showMsg('ct-ok', "Message sent — we'll be in touch shortly to schedule your demo.", 'ok');
+    e.target.reset();
+    document.getElementById('ct-ts').value = String(Date.now());
+  } catch (err) {
+    showMsg('ct-err', err.message || 'Unable to send right now. Please try again shortly.', 'err');
+  } finally {
+    setBtn('ct-btn', false, 'Send Message');
+  }
 }
 document.getElementById('ct-ts').value = String(Date.now());
 </script>

@@ -15,9 +15,6 @@
   <meta property="og:title" content="Patient Portal — Acuros Health"/>
   <meta property="og:description" content="Secure patient portal. Manage your health records, prepare for appointments, and understand your care journey."/>
   <meta property="og:site_name" content="Acuros Health"/>
-  <meta name="twitter:card" content="summary"/>
-  <meta name="twitter:title" content="Patient Portal — Acuros Health"/>
-  <meta name="twitter:description" content="Secure patient portal. Manage your health records, prepare for appointments, and understand your care journey."/>
   <meta name="robots" content="noindex"/>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
@@ -26,30 +23,32 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
   <script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{display:['Cormorant Garamond','Georgia','serif'],sans:['DM Sans','sans-serif']}}}}</script>
   <style>
-    :root{--bg:#f5f5f3;--bg2:#fff;--border:#e2e2de;--text:#181816;--sub:#5a5a54;--mute:#9a9a92;--ac:#0ea5e9;--nav:rgba(245,245,243,.93)}
-    html.dark{--bg:#0d0d0c;--bg2:#141412;--border:#272724;--text:#f0f0ec;--sub:#9a9a92;--mute:#5a5a54;--ac:#38bdf8;--nav:rgba(13,13,12,.93)}
+    :root{--bg:#f5f5f3;--bg2:#fefefe;--bg3:#efefec;--border:#deded8;--text:#191917;--sub:#5c5b55;--mute:#9a9a90;--ac:#0ea5e9;--gold:#c4902a;--nav:rgba(245,245,243,.95)}
+    html.dark{--bg:#0e0e0c;--bg2:#161614;--bg3:#1c1c1a;--border:#282824;--text:#eeeee8;--sub:#96968e;--mute:#5a5a54;--ac:#38bdf8;--gold:#d4a84a;--nav:rgba(14,14,12,.95)}
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     html{scroll-behavior:smooth}
-    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);transition:background .3s,color .3s;overflow-x:hidden}
-    h1,h2,h3,h4{font-family:'Cormorant Garamond',serif;line-height:1.08;letter-spacing:-.015em}
-    nav{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--nav);backdrop-filter:blur(20px) saturate(180%);border-bottom:1px solid var(--border);transition:background .3s,border-color .3s}
-    .nav-link{position:relative;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);background:none;border:none;cursor:pointer;padding:0;font-family:inherit;transition:color .2s;text-decoration:none;display:inline-block}
-    .nav-link::after{content:'';position:absolute;left:0;bottom:-2px;width:0;height:1px;background:var(--ac);transition:width .25s}
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);transition:background .35s,color .35s;overflow-x:hidden}
+    h1,h2,h3,h4{font-family:'Cormorant Garamond',serif;line-height:1.06;letter-spacing:-.02em}
+    nav{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--nav);backdrop-filter:blur(28px) saturate(200%);-webkit-backdrop-filter:blur(28px) saturate(200%);border-bottom:1px solid rgba(0,0,0,.06);transition:background .35s}
+    html.dark nav{border-bottom-color:rgba(255,255,255,.04)}
+    .nav-link{position:relative;font-size:.68rem;letter-spacing:.13em;text-transform:uppercase;color:var(--sub);background:none;border:none;cursor:pointer;padding:0;font-family:inherit;transition:color .2s;text-decoration:none;display:inline-block}
+    .nav-link::after{content:'';position:absolute;left:0;bottom:-2px;width:0;height:1px;background:var(--ac);transition:width .28s cubic-bezier(.22,1,.36,1)}
     .nav-link:hover::after,.nav-link.active::after{width:100%}
     .nav-link:hover,.nav-link.active{color:var(--text)}
-    .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.7rem 1.75rem;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;border:none;transition:all .22s;text-decoration:none;position:relative;overflow:hidden}
-    .btn::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,.08);opacity:0;transition:opacity .2s}
-    .btn:hover::after{opacity:1}
+    .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.72rem 1.75rem;font-size:.76rem;letter-spacing:.1em;text-transform:uppercase;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;border:none;transition:all .24s cubic-bezier(.22,1,.36,1);text-decoration:none;position:relative;overflow:hidden}
+    .btn::before{content:'';position:absolute;inset:0;background:rgba(255,255,255,.1);opacity:0;transition:opacity .2s}
+    .btn:hover::before{opacity:1}
     .btn-solid{background:var(--text);color:var(--bg)}
-    .btn-solid:hover{background:var(--ac);color:#fff}
-    .btn-outline{background:transparent;color:var(--text);border:1px solid var(--border)}
-    .btn-outline:hover{border-color:var(--ac);color:var(--ac)}
-    .card{background:var(--bg2);border:1px solid var(--border);transition:border-color .25s,transform .3s,box-shadow .3s}
-    .card:hover{border-color:var(--ac);transform:translateY(-2px);box-shadow:0 8px 32px rgba(14,165,233,.08)}
-    .inp{width:100%;background:var(--bg);border:1px solid var(--border);padding:.75rem 1rem;font-size:.875rem;color:var(--text);font-family:inherit;outline:none;transition:border-color .2s,box-shadow .2s}
-    .inp:focus{border-color:var(--ac);box-shadow:0 0 0 3px rgba(14,165,233,.1)}
+    .btn-solid:hover{background:var(--ac);color:#fff;transform:translateY(-1px)}
+    .btn-outline{background:transparent;color:var(--text);border:1px solid rgba(24,24,22,.2)}
+    html.dark .btn-outline{border-color:rgba(238,238,232,.18)}
+    .btn-outline:hover{border-color:var(--ac);color:var(--ac);transform:translateY(-1px)}
+    .card{background:var(--bg2);border:1px solid var(--border);transition:border-color .28s,transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s}
+    .card:hover{border-color:var(--ac);transform:translateY(-2px);box-shadow:0 12px 40px rgba(14,165,233,.08)}
+    .inp{width:100%;background:var(--bg3);border:1px solid var(--border);padding:.78rem 1rem;font-size:.875rem;color:var(--text);font-family:inherit;outline:none;transition:border-color .22s,box-shadow .22s}
+    .inp:focus{border-color:var(--ac);box-shadow:0 0 0 3px rgba(14,165,233,.12);background:var(--bg2)}
     .inp::placeholder{color:var(--mute)}
-    .lbl{font-family:'DM Sans',sans-serif;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);font-weight:500}
+    .lbl{font-family:'DM Sans',sans-serif;font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--mute);font-weight:500}
     .hr{height:1px;background:var(--border)}
     .err-box{background:#fef2f2;border:1px solid #fecaca;color:#dc2626;padding:.75rem 1rem;font-size:.8rem}
     html.dark .err-box{background:rgba(220,38,38,.08);border-color:rgba(220,38,38,.25);color:#f87171}
@@ -59,41 +58,42 @@
     html.dark .warn-box{background:rgba(146,64,14,.08);border-color:rgba(253,230,138,.25);color:#fcd34d}
     @keyframes spin{to{transform:rotate(360deg)}}
     .spin{width:16px;height:16px;border:2px solid transparent;border-top-color:currentColor;border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
-    @keyframes pgIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-    .stagger-item{opacity:0;transform:translateX(-14px);transition:opacity .5s ease,transform .5s ease}
+    @keyframes pgIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+    .stagger-item{opacity:0;transform:translateX(-14px);transition:opacity .55s ease,transform .55s ease}
     .stagger-item.in{opacity:1;transform:none}
     .mesh{background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:52px 52px}
     .bg-dots{background-image:radial-gradient(var(--border) 1px,transparent 1px);background-size:28px 28px}
-    .auth-card{background:var(--bg2);border:1px solid var(--border);width:100%;max-width:420px;padding:2.5rem}
-    .btn-google{display:flex;align-items:center;justify-content:center;gap:.75rem;width:100%;padding:.75rem;background:var(--bg);border:1px solid var(--border);font-size:.85rem;color:var(--text);cursor:pointer;transition:border-color .2s,background .2s;font-family:inherit}
+    .auth-card{background:var(--bg2);border:1px solid var(--border);width:100%;max-width:440px;padding:2.75rem}
+    .btn-google{display:flex;align-items:center;justify-content:center;gap:.75rem;width:100%;padding:.78rem;background:var(--bg3);border:1px solid var(--border);font-size:.85rem;color:var(--text);cursor:pointer;transition:border-color .22s,background .22s;font-family:inherit}
     .btn-google:hover{border-color:var(--ac);background:var(--bg2)}
     #mob-menu{display:none;position:fixed;inset:0;z-index:300;background:var(--bg);flex-direction:column;padding:2.5rem}
     #mob-menu.open{display:flex;animation:pgIn .3s ease}
     .org-banner{background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--ac);padding:1.25rem 1.5rem;display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap}
+    ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
     @media(max-width:900px){.g1m{grid-template-columns:1fr!important}.hnm{display:none!important}#mob-btn{display:flex!important}#nav-cta{display:none!important}}
   </style>
 </head>
 <body>
 
-<!-- NAV -->
+<!-- ── NAV ── -->
 <nav id="main-nav">
   <div style="max-width:1280px;margin:0 auto;padding:0 2rem;height:64px;display:flex;align-items:center;justify-content:space-between">
-    <a href="/" style="display:flex;align-items:center;gap:.75rem;text-decoration:none">
-      <img src="logo.png" alt="Acuros" width="32" height="32" style="flex-shrink:0;object-fit:contain"/>
+    <a href="/" style="display:flex;align-items:center;gap:.875rem;text-decoration:none">
+      <img src="logo.png" alt="Acuros" width="36" height="36" style="flex-shrink:0;object-fit:contain"/>
       <div>
-        <div style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:.95rem;letter-spacing:.05em;color:var(--text);line-height:1">ACUROS</div>
-        <div class="lbl" style="font-size:.5rem;letter-spacing:.28em">HEALTH</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:.95rem;letter-spacing:.12em;color:var(--text);line-height:1">ACUROS</div>
+        <div class="lbl" style="font-size:.46rem;letter-spacing:.34em">HEALTH</div>
       </div>
     </a>
     <div style="display:flex;align-items:center;gap:2rem" class="hnm">
       <a class="nav-link" href="/">Home</a>
       <a class="nav-link" href="/ai-assistant">AI Assistant</a>
-      <a class="nav-link active" href="/patient-portal">Patient Portal</a>
-      <a class="nav-link" href="/privacy" style="opacity:.55">Privacy</a>
-      <a class="nav-link" href="/terms" style="opacity:.55">Terms</a>
+      <a class="nav-link" href="/shop">Shop</a>
+      <a class="nav-link" href="/bookings">Bookings</a>
+      <a class="nav-link active" href="/patient-portal">Patient Login</a>
     </div>
     <div style="display:flex;align-items:center;gap:.875rem">
-      <button onclick="toggleTheme()" aria-label="Toggle theme" style="width:36px;height:36px;border:1px solid var(--border);background:none;color:var(--sub);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;font-size:.9rem"><span id="th-icon">☀</span></button>
+      <button onclick="toggleTheme()" aria-label="Toggle theme" style="width:36px;height:36px;border:1px solid var(--border);background:none;color:var(--sub);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .22s;font-size:.9rem"><span id="th-icon">☀</span></button>
       <a href="/patient-portal" class="btn btn-solid" style="padding:.55rem 1.25rem" id="nav-cta">Patient Portal</a>
       <button onclick="openMob()" style="display:none;background:none;border:none;cursor:pointer;color:var(--text);padding:.25rem" id="mob-btn" aria-label="Menu">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16M4 12h12M4 18h8"/></svg>
@@ -102,7 +102,7 @@
   </div>
 </nav>
 
-<!-- Mobile menu -->
+<!-- ── Mobile Menu ── -->
 <div id="mob-menu">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3rem">
     <span style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--text)">Acuros Health</span>
@@ -110,12 +110,12 @@
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
     </button>
   </div>
-  <div style="display:flex;flex-direction:column;gap:1.75rem">
-    <a href="/"             style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;text-align:left;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Home</a>
-    <a href="/ai-assistant"      style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;text-align:left;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">AI Assistant</a>
-    <a href="/patient-portal" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;text-align:left;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Patient Portal</a>
-    <a href="/privacy" style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;text-align:left;color:var(--mute);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Privacy Policy</a>
-    <a href="/terms"   style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;text-align:left;color:var(--mute);text-decoration:none">Terms of Service</a>
+  <div style="display:flex;flex-direction:column;gap:1.5rem">
+    <a href="/"             style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Home</a>
+    <a href="/ai-assistant" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">AI Assistant</a>
+    <a href="/shop"         style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Shop</a>
+    <a href="/bookings"     style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Bookings</a>
+    <a href="/patient-portal" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--ac);text-decoration:none">Patient Login</a>
   </div>
 </div>
 
@@ -124,24 +124,24 @@
   <!-- Login gate -->
   <div id="portal-gate">
     <section style="min-height:calc(100vh - 4rem);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden">
-      <img src="https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=1400&q=80&auto=format&fit=crop" alt="Nature dark" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(0.3) brightness(0.12)"/>
-      <div class="mesh" style="position:absolute;inset:0;opacity:.3"></div>
-      <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(14,165,233,.06),rgba(0,0,0,.3))"></div>
-      <div style="position:relative;z-index:10;display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;max-width:1100px;margin:0 auto;padding:4rem 2rem;width:100%" class="g1m">
+      <img src="https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=1400&q=80&auto=format&fit=crop" alt="Nature" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(0.25) brightness(0.11)"/>
+      <div class="mesh" style="position:absolute;inset:0;opacity:.25"></div>
+      <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(14,165,233,.05),rgba(0,0,0,.28))"></div>
+      <div style="position:relative;z-index:10;display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:center;max-width:1100px;margin:0 auto;padding:4rem 2rem;width:100%" class="g1m">
         <div>
           <div class="lbl" style="margin-bottom:1.5rem;color:var(--ac)">Patient Portal</div>
           <h1 style="font-size:clamp(2.75rem,6vw,4.5rem);font-weight:300;color:var(--text);margin-bottom:1.25rem">Your Health,<br/><em>Organised.</em></h1>
-          <p style="font-size:.9rem;line-height:1.85;color:var(--sub);margin-bottom:2rem;max-width:38ch">A secure, private space to manage your health records, prepare for appointments, and understand your care journey.</p>
+          <p style="font-size:.9rem;line-height:1.9;color:var(--sub);margin-bottom:2rem;max-width:38ch">A secure, private space to manage your health records, prepare for appointments, shop clinic-approved products, and book procedures.</p>
           <div style="display:flex;flex-direction:column;gap:.875rem">
-            <div class="stagger-item" style="display:flex;align-items:baseline;gap:.875rem"><div style="width:1px;height:1rem;background:var(--ac);flex-shrink:0"></div><span style="font-size:.85rem;color:var(--sub)">AI-powered medical report translation</span></div>
-            <div class="stagger-item" style="display:flex;align-items:baseline;gap:.875rem"><div style="width:1px;height:1rem;background:var(--ac);flex-shrink:0"></div><span style="font-size:.85rem;color:var(--sub)">Appointment preparation briefs</span></div>
-            <div class="stagger-item" style="display:flex;align-items:baseline;gap:.875rem"><div style="width:1px;height:1rem;background:var(--ac);flex-shrink:0"></div><span style="font-size:.85rem;color:var(--sub)">Medication interaction checker</span></div>
-            <div class="stagger-item" style="display:flex;align-items:baseline;gap:.875rem"><div style="width:1px;height:1rem;background:var(--ac);flex-shrink:0"></div><span style="font-size:.85rem;color:var(--sub)">PIPEDA-compliant encrypted storage</span></div>
+            <div class="stagger-item" style="display:flex;align-items:baseline;gap:.875rem"><div style="width:1px;height:1rem;background:var(--ac);flex-shrink:0"></div><span style="font-size:.84rem;color:var(--sub)">AI-powered medical report translation</span></div>
+            <div class="stagger-item" style="display:flex;align-items:baseline;gap:.875rem"><div style="width:1px;height:1rem;background:var(--ac);flex-shrink:0"></div><span style="font-size:.84rem;color:var(--sub)">Appointment preparation briefs</span></div>
+            <div class="stagger-item" style="display:flex;align-items:baseline;gap:.875rem"><div style="width:1px;height:1rem;background:var(--ac);flex-shrink:0"></div><span style="font-size:.84rem;color:var(--sub)">OTC product shop &amp; procedure bookings</span></div>
+            <div class="stagger-item" style="display:flex;align-items:baseline;gap:.875rem"><div style="width:1px;height:1rem;background:var(--ac);flex-shrink:0"></div><span style="font-size:.84rem;color:var(--sub)">PIPEDA-compliant encrypted storage</span></div>
           </div>
         </div>
         <div class="auth-card">
-          <h2 style="font-size:1.6rem;font-weight:300;color:var(--text);margin-bottom:.35rem" id="pt-title">Sign In to Your Portal</h2>
-          <p style="font-size:.82rem;color:var(--sub);margin-bottom:1.5rem" id="pt-sub">Access your health records and tools</p>
+          <h2 style="font-size:1.65rem;font-weight:300;color:var(--text);margin-bottom:.35rem" id="pt-title">Sign In to Your Portal</h2>
+          <p style="font-size:.82rem;color:var(--sub);margin-bottom:1.75rem" id="pt-sub">Access your health records and tools</p>
           <div id="pt-err" style="display:none;margin-bottom:1rem"></div>
           <div id="pt-ok"  style="display:none;margin-bottom:1rem"></div>
           <button onclick="ptGoogleAuth()" class="btn-google" style="margin-bottom:1.25rem">
@@ -152,21 +152,21 @@
             <div class="hr" style="flex:1"></div><span style="font-size:.72rem;color:var(--mute)">OR</span><div class="hr" style="flex:1"></div>
           </div>
           <form id="pt-login" onsubmit="ptLogin(event)" style="display:flex;flex-direction:column;gap:.875rem">
-            <div><label class="lbl" style="display:block;margin-bottom:.35rem">Email Address</label><input type="email" id="pt-email" class="inp" placeholder="name@email.com" required/></div>
-            <div><label class="lbl" style="display:block;margin-bottom:.35rem">Password</label><input type="password" id="pt-pass" class="inp" placeholder="••••••••" required/></div>
+            <div><label class="lbl" style="display:block;margin-bottom:.4rem">Email Address</label><input type="email" id="pt-email" class="inp" placeholder="name@email.com" required/></div>
+            <div><label class="lbl" style="display:block;margin-bottom:.4rem">Password</label><input type="password" id="pt-pass" class="inp" placeholder="••••••••" required/></div>
             <button type="submit" class="btn btn-solid" style="width:100%;justify-content:center;margin-top:.25rem" id="pt-li-btn">Sign In</button>
           </form>
           <form id="pt-register" onsubmit="ptRegister(event)" style="display:none;flex-direction:column;gap:.875rem">
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:.875rem">
-              <div><label class="lbl" style="display:block;margin-bottom:.35rem">First Name</label><input type="text" id="pt-first" class="inp" placeholder="Jane" required/></div>
-              <div><label class="lbl" style="display:block;margin-bottom:.35rem">Last Name</label><input type="text" id="pt-last" class="inp" placeholder="Doe" required/></div>
+              <div><label class="lbl" style="display:block;margin-bottom:.4rem">First Name</label><input type="text" id="pt-first" class="inp" placeholder="Jane" required/></div>
+              <div><label class="lbl" style="display:block;margin-bottom:.4rem">Last Name</label><input type="text" id="pt-last" class="inp" placeholder="Doe" required/></div>
             </div>
-            <div><label class="lbl" style="display:block;margin-bottom:.35rem">Patient Code <span style="color:var(--mute);text-transform:none;letter-spacing:0;font-size:.68rem">(from clinic — optional)</span></label><input type="text" id="pt-code" class="inp" placeholder="AH-XXXX"/></div>
-            <div><label class="lbl" style="display:block;margin-bottom:.35rem">Email Address</label><input type="email" id="pt-remail" class="inp" placeholder="name@email.com" required/></div>
-            <div><label class="lbl" style="display:block;margin-bottom:.35rem">Password</label><input type="password" id="pt-rpass" class="inp" placeholder="Min. 8 characters" minlength="8" required/></div>
+            <div><label class="lbl" style="display:block;margin-bottom:.4rem">Patient Code <span style="color:var(--mute);text-transform:none;letter-spacing:0;font-size:.68rem">(from clinic — optional)</span></label><input type="text" id="pt-code" class="inp" placeholder="AH-XXXX"/></div>
+            <div><label class="lbl" style="display:block;margin-bottom:.4rem">Email Address</label><input type="email" id="pt-remail" class="inp" placeholder="name@email.com" required/></div>
+            <div><label class="lbl" style="display:block;margin-bottom:.4rem">Password</label><input type="password" id="pt-rpass" class="inp" placeholder="Min. 8 characters" minlength="8" required/></div>
             <button type="submit" class="btn btn-solid" style="width:100%;justify-content:center;margin-top:.25rem" id="pt-r-btn">Create Account</button>
           </form>
-          <div style="margin-top:1rem;text-align:center">
+          <div style="margin-top:1.25rem;text-align:center">
             <button onclick="ptToggle()" id="pt-toggle" style="font-size:.78rem;color:var(--sub);background:none;border:none;cursor:pointer;transition:color .2s" onmouseover="this.style.color='var(--ac)'" onmouseout="this.style.color='var(--sub)'">Don't have an account? Create one</button>
           </div>
         </div>
@@ -174,16 +174,16 @@
     </section>
   </div>
 
-  <!-- Dashboard (shown after login) -->
+  <!-- Dashboard -->
   <div id="portal-dash" style="display:none">
 
-    <!-- Org join banner — shown when user has no org -->
+    <!-- Org join banner -->
     <div id="org-banner" style="display:none">
       <div style="max-width:1280px;margin:0 auto;padding:1rem 2rem">
         <div class="org-banner">
           <div style="flex:1;min-width:200px">
             <div class="lbl" style="color:var(--ac);margin-bottom:.25rem">No Clinic Connected</div>
-            <p style="font-size:.82rem;color:var(--sub);line-height:1.6">Enter the code from your clinic to connect your account, unlock your full portal, and start earning loyalty rewards.</p>
+            <p style="font-size:.82rem;color:var(--sub);line-height:1.65">Enter the code from your clinic to connect your account, unlock your full portal, and start earning loyalty rewards.</p>
           </div>
           <button onclick="showOrgPrompt()" class="btn btn-solid" style="padding:.55rem 1.25rem;flex-shrink:0">Connect Organization</button>
           <button onclick="dismissOrgBanner()" style="background:none;border:none;cursor:pointer;color:var(--mute);font-size:.75rem;flex-shrink:0" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--mute)'">Remind me later</button>
@@ -192,35 +192,37 @@
     </div>
 
     <!-- Org join modal -->
-    <div id="org-modal" style="display:none;position:fixed;inset:0;z-index:400;align-items:center;justify-content:center;background:rgba(0,0,0,.5);backdrop-filter:blur(4px)">
-      <div style="background:var(--bg2);border:1px solid var(--border);width:100%;max-width:440px;padding:2.5rem;position:relative;margin:1.5rem">
+    <div id="org-modal" style="display:none;position:fixed;inset:0;z-index:400;align-items:center;justify-content:center;background:rgba(0,0,0,.5);backdrop-filter:blur(6px)">
+      <div style="background:var(--bg2);border:1px solid var(--border);width:100%;max-width:440px;padding:2.75rem;position:relative;margin:1.5rem">
         <button onclick="hideOrgPrompt()" style="position:absolute;top:1rem;right:1rem;background:none;border:none;cursor:pointer;color:var(--mute)">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
         </button>
         <div class="lbl" style="color:var(--ac);margin-bottom:.75rem">Connect Your Organization</div>
-        <h3 style="font-size:1.6rem;font-weight:300;color:var(--text);margin-bottom:.75rem">Join your clinic's<br/><em>network.</em></h3>
-        <p style="font-size:.82rem;color:var(--sub);line-height:1.65;margin-bottom:1.5rem">Enter the unique code provided by your clinic to connect your account, unlock your full patient portal, and begin earning loyalty rewards.</p>
+        <h3 style="font-size:1.65rem;font-weight:300;color:var(--text);margin-bottom:.75rem">Join your clinic's<br/><em>network.</em></h3>
+        <p style="font-size:.82rem;color:var(--sub);line-height:1.7;margin-bottom:1.5rem">Enter the unique code provided by your clinic to connect your account, unlock your full patient portal, and begin earning loyalty rewards.</p>
         <div id="org-err" style="display:none;margin-bottom:1rem"></div>
         <div id="org-ok"  style="display:none;margin-bottom:1rem"></div>
         <form onsubmit="joinOrg(event)" style="display:flex;flex-direction:column;gap:.875rem">
-          <div><label class="lbl" style="display:block;margin-bottom:.35rem">Patient Code</label><input type="text" id="org-code-inp" class="inp" placeholder="AH-XXXX" required autocomplete="off" style="text-transform:uppercase;letter-spacing:.08em"/></div>
+          <div><label class="lbl" style="display:block;margin-bottom:.4rem">Patient Code</label><input type="text" id="org-code-inp" class="inp" placeholder="AH-XXXX" required autocomplete="off" style="text-transform:uppercase;letter-spacing:.08em"/></div>
           <button type="submit" class="btn btn-solid" style="width:100%;justify-content:center" id="org-join-btn">Connect</button>
         </form>
         <p style="font-size:.72rem;color:var(--mute);margin-top:1rem">Don't have a code? Ask your healthcare provider for your Acuros patient code.</p>
       </div>
     </div>
 
-    <!-- Header -->
+    <!-- Dashboard header -->
     <section class="bg-dots" style="border-bottom:1px solid var(--border)">
       <div style="max-width:1280px;margin:0 auto;padding:2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;background:var(--bg2)">
         <div>
           <div class="lbl" style="margin-bottom:.35rem">Patient Portal</div>
-          <h2 style="font-size:1.75rem;font-weight:300;color:var(--text)">Welcome back, <em id="dash-name">Patient</em></h2>
+          <h2 style="font-size:1.85rem;font-weight:300;color:var(--text)">Welcome back, <em id="dash-name">Patient</em></h2>
           <p style="font-size:.8rem;color:var(--mute);margin-top:.2rem" id="dash-email-lbl"></p>
         </div>
         <div style="display:flex;gap:.875rem;align-items:center;flex-wrap:wrap">
           <div id="dash-code-lbl" style="display:none;padding:.5rem 1rem;background:var(--bg);border:1px solid var(--border);font-size:.75rem;color:var(--sub)"></div>
           <a href="/ai-assistant" class="btn btn-outline" style="padding:.5rem 1.25rem;font-size:.72rem">AI Assistant</a>
+          <a href="/shop"         class="btn btn-outline" style="padding:.5rem 1.25rem;font-size:.72rem">Shop</a>
+          <a href="/bookings"     class="btn btn-outline" style="padding:.5rem 1.25rem;font-size:.72rem">Book Procedure</a>
           <button onclick="ptLogout()" class="btn btn-outline" style="padding:.5rem 1.25rem;font-size:.72rem">Sign Out</button>
         </div>
       </div>
@@ -229,13 +231,13 @@
     <!-- Dashboard content -->
     <section style="max-width:1280px;margin:0 auto;padding:2.5rem 2rem">
 
-      <!-- Persistent org join prompt (in-dashboard) -->
+      <!-- Org join prompt -->
       <div id="dash-org-prompt" style="display:none;margin-bottom:2rem">
         <div style="background:var(--bg2);border:1px solid var(--border);padding:2rem;display:flex;gap:2rem;align-items:center;flex-wrap:wrap">
           <div style="flex:1;min-width:220px">
             <div class="lbl" style="color:var(--ac);margin-bottom:.5rem">Complete Your Setup</div>
             <h3 style="font-size:1.5rem;font-weight:300;color:var(--text);margin-bottom:.5rem">Connect to an organization<br/>for full access.</h3>
-            <p style="font-size:.82rem;color:var(--sub);line-height:1.65">Connecting to a clinic unlocks your complete health timeline, unlimited AI, and shared records with your care team.</p>
+            <p style="font-size:.82rem;color:var(--sub);line-height:1.7">Connecting to a clinic unlocks your complete health timeline, unlimited AI, and shared records with your care team.</p>
           </div>
           <button onclick="showOrgPrompt()" class="btn btn-solid">Enter Patient Code</button>
         </div>
@@ -243,20 +245,34 @@
 
       <div class="lbl" style="margin-bottom:1.25rem">Your Tools</div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-bottom:2.5rem" class="g1m">
-        <a href="/ai-assistant" class="card" style="padding:1.75rem;text-align:left;cursor:pointer;background:none;width:100%;text-decoration:none;display:block">
+        <a href="/ai-assistant" class="card" style="padding:1.75rem;text-decoration:none;display:block">
           <div class="lbl" style="color:var(--ac);margin-bottom:.625rem">AI Assistant</div>
           <h4 style="font-size:1.3rem;font-weight:300;color:var(--text);margin-bottom:.5rem">Health Dialogue</h4>
-          <p style="font-size:.8rem;line-height:1.75;color:var(--sub)">Ask questions, translate reports, prepare for appointments.</p>
+          <p style="font-size:.8rem;line-height:1.8;color:var(--sub)">Ask questions, translate reports, prepare for appointments.</p>
         </a>
-        <div class="card" style="padding:1.75rem;opacity:.55;cursor:not-allowed">
+        <a href="/shop" class="card" style="padding:1.75rem;text-decoration:none;display:block">
+          <div class="lbl" style="color:var(--ac);margin-bottom:.625rem">OTC Shop</div>
+          <h4 style="font-size:1.3rem;font-weight:300;color:var(--text);margin-bottom:.5rem">Product Shop</h4>
+          <p style="font-size:.8rem;line-height:1.8;color:var(--sub)">Browse clinic-approved over-the-counter health products.</p>
+        </a>
+        <a href="/bookings" class="card" style="padding:1.75rem;text-decoration:none;display:block">
+          <div class="lbl" style="color:var(--ac);margin-bottom:.625rem">Bookings</div>
+          <h4 style="font-size:1.3rem;font-weight:300;color:var(--text);margin-bottom:.5rem">Book a Procedure</h4>
+          <p style="font-size:.8rem;line-height:1.8;color:var(--sub)">Schedule consultations and procedures online.</p>
+        </a>
+      </div>
+
+      <div class="lbl" style="margin-bottom:1.25rem">Coming Soon</div>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:1.25rem;margin-bottom:2.5rem" class="g1m">
+        <div class="card" style="padding:1.75rem;opacity:.5;cursor:not-allowed">
           <div class="lbl" style="color:var(--mute);margin-bottom:.625rem">Coming Soon</div>
           <h4 style="font-size:1.3rem;font-weight:300;color:var(--text);margin-bottom:.5rem">Medication Tracker</h4>
-          <p style="font-size:.8rem;line-height:1.75;color:var(--sub)">Review prescriptions and check interactions.</p>
+          <p style="font-size:.8rem;line-height:1.8;color:var(--sub)">Review prescriptions and check interactions.</p>
         </div>
-        <div class="card" style="padding:1.75rem;opacity:.55;cursor:not-allowed">
+        <div class="card" style="padding:1.75rem;opacity:.5;cursor:not-allowed">
           <div class="lbl" style="color:var(--mute);margin-bottom:.625rem">Coming Soon</div>
           <h4 style="font-size:1.3rem;font-weight:300;color:var(--text);margin-bottom:.5rem">Symptom Journal</h4>
-          <p style="font-size:.8rem;line-height:1.75;color:var(--sub)">Log symptoms with timestamps for your care team.</p>
+          <p style="font-size:.8rem;line-height:1.8;color:var(--sub)">Log symptoms with timestamps for your care team.</p>
         </div>
       </div>
 
@@ -264,7 +280,7 @@
       <div class="card" style="padding:1.5rem">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
           <div>
-            <div style="font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:300;color:var(--text);margin-bottom:.25rem" id="dash-full-name">—</div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:300;color:var(--text);margin-bottom:.25rem" id="dash-full-name">—</div>
             <div style="font-size:.8rem;color:var(--mute)" id="dash-email-display">—</div>
           </div>
           <button onclick="ptLogout()" class="btn btn-outline" style="padding:.5rem 1.25rem;font-size:.72rem">Sign Out</button>
@@ -273,8 +289,8 @@
     </section>
 
     <footer style="border-top:1px solid var(--border);background:var(--bg2)">
-      <div style="max-width:1280px;margin:0 auto;padding:1.75rem 2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
-        <p style="font-size:.75rem;color:var(--mute)">© 2025 Acuros Health Inc.</p>
+      <div style="max-width:1280px;margin:0 auto;padding:2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
+        <p style="font-size:.74rem;color:var(--mute)">© 2025 Acuros Health Inc.</p>
         <div style="display:flex;gap:1.5rem">
           <a href="/privacy" class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Privacy</a>
           <a href="/terms"   class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Terms</a>
@@ -289,20 +305,11 @@ const CONFIG = {
   supabaseUrl: 'https://pyexkdoupqzbnrybiubo.supabase.co',
   supabaseKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB5ZXhrZG91cHF6Ym5yeWJpdWJvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4Mzg4MzYsImV4cCI6MjA4NzQxNDgzNn0.3_dLQEJfmC08A2-hlgOfwlu4ngx7hslUR3Dun4BoXLU',
 };
-
 let sb = null;
 try { if (CONFIG.supabaseKey) sb = window.supabase.createClient(CONFIG.supabaseUrl, CONFIG.supabaseKey); } catch(e) {}
-
 let currentUser = null, ptMode = 'login';
 const ORG_BANNER_DISMISSED_KEY = 'ah-org-banner-dismissed';
-
-// Org-specific portal routing
-// Known clinic codes — validated client-side so no DB query needed.
-// Add new clinics here as they onboard; the DB query is a fallback for
-// codes not in this list.
-const KNOWN_CLINIC_CODES = {
-  'AAACLINICS-001': { name: 'Anti-Aging Academic Clinic', active: true },
-};
+const KNOWN_CLINIC_CODES = { 'AAACLINICS-001': { name: 'Anti-Aging Academic Clinic', active: true } };
 
 function getClinicPortalUrl(code) {
   const c = String(code || '').toUpperCase();
@@ -310,24 +317,15 @@ function getClinicPortalUrl(code) {
   return null;
 }
 
-// Fetch profile + org name; falls back to plain select if join fails (e.g. org_id column missing)
 async function fetchProfile(userId) {
   if (!sb || !userId) return null;
   try {
-    const { data, error } = await sb
-      .from('profiles')
-      .select('*, org:org_id(id, name)')
-      .eq('id', userId)
-      .maybeSingle();
-    if (error) {
-      const { data: plain } = await sb.from('profiles').select('*').eq('id', userId).maybeSingle();
-      return plain;
-    }
+    const { data, error } = await sb.from('profiles').select('*, org:org_id(id, name)').eq('id', userId).maybeSingle();
+    if (error) { const { data: plain } = await sb.from('profiles').select('*').eq('id', userId).maybeSingle(); return plain; }
     return data;
   } catch (e) { return null; }
 }
 
-// ── Theme ──
 function toggleTheme() {
   const dark = document.documentElement.classList.toggle('dark');
   document.getElementById('th-icon').textContent = dark ? '☽' : '☀';
@@ -340,29 +338,17 @@ function toggleTheme() {
     document.getElementById('th-icon').textContent = '☽';
   }
 })();
+function openMob()  { document.getElementById('mob-menu').classList.add('open'); document.body.style.overflow='hidden'; }
+function closeMob() { document.getElementById('mob-menu').classList.remove('open'); document.body.style.overflow=''; }
+window.addEventListener('scroll', () => { document.getElementById('main-nav').style.boxShadow = window.scrollY > 10 ? '0 4px 32px rgba(0,0,0,.06)' : ''; });
 
-function openMob()  { document.getElementById('mob-menu').classList.add('open'); }
-function closeMob() { document.getElementById('mob-menu').classList.remove('open'); }
-window.addEventListener('scroll', () => { document.getElementById('main-nav').style.boxShadow = window.scrollY > 10 ? '0 1px 24px rgba(0,0,0,.08)' : ''; });
-
-// ── Helpers ──
 function showMsg(id, msg, type) { const el = document.getElementById(id); if (!el) return; el.style.display = 'block'; el.className = type === 'err' ? 'err-box' : 'ok-box'; el.textContent = msg; }
 function hideMsg(...ids) { ids.forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; }); }
 function setBtn(id, loading, label) { const b = document.getElementById(id); if (!b) return; b.disabled = loading; b.innerHTML = loading ? '<span class="spin"></span>' : label; }
-
-// ── Org status ──
-function userHasOrg() {
-  if (!currentUser) return false;
-  return !!(currentUser.org_id || currentUser.code);
-}
-
-function showOrgPrompt()  { const m = document.getElementById('org-modal'); if (m) m.style.display = 'flex'; hideMsg('org-err','org-ok'); }
-function hideOrgPrompt()  { const m = document.getElementById('org-modal'); if (m) m.style.display = 'none'; }
-function dismissOrgBanner() {
-  localStorage.setItem(ORG_BANNER_DISMISSED_KEY, '1');
-  const b = document.getElementById('org-banner');
-  if (b) b.style.display = 'none';
-}
+function userHasOrg() { return !!(currentUser?.org_id || currentUser?.code); }
+function showOrgPrompt()    { const m = document.getElementById('org-modal'); if (m) m.style.display = 'flex'; hideMsg('org-err','org-ok'); }
+function hideOrgPrompt()    { const m = document.getElementById('org-modal'); if (m) m.style.display = 'none'; }
+function dismissOrgBanner() { localStorage.setItem(ORG_BANNER_DISMISSED_KEY, '1'); const b = document.getElementById('org-banner'); if (b) b.style.display = 'none'; }
 
 async function joinOrg(e) {
   e.preventDefault();
@@ -370,16 +356,10 @@ async function joinOrg(e) {
   const rawCode = document.getElementById('org-code-inp')?.value ?? '';
   const code = rawCode.trim().toUpperCase();
   if (!code) { showMsg('org-err', 'Please enter your clinic code.', 'err'); return; }
-
   setBtn('org-join-btn', true, 'Connect');
-
   try {
     if (!currentUser?.id) throw new Error('Not signed in. Please sign in before connecting.');
-
-    // 1. Check hardcoded map first — instant, no DB, no RLS issues
     let org = KNOWN_CLINIC_CODES[code] || null;
-
-    // 2. Unknown code — try DB with 6s timeout
     if (!org && sb) {
       try {
         const { data, error } = await Promise.race([
@@ -387,28 +367,19 @@ async function joinOrg(e) {
           new Promise((_, rej) => setTimeout(() => rej(new Error('Request timed out. Please try again.')), 6000)),
         ]);
         if (!error && data) org = data;
-      } catch (dbErr) {
-        throw dbErr;
-      }
+      } catch (dbErr) { throw dbErr; }
     }
-
     if (!org)        throw new Error('Code not recognized. Please verify the code with your clinic.');
     if (!org.active) throw new Error('This clinic code is no longer active. Please contact your clinic.');
-
-    // Persist to localStorage immediately — redirect does NOT wait for DB write
     localStorage.setItem('ah-org-code', code);
     localStorage.setItem('ah-org-id',   org.id);
     localStorage.setItem('ah-org-name',  org.name);
-
-    // Fire-and-forget profile update in background
     (async () => {
       try {
         const { error: e1 } = await sb.from('profiles').update({ patient_code: code, org_id: org.id }).eq('id', currentUser.id);
         if (e1) await sb.from('profiles').update({ patient_code: code }).eq('id', currentUser.id).catch(() => {});
       } catch (_) {}
     })();
-
-    // Redirect or sync immediately
     const portalUrl = getClinicPortalUrl(code);
     setBtn('org-join-btn', false, 'Connect');
     if (portalUrl) {
@@ -425,15 +396,14 @@ async function joinOrg(e) {
   }
 }
 
-// ── Auth ──
 function ptToggle() {
   ptMode = ptMode === 'login' ? 'register' : 'login';
   const reg = ptMode === 'register';
-  document.getElementById('pt-login').style.display    = reg ? 'none'  : 'flex';
-  document.getElementById('pt-register').style.display = reg ? 'flex'  : 'none';
-  document.getElementById('pt-title').textContent   = reg ? 'Create Your Account'     : 'Sign In to Your Portal';
+  document.getElementById('pt-login').style.display    = reg ? 'none' : 'flex';
+  document.getElementById('pt-register').style.display = reg ? 'flex' : 'none';
+  document.getElementById('pt-title').textContent   = reg ? 'Create Your Account'            : 'Sign In to Your Portal';
   document.getElementById('pt-sub').textContent     = reg ? 'Enter your details to get started' : 'Access your health records and tools';
-  document.getElementById('pt-toggle').textContent  = reg ? 'Already have an account? Sign in' : "Don't have an account? Create one";
+  document.getElementById('pt-toggle').textContent  = reg ? 'Already have an account? Sign in'  : "Don't have an account? Create one";
   hideMsg('pt-err', 'pt-ok');
 }
 
@@ -452,16 +422,7 @@ async function ptLogin(e) {
       const { data, error } = await sb.auth.signInWithPassword({ email: document.getElementById('pt-email').value, password: document.getElementById('pt-pass').value });
       if (error) throw error;
       const profile = await fetchProfile(data.user.id);
-      currentUser = {
-        id: data.user.id,
-        email: data.user.email,
-        name: profile?.name || data.user.user_metadata?.full_name || data.user.email.split('@')[0],
-        first: profile?.first_name || '',
-        last: profile?.last_name || '',
-        code: profile?.patient_code || '',
-        org_id: profile?.org_id || '',
-        org_name: profile?.org?.name || '',
-      };
+      currentUser = { id: data.user.id, email: data.user.email, name: profile?.name || data.user.user_metadata?.full_name || data.user.email.split('@')[0], first: profile?.first_name || '', last: profile?.last_name || '', code: profile?.patient_code || '', org_id: profile?.org_id || '', org_name: profile?.org?.name || '' };
     } else {
       const email = document.getElementById('pt-email').value;
       currentUser = { id: 'demo', email, name: email.split('@')[0], first: '', last: '', code: '', org_id: '', org_name: '' };
@@ -498,89 +459,70 @@ async function ptLogout() {
   syncPortal();
 }
 
-// ── Portal sync ──
 function syncPortal() {
   const gate = document.getElementById('portal-gate'), dash = document.getElementById('portal-dash');
   if (currentUser) {
-    // Redirect clinic-specific patients to their branded portal
-    // Check profile code first, then localStorage (for users who haven't had profile written yet)
     const effectiveCode = currentUser.code || localStorage.getItem('ah-org-code') || '';
     const portalUrl = getClinicPortalUrl(effectiveCode);
     if (portalUrl) { window.location.replace(portalUrl); return; }
-
     gate.style.display = 'none';
     dash.style.display = 'block';
-    document.getElementById('dash-name').textContent = currentUser.first || currentUser.name || 'Patient';
-    document.getElementById('dash-email-lbl').textContent = currentUser.email || '';
-    document.getElementById('dash-full-name').textContent = (currentUser.first && currentUser.last) ? currentUser.first + ' ' + currentUser.last : currentUser.name || '—';
+    document.getElementById('dash-name').textContent        = currentUser.first || currentUser.name || 'Patient';
+    document.getElementById('dash-email-lbl').textContent   = currentUser.email || '';
+    document.getElementById('dash-full-name').textContent   = (currentUser.first && currentUser.last) ? currentUser.first + ' ' + currentUser.last : currentUser.name || '—';
     document.getElementById('dash-email-display').textContent = currentUser.email || '—';
     const cl = document.getElementById('dash-code-lbl');
     if (currentUser.org_name) { cl.textContent = currentUser.org_name; cl.style.display = 'block'; }
     else if (currentUser.code) { cl.textContent = 'Code: ' + currentUser.code; cl.style.display = 'block'; }
     else { cl.style.display = 'none'; }
-
     const hasOrg = userHasOrg();
     const bannerDismissed = localStorage.getItem(ORG_BANNER_DISMISSED_KEY) === '1';
-    const topBanner = document.getElementById('org-banner');
+    const topBanner  = document.getElementById('org-banner');
     const dashPrompt = document.getElementById('dash-org-prompt');
     if (!hasOrg) {
-      if (topBanner) topBanner.style.display = bannerDismissed ? 'none' : 'block';
-      if (dashPrompt) dashPrompt.style.display = 'block';
+      if (topBanner)  topBanner.style.display  = bannerDismissed ? 'none' : 'block';
+      if (dashPrompt) dashPrompt.style.display  = 'block';
     } else {
-      if (topBanner) topBanner.style.display = 'none';
-      if (dashPrompt) dashPrompt.style.display = 'none';
+      if (topBanner)  topBanner.style.display  = 'none';
+      if (dashPrompt) dashPrompt.style.display  = 'none';
     }
   } else {
     gate.style.display = 'block';
     dash.style.display = 'none';
     ptMode = 'login';
-    document.getElementById('pt-login').style.display = 'flex';
+    document.getElementById('pt-login').style.display    = 'flex';
     document.getElementById('pt-register').style.display = 'none';
-    document.getElementById('pt-title').textContent = 'Sign In to Your Portal';
-    document.getElementById('pt-sub').textContent = 'Access your health records and tools';
+    document.getElementById('pt-title').textContent  = 'Sign In to Your Portal';
+    document.getElementById('pt-sub').textContent    = 'Access your health records and tools';
     document.getElementById('pt-toggle').textContent = "Don't have an account? Create one";
     hideMsg('pt-err', 'pt-ok');
   }
   setTimeout(() => {
-    document.querySelectorAll('.stagger-item').forEach((el, i) => {
-      setTimeout(() => el.classList.add('in'), i * 120);
-    });
-  }, 200);
+    document.querySelectorAll('.stagger-item').forEach((el, i) => setTimeout(() => el.classList.add('in'), i * 100));
+  }, 150);
 }
 
-// ── Session check ──
 if (sb?.auth?.onAuthStateChange) {
   sb.auth.onAuthStateChange(async (event, session) => {
     if (session?.user) {
-      currentUser = {
-        id: session.user.id, email: session.user.email,
-        name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'User',
-        first: '', last: '', code: '', org_id: '', org_name: '',
-      };
+      currentUser = { id: session.user.id, email: session.user.email, name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'User', first: '', last: '', code: '', org_id: '', org_name: '' };
       syncPortal();
       try {
         const profile = await fetchProfile(session.user.id);
         if (profile && currentUser) {
-          currentUser.name     = profile.name || currentUser.name;
-          currentUser.first    = profile.first_name || '';
-          currentUser.last     = profile.last_name || '';
-          currentUser.code     = profile.patient_code || '';
-          currentUser.org_id   = profile.org_id || '';
+          currentUser.name = profile.name || currentUser.name;
+          currentUser.first = profile.first_name || '';
+          currentUser.last = profile.last_name || '';
+          currentUser.code = profile.patient_code || '';
+          currentUser.org_id = profile.org_id || '';
           currentUser.org_name = profile.org?.name || '';
           syncPortal();
         }
       } catch (_e) {}
-    } else if (event === 'SIGNED_OUT') {
-      currentUser = null;
-      syncPortal();
-    }
-    if (window.location.hash?.includes('access_token')) {
-      window.history.replaceState(null, '', window.location.pathname + window.location.search);
-    }
+    } else if (event === 'SIGNED_OUT') { currentUser = null; syncPortal(); }
+    if (window.location.hash?.includes('access_token')) window.history.replaceState(null, '', window.location.pathname + window.location.search);
   });
-} else {
-  syncPortal();
-}
+} else { syncPortal(); }
 </script>
 </body>
 </html>

@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-80K00SEBQK"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-80K00SEBQK');</script>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>OTC Shop — Acuros Health</title>
+  <link rel="icon" type="image/png" href="favicon.png"/>
+  <link rel="apple-touch-icon" href="favicon.png"/>
+  <meta name="description" content="Clinic-approved over-the-counter health and wellness products, curated by your care team."/>
+  <link rel="canonical" href="https://acuros.ca/shop"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:url" content="https://acuros.ca/shop"/>
+  <meta property="og:title" content="OTC Shop — Acuros Health"/>
+  <meta property="og:description" content="Clinic-approved over-the-counter health and wellness products."/>
+  <meta property="og:site_name" content="Acuros Health"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
+  <script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{display:['Cormorant Garamond','Georgia','serif'],sans:['DM Sans','sans-serif']}}}}</script>
+  <style>
+    :root{--bg:#f5f5f3;--bg2:#fefefe;--bg3:#efefec;--border:#deded8;--text:#191917;--sub:#5c5b55;--mute:#9a9a90;--ac:#0ea5e9;--gold:#c4902a;--nav:rgba(245,245,243,.93)}
+    html.dark{--bg:#0e0e0c;--bg2:#161614;--bg3:#1c1c1a;--border:#282824;--text:#eeeee8;--sub:#96968e;--mute:#5a5a54;--ac:#38bdf8;--gold:#d4a84a;--nav:rgba(14,14,12,.93)}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);transition:background .35s,color .35s;overflow-x:hidden}
+    h1,h2,h3,h4{font-family:'Cormorant Garamond',serif;line-height:1.06;letter-spacing:-.02em}
+    nav{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--nav);backdrop-filter:blur(28px) saturate(200%);-webkit-backdrop-filter:blur(28px) saturate(200%);border-bottom:1px solid rgba(0,0,0,.06);transition:background .35s}
+    html.dark nav{border-bottom-color:rgba(255,255,255,.04)}
+    .nav-link{position:relative;font-size:.68rem;letter-spacing:.13em;text-transform:uppercase;color:var(--sub);background:none;border:none;cursor:pointer;padding:0;font-family:inherit;transition:color .2s;text-decoration:none;display:inline-block}
+    .nav-link::after{content:'';position:absolute;left:0;bottom:-2px;width:0;height:1px;background:var(--ac);transition:width .28s cubic-bezier(.22,1,.36,1)}
+    .nav-link:hover::after,.nav-link.active::after{width:100%}
+    .nav-link:hover,.nav-link.active{color:var(--text)}
+    .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.72rem 1.75rem;font-size:.76rem;letter-spacing:.1em;text-transform:uppercase;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;border:none;transition:all .24s cubic-bezier(.22,1,.36,1);text-decoration:none;position:relative;overflow:hidden}
+    .btn::before{content:'';position:absolute;inset:0;background:rgba(255,255,255,.1);opacity:0;transition:opacity .2s}
+    .btn:hover::before{opacity:1}
+    .btn-solid{background:var(--text);color:var(--bg)}
+    .btn-solid:hover{background:var(--ac);color:#fff;transform:translateY(-1px)}
+    .btn-outline{background:transparent;color:var(--text);border:1px solid rgba(24,24,22,.2)}
+    html.dark .btn-outline{border-color:rgba(238,238,232,.18)}
+    .btn-outline:hover{border-color:var(--ac);color:var(--ac);transform:translateY(-1px)}
+    .btn-ac{background:var(--ac);color:#fff}
+    .btn-ac:hover{filter:brightness(1.08);transform:translateY(-1px)}
+    .lbl{font-family:'DM Sans',sans-serif;font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--mute);font-weight:500}
+    .hr{height:1px;background:var(--border)}
+    @keyframes pgIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+    .reveal{transition:opacity .75s cubic-bezier(.22,1,.36,1),transform .75s cubic-bezier(.22,1,.36,1)}
+    .js-reveal .reveal:not(.in){opacity:0;transform:translateY(24px)}
+    .reveal.in{opacity:1;transform:none}
+    .d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}.d4{transition-delay:.32s}.d5{transition-delay:.4s}.d6{transition-delay:.48s}
+    .mesh{background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:52px 52px}
+    #mob-menu{display:none;position:fixed;inset:0;z-index:300;background:var(--bg);flex-direction:column;padding:2.5rem}
+    #mob-menu.open{display:flex;animation:pgIn .3s ease}
+
+    /* ── Product card ── */
+    .product-card{background:var(--bg2);border:1px solid var(--border);display:flex;flex-direction:column;transition:border-color .28s,transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s;position:relative;overflow:hidden}
+    .product-card:hover{border-color:var(--ac);transform:translateY(-4px);box-shadow:0 16px 48px rgba(14,165,233,.1)}
+    .product-card img{width:100%;aspect-ratio:4/3;object-fit:cover;transition:transform .6s cubic-bezier(.22,1,.36,1)}
+    .product-card:hover img{transform:scale(1.04)}
+    .product-badge{position:absolute;top:.75rem;left:.75rem;font-family:'DM Sans',sans-serif;font-size:.56rem;letter-spacing:.18em;text-transform:uppercase;font-weight:500;padding:.25rem .625rem;background:var(--ac);color:#fff}
+    .product-badge.sold-out{background:var(--mute)}
+
+    /* ── Filter tabs ── */
+    .filter-btn{font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;font-weight:500;font-family:'DM Sans',sans-serif;padding:.5rem 1.25rem;border:1px solid var(--border);background:none;color:var(--mute);cursor:pointer;transition:all .22s}
+    .filter-btn.active{background:var(--text);color:var(--bg);border-color:var(--text)}
+
+    /* ── Cart drawer ── */
+    #cart-drawer{position:fixed;top:0;right:-420px;width:420px;max-width:100vw;height:100vh;background:var(--bg2);border-left:1px solid var(--border);z-index:500;transition:right .4s cubic-bezier(.22,1,.36,1);display:flex;flex-direction:column;box-shadow:-8px 0 48px rgba(0,0,0,.1)}
+    #cart-drawer.open{right:0}
+    #cart-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:490;opacity:0;pointer-events:none;transition:opacity .35s}
+    #cart-backdrop.show{opacity:1;pointer-events:all}
+
+    /* ── Checkout modal ── */
+    #checkout-modal{display:none;position:fixed;inset:0;z-index:600;align-items:center;justify-content:center;background:rgba(0,0,0,.55);backdrop-filter:blur(8px)}
+    #checkout-modal.show{display:flex}
+
+    ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+    @media(max-width:900px){.g1m{grid-template-columns:1fr!important}.hnm{display:none!important}#mob-btn{display:flex!important}#nav-cta{display:none!important}}
+    @media(max-width:600px){#cart-drawer{width:100vw}}
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav id="main-nav">
+  <div style="max-width:1280px;margin:0 auto;padding:0 2rem;height:64px;display:flex;align-items:center;justify-content:space-between">
+    <a href="/" style="display:flex;align-items:center;gap:.875rem;text-decoration:none">
+      <img src="logo.png" alt="Acuros" width="36" height="36" style="flex-shrink:0;object-fit:contain"/>
+      <div>
+        <div style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:.95rem;letter-spacing:.12em;color:var(--text);line-height:1">ACUROS</div>
+        <div class="lbl" style="font-size:.46rem;letter-spacing:.34em">HEALTH</div>
+      </div>
+    </a>
+    <div style="display:flex;align-items:center;gap:2rem" class="hnm">
+      <a class="nav-link" href="/">Home</a>
+      <a class="nav-link" href="/ai-assistant">AI Assistant</a>
+      <a class="nav-link active" href="/shop">Shop</a>
+      <a class="nav-link" href="/bookings">Bookings</a>
+      <a class="nav-link" href="/patient-portal">Patient Login</a>
+    </div>
+    <div style="display:flex;align-items:center;gap:.875rem">
+      <button onclick="toggleTheme()" aria-label="Toggle theme" style="width:36px;height:36px;border:1px solid var(--border);background:none;color:var(--sub);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .22s;font-size:.9rem"><span id="th-icon">☀</span></button>
+      <button onclick="openCart()" aria-label="Cart" id="cart-btn" style="position:relative;width:36px;height:36px;border:1px solid var(--border);background:none;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .22s" class="hnm">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4zM3 6h18M16 10a4 4 0 01-8 0"/></svg>
+        <span id="cart-count" style="display:none;position:absolute;top:-4px;right:-4px;background:var(--ac);color:#fff;font-size:.52rem;font-weight:700;width:16px;height:16px;border-radius:50%;align-items:center;justify-content:center;font-family:'DM Sans',sans-serif">0</span>
+      </button>
+      <a href="/patient-portal" class="btn btn-solid" style="padding:.55rem 1.25rem" id="nav-cta">Patient Login</a>
+      <button onclick="openMob()" style="display:none;background:none;border:none;cursor:pointer;color:var(--text);padding:.25rem" id="mob-btn" aria-label="Menu">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16M4 12h12M4 18h8"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ── Mobile Menu ── -->
+<div id="mob-menu">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3rem">
+    <span style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--text)">Acuros Health</span>
+    <button onclick="closeMob()" style="background:none;border:none;cursor:pointer;color:var(--text)">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:1.5rem">
+    <a href="/"             style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Home</a>
+    <a href="/ai-assistant" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">AI Assistant</a>
+    <a href="/shop"         style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--ac);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Shop</a>
+    <a href="/bookings"     style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Bookings</a>
+    <a href="/patient-portal" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--text);text-decoration:none">Patient Login</a>
+  </div>
+</div>
+
+<!-- ── Cart Backdrop ── -->
+<div id="cart-backdrop" onclick="closeCart()"></div>
+
+<!-- ── Cart Drawer ── -->
+<div id="cart-drawer">
+  <div style="padding:1.5rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+    <div>
+      <div class="lbl" style="margin-bottom:.2rem">Your Cart</div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:300;color:var(--text)" id="cart-title">0 items</div>
+    </div>
+    <button onclick="closeCart()" style="background:none;border:none;cursor:pointer;color:var(--mute);padding:.25rem" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--mute)'">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <div id="cart-items" style="flex:1;overflow-y:auto;padding:1.25rem;display:flex;flex-direction:column;gap:1rem">
+    <div id="cart-empty" style="text-align:center;padding:3rem 1rem">
+      <div style="font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:300;color:var(--mute);margin-bottom:.5rem">Your cart is empty.</div>
+      <p style="font-size:.82rem;color:var(--mute)">Add clinic-approved products to get started.</p>
+    </div>
+  </div>
+  <div id="cart-footer" style="display:none;padding:1.5rem;border-top:1px solid var(--border)">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:1.25rem">
+      <span class="lbl">Subtotal</span>
+      <span style="font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:300;color:var(--text)" id="cart-total">$0.00</span>
+    </div>
+    <p style="font-size:.72rem;color:var(--mute);margin-bottom:1rem;line-height:1.6">Taxes and shipping calculated at checkout. Payment integration coming soon.</p>
+    <button onclick="openCheckout()" class="btn btn-solid" style="width:100%;justify-content:center">Proceed to Checkout</button>
+  </div>
+</div>
+
+<!-- ── Checkout Modal (Placeholder) ── -->
+<div id="checkout-modal">
+  <div style="background:var(--bg2);border:1px solid var(--border);width:100%;max-width:480px;padding:3rem;margin:1.5rem;position:relative;text-align:center">
+    <button onclick="closeCheckout()" style="position:absolute;top:1rem;right:1rem;background:none;border:none;cursor:pointer;color:var(--mute)">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+    <div style="width:52px;height:52px;border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--ac)" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    </div>
+    <div class="lbl" style="color:var(--ac);margin-bottom:.75rem">Payment Portal</div>
+    <h3 style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;color:var(--text);margin-bottom:.875rem">Checkout Coming<br/><em>Very Soon.</em></h3>
+    <p style="font-size:.85rem;color:var(--sub);line-height:1.85;max-width:34ch;margin:0 auto 1.75rem">Online payment is being set up. To purchase products, please contact your clinic directly or ask at your next appointment.</p>
+    <div style="background:var(--bg3);border:1px solid var(--border);padding:1.25rem;text-align:left;margin-bottom:1.5rem">
+      <div class="lbl" style="margin-bottom:.625rem">Your Cart Summary</div>
+      <div id="checkout-summary" style="font-size:.82rem;color:var(--sub);line-height:1.8"></div>
+    </div>
+    <a href="mailto:info@acuros.ca?subject=Product%20Order%20Request" class="btn btn-solid" style="justify-content:center;width:100%;margin-bottom:.625rem">Contact Clinic to Order</a>
+    <button onclick="closeCheckout()" class="btn btn-outline" style="justify-content:center;width:100%;font-size:.72rem">Continue Shopping</button>
+  </div>
+</div>
+
+<div style="padding-top:4rem">
+
+  <!-- Hero -->
+  <section style="position:relative;padding:6rem 2rem 5rem;border-bottom:1px solid var(--border);overflow:hidden;min-height:300px;display:flex;align-items:flex-end">
+    <img src="https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=1400&q=80&auto=format&fit=crop" alt="Health products" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(0.3) brightness(0.14)"/>
+    <div style="position:absolute;inset:0;background:linear-gradient(0deg,var(--bg) 0%,rgba(0,0,0,.4) 100%)"></div>
+    <div class="mesh" style="position:absolute;inset:0;opacity:.15"></div>
+    <div style="position:relative;max-width:1280px;margin:0 auto;width:100%;display:flex;align-items:flex-end;justify-content:space-between;gap:2rem;flex-wrap:wrap">
+      <div>
+        <div class="lbl" style="margin-bottom:1.25rem;color:var(--ac)">OTC Product Shop</div>
+        <h1 style="font-size:clamp(2.75rem,7vw,5rem);font-weight:300;color:var(--text);margin-bottom:1rem">Clinic-approved<br/><em>wellness products.</em></h1>
+        <p style="font-size:.9rem;color:var(--sub);max-width:44ch;line-height:1.85">Browse over-the-counter health and wellness products curated and recommended by your care team.</p>
+      </div>
+      <button onclick="openCart()" class="btn btn-outline" style="flex-shrink:0;gap:.75rem">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4zM3 6h18M16 10a4 4 0 01-8 0"/></svg>
+        View Cart <span id="hero-cart-count" style="display:none;background:var(--ac);color:#fff;padding:.1rem .4rem;font-size:.6rem;border-radius:2px">0</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- Filters + Grid -->
+  <section style="max-width:1280px;margin:0 auto;padding:4rem 2rem">
+
+    <!-- Filter row -->
+    <div style="display:flex;gap:0;flex-wrap:wrap;margin-bottom:3rem;border:1px solid var(--border);align-self:flex-start;width:fit-content">
+      <button class="filter-btn active" onclick="filterProducts('all')"        id="f-all">All Products</button>
+      <button class="filter-btn"        onclick="filterProducts('skincare')"   id="f-skincare">Skincare</button>
+      <button class="filter-btn"        onclick="filterProducts('supplements')" id="f-supplements">Supplements</button>
+      <button class="filter-btn"        onclick="filterProducts('wellness')"   id="f-wellness">Wellness</button>
+      <button class="filter-btn"        onclick="filterProducts('pain')"       id="f-pain">Pain Relief</button>
+    </div>
+
+    <!-- Product grid -->
+    <div id="product-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem" class="g1m"></div>
+
+    <p id="no-products" style="display:none;text-align:center;padding:4rem 2rem;font-size:.88rem;color:var(--mute)">No products in this category yet.</p>
+  </section>
+
+  <!-- Info strip -->
+  <section style="border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--bg2)">
+    <div style="max-width:1280px;margin:0 auto;padding:3rem 2rem;display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;text-align:center" class="g1m">
+      <div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:300;color:var(--text);margin-bottom:.375rem">Clinic Curated</div>
+        <p style="font-size:.8rem;color:var(--sub);line-height:1.75">Every product is reviewed and recommended by your healthcare providers.</p>
+      </div>
+      <div style="border-left:1px solid var(--border);border-right:1px solid var(--border);padding:0 2rem">
+        <div style="font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:300;color:var(--text);margin-bottom:.375rem">Canadian Standards</div>
+        <p style="font-size:.8rem;color:var(--sub);line-height:1.75">All products meet Health Canada's quality and safety requirements.</p>
+      </div>
+      <div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:300;color:var(--text);margin-bottom:.375rem">Earn Rewards</div>
+        <p style="font-size:.8rem;color:var(--sub);line-height:1.75">Every purchase earns loyalty points redeemable at your clinic.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer style="border-top:1px solid var(--border);background:var(--bg2)">
+    <div style="max-width:1280px;margin:0 auto;padding:2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
+      <p style="font-size:.74rem;color:var(--mute)">© 2025 Acuros Health Inc. Products are for informational purposes. Consult your healthcare provider before use.</p>
+      <div style="display:flex;gap:1.5rem">
+        <a href="/"         class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Home</a>
+        <a href="/bookings" class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Bookings</a>
+        <a href="/privacy"  class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Privacy</a>
+        <a href="/terms"    class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Terms</a>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<script>
+// ── Theme ──
+function toggleTheme() {
+  const dark = document.documentElement.classList.toggle('dark');
+  document.getElementById('th-icon').textContent = dark ? '☽' : '☀';
+  localStorage.setItem('ah-theme', dark ? 'dark' : 'light');
+}
+(function initTheme() {
+  const s = localStorage.getItem('ah-theme');
+  if (s === 'dark' || (!s && window.matchMedia('(prefers-color-scheme:dark)').matches)) {
+    document.documentElement.classList.add('dark');
+    document.getElementById('th-icon').textContent = '☽';
+  }
+})();
+function openMob()  { document.getElementById('mob-menu').classList.add('open'); document.body.style.overflow='hidden'; }
+function closeMob() { document.getElementById('mob-menu').classList.remove('open'); document.body.style.overflow=''; }
+window.addEventListener('scroll', () => { document.getElementById('main-nav').style.boxShadow = window.scrollY > 10 ? '0 4px 32px rgba(0,0,0,.06)' : ''; });
+
+// ── Products data ──
+const PRODUCTS = [
+  { id:1, name:'Vitamin D3 + K2',         category:'supplements', price:28.99, badge:'Best Seller', img:'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=600&q=80&auto=format&fit=crop', desc:'High-potency D3 with K2 for optimal calcium absorption and bone health.' },
+  { id:2, name:'Omega-3 Fish Oil',         category:'supplements', price:34.99, badge:'Clinic Pick', img:'https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=600&q=80&auto=format&fit=crop', desc:'Pharmaceutical-grade omega-3 for cardiovascular and cognitive support.' },
+  { id:3, name:'Magnesium Glycinate',      category:'supplements', price:26.50, badge:null,          img:'https://images.unsplash.com/photo-1550572017-37b7e469e558?w=600&q=80&auto=format&fit=crop', desc:'Highly bioavailable magnesium for sleep quality and muscle recovery.' },
+  { id:4, name:'SPF 50+ Mineral Sunscreen',category:'skincare',    price:22.00, badge:'Clinic Pick', img:'https://images.unsplash.com/photo-1556228841-a3c527ebefe5?w=600&q=80&auto=format&fit=crop', desc:'Broad-spectrum zinc oxide sunscreen. Reef-safe and fragrance-free.' },
+  { id:5, name:'Hyaluronic Acid Serum',    category:'skincare',    price:38.00, badge:null,          img:'https://images.unsplash.com/photo-1601612628452-9e99ced43524?w=600&q=80&auto=format&fit=crop', desc:'Multi-weight hyaluronic acid for deep and surface-level hydration.' },
+  { id:6, name:'Retinol Night Cream',      category:'skincare',    price:44.00, badge:'New',         img:'https://images.unsplash.com/photo-1570194065650-d99fb4bedf0a?w=600&q=80&auto=format&fit=crop', desc:'0.3% retinol with ceramides for gentle, effective skin renewal.' },
+  { id:7, name:'Probiotic Complex',        category:'wellness',    price:39.99, badge:'Clinic Pick', img:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80&auto=format&fit=crop', desc:'50 billion CFU multi-strain probiotic for gut and immune health.' },
+  { id:8, name:'Sleep Support Formula',    category:'wellness',    price:29.99, badge:null,          img:'https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?w=600&q=80&auto=format&fit=crop', desc:'Melatonin, L-theanine, and ashwagandha for restorative sleep.' },
+  { id:9, name:'Electrolyte Powder',       category:'wellness',    price:32.00, badge:'New',         img:'https://images.unsplash.com/photo-1487530811015-780ba6c09aad?w=600&q=80&auto=format&fit=crop', desc:'Clean electrolyte blend with no artificial sweeteners or dyes.' },
+  { id:10,name:'Arnica Gel 500mg',         category:'pain',       price:18.50, badge:null,           img:'https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=600&q=80&auto=format&fit=crop', desc:'Topical arnica for bruising, muscle soreness, and joint pain.' },
+  { id:11,name:'Biofreeze Roll-On',        category:'pain',       price:15.00, badge:'Best Seller',  img:'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=600&q=80&auto=format&fit=crop', desc:'Fast-acting menthol pain relief gel for muscles and joints.' },
+  { id:12,name:'Collagen Peptides',        category:'supplements', price:49.99, badge:'New',          img:'https://images.unsplash.com/photo-1551847812-3b03a2c07ad1?w=600&q=80&auto=format&fit=crop', desc:'Hydrolysed Type I & III collagen for skin, hair, nails, and joints.' },
+];
+
+let cart = [];
+let activeFilter = 'all';
+
+function fmt(n) { return '$' + n.toFixed(2); }
+
+// ── Render products ──
+function renderProducts() {
+  const grid = document.getElementById('product-grid');
+  const none = document.getElementById('no-products');
+  const filtered = activeFilter === 'all' ? PRODUCTS : PRODUCTS.filter(p => p.category === activeFilter);
+  if (!filtered.length) { grid.innerHTML = ''; none.style.display = 'block'; return; }
+  none.style.display = 'none';
+  grid.innerHTML = filtered.map((p, i) => `
+    <div class="product-card reveal ${i < 3 ? '' : 'd' + Math.min(i % 3 + 1, 6)}" data-category="${p.category}">
+      ${p.badge ? `<span class="product-badge">${p.badge}</span>` : ''}
+      <div style="overflow:hidden"><img src="${p.img}" alt="${p.name}" loading="lazy"/></div>
+      <div style="padding:1.25rem;display:flex;flex-direction:column;flex:1">
+        <div class="lbl" style="color:var(--ac);margin-bottom:.5rem">${p.category.charAt(0).toUpperCase()+p.category.slice(1)}</div>
+        <h4 style="font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:300;color:var(--text);margin-bottom:.375rem;line-height:1.2">${p.name}</h4>
+        <p style="font-size:.78rem;color:var(--sub);line-height:1.75;flex:1;margin-bottom:1rem">${p.desc}</p>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:.75rem">
+          <span style="font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:300;color:var(--text)">${fmt(p.price)}</span>
+          <button onclick="addToCart(${p.id})" class="btn btn-solid" style="padding:.5rem 1.1rem;font-size:.68rem">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+  setupReveal();
+}
+
+// ── Filter ──
+function filterProducts(cat) {
+  activeFilter = cat;
+  ['all','skincare','supplements','wellness','pain'].forEach(c => {
+    document.getElementById('f-' + c)?.classList.toggle('active', c === cat);
+  });
+  renderProducts();
+}
+
+// ── Cart ──
+function addToCart(id) {
+  const p = PRODUCTS.find(x => x.id === id);
+  if (!p) return;
+  const existing = cart.find(x => x.id === id);
+  if (existing) existing.qty++;
+  else cart.push({ ...p, qty: 1 });
+  saveCart();
+  updateCartUI();
+  openCart();
+}
+
+function removeFromCart(id) {
+  cart = cart.filter(x => x.id !== id);
+  saveCart();
+  updateCartUI();
+}
+
+function updateQty(id, delta) {
+  const item = cart.find(x => x.id === id);
+  if (!item) return;
+  item.qty += delta;
+  if (item.qty <= 0) removeFromCart(id);
+  else { saveCart(); updateCartUI(); }
+}
+
+function saveCart() {
+  localStorage.setItem('ah-cart', JSON.stringify(cart));
+}
+
+function loadCart() {
+  try { cart = JSON.parse(localStorage.getItem('ah-cart') || '[]'); } catch { cart = []; }
+}
+
+function totalItems() { return cart.reduce((s, x) => s + x.qty, 0); }
+function totalPrice() { return cart.reduce((s, x) => s + x.price * x.qty, 0); }
+
+function updateCartUI() {
+  const count = totalItems();
+  const countEl   = document.getElementById('cart-count');
+  const hCountEl  = document.getElementById('hero-cart-count');
+  const titleEl   = document.getElementById('cart-title');
+  const totalEl   = document.getElementById('cart-total');
+  const footerEl  = document.getElementById('cart-footer');
+  const emptyEl   = document.getElementById('cart-empty');
+  const itemsEl   = document.getElementById('cart-items');
+
+  if (countEl)  { countEl.textContent = count; countEl.style.display = count ? 'flex' : 'none'; }
+  if (hCountEl) { hCountEl.textContent = count; hCountEl.style.display = count ? 'inline' : 'none'; }
+  if (titleEl)  titleEl.textContent = count + ' item' + (count !== 1 ? 's' : '');
+  if (totalEl)  totalEl.textContent = fmt(totalPrice());
+  if (footerEl) footerEl.style.display = count ? 'block' : 'none';
+  if (emptyEl)  emptyEl.style.display  = count ? 'none'  : 'block';
+
+  if (itemsEl) {
+    const existing = itemsEl.querySelectorAll('.cart-line');
+    existing.forEach(el => el.remove());
+    cart.forEach(item => {
+      const div = document.createElement('div');
+      div.className = 'cart-line';
+      div.style.cssText = 'display:flex;gap:1rem;align-items:flex-start;padding:1rem 0;border-bottom:1px solid var(--border)';
+      div.innerHTML = `
+        <img src="${item.img}" alt="${item.name}" style="width:60px;height:60px;object-fit:cover;flex-shrink:0;border:1px solid var(--border)"/>
+        <div style="flex:1;min-width:0">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:300;color:var(--text);margin-bottom:.2rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${item.name}</div>
+          <div style="font-size:.75rem;color:var(--mute);margin-bottom:.5rem">${fmt(item.price)} each</div>
+          <div style="display:flex;align-items:center;gap:.5rem">
+            <button onclick="updateQty(${item.id},-1)" style="width:24px;height:24px;border:1px solid var(--border);background:none;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.9rem;transition:border-color .2s" onmouseover="this.style.borderColor='var(--ac)'" onmouseout="this.style.borderColor='var(--border)'">−</button>
+            <span style="font-size:.82rem;color:var(--text);min-width:20px;text-align:center">${item.qty}</span>
+            <button onclick="updateQty(${item.id},1)"  style="width:24px;height:24px;border:1px solid var(--border);background:none;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.9rem;transition:border-color .2s" onmouseover="this.style.borderColor='var(--ac)'" onmouseout="this.style.borderColor='var(--border)'">+</button>
+            <span style="margin-left:auto;font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:300;color:var(--text)">${fmt(item.price * item.qty)}</span>
+          </div>
+        </div>
+        <button onclick="removeFromCart(${item.id})" style="background:none;border:none;cursor:pointer;color:var(--mute);flex-shrink:0;padding:.25rem" onmouseover="this.style.color='#dc2626'" onmouseout="this.style.color='var(--mute)'">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      `;
+      itemsEl.insertBefore(div, itemsEl.querySelector('#cart-empty'));
+    });
+  }
+}
+
+function openCart()  { document.getElementById('cart-drawer').classList.add('open'); document.getElementById('cart-backdrop').classList.add('show'); document.body.style.overflow='hidden'; }
+function closeCart() { document.getElementById('cart-drawer').classList.remove('open'); document.getElementById('cart-backdrop').classList.remove('show'); document.body.style.overflow=''; }
+
+function openCheckout() {
+  closeCart();
+  const summary = document.getElementById('checkout-summary');
+  if (summary) {
+    summary.innerHTML = cart.map(x => `<div style="display:flex;justify-content:space-between"><span>${x.name} × ${x.qty}</span><span>${fmt(x.price * x.qty)}</span></div>`).join('') + `<div style="margin-top:.625rem;padding-top:.625rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-weight:500"><span>Total</span><span>${fmt(totalPrice())}</span></div>`;
+  }
+  document.getElementById('checkout-modal').classList.add('show');
+}
+function closeCheckout() { document.getElementById('checkout-modal').classList.remove('show'); }
+
+// ── Reveal ──
+document.documentElement.classList.add('js-reveal');
+function setupReveal() {
+  if (!('IntersectionObserver' in window)) { document.querySelectorAll('.reveal').forEach(el => el.classList.add('in')); return; }
+  const io = new IntersectionObserver(entries => { entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }); }, { threshold: 0, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal:not(.in)').forEach(el => io.observe(el));
+}
+document.addEventListener('DOMContentLoaded', () => { loadCart(); renderProducts(); updateCartUI(); setupReveal(); });
+setTimeout(() => document.querySelectorAll('.reveal').forEach(el => el.classList.add('in')), 3000);
+</script>
+</body>
+</html>

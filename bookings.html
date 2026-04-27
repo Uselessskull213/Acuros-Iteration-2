@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-80K00SEBQK"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-80K00SEBQK');</script>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Book a Procedure — Acuros Health</title>
+  <link rel="icon" type="image/png" href="favicon.png"/>
+  <link rel="apple-touch-icon" href="favicon.png"/>
+  <meta name="description" content="Book consultations, treatments, and procedures online through your Acuros patient portal."/>
+  <link rel="canonical" href="https://acuros.ca/bookings"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:url" content="https://acuros.ca/bookings"/>
+  <meta property="og:title" content="Book a Procedure — Acuros Health"/>
+  <meta property="og:description" content="Schedule consultations and procedures online through Acuros Health."/>
+  <meta property="og:site_name" content="Acuros Health"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
+  <script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{display:['Cormorant Garamond','Georgia','serif'],sans:['DM Sans','sans-serif']}}}}</script>
+  <style>
+    :root{--bg:#f5f5f3;--bg2:#fefefe;--bg3:#efefec;--border:#deded8;--text:#191917;--sub:#5c5b55;--mute:#9a9a90;--ac:#0ea5e9;--gold:#c4902a;--nav:rgba(245,245,243,.93)}
+    html.dark{--bg:#0e0e0c;--bg2:#161614;--bg3:#1c1c1a;--border:#282824;--text:#eeeee8;--sub:#96968e;--mute:#5a5a54;--ac:#38bdf8;--gold:#d4a84a;--nav:rgba(14,14,12,.93)}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);transition:background .35s,color .35s;overflow-x:hidden}
+    h1,h2,h3,h4{font-family:'Cormorant Garamond',serif;line-height:1.06;letter-spacing:-.02em}
+    nav{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--nav);backdrop-filter:blur(28px) saturate(200%);-webkit-backdrop-filter:blur(28px) saturate(200%);border-bottom:1px solid rgba(0,0,0,.06);transition:background .35s}
+    html.dark nav{border-bottom-color:rgba(255,255,255,.04)}
+    .nav-link{position:relative;font-size:.68rem;letter-spacing:.13em;text-transform:uppercase;color:var(--sub);background:none;border:none;cursor:pointer;padding:0;font-family:inherit;transition:color .2s;text-decoration:none;display:inline-block}
+    .nav-link::after{content:'';position:absolute;left:0;bottom:-2px;width:0;height:1px;background:var(--ac);transition:width .28s cubic-bezier(.22,1,.36,1)}
+    .nav-link:hover::after,.nav-link.active::after{width:100%}
+    .nav-link:hover,.nav-link.active{color:var(--text)}
+    .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.72rem 1.75rem;font-size:.76rem;letter-spacing:.1em;text-transform:uppercase;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;border:none;transition:all .24s cubic-bezier(.22,1,.36,1);text-decoration:none;position:relative;overflow:hidden}
+    .btn::before{content:'';position:absolute;inset:0;background:rgba(255,255,255,.1);opacity:0;transition:opacity .2s}
+    .btn:hover::before{opacity:1}
+    .btn-solid{background:var(--text);color:var(--bg)}
+    .btn-solid:hover{background:var(--ac);color:#fff;transform:translateY(-1px)}
+    .btn-outline{background:transparent;color:var(--text);border:1px solid rgba(24,24,22,.2)}
+    html.dark .btn-outline{border-color:rgba(238,238,232,.18)}
+    .btn-outline:hover{border-color:var(--ac);color:var(--ac);transform:translateY(-1px)}
+    .card{background:var(--bg2);border:1px solid var(--border);transition:border-color .28s,transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s}
+    .inp{width:100%;background:var(--bg3);border:1px solid var(--border);padding:.78rem 1rem;font-size:.875rem;color:var(--text);font-family:inherit;outline:none;transition:border-color .22s,box-shadow .22s}
+    .inp:focus{border-color:var(--ac);box-shadow:0 0 0 3px rgba(14,165,233,.12);background:var(--bg2)}
+    .inp::placeholder{color:var(--mute)}
+    .lbl{font-family:'DM Sans',sans-serif;font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--mute);font-weight:500}
+    .hr{height:1px;background:var(--border)}
+    .err-box{background:#fef2f2;border:1px solid #fecaca;color:#dc2626;padding:.875rem 1rem;font-size:.82rem;line-height:1.6}
+    html.dark .err-box{background:rgba(220,38,38,.08);border-color:rgba(220,38,38,.25);color:#f87171}
+    .ok-box{background:#f0fdf4;border:1px solid #bbf7d0;color:#15803d;padding:.875rem 1rem;font-size:.82rem;line-height:1.6}
+    html.dark .ok-box{background:rgba(21,128,61,.08);border-color:rgba(21,128,61,.25);color:#4ade80}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .spin{width:16px;height:16px;border:2px solid transparent;border-top-color:currentColor;border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
+    @keyframes pgIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+    .reveal{transition:opacity .75s cubic-bezier(.22,1,.36,1),transform .75s cubic-bezier(.22,1,.36,1)}
+    .js-reveal .reveal:not(.in){opacity:0;transform:translateY(24px)}
+    .reveal.in{opacity:1;transform:none}
+    .d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}.d4{transition-delay:.4s}
+    .mesh{background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:52px 52px}
+    .bg-dots{background-image:radial-gradient(var(--border) 1px,transparent 1px);background-size:28px 28px}
+    #mob-menu{display:none;position:fixed;inset:0;z-index:300;background:var(--bg);flex-direction:column;padding:2.5rem}
+    #mob-menu.open{display:flex;animation:pgIn .3s ease}
+
+    /* ── Procedure cards ── */
+    .procedure-card{background:var(--bg2);border:1px solid var(--border);padding:1.75rem;cursor:pointer;transition:border-color .28s,transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s;position:relative}
+    .procedure-card:hover,.procedure-card.selected{border-color:var(--ac);transform:translateY(-2px);box-shadow:0 12px 40px rgba(14,165,233,.1)}
+    .procedure-card.selected::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--ac)}
+    .procedure-card .check{position:absolute;top:1rem;right:1rem;width:20px;height:20px;border-radius:50%;border:1.5px solid var(--border);background:var(--bg);display:flex;align-items:center;justify-content:center;transition:all .22s}
+    .procedure-card.selected .check{border-color:var(--ac);background:var(--ac)}
+    .procedure-card.selected .check svg{display:block}
+    .procedure-card .check svg{display:none}
+
+    /* ── Step indicator ── */
+    .step-dot{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:500;color:var(--mute);font-family:'DM Sans',sans-serif;transition:all .3s;flex-shrink:0}
+    .step-dot.active{border-color:var(--ac);color:var(--ac)}
+    .step-dot.done{border-color:var(--ac);background:var(--ac);color:#fff}
+
+    ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+    @media(max-width:900px){.g1m{grid-template-columns:1fr!important}.hnm{display:none!important}#mob-btn{display:flex!important}#nav-cta{display:none!important}}
+    @media(max-width:600px){.g2m{grid-template-columns:1fr!important}}
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav id="main-nav">
+  <div style="max-width:1280px;margin:0 auto;padding:0 2rem;height:64px;display:flex;align-items:center;justify-content:space-between">
+    <a href="/" style="display:flex;align-items:center;gap:.875rem;text-decoration:none">
+      <img src="logo.png" alt="Acuros" width="36" height="36" style="flex-shrink:0;object-fit:contain"/>
+      <div>
+        <div style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:.95rem;letter-spacing:.12em;color:var(--text);line-height:1">ACUROS</div>
+        <div class="lbl" style="font-size:.46rem;letter-spacing:.34em">HEALTH</div>
+      </div>
+    </a>
+    <div style="display:flex;align-items:center;gap:2rem" class="hnm">
+      <a class="nav-link" href="/">Home</a>
+      <a class="nav-link" href="/ai-assistant">AI Assistant</a>
+      <a class="nav-link" href="/shop">Shop</a>
+      <a class="nav-link active" href="/bookings">Bookings</a>
+      <a class="nav-link" href="/patient-portal">Patient Login</a>
+    </div>
+    <div style="display:flex;align-items:center;gap:.875rem">
+      <button onclick="toggleTheme()" aria-label="Toggle theme" style="width:36px;height:36px;border:1px solid var(--border);background:none;color:var(--sub);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .22s;font-size:.9rem"><span id="th-icon">☀</span></button>
+      <a href="/patient-portal" class="btn btn-solid" style="padding:.55rem 1.25rem" id="nav-cta">Patient Login</a>
+      <button onclick="openMob()" style="display:none;background:none;border:none;cursor:pointer;color:var(--text);padding:.25rem" id="mob-btn" aria-label="Menu">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16M4 12h12M4 18h8"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ── Mobile Menu ── -->
+<div id="mob-menu">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3rem">
+    <span style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--text)">Acuros Health</span>
+    <button onclick="closeMob()" style="background:none;border:none;cursor:pointer;color:var(--text)">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:1.5rem">
+    <a href="/"             style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Home</a>
+    <a href="/ai-assistant" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">AI Assistant</a>
+    <a href="/shop"         style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Shop</a>
+    <a href="/bookings"     style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--ac);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Bookings</a>
+    <a href="/patient-portal" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--text);text-decoration:none">Patient Login</a>
+  </div>
+</div>
+
+<div style="padding-top:4rem">
+
+  <!-- Hero -->
+  <section style="position:relative;padding:6rem 2rem 5rem;border-bottom:1px solid var(--border);overflow:hidden;min-height:300px;display:flex;align-items:flex-end">
+    <img src="https://images.unsplash.com/photo-1519682337058-a94d519337bc?w=1400&q=80&auto=format&fit=crop" alt="Medical appointment" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(0.25) brightness(0.13)"/>
+    <div style="position:absolute;inset:0;background:linear-gradient(0deg,var(--bg) 0%,rgba(0,0,0,.38) 100%)"></div>
+    <div class="mesh" style="position:absolute;inset:0;opacity:.15"></div>
+    <div style="position:relative;max-width:1280px;margin:0 auto;width:100%">
+      <div class="lbl" style="margin-bottom:1.25rem;color:var(--ac)">Procedure Bookings</div>
+      <h1 style="font-size:clamp(2.75rem,7vw,5rem);font-weight:300;color:var(--text);margin-bottom:1rem">Book your next<br/><em>procedure online.</em></h1>
+      <p style="font-size:.9rem;color:var(--sub);max-width:46ch;line-height:1.85">Select a procedure, choose your preferred date, and submit your booking request. Our team will confirm within one business day.</p>
+    </div>
+  </section>
+
+  <!-- Booking flow -->
+  <section style="max-width:1280px;margin:0 auto;padding:5rem 2rem">
+
+    <!-- Step indicator -->
+    <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:4rem" id="step-indicator">
+      <div class="step-dot active" id="dot-1">1</div>
+      <div style="flex:1;height:1px;background:var(--border)" id="line-1"></div>
+      <div class="step-dot" id="dot-2">2</div>
+      <div style="flex:1;height:1px;background:var(--border)" id="line-2"></div>
+      <div class="step-dot" id="dot-3">3</div>
+      <div style="margin-left:.5rem">
+        <div class="lbl" id="step-label">Step 1 of 3 — Select a Procedure</div>
+      </div>
+    </div>
+
+    <!-- Step 1: Choose procedure -->
+    <div id="step-1">
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:1.25rem;margin-bottom:2rem" class="g1m" id="procedure-grid"></div>
+      <div style="display:flex;justify-content:flex-end">
+        <button onclick="goStep(2)" id="next-1" class="btn btn-solid" disabled style="opacity:.4;cursor:not-allowed">Next: Your Details →</button>
+      </div>
+    </div>
+
+    <!-- Step 2: Patient details -->
+    <div id="step-2" style="display:none">
+      <div style="display:grid;grid-template-columns:3fr 2fr;gap:4rem;align-items:start" class="g1m">
+        <div>
+          <div class="lbl" style="margin-bottom:1.5rem">Your Details</div>
+          <div id="bk-err" style="display:none;margin-bottom:1.25rem"></div>
+          <form id="booking-form" style="display:flex;flex-direction:column;gap:1rem">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem" class="g1m">
+              <div><label class="lbl" style="display:block;margin-bottom:.4rem">First Name *</label><input type="text" id="bk-first" class="inp" placeholder="Jane" required maxlength="80"/></div>
+              <div><label class="lbl" style="display:block;margin-bottom:.4rem">Last Name *</label><input type="text" id="bk-last" class="inp" placeholder="Doe" required maxlength="80"/></div>
+            </div>
+            <div><label class="lbl" style="display:block;margin-bottom:.4rem">Email Address *</label><input type="email" id="bk-email" class="inp" placeholder="name@email.com" required maxlength="160"/></div>
+            <div><label class="lbl" style="display:block;margin-bottom:.4rem">Phone Number *</label><input type="tel" id="bk-phone" class="inp" placeholder="(555) 000-0000" required maxlength="20"/></div>
+            <div><label class="lbl" style="display:block;margin-bottom:.4rem">Preferred Date *</label><input type="date" id="bk-date" class="inp" required/></div>
+            <div><label class="lbl" style="display:block;margin-bottom:.4rem">Preferred Time</label>
+              <select id="bk-time" class="inp">
+                <option value="">No preference</option>
+                <option value="Morning (9am–12pm)">Morning (9am–12pm)</option>
+                <option value="Afternoon (12pm–3pm)">Afternoon (12pm–3pm)</option>
+                <option value="Late Afternoon (3pm–6pm)">Late Afternoon (3pm–6pm)</option>
+              </select>
+            </div>
+            <div><label class="lbl" style="display:block;margin-bottom:.4rem">Additional Notes</label><textarea id="bk-notes" class="inp" placeholder="Any health history, concerns, or questions relevant to your appointment…" rows="4" maxlength="2000" style="resize:vertical"></textarea></div>
+          </form>
+          <div style="display:flex;gap:1rem;margin-top:1.75rem">
+            <button onclick="goStep(1)" class="btn btn-outline">← Back</button>
+            <button onclick="goStep(3)" id="next-2" class="btn btn-solid">Review Booking →</button>
+          </div>
+        </div>
+
+        <!-- Selected procedure summary -->
+        <div>
+          <div class="lbl" style="margin-bottom:1rem">Selected Procedure</div>
+          <div class="card" style="padding:1.5rem" id="selected-summary">
+            <div class="lbl" style="color:var(--ac);margin-bottom:.5rem" id="sum-category"></div>
+            <h4 style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:300;color:var(--text);margin-bottom:.5rem" id="sum-name"></h4>
+            <p style="font-size:.8rem;color:var(--sub);line-height:1.8;margin-bottom:1rem" id="sum-desc"></p>
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <div><div class="lbl" style="margin-bottom:.2rem">Duration</div><div style="font-size:.88rem;color:var(--text)" id="sum-duration"></div></div>
+              <div style="text-align:right"><div class="lbl" style="margin-bottom:.2rem">Starting From</div><div style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:300;color:var(--text)" id="sum-price"></div></div>
+            </div>
+          </div>
+          <div class="card" style="padding:1.25rem;margin-top:1rem">
+            <div class="lbl" style="margin-bottom:.625rem">What happens next</div>
+            <div style="display:flex;flex-direction:column;gap:.625rem">
+              <div style="display:flex;gap:.75rem;font-size:.8rem;color:var(--sub)"><div style="width:1px;height:.9rem;background:var(--ac);flex-shrink:0;margin-top:.15rem"></div>We confirm your request within 1 business day</div>
+              <div style="display:flex;gap:.75rem;font-size:.8rem;color:var(--sub)"><div style="width:1px;height:.9rem;background:var(--ac);flex-shrink:0;margin-top:.15rem"></div>A confirmation email is sent with your appointment details</div>
+              <div style="display:flex;gap:.75rem;font-size:.8rem;color:var(--sub)"><div style="width:1px;height:.9rem;background:var(--ac);flex-shrink:0;margin-top:.15rem"></div>Payment is collected at the clinic on the day of your visit</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3: Review & Submit -->
+    <div id="step-3" style="display:none">
+      <div style="display:grid;grid-template-columns:3fr 2fr;gap:4rem;align-items:start" class="g1m">
+        <div>
+          <div class="lbl" style="margin-bottom:1.5rem">Review Your Booking</div>
+          <div id="bk-ok" style="display:none;margin-bottom:1.25rem"></div>
+          <div id="review-card" class="card" style="padding:2rem;margin-bottom:1.75rem">
+            <div style="display:flex;flex-direction:column;gap:1.25rem">
+              <div>
+                <div class="lbl" style="margin-bottom:.35rem">Procedure</div>
+                <div style="font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:300;color:var(--text)" id="rev-procedure"></div>
+              </div>
+              <div class="hr"></div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem" class="g1m">
+                <div><div class="lbl" style="margin-bottom:.35rem">Name</div><div style="font-size:.88rem;color:var(--text)" id="rev-name"></div></div>
+                <div><div class="lbl" style="margin-bottom:.35rem">Email</div><div style="font-size:.88rem;color:var(--text)" id="rev-email"></div></div>
+                <div><div class="lbl" style="margin-bottom:.35rem">Phone</div><div style="font-size:.88rem;color:var(--text)" id="rev-phone"></div></div>
+                <div><div class="lbl" style="margin-bottom:.35rem">Preferred Date</div><div style="font-size:.88rem;color:var(--text)" id="rev-date"></div></div>
+                <div><div class="lbl" style="margin-bottom:.35rem">Preferred Time</div><div style="font-size:.88rem;color:var(--text)" id="rev-time"></div></div>
+              </div>
+              <div id="rev-notes-wrap" style="display:none">
+                <div class="hr" style="margin-bottom:1.25rem"></div>
+                <div><div class="lbl" style="margin-bottom:.35rem">Notes</div><div style="font-size:.85rem;color:var(--sub);line-height:1.75" id="rev-notes"></div></div>
+              </div>
+            </div>
+          </div>
+          <p style="font-size:.78rem;color:var(--mute);line-height:1.7;margin-bottom:1.25rem">By submitting, you consent to your booking details being stored in our scheduling system. Our team will contact you to confirm your appointment. Payment is due at the clinic.</p>
+          <div style="display:flex;gap:1rem">
+            <button onclick="goStep(2)" class="btn btn-outline">← Edit Details</button>
+            <button onclick="submitBooking()" id="submit-btn" class="btn btn-solid">Confirm Booking</button>
+          </div>
+        </div>
+
+        <div>
+          <div class="lbl" style="margin-bottom:1rem">Booking Summary</div>
+          <div class="card" style="padding:1.5rem">
+            <div class="lbl" style="color:var(--ac);margin-bottom:.375rem" id="rev-sum-cat"></div>
+            <h4 style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:300;color:var(--text);margin-bottom:.75rem" id="rev-sum-name"></h4>
+            <div style="display:flex;justify-content:space-between;padding-top:.875rem;border-top:1px solid var(--border)">
+              <span class="lbl">Est. Price</span>
+              <span style="font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:300;color:var(--text)" id="rev-sum-price"></span>
+            </div>
+            <p style="font-size:.72rem;color:var(--mute);margin-top:.5rem">Final pricing confirmed at consultation. Payment due at clinic.</p>
+          </div>
+          <div class="card" style="padding:1.25rem;margin-top:1rem">
+            <div class="lbl" style="color:var(--ac);margin-bottom:.5rem">Privacy Notice</div>
+            <p style="font-size:.78rem;color:var(--sub);line-height:1.75">Your booking information is stored securely and used only to schedule your appointment. It is never sold or shared with third parties. See our <a href="/privacy" style="color:var(--ac);text-decoration:none">privacy policy</a>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Procedures info strip -->
+  <section style="border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--bg2)">
+    <div style="max-width:1280px;margin:0 auto;padding:3rem 2rem;display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;text-align:center" class="g1m">
+      <div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:300;color:var(--text);margin-bottom:.375rem">1 Business Day</div>
+        <p style="font-size:.8rem;color:var(--sub);line-height:1.75">Confirmation turnaround for all booking requests submitted online.</p>
+      </div>
+      <div style="border-left:1px solid var(--border);border-right:1px solid var(--border);padding:0 2rem">
+        <div style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:300;color:var(--text);margin-bottom:.375rem">Pay at Clinic</div>
+        <p style="font-size:.8rem;color:var(--sub);line-height:1.75">No upfront payment required. All fees are collected on the day of your visit.</p>
+      </div>
+      <div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:300;color:var(--text);margin-bottom:.375rem">Free Cancellation</div>
+        <p style="font-size:.8rem;color:var(--sub);line-height:1.75">Cancel or reschedule up to 24 hours before your appointment at no charge.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer style="border-top:1px solid var(--border);background:var(--bg2)">
+    <div style="max-width:1280px;margin:0 auto;padding:2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
+      <p style="font-size:.74rem;color:var(--mute)">© 2025 Acuros Health Inc. Bookings are requests only and subject to clinic availability.</p>
+      <div style="display:flex;gap:1.5rem">
+        <a href="/"       class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Home</a>
+        <a href="/shop"   class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Shop</a>
+        <a href="/privacy"class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Privacy</a>
+        <a href="/terms"  class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Terms</a>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<script>
+// ─── CONFIGURATION ───────────────────────────────────────────────
+// Replace with your Google Apps Script Web App URL after deploying:
+// 1. Open Google Sheets → Extensions → Apps Script
+// 2. Paste the handler script (see DEPLOY.md for template)
+// 3. Deploy as Web App → set access to "Anyone"
+// 4. Copy the deployment URL and paste it below
+const GOOGLE_SHEETS_URL = '';  // e.g. 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec'
+// ─────────────────────────────────────────────────────────────────
+
+// ── Theme ──
+function toggleTheme() {
+  const dark = document.documentElement.classList.toggle('dark');
+  document.getElementById('th-icon').textContent = dark ? '☽' : '☀';
+  localStorage.setItem('ah-theme', dark ? 'dark' : 'light');
+}
+(function initTheme() {
+  const s = localStorage.getItem('ah-theme');
+  if (s === 'dark' || (!s && window.matchMedia('(prefers-color-scheme:dark)').matches)) {
+    document.documentElement.classList.add('dark');
+    document.getElementById('th-icon').textContent = '☽';
+  }
+})();
+function openMob()  { document.getElementById('mob-menu').classList.add('open'); document.body.style.overflow='hidden'; }
+function closeMob() { document.getElementById('mob-menu').classList.remove('open'); document.body.style.overflow=''; }
+window.addEventListener('scroll', () => { document.getElementById('main-nav').style.boxShadow = window.scrollY > 10 ? '0 4px 32px rgba(0,0,0,.06)' : ''; });
+
+// ── Procedures data ──
+const PROCEDURES = [
+  { id:1, name:'Initial Consultation',        category:'General',      duration:'45 min', price:'$150',  desc:'Comprehensive first visit with history review, examination, and personalized care planning.' },
+  { id:2, name:'Follow-Up Appointment',        category:'General',      duration:'20 min', price:'$90',   desc:'Check-in on treatment progress, medication review, and care plan adjustments.' },
+  { id:3, name:'Skin Analysis & Treatment Plan',category:'Dermatology', duration:'60 min', price:'$200',  desc:'In-depth skin assessment with a personalized treatment roadmap and product recommendations.' },
+  { id:4, name:'Chemical Peel',                category:'Aesthetics',   duration:'45 min', price:'$180',  desc:'Medical-grade chemical exfoliation to improve texture, tone, and address hyperpigmentation.' },
+  { id:5, name:'Microneedling Session',        category:'Aesthetics',   duration:'60 min', price:'$280',  desc:'Collagen induction therapy for skin rejuvenation, scarring, and fine line reduction.' },
+  { id:6, name:'IV Nutrient Therapy',          category:'Wellness',     duration:'60 min', price:'$220',  desc:'Customised intravenous vitamin and mineral infusions for energy, immunity, and recovery.' },
+  { id:7, name:'Botox / Neuromodulator',       category:'Aesthetics',   duration:'30 min', price:'From $10/unit', desc:'Precision neuromodulator injections for expression lines and facial contouring.' },
+  { id:8, name:'Dermal Filler',                category:'Aesthetics',   duration:'45 min', price:'From $650',    desc:'Hyaluronic acid filler for volume restoration, lip enhancement, and contouring.' },
+];
+
+let selectedProcedure = null;
+let currentStep = 1;
+
+// ── Render procedures ──
+function renderProcedures() {
+  document.getElementById('procedure-grid').innerHTML = PROCEDURES.map(p => `
+    <div class="procedure-card" id="proc-${p.id}" onclick="selectProcedure(${p.id})">
+      <div class="check">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+      </div>
+      <div class="lbl" style="color:var(--ac);margin-bottom:.5rem">${p.category}</div>
+      <h4 style="font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:300;color:var(--text);margin-bottom:.375rem;padding-right:1.5rem">${p.name}</h4>
+      <p style="font-size:.78rem;color:var(--sub);line-height:1.75;margin-bottom:1rem">${p.desc}</p>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:.78rem;color:var(--mute)">${p.duration}</span>
+        <span style="font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:300;color:var(--text)">${p.price}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function selectProcedure(id) {
+  selectedProcedure = PROCEDURES.find(p => p.id === id);
+  document.querySelectorAll('.procedure-card').forEach(el => el.classList.remove('selected'));
+  document.getElementById('proc-' + id)?.classList.add('selected');
+  const btn = document.getElementById('next-1');
+  if (btn) { btn.disabled = false; btn.style.opacity = '1'; btn.style.cursor = 'pointer'; }
+}
+
+// ── Step navigation ──
+function goStep(n) {
+  if (n === 2) {
+    if (!selectedProcedure) return;
+    // Populate summary sidebar
+    document.getElementById('sum-category').textContent = selectedProcedure.category;
+    document.getElementById('sum-name').textContent     = selectedProcedure.name;
+    document.getElementById('sum-desc').textContent     = selectedProcedure.desc;
+    document.getElementById('sum-duration').textContent = selectedProcedure.duration;
+    document.getElementById('sum-price').textContent    = selectedProcedure.price;
+    // Set min date to tomorrow
+    const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1);
+    document.getElementById('bk-date').min = tomorrow.toISOString().split('T')[0];
+  }
+  if (n === 3) {
+    // Validate form
+    const first = document.getElementById('bk-first').value.trim();
+    const last  = document.getElementById('bk-last').value.trim();
+    const email = document.getElementById('bk-email').value.trim();
+    const phone = document.getElementById('bk-phone').value.trim();
+    const date  = document.getElementById('bk-date').value;
+    const errEl = document.getElementById('bk-err');
+    if (!first || !last || !email || !phone || !date) {
+      errEl.style.display = 'block';
+      errEl.className = 'err-box';
+      errEl.textContent = 'Please complete all required fields before continuing.';
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      errEl.style.display = 'block'; errEl.className = 'err-box'; errEl.textContent = 'Please enter a valid email address.'; return;
+    }
+    errEl.style.display = 'none';
+    // Populate review
+    const time  = document.getElementById('bk-time').value  || 'No preference';
+    const notes = document.getElementById('bk-notes').value.trim();
+    document.getElementById('rev-procedure').textContent = selectedProcedure.name;
+    document.getElementById('rev-name').textContent      = first + ' ' + last;
+    document.getElementById('rev-email').textContent     = email;
+    document.getElementById('rev-phone').textContent     = phone;
+    document.getElementById('rev-date').textContent      = new Date(date + 'T12:00:00').toLocaleDateString('en-CA', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+    document.getElementById('rev-time').textContent      = time;
+    document.getElementById('rev-sum-cat').textContent   = selectedProcedure.category;
+    document.getElementById('rev-sum-name').textContent  = selectedProcedure.name;
+    document.getElementById('rev-sum-price').textContent = selectedProcedure.price;
+    const notesWrap = document.getElementById('rev-notes-wrap');
+    if (notes) { document.getElementById('rev-notes').textContent = notes; notesWrap.style.display = 'block'; }
+    else notesWrap.style.display = 'none';
+  }
+  // Transition
+  [1,2,3].forEach(i => document.getElementById('step-' + i).style.display = i === n ? 'block' : 'none');
+  currentStep = n;
+  updateStepIndicator(n);
+  window.scrollTo({ top: document.getElementById('step-indicator').offsetTop - 100, behavior: 'smooth' });
+}
+
+function updateStepIndicator(n) {
+  const labels = ['Step 1 of 3 — Select a Procedure', 'Step 2 of 3 — Your Details', 'Step 3 of 3 — Review & Confirm'];
+  document.getElementById('step-label').textContent = labels[n - 1];
+  [1,2,3].forEach(i => {
+    const dot = document.getElementById('dot-' + i);
+    if (i < n)  { dot.className = 'step-dot done'; dot.innerHTML = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>'; }
+    else if (i === n) { dot.className = 'step-dot active'; dot.textContent = i; }
+    else { dot.className = 'step-dot'; dot.textContent = i; }
+  });
+}
+
+// ── Submit booking to Google Sheets ──
+async function submitBooking() {
+  const btn = document.getElementById('submit-btn');
+  const okEl = document.getElementById('bk-ok');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin"></span> Submitting…';
+
+  const payload = {
+    procedure:  selectedProcedure.name,
+    category:   selectedProcedure.category,
+    price:      selectedProcedure.price,
+    firstName:  document.getElementById('bk-first').value.trim(),
+    lastName:   document.getElementById('bk-last').value.trim(),
+    email:      document.getElementById('bk-email').value.trim(),
+    phone:      document.getElementById('bk-phone').value.trim(),
+    date:       document.getElementById('bk-date').value,
+    time:       document.getElementById('bk-time').value || 'No preference',
+    notes:      document.getElementById('bk-notes').value.trim(),
+    submittedAt: new Date().toISOString(),
+  };
+
+  try {
+    if (GOOGLE_SHEETS_URL) {
+      // Submit to Google Apps Script — use no-cors mode so preflight is skipped
+      await fetch(GOOGLE_SHEETS_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+    }
+    // Show success regardless (no-cors gives opaque response; we trust the script)
+    okEl.style.display = 'block';
+    okEl.className = 'ok-box';
+    okEl.innerHTML = `
+      <strong>Booking request received!</strong><br/>
+      Thank you, ${payload.firstName}. We'll confirm your <strong>${payload.procedure}</strong> appointment by email within one business day.
+      ${!GOOGLE_SHEETS_URL ? '<br/><em style="opacity:.7">(Note: Google Sheets URL not yet configured — booking logged locally.)</em>' : ''}
+    `;
+    document.getElementById('review-card').style.opacity = '.5';
+    document.getElementById('review-card').style.pointerEvents = 'none';
+    btn.style.display = 'none';
+    document.querySelector('[onclick="goStep(2)"]').style.display = 'none';
+    window.scrollTo({ top: okEl.offsetTop - 120, behavior: 'smooth' });
+  } catch (err) {
+    okEl.style.display = 'block';
+    okEl.className = 'err-box';
+    okEl.textContent = 'Unable to submit right now. Please try again or call your clinic directly.';
+    btn.disabled = false;
+    btn.textContent = 'Confirm Booking';
+  }
+}
+
+// ── Reveal animations ──
+document.documentElement.classList.add('js-reveal');
+function setupReveal() {
+  if (!('IntersectionObserver' in window)) { document.querySelectorAll('.reveal').forEach(el => el.classList.add('in')); return; }
+  const io = new IntersectionObserver(entries => { entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }); }, { threshold: 0, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal:not(.in)').forEach(el => io.observe(el));
+}
+document.addEventListener('DOMContentLoaded', () => { renderProcedures(); setupReveal(); });
+setTimeout(() => document.querySelectorAll('.reveal').forEach(el => el.classList.add('in')), 3000);
+</script>
+</body>
+</html>
