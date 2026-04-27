@@ -22,14 +22,14 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
-  <script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{display:['Cormorant Garamond','Georgia','serif'],sans:['DM Sans','sans-serif']}}}}</script>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
+  <script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{display:['Cormorant Garamond','Georgia','serif'],sans:['Inter','DM Sans','sans-serif']}}}}</script>
   <style>
-    :root{--bg:#f5f5f3;--bg2:#fefefe;--bg3:#efefec;--border:#deded8;--text:#191917;--sub:#5c5b55;--mute:#9a9a90;--ac:#0ea5e9;--gold:#c4902a;--nav:rgba(245,245,243,.82);--shadow:0 4px 32px rgba(0,0,0,.08)}
-    html.dark{--bg:#0e0e0c;--bg2:#161614;--bg3:#1c1c1a;--border:#282824;--text:#eeeee8;--sub:#96968e;--mute:#5a5a54;--ac:#38bdf8;--gold:#d4a84a;--nav:rgba(14,14,12,.88);--shadow:0 4px 32px rgba(0,0,0,.32)}
+    :root{--bg:#f3f2ef;--bg2:#fdfcfa;--bg3:#eceae5;--border:#dbd9d1;--text:#181714;--sub:#57564f;--mute:#99978e;--ac:#0b7a6d;--gold:#b8892a;--nav:rgba(243,242,239,.92);--shadow:0 4px 40px rgba(0,0,0,.08)}
+    html.dark{--bg:#0d0d0b;--bg2:#151512;--bg3:#1a1a17;--border:#262620;--text:#eeeee7;--sub:#94938b;--mute:#565650;--ac:#2bbfaf;--gold:#d4a84a;--nav:rgba(13,13,11,.93);--shadow:0 4px 40px rgba(0,0,0,.38)}
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     html{scroll-behavior:smooth}
-    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);transition:background .35s,color .35s;overflow-x:hidden;cursor:none}
+    body{font-family:'Inter','DM Sans',sans-serif;background:var(--bg);color:var(--text);transition:background .35s,color .35s;overflow-x:hidden;cursor:none}
     @media(hover:none),(pointer:coarse){body{cursor:auto}}
     h1,h2,h3,h4{font-family:'Cormorant Garamond',serif;line-height:1.06;letter-spacing:-.02em}
 
@@ -59,7 +59,7 @@
     .btn::before{content:'';position:absolute;inset:0;background:rgba(255,255,255,.1);opacity:0;transition:opacity .2s}
     .btn:hover::before{opacity:1}
     .btn-solid{background:var(--text);color:var(--bg)}
-    .btn-solid:hover{background:var(--ac);color:#fff;transform:translateY(-2px);box-shadow:0 8px 24px rgba(14,165,233,.25)}
+    .btn-solid:hover{background:var(--ac);color:#fff;transform:translateY(-2px);box-shadow:0 8px 32px rgba(11,122,109,.3)}
     .btn-outline{background:transparent;color:var(--text);border:1px solid rgba(24,24,22,.2)}
     html.dark .btn-outline{border-color:rgba(238,238,232,.18)}
     .btn-outline:hover{border-color:var(--ac);color:var(--ac);transform:translateY(-2px)}
@@ -67,7 +67,7 @@
 
     .card{background:var(--bg2);border:1px solid var(--border);transition:border-color .28s,box-shadow .3s}
     .inp{width:100%;background:var(--bg3);border:1px solid var(--border);padding:.78rem 1rem;font-size:.875rem;color:var(--text);font-family:inherit;outline:none;transition:border-color .22s,box-shadow .22s}
-    .inp:focus{border-color:var(--ac);box-shadow:0 0 0 3px rgba(14,165,233,.12);background:var(--bg2)}
+    .inp:focus{border-color:var(--ac);box-shadow:0 0 0 3px rgba(11,122,109,.12);background:var(--bg2)}
     .inp::placeholder{color:var(--mute)}
     .lbl{font-family:'DM Sans',sans-serif;font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--mute);font-weight:500}
     .hr{height:1px;background:var(--border)}
@@ -96,7 +96,7 @@
     .thinking span:nth-child(2){animation-delay:.2s}
     .thinking span:nth-child(3){animation-delay:.4s}
 
-    @keyframes glow{0%,100%{box-shadow:0 0 4px 1px rgba(14,165,233,.28)}50%{box-shadow:0 0 14px 5px rgba(14,165,233,.52)}}
+    @keyframes glow{0%,100%{box-shadow:0 0 4px 1px rgba(11,122,109,.28)}50%{box-shadow:0 0 14px 5px rgba(11,122,109,.52)}}
     .glow-dot{animation:glow 2.2s ease infinite}
 
     /* ── Bgs ── */
@@ -105,11 +105,11 @@
     .img-panel{position:relative;overflow:hidden;background:#0a0f1a}
     .img-panel img{width:100%;height:100%;object-fit:cover;object-position:center;opacity:.72;transition:opacity .5s,transform .8s cubic-bezier(.22,1,.36,1)}
     .img-panel:hover img{opacity:.88;transform:scale(1.04)}
-    .img-panel-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(14,165,233,.07) 0%,rgba(0,0,0,.32) 100%)}
+    .img-panel-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(11,122,109,.07) 0%,rgba(0,0,0,.32) 100%)}
 
     /* ── Use case cards ── */
     .use-card{background:var(--bg2);padding:1.5rem;border:1px solid var(--border);transition:border-color .28s,transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s;will-change:transform}
-    .use-card:hover{border-color:var(--ac);transform:translateY(-3px);box-shadow:0 12px 40px rgba(14,165,233,.09)}
+    .use-card:hover{border-color:var(--ac);transform:translateY(-3px);box-shadow:0 12px 40px rgba(11,122,109,.09)}
 
     /* ── Mob menu ── */
     #mob-menu{display:none;position:fixed;inset:0;z-index:300;background:var(--bg);flex-direction:column;padding:2.5rem}
@@ -146,7 +146,6 @@
     <div style="display:flex;align-items:center;gap:2rem" class="hnm">
       <a class="nav-link" href="/">Home</a>
       <a class="nav-link active" href="/ai-assistant">AI Assistant</a>
-      <a class="nav-link" href="/shop">Shop</a>
       <a class="nav-link" href="/patient-portal">Patient Login</a>
     </div>
     <div style="display:flex;align-items:center;gap:.875rem">
@@ -170,7 +169,6 @@
   <div style="display:flex;flex-direction:column;gap:1.5rem">
     <a href="/"             style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Home</a>
     <a href="/ai-assistant" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--ac);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">AI Assistant</a>
-    <a href="/shop"         style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Shop</a>
     <a href="/patient-portal" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--text);text-decoration:none">Patient Login</a>
   </div>
 </div>
@@ -278,7 +276,6 @@
       <p style="font-size:.74rem;color:var(--mute)">© 2025 Acuros Health Inc.</p>
       <div style="display:flex;gap:1.5rem">
         <a href="/"               class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Home</a>
-        <a href="/shop"           class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Shop</a>
         <a href="/patient-portal" class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Patient Portal</a>
         <a href="/privacy"        class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Privacy</a>
         <a href="/terms"          class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Terms</a>

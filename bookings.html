@@ -18,14 +18,14 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
-  <script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{display:['Cormorant Garamond','Georgia','serif'],sans:['DM Sans','sans-serif']}}}}</script>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
+  <script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{display:['Cormorant Garamond','Georgia','serif'],sans:['Inter','DM Sans','sans-serif']}}}}</script>
   <style>
-    :root{--bg:#f5f5f3;--bg2:#fefefe;--bg3:#efefec;--border:#deded8;--text:#191917;--sub:#5c5b55;--mute:#9a9a90;--ac:#0ea5e9;--gold:#c4902a;--nav:rgba(245,245,243,.93)}
-    html.dark{--bg:#0e0e0c;--bg2:#161614;--bg3:#1c1c1a;--border:#282824;--text:#eeeee8;--sub:#96968e;--mute:#5a5a54;--ac:#38bdf8;--gold:#d4a84a;--nav:rgba(14,14,12,.93)}
+    :root{--bg:#f3f2ef;--bg2:#fdfcfa;--bg3:#eceae5;--border:#dbd9d1;--text:#181714;--sub:#57564f;--mute:#99978e;--ac:#0b7a6d;--gold:#b8892a;--nav:rgba(243,242,239,.93)}
+    html.dark{--bg:#0d0d0b;--bg2:#151512;--bg3:#1a1a17;--border:#262620;--text:#eeeee7;--sub:#94938b;--mute:#565650;--ac:#2bbfaf;--gold:#d4a84a;--nav:rgba(13,13,11,.93)}
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     html{scroll-behavior:smooth}
-    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);transition:background .35s,color .35s;overflow-x:hidden;cursor:none}
+    body{font-family:'Inter','DM Sans',sans-serif;background:var(--bg);color:var(--text);transition:background .35s,color .35s;overflow-x:hidden;cursor:none}
     @media(hover:none),(pointer:coarse){body{cursor:auto}#cursor-dot,#cursor-ring{display:none!important}}
     h1,h2,h3,h4{font-family:'Cormorant Garamond',serif;line-height:1.06;letter-spacing:-.02em}
 
@@ -74,7 +74,7 @@
     .hr{height:1px;background:var(--border)}
     .card{background:var(--bg2);border:1px solid var(--border);transition:border-color .28s,transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s}
     .inp{width:100%;background:var(--bg3);border:1px solid var(--border);padding:.78rem 1rem;font-size:.875rem;color:var(--text);font-family:inherit;outline:none;transition:border-color .22s,box-shadow .22s}
-    .inp:focus{border-color:var(--ac);box-shadow:0 0 0 3px rgba(14,165,233,.12);background:var(--bg2)}
+    .inp:focus{border-color:var(--ac);box-shadow:0 0 0 3px rgba(11,122,109,.12);background:var(--bg2)}
     .inp::placeholder{color:var(--mute)}
     .err-box{background:#fef2f2;border:1px solid #fecaca;color:#dc2626;padding:.875rem 1rem;font-size:.82rem;line-height:1.6}
     html.dark .err-box{background:rgba(220,38,38,.08);border-color:rgba(220,38,38,.25);color:#f87171}
@@ -107,7 +107,7 @@
 
     /* ── Step indicator ── */
     .step-dot{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:500;color:var(--mute);font-family:'DM Sans',sans-serif;transition:all .35s cubic-bezier(.22,1,.36,1);flex-shrink:0}
-    .step-dot.active{border-color:var(--ac);color:var(--ac);box-shadow:0 0 0 4px rgba(14,165,233,.12)}
+    .step-dot.active{border-color:var(--ac);color:var(--ac);box-shadow:0 0 0 4px rgba(11,122,109,.12)}
     .step-dot.done{border-color:var(--ac);background:var(--ac);color:#fff}
     .step-line{flex:1;height:1px;background:var(--border);position:relative;overflow:hidden}
     .step-line::after{content:'';position:absolute;inset:0;background:var(--ac);transform:scaleX(0);transform-origin:left;transition:transform .55s cubic-bezier(.22,1,.36,1)}
@@ -115,7 +115,7 @@
 
     /* ── Procedure cards ── */
     .procedure-card{background:var(--bg2);border:1px solid var(--border);padding:1.75rem;cursor:pointer;transition:border-color .28s,box-shadow .35s;position:relative;transform-style:preserve-3d;will-change:transform}
-    .procedure-card:hover,.procedure-card.selected{border-color:var(--ac);box-shadow:0 12px 40px rgba(14,165,233,.1)}
+    .procedure-card:hover,.procedure-card.selected{border-color:var(--ac);box-shadow:0 12px 40px rgba(11,122,109,.1)}
     .procedure-card.selected::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--ac)}
     .procedure-card .check{position:absolute;top:1rem;right:1rem;width:20px;height:20px;border-radius:50%;border:1.5px solid var(--border);background:var(--bg);display:flex;align-items:center;justify-content:center;transition:all .22s}
     .procedure-card.selected .check{border-color:var(--ac);background:var(--ac)}
@@ -159,7 +159,6 @@
     <div style="display:flex;align-items:center;gap:2rem" class="hnm">
       <a class="nav-link" href="/">Home</a>
       <a class="nav-link" href="/ai-assistant">AI Assistant</a>
-      <a class="nav-link" href="/shop">Shop</a>
       <a class="nav-link" href="/patient-portal">Patient Login</a>
     </div>
     <div style="display:flex;align-items:center;gap:.875rem">
@@ -183,7 +182,6 @@
   <div style="display:flex;flex-direction:column;gap:1.5rem">
     <a href="/"             style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Home</a>
     <a href="/ai-assistant" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">AI Assistant</a>
-    <a href="/shop"         style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Shop</a>
     <a href="/patient-portal" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--text);text-decoration:none">Patient Login</a>
   </div>
 </div>
@@ -362,7 +360,7 @@
       <p style="font-size:.74rem;color:var(--mute)">© 2025 Acuros Health Inc. Bookings are requests only and subject to clinic availability.</p>
       <div style="display:flex;gap:1.5rem">
         <a href="/"        class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Home</a>
-        <a href="/shop"    class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Shop</a>
+        <a href="/patient-portal" class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Patient Portal</a>
         <a href="/privacy" class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Privacy</a>
         <a href="/terms"   class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Terms</a>
       </div>

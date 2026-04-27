@@ -18,14 +18,14 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
-  <script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{display:['Cormorant Garamond','Georgia','serif'],sans:['DM Sans','sans-serif']}}}}</script>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
+  <script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{display:['Cormorant Garamond','Georgia','serif'],sans:['Inter','DM Sans','sans-serif']}}}}</script>
   <style>
-    :root{--bg:#f5f5f3;--bg2:#fefefe;--bg3:#efefec;--border:#deded8;--text:#191917;--sub:#5c5b55;--mute:#9a9a90;--ac:#0ea5e9;--gold:#c4902a;--nav:rgba(245,245,243,.93)}
-    html.dark{--bg:#0e0e0c;--bg2:#161614;--bg3:#1c1c1a;--border:#282824;--text:#eeeee8;--sub:#96968e;--mute:#5a5a54;--ac:#38bdf8;--gold:#d4a84a;--nav:rgba(14,14,12,.93)}
+    :root{--bg:#f3f2ef;--bg2:#fdfcfa;--bg3:#eceae5;--border:#dbd9d1;--text:#181714;--sub:#57564f;--mute:#99978e;--ac:#0b7a6d;--gold:#b8892a;--nav:rgba(243,242,239,.93)}
+    html.dark{--bg:#0d0d0b;--bg2:#151512;--bg3:#1a1a17;--border:#262620;--text:#eeeee7;--sub:#94938b;--mute:#565650;--ac:#2bbfaf;--gold:#d4a84a;--nav:rgba(13,13,11,.93)}
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     html{scroll-behavior:smooth}
-    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);transition:background .35s,color .35s;overflow-x:hidden;cursor:none}
+    body{font-family:'Inter','DM Sans',sans-serif;background:var(--bg);color:var(--text);transition:background .35s,color .35s;overflow-x:hidden;cursor:none}
     @media(hover:none),(pointer:coarse){body{cursor:auto}#cursor-dot,#cursor-ring{display:none!important}}
     h1,h2,h3,h4{font-family:'Cormorant Garamond',serif;line-height:1.06;letter-spacing:-.02em}
 
@@ -137,7 +137,6 @@
     <div style="display:flex;align-items:center;gap:2rem" class="hnm">
       <a class="nav-link" href="/">Home</a>
       <a class="nav-link" href="/ai-assistant">AI Assistant</a>
-      <a class="nav-link active" href="/shop">Shop</a>
       <a class="nav-link" href="/patient-portal">Patient Login</a>
     </div>
     <div style="display:flex;align-items:center;gap:.875rem">
@@ -165,8 +164,7 @@
   <div style="display:flex;flex-direction:column;gap:1.5rem">
     <a href="/"             style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Home</a>
     <a href="/ai-assistant" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">AI Assistant</a>
-    <a href="/shop"         style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--ac);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Shop</a>
-    <a href="/patient-portal" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--text);text-decoration:none">Patient Login</a>
+    <a href="/patient-portal" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--ac);text-decoration:none">Patient Login</a>
   </div>
 </div>
 
@@ -245,6 +243,23 @@
   </section>
 
   <!-- ── Filters + Grid ── -->
+  <!-- ── Patient Portal Gateway Banner ── -->
+  <div style="background:var(--bg2);border-bottom:1px solid var(--border)">
+    <div style="max-width:1280px;margin:0 auto;padding:1.25rem 2rem;display:flex;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:1rem">
+        <div style="width:8px;height:8px;background:var(--gold);border-radius:50%;flex-shrink:0"></div>
+        <div>
+          <span style="font-size:.76rem;color:var(--text);font-weight:500;letter-spacing:.01em">This shop is available to Acuros patients.</span>
+          <span style="font-size:.76rem;color:var(--sub);margin-left:.5rem">Log in to your Patient Portal to save your cart and complete checkout securely.</span>
+        </div>
+      </div>
+      <a href="/patient-portal" style="display:inline-flex;align-items:center;gap:.5rem;font-size:.67rem;letter-spacing:.12em;text-transform:uppercase;font-weight:500;color:var(--ac);text-decoration:none;white-space:nowrap;transition:gap .25s cubic-bezier(.22,1,.36,1)" onmouseover="this.style.gap='.875rem'" onmouseout="this.style.gap='.5rem'">
+        Patient Login
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </div>
+
   <section style="max-width:1280px;margin:0 auto;padding:4rem 2rem">
 
     <!-- Filter row -->
@@ -363,7 +378,7 @@ function initTilt() {
       const rx = ((e.clientY - (r.top  + r.height / 2)) / r.height) * -4;
       const ry = ((e.clientX - (r.left + r.width  / 2)) / r.width)  *  4;
       card.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-4px)`;
-      card.style.boxShadow = `0 20px 60px rgba(14,165,233,.13)`;
+      card.style.boxShadow = `0 20px 60px rgba(11,122,109,.13)`;
       card.style.borderColor = 'var(--ac)';
     });
     card.addEventListener('mouseleave', () => {
