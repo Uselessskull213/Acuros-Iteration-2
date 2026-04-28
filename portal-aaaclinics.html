@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-80K00SEBQK"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-80K00SEBQK');</script>
@@ -14,161 +14,168 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,200;0,300;0,400;0,500;1,200;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
   <script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{display:['Cormorant Garamond','Georgia','serif'],sans:['DM Sans','sans-serif']}}}}</script>
   <style>
     :root{
-      --bg:#FAF8F5;--bg2:#FFFFFF;--border:#EDE8E3;--text:#1A1614;--sub:#6B5E56;
-      --mute:#A89990;--ac:#C9A96E;--rose:#D4A090;--nav:rgba(250,248,245,.93);
-      --gold:#C9A96E;--gold2:#E2C590;
-    }
-    html.dark{
-      --bg:#120E0C;--bg2:#1C1510;--border:#2E2420;--text:#F5F0EA;--sub:#A89990;
-      --mute:#6B5E56;--ac:#E2C590;--rose:#B8806E;--nav:rgba(18,14,12,.93);
-      --gold:#E2C590;--gold2:#C9A96E;
+      --bg:#0c0c0a;--bg2:#111110;--bg3:#161614;
+      --border:#1e1e1b;--text:#f0ede8;--sub:#8c8880;--mute:#4e4c48;
+      --ac:#c9a96e;--nav:rgba(12,12,10,.97);
+      --shadow:0 4px 60px rgba(0,0,0,.6)
     }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     html{scroll-behavior:smooth}
-    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);transition:background .3s,color .3s;overflow-x:hidden}
-    h1,h2,h3,h4{font-family:'Cormorant Garamond',serif;line-height:1.08;letter-spacing:-.015em}
-    nav{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--nav);backdrop-filter:blur(24px) saturate(180%);border-bottom:1px solid var(--border);transition:background .3s}
-    .nav-link{position:relative;font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);background:none;border:none;cursor:pointer;padding:0;font-family:inherit;transition:color .2s;text-decoration:none;display:inline-block}
-    .nav-link::after{content:'';position:absolute;left:0;bottom:-2px;width:0;height:1px;background:var(--ac);transition:width .25s}
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
+    h1,h2,h3,h4{font-family:'Cormorant Garamond',serif;line-height:1.04;letter-spacing:-.025em}
+
+    /* ── Grain ── */
+    #grain{position:fixed;inset:0;z-index:9992;pointer-events:none;opacity:.065;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-repeat:repeat;background-size:180px 180px}
+
+    /* ── Nav ── */
+    nav{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--nav);backdrop-filter:blur(32px) saturate(180%);-webkit-backdrop-filter:blur(32px) saturate(180%);border-bottom:1px solid var(--border);transition:box-shadow .3s}
+    nav.scrolled{box-shadow:0 1px 40px rgba(0,0,0,.5)}
+    .nav-link{position:relative;font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--sub);background:none;border:none;cursor:pointer;padding:0;font-family:'DM Sans',sans-serif;font-weight:400;transition:color .2s;text-decoration:none;display:inline-block}
+    .nav-link::after{content:'';position:absolute;left:0;bottom:-2px;width:0;height:1px;background:var(--ac);transition:width .28s cubic-bezier(.22,1,.36,1)}
     .nav-link:hover::after,.nav-link.active::after{width:100%}
     .nav-link:hover,.nav-link.active{color:var(--text)}
-    .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.7rem 1.75rem;font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;border:none;transition:all .22s;text-decoration:none;position:relative;overflow:hidden}
-    .btn::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,.08);opacity:0;transition:opacity .2s}
-    .btn:hover::after{opacity:1}
-    .btn-gold{background:var(--ac);color:#fff}
-    .btn-gold:hover{background:var(--gold2);color:#fff}
-    .btn-outline{background:transparent;color:var(--text);border:1px solid var(--border)}
+
+    /* ── Buttons ── */
+    .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.7rem 1.75rem;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;font-weight:400;font-family:'DM Sans',sans-serif;cursor:pointer;border:none;transition:background .22s,color .22s,transform .22s,border-color .22s;text-decoration:none;position:relative}
+    .btn:not([disabled]):active{transform:scale(0.97);transition-duration:80ms}
+    .btn-solid{background:var(--text);color:var(--bg)}
+    .btn-solid:hover{background:var(--ac);color:var(--bg)}
+    .btn-outline{background:transparent;color:var(--text);border:1px solid rgba(240,237,232,.18)}
     .btn-outline:hover{border-color:var(--ac);color:var(--ac)}
-    .btn-dark{background:var(--text);color:var(--bg)}
-    .btn-dark:hover{background:var(--ac);color:#fff}
-    .card{background:var(--bg2);border:1px solid var(--border);transition:border-color .25s,transform .25s,box-shadow .25s}
-    .card:hover{border-color:var(--ac);transform:translateY(-2px);box-shadow:0 8px 32px rgba(201,169,110,.12)}
-    .card-flat{background:var(--bg2);border:1px solid var(--border)}
-    .inp{width:100%;background:var(--bg);border:1px solid var(--border);padding:.75rem 1rem;font-size:.875rem;color:var(--text);font-family:inherit;outline:none;transition:border-color .2s,box-shadow .2s}
-    .inp:focus{border-color:var(--ac);box-shadow:0 0 0 3px rgba(201,169,110,.12)}
-    .inp::placeholder{color:var(--mute)}
-    .lbl{font-family:'DM Sans',sans-serif;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);font-weight:500}
-    .err-box{background:#fef2f2;border:1px solid #fecaca;color:#dc2626;padding:.75rem 1rem;font-size:.8rem}
-    html.dark .err-box{background:rgba(220,38,38,.08);border-color:rgba(220,38,38,.25);color:#f87171}
-    .ok-box{background:#f0fdf4;border:1px solid #bbf7d0;color:#15803d;padding:.75rem 1rem;font-size:.8rem}
-    html.dark .ok-box{background:rgba(21,128,61,.08);border-color:rgba(21,128,61,.25);color:#4ade80}
-    @keyframes spin{to{transform:rotate(360deg)}}
-    .spin{width:16px;height:16px;border:2px solid transparent;border-top-color:currentColor;border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
-    @keyframes pgIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-    @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
-    .stagger-item{opacity:0;transform:translateX(-14px);transition:opacity .5s ease,transform .5s ease}
-    .stagger-item.in{opacity:1;transform:none}
-    #mob-menu{display:none;position:fixed;inset:0;z-index:300;background:var(--bg);flex-direction:column;padding:2.5rem}
-    #mob-menu.open{display:flex;animation:pgIn .3s ease}
-    .product-card{background:var(--bg2);border:1px solid var(--border);overflow:hidden;transition:border-color .25s,box-shadow .25s}
-    .product-card:hover{border-color:var(--ac);box-shadow:0 4px 24px rgba(201,169,110,.1)}
-    .product-img{width:100%;height:220px;object-fit:cover;display:block;background:var(--bg);filter:saturate(.85)}
-    .treatment-card{background:var(--bg2);border:1px solid var(--border);padding:2rem;display:flex;flex-direction:column;gap:1rem;transition:border-color .28s,box-shadow .3s,transform .28s cubic-bezier(.22,1,.36,1);border-top:2px solid transparent;position:relative;will-change:transform}
-    .treatment-card:hover{border-color:rgba(201,169,110,.4);border-top-color:var(--ac);box-shadow:0 12px 40px rgba(201,169,110,.12);transform:translateY(-3px)}
-    .treat-icon{width:44px;height:44px;border:1px solid rgba(201,169,110,.25);background:rgba(201,169,110,.06);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .25s,border-color .25s}
-    .treatment-card:hover .treat-icon{background:rgba(201,169,110,.12);border-color:var(--ac)}
-    .reward-badge{display:inline-flex;align-items:center;gap:.375rem;padding:.3rem .75rem;font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;font-weight:500;background:linear-gradient(135deg,rgba(201,169,110,.15),rgba(212,160,144,.15));border:1px solid rgba(201,169,110,.3);color:var(--ac)}
+    .btn-ac{background:var(--ac);color:var(--bg)}
+    .btn-ac:hover{filter:brightness(1.1)}
+
+    /* ── Atoms ── */
+    .lbl{font-family:'DM Sans',sans-serif;font-size:.58rem;letter-spacing:.22em;text-transform:uppercase;color:var(--mute);font-weight:400}
     .gold-line{height:1px;background:linear-gradient(90deg,transparent,var(--ac),transparent)}
+
+    /* ── Cards ── */
+    .card{background:var(--bg2);border:1px solid var(--border);transition:border-color .25s,transform .25s cubic-bezier(.22,1,.36,1)}
+    .card:hover{border-color:rgba(201,169,110,.35);transform:translateY(-2px)}
+    .treatment-card{background:var(--bg2);border:1px solid var(--border);padding:2rem;display:flex;flex-direction:column;gap:1rem;transition:border-top-color .28s,border-color .28s,transform .28s cubic-bezier(.22,1,.36,1);border-top:2px solid transparent;will-change:transform}
+    .treatment-card:hover{border-color:rgba(201,169,110,.3);border-top-color:var(--ac);transform:translateY(-3px)}
+    .treat-icon{width:42px;height:42px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:border-color .25s}
+    .treatment-card:hover .treat-icon{border-color:rgba(201,169,110,.4)}
+    .product-card{background:var(--bg2);border:1px solid var(--border);overflow:hidden;transition:border-color .25s}
+    .product-card:hover{border-color:rgba(201,169,110,.35)}
+    .product-img{width:100%;height:200px;object-fit:cover;display:block;filter:saturate(.75) brightness(.85)}
+
+    /* ── Spinner ── */
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .spin{width:28px;height:28px;border:1.5px solid var(--border);border-top-color:var(--ac);border-radius:50%;animation:spin .7s linear infinite}
+
+    /* ── AI Widget ── */
     #ai-widget{position:fixed;bottom:2rem;right:2rem;z-index:500}
-    #ai-widget-btn{width:60px;height:60px;border-radius:50%;background:var(--ac);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(201,169,110,.45);transition:transform .2s,box-shadow .2s;color:#fff}
-    #ai-widget-btn:hover{transform:scale(1.07);box-shadow:0 6px 28px rgba(201,169,110,.6)}
-    #ai-panel{display:none;position:absolute;bottom:calc(100% + .875rem);right:0;width:360px;background:var(--bg2);border:1px solid var(--border);box-shadow:0 16px 48px rgba(0,0,0,.18);flex-direction:column;overflow:hidden;animation:slideUp .25s ease}
+    #ai-widget-btn{width:56px;height:56px;background:var(--ac);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 24px rgba(201,169,110,.35);transition:transform .2s,box-shadow .2s;color:var(--bg)}
+    #ai-widget-btn:hover{transform:scale(1.07);box-shadow:0 6px 32px rgba(201,169,110,.5)}
+    @keyframes slideUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+    #ai-panel{display:none;position:absolute;bottom:calc(100% + .875rem);right:0;width:360px;background:var(--bg2);border:1px solid var(--border);box-shadow:0 20px 60px rgba(0,0,0,.6);flex-direction:column;overflow:hidden;animation:slideUp .25s cubic-bezier(.22,1,.36,1)}
     #ai-panel.open{display:flex}
     #ai-msgs{flex:1;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:.75rem;max-height:340px;min-height:200px}
-    .ai-bubble{max-width:88%;padding:.75rem 1rem;font-size:.825rem;line-height:1.65}
-    .ai-bubble.bot{background:var(--bg);border:1px solid var(--border);color:var(--text);align-self:flex-start}
-    .ai-bubble.usr{background:var(--ac);color:#fff;align-self:flex-end}
+    .ai-bubble{max-width:88%;padding:.75rem 1rem;font-size:.82rem;line-height:1.65;font-weight:300}
+    .ai-bubble.bot{background:var(--bg3);border:1px solid var(--border);color:var(--text);align-self:flex-start}
+    .ai-bubble.usr{background:var(--ac);color:var(--bg);align-self:flex-end}
     @keyframes dot{0%,80%,100%{opacity:.2}40%{opacity:1}}
     .typing span{display:inline-block;width:5px;height:5px;background:var(--ac);border-radius:50%;margin:0 2px;animation:dot 1.4s infinite}
     .typing span:nth-child(2){animation-delay:.2s}
     .typing span:nth-child(3){animation-delay:.4s}
-    ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
-    @media(max-width:900px){.g1m{grid-template-columns:1fr!important}.hnm{display:none!important}#mob-btn{display:flex!important}#nav-cta{display:none!important}}
+
+    /* ── Mobile menu ── */
+    #mob-menu{display:none;position:fixed;inset:0;z-index:300;background:var(--bg);flex-direction:column;padding:2.5rem}
+    @keyframes mobIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none}}
+    #mob-menu.open{display:flex;animation:mobIn .32s cubic-bezier(.22,1,.36,1)}
+
+    ::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:1px}
+    @media(max-width:900px){.g1m{grid-template-columns:1fr!important}.hnm{display:none!important}#mob-btn{display:flex!important}#nav-cta-area{display:none!important}}
     @media(max-width:640px){.g2{grid-template-columns:1fr!important}.g3{grid-template-columns:1fr!important}}
   </style>
 </head>
 <body>
 
-<!-- NAV -->
+<div id="grain" aria-hidden="true"></div>
+
+<!-- ── NAV ── -->
 <nav id="main-nav">
-  <div style="max-width:1400px;margin:0 auto;padding:0 2rem;height:64px;display:flex;align-items:center;justify-content:space-between">
-    <a href="https://aaaclinics.com" target="_blank" rel="noopener noreferrer" style="display:flex;align-items:center;gap:.75rem;text-decoration:none">
-      <div style="width:32px;height:32px;background:linear-gradient(135deg,var(--ac),var(--rose));display:flex;align-items:center;justify-content:center;flex-shrink:0">
-        <span style="font-family:'Cormorant Garamond',serif;font-size:.85rem;font-weight:500;color:#fff;letter-spacing:.05em">AAA</span>
+  <div style="max-width:1400px;margin:0 auto;padding:0 2.5rem;height:64px;display:flex;align-items:center;justify-content:space-between">
+    <a href="https://aaaclinics.com" target="_blank" rel="noopener noreferrer" style="display:flex;align-items:center;gap:.875rem;text-decoration:none">
+      <div style="width:30px;height:30px;background:var(--ac);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        <span style="font-family:'Cormorant Garamond',serif;font-size:.78rem;font-weight:400;color:var(--bg);letter-spacing:.05em">AAA</span>
       </div>
       <div>
-        <div style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:.9rem;letter-spacing:.06em;color:var(--text);line-height:1">Anti-Aging Academic</div>
-        <div class="lbl" style="font-size:.45rem;letter-spacing:.3em">Clinic</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-weight:300;font-size:.9rem;letter-spacing:.14em;color:var(--text);line-height:1">ANTI-AGING ACADEMIC</div>
+        <div class="lbl" style="font-size:.44rem;letter-spacing:.3em">Clinic</div>
       </div>
     </a>
-    <div id="nav-org-badge" style="display:none;padding:.3rem .875rem;background:rgba(201,169,110,.1);border:1px solid rgba(201,169,110,.3);font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ac)"></div>
-    <div style="display:flex;align-items:center;gap:2rem" class="hnm">
+    <div id="nav-org-badge" style="display:none;padding:.3rem .875rem;background:rgba(201,169,110,.08);border:1px solid rgba(201,169,110,.2);font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ac)"></div>
+    <div style="display:flex;align-items:center;gap:2.5rem" class="hnm">
       <a class="nav-link active" href="/aaaclinics-portal">My Portal</a>
       <a class="nav-link" href="/ai-assistant">AI Assistant</a>
       <a class="nav-link" href="https://aaaclinics.com" target="_blank" rel="noopener noreferrer">aaaclinics.com</a>
     </div>
-    <div style="display:flex;align-items:center;gap:.875rem">
-      <button onclick="toggleTheme()" aria-label="Toggle theme" style="width:34px;height:34px;border:1px solid var(--border);background:none;color:var(--sub);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;font-size:.85rem"><span id="th-icon">☀</span></button>
-      <button id="nav-logout-btn" onclick="ptLogout()" class="btn btn-outline" style="display:none;padding:.45rem 1rem;font-size:.7rem">Sign Out</button>
-      <button onclick="openMob()" style="display:none;background:none;border:none;cursor:pointer;color:var(--text);padding:.25rem" id="mob-btn" aria-label="Menu">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16M4 12h12M4 18h8"/></svg>
-      </button>
+    <div style="display:flex;align-items:center;gap:.875rem" id="nav-cta-area">
+      <button id="nav-logout-btn" onclick="ptLogout()" class="btn btn-outline" style="display:none;padding:.45rem 1rem;font-size:.67rem">Sign Out</button>
     </div>
+    <button onclick="openMob()" style="display:none;background:none;border:none;cursor:pointer;color:var(--text);padding:.25rem" id="mob-btn" aria-label="Menu">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16M4 12h12M4 18h8"/></svg>
+    </button>
   </div>
 </nav>
 
-<!-- Mobile menu -->
+<!-- ── Mobile menu ── -->
 <div id="mob-menu">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3rem">
-    <span style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--text)">AAA Clinics Portal</span>
+    <span style="font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:300;letter-spacing:.14em;color:var(--text)">AAA CLINICS PORTAL</span>
     <button onclick="closeMob()" style="background:none;border:none;cursor:pointer;color:var(--text)">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
     </button>
   </div>
-  <div style="display:flex;flex-direction:column;gap:1.5rem">
-    <a href="/aaaclinics-portal" style="font-family:'Cormorant Garamond',serif;font-size:2.25rem;font-weight:300;color:var(--ac);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1rem">My Portal</a>
-    <a href="/ai-assistant" style="font-family:'Cormorant Garamond',serif;font-size:2.25rem;font-weight:300;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1rem">AI Assistant</a>
-    <a href="https://aaaclinics.com" target="_blank" rel="noopener noreferrer" style="font-family:'Cormorant Garamond',serif;font-size:2.25rem;font-weight:300;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1rem">aaaclinics.com</a>
-    <button onclick="ptLogout();closeMob()" style="font-family:'Cormorant Garamond',serif;font-size:1.75rem;font-weight:300;color:var(--mute);background:none;border:none;cursor:pointer;text-align:left">Sign Out</button>
+  <div style="display:flex;flex-direction:column;gap:0">
+    <a href="/aaaclinics-portal" style="font-family:'Cormorant Garamond',serif;font-size:2.25rem;font-weight:200;color:var(--ac);text-decoration:none;border-bottom:1px solid var(--border);padding:.875rem 0">My Portal</a>
+    <a href="/ai-assistant" style="font-family:'Cormorant Garamond',serif;font-size:2.25rem;font-weight:200;color:var(--sub);text-decoration:none;border-bottom:1px solid var(--border);padding:.875rem 0">AI Assistant</a>
+    <a href="https://aaaclinics.com" target="_blank" rel="noopener noreferrer" style="font-family:'Cormorant Garamond',serif;font-size:2.25rem;font-weight:200;color:var(--sub);text-decoration:none;border-bottom:1px solid var(--border);padding:.875rem 0">aaaclinics.com</a>
+    <button onclick="ptLogout();closeMob()" style="font-family:'Cormorant Garamond',serif;font-size:1.75rem;font-weight:200;color:var(--mute);background:none;border:none;cursor:pointer;text-align:left;padding:.875rem 0">Sign Out</button>
   </div>
 </div>
 
 <div style="padding-top:4rem">
 
-  <!-- Checking auth state overlay -->
-  <div id="auth-checking" style="min-height:calc(100vh - 4rem);display:flex;align-items:center;justify-content:center">
+  <!-- ── Auth checking ── -->
+  <div id="auth-checking" style="min-height:calc(100dvh - 4rem);display:flex;align-items:center;justify-content:center">
     <div style="text-align:center">
-      <div style="width:32px;height:32px;border:2px solid var(--border);border-top-color:var(--ac);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 1rem"></div>
-      <p style="font-size:.8rem;color:var(--mute)">Loading your portal…</p>
+      <div class="spin" style="margin:0 auto 1.25rem"></div>
+      <p style="font-size:.78rem;color:var(--mute);letter-spacing:.08em">Loading your portal…</p>
     </div>
   </div>
 
-  <!-- Dashboard (shown after auth verified) -->
+  <!-- ── Dashboard ── -->
   <div id="portal-dash" style="display:none">
 
     <!-- Dashboard Header -->
     <section style="background:var(--bg2);border-bottom:1px solid var(--border);position:relative;overflow:hidden">
-      <!-- Ambient warm gradient -->
-      <div style="position:absolute;top:-60px;right:-60px;width:340px;height:340px;background:radial-gradient(circle,rgba(201,169,110,.07) 0%,transparent 70%);pointer-events:none"></div>
-      <div style="position:absolute;bottom:-40px;left:30%;width:280px;height:280px;background:radial-gradient(circle,rgba(212,160,144,.05) 0%,transparent 70%);pointer-events:none"></div>
-      <div style="max-width:1400px;margin:0 auto;padding:2.5rem 2rem 0;position:relative">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1.5rem;margin-bottom:2.5rem">
+      <!-- Ambient glow -->
+      <div style="position:absolute;top:-80px;right:-40px;width:380px;height:380px;background:radial-gradient(circle,rgba(201,169,110,.04) 0%,transparent 70%);pointer-events:none"></div>
+      <div style="position:absolute;inset:0;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:60px 60px;opacity:.12;pointer-events:none"></div>
+
+      <div style="max-width:1400px;margin:0 auto;padding:3rem 2.5rem 0;position:relative">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1.5rem;margin-bottom:3rem">
           <div>
-            <div class="lbl" style="color:var(--ac);margin-bottom:.75rem;display:flex;align-items:center;gap:.625rem">
-              <span style="display:inline-block;width:20px;height:1px;background:var(--ac)"></span>
+            <div class="lbl" style="color:var(--ac);margin-bottom:1rem;display:flex;align-items:center;gap:.875rem">
+              <span style="display:inline-block;width:24px;height:1px;background:var(--ac)"></span>
               Anti-Aging Academic Clinic
             </div>
-            <h1 style="font-size:clamp(2rem,4.5vw,3rem);font-weight:200;color:var(--text);letter-spacing:-.025em;line-height:1.06">Welcome back, <em id="dash-name" style="color:var(--ac);font-style:italic">Patient</em></h1>
-            <p style="font-size:.79rem;color:var(--mute);margin-top:.5rem;font-family:'DM Sans',sans-serif" id="dash-email-lbl"></p>
+            <h1 style="font-size:clamp(2rem,5vw,3.25rem);font-weight:200;color:var(--text);letter-spacing:-.03em;line-height:1.04">Welcome back, <em id="dash-name" style="color:var(--ac);font-style:italic">Patient</em></h1>
+            <p style="font-size:.78rem;color:var(--mute);margin-top:.5rem;font-weight:300" id="dash-email-lbl"></p>
           </div>
-          <div style="display:flex;gap:.75rem;align-items:center;flex-wrap:wrap">
-            <div id="dash-org-badge" style="display:none" class="reward-badge"></div>
-            <a href="/ai-assistant" class="btn btn-outline" style="padding:.5rem 1.25rem;font-size:.68rem">AI Assistant</a>
-            <button onclick="ptLogout()" class="btn btn-outline" style="padding:.5rem 1.25rem;font-size:.68rem">Sign Out</button>
+          <div style="display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;padding-top:.25rem">
+            <div id="dash-org-badge" style="display:none;padding:.35rem .875rem;background:rgba(201,169,110,.08);border:1px solid rgba(201,169,110,.2);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ac)"></div>
+            <a href="/ai-assistant" class="btn btn-outline" style="padding:.45rem 1.1rem;font-size:.67rem">AI Assistant</a>
+            <button onclick="ptLogout()" class="btn btn-outline" style="padding:.45rem 1.1rem;font-size:.67rem">Sign Out</button>
           </div>
         </div>
 
@@ -177,154 +184,160 @@
           <div style="padding:1.5rem 1.75rem;border-right:1px solid var(--border)">
             <div class="lbl" style="margin-bottom:.625rem">Loyalty Points</div>
             <div style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:200;color:var(--ac);line-height:1;letter-spacing:-.03em">0 <span style="font-size:1.1rem;color:var(--mute);font-weight:300">pts</span></div>
-            <div style="font-size:.7rem;color:var(--mute);margin-top:.375rem">Earn on every visit</div>
+            <div style="font-size:.7rem;color:var(--mute);margin-top:.375rem;font-weight:300">Earn on every visit</div>
           </div>
           <div style="padding:1.5rem 1.75rem;border-right:1px solid var(--border)">
             <div class="lbl" style="margin-bottom:.625rem">Treatments Booked</div>
             <div style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:200;color:var(--text);line-height:1;letter-spacing:-.03em">0</div>
-            <div style="font-size:.7rem;color:var(--mute);margin-top:.375rem">Total lifetime</div>
+            <div style="font-size:.7rem;color:var(--mute);margin-top:.375rem;font-weight:300">Total lifetime</div>
           </div>
           <div style="padding:1.5rem 1.75rem;border-right:1px solid var(--border)">
             <div class="lbl" style="margin-bottom:.625rem">Next Appointment</div>
-            <div style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:300;color:var(--sub);margin-top:.375rem;line-height:1.2">No upcoming<br/>visits</div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:300;color:var(--sub);margin-top:.5rem;line-height:1.25">No upcoming<br/>visits scheduled</div>
           </div>
           <div style="padding:1.5rem 1.75rem">
             <div class="lbl" style="margin-bottom:.625rem;color:var(--ac)">Rewards Tier</div>
-            <div style="display:inline-flex;align-items:center;gap:.375rem;padding:.3rem .75rem;background:rgba(201,169,110,.08);border:1px solid rgba(201,169,110,.2);margin-top:.25rem">
-              <span style="font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ac);font-weight:500">New Member</span>
+            <div style="display:inline-flex;align-items:center;gap:.375rem;padding:.3rem .75rem;background:rgba(201,169,110,.06);border:1px solid rgba(201,169,110,.18);margin-top:.375rem">
+              <span style="font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ac);font-weight:400">New Member</span>
             </div>
-            <div style="font-size:.7rem;color:var(--mute);margin-top:.5rem">Book a treatment to level up</div>
+            <div style="font-size:.7rem;color:var(--mute);margin-top:.5rem;font-weight:300">Book a treatment to level up</div>
           </div>
         </div>
       </div>
     </section>
 
     <!-- Dashboard Body -->
-    <div style="max-width:1400px;margin:0 auto;padding:2.5rem 2rem">
+    <div style="max-width:1400px;margin:0 auto;padding:3rem 2.5rem">
 
-      <!-- Book Treatments -->
-      <div style="margin-bottom:3rem">
-        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:1.5rem">
+      <!-- ── Book Treatments ── -->
+      <div style="margin-bottom:3.5rem">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:2rem">
           <div>
-            <div class="lbl" style="color:var(--ac);margin-bottom:.35rem">Treatments</div>
-            <h2 style="font-size:clamp(1.5rem,3vw,2rem);font-weight:300;color:var(--text)">Book a Treatment</h2>
+            <div class="lbl" style="color:var(--ac);margin-bottom:.5rem;display:flex;align-items:center;gap:.75rem">
+              <span style="display:inline-block;width:18px;height:1px;background:var(--ac)"></span>
+              01 — Treatments
+            </div>
+            <h2 style="font-size:clamp(1.5rem,3vw,2.25rem);font-weight:200;color:var(--text);letter-spacing:-.025em">Book a Treatment</h2>
           </div>
-          <a href="https://aaaclinics.com/pages/contact" target="_blank" rel="noopener noreferrer" class="lbl" style="color:var(--ac);text-decoration:none;transition:opacity .2s" onmouseover="this.style.opacity='.7'" onmouseout="this.style.opacity='1'">View All →</a>
+          <a href="https://aaaclinics.com/pages/contact" target="_blank" rel="noopener noreferrer" class="lbl" style="color:var(--ac);text-decoration:none;transition:opacity .2s" onmouseover="this.style.opacity='.6'" onmouseout="this.style.opacity='1'">View All →</a>
         </div>
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem" class="g2">
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border)" class="g2">
 
           <div class="treatment-card">
             <div class="treat-icon">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ac)" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--ac)" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
             </div>
             <div>
-              <div class="lbl" style="color:var(--ac);margin-bottom:.4rem">Cosmetic Injections</div>
-              <h4 style="font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:300;color:var(--text);margin-bottom:.5rem;line-height:1.15">Injectables</h4>
-              <p style="font-size:.76rem;line-height:1.82;color:var(--sub)">Botox, Fillers, PRP, Skin Boosters, Belkyra, Radiesse, Sculptra, PDRN</p>
+              <div class="lbl" style="color:var(--ac);margin-bottom:.5rem">Cosmetic Injections</div>
+              <h4 style="font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:300;color:var(--text);margin-bottom:.5rem;line-height:1.12;letter-spacing:-.02em">Injectables</h4>
+              <p style="font-size:.76rem;line-height:1.85;color:var(--sub);font-weight:300">Botox, Fillers, PRP, Skin Boosters, Belkyra, Radiesse, Sculptra, PDRN</p>
             </div>
-            <a href="https://aaaclinics.com/pages/contact" target="_blank" rel="noopener noreferrer" class="btn btn-outline" style="padding:.5rem 1rem;font-size:.68rem;margin-top:auto">Book Now →</a>
-          </div>
-
-          <div class="treatment-card">
-            <div class="treat-icon" style="border-color:rgba(212,160,144,.25);background:rgba(212,160,144,.06)">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--rose)" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            </div>
-            <div>
-              <div class="lbl" style="color:var(--rose);margin-bottom:.4rem">Skin Therapy</div>
-              <h4 style="font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:300;color:var(--text);margin-bottom:.5rem;line-height:1.15">Skin Treatments</h4>
-              <p style="font-size:.76rem;line-height:1.82;color:var(--sub)">Microneedling, Chemical Peel, Exosome, Mesotherapy, Medical-Grade Skincare</p>
-            </div>
-            <a href="https://aaaclinics.com/pages/contact" target="_blank" rel="noopener noreferrer" class="btn btn-outline" style="padding:.5rem 1rem;font-size:.68rem;margin-top:auto">Book Now →</a>
+            <a href="https://aaaclinics.com/pages/contact" target="_blank" rel="noopener noreferrer" class="btn btn-outline" style="padding:.5rem 1rem;font-size:.67rem;margin-top:auto">Book Now →</a>
           </div>
 
           <div class="treatment-card">
             <div class="treat-icon">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ac)" stroke-width="1.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--ac)" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
             </div>
             <div>
-              <div class="lbl" style="color:var(--ac);margin-bottom:.4rem">Thread Lifting</div>
-              <h4 style="font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:300;color:var(--text);margin-bottom:.5rem;line-height:1.15">Lift &amp; Contour</h4>
-              <p style="font-size:.76rem;line-height:1.82;color:var(--sub)">Silhouette Soft®, APTOS®, PDO Thread Lift — non-surgical facial contouring</p>
+              <div class="lbl" style="color:var(--ac);margin-bottom:.5rem">Skin Therapy</div>
+              <h4 style="font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:300;color:var(--text);margin-bottom:.5rem;line-height:1.12;letter-spacing:-.02em">Skin Treatments</h4>
+              <p style="font-size:.76rem;line-height:1.85;color:var(--sub);font-weight:300">Microneedling, Chemical Peel, Exosome, Mesotherapy, Medical-Grade Skincare</p>
             </div>
-            <a href="https://aaaclinics.com/pages/contact" target="_blank" rel="noopener noreferrer" class="btn btn-outline" style="padding:.5rem 1rem;font-size:.68rem;margin-top:auto">Book Now →</a>
+            <a href="https://aaaclinics.com/pages/contact" target="_blank" rel="noopener noreferrer" class="btn btn-outline" style="padding:.5rem 1rem;font-size:.67rem;margin-top:auto">Book Now →</a>
           </div>
 
           <div class="treatment-card">
-            <div class="treat-icon" style="border-color:rgba(212,160,144,.25);background:rgba(212,160,144,.06)">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--rose)" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            <div class="treat-icon">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--ac)" stroke-width="1.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
             </div>
             <div>
-              <div class="lbl" style="color:var(--rose);margin-bottom:.4rem">IV Therapy</div>
-              <h4 style="font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:300;color:var(--text);margin-bottom:.5rem;line-height:1.15">Drip &amp; Revive</h4>
-              <p style="font-size:.76rem;line-height:1.82;color:var(--sub)">Custom IV vitamin infusions for energy, immunity, hydration &amp; skin radiance</p>
+              <div class="lbl" style="color:var(--ac);margin-bottom:.5rem">Thread Lifting</div>
+              <h4 style="font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:300;color:var(--text);margin-bottom:.5rem;line-height:1.12;letter-spacing:-.02em">Lift &amp; Contour</h4>
+              <p style="font-size:.76rem;line-height:1.85;color:var(--sub);font-weight:300">Silhouette Soft®, APTOS®, PDO Thread Lift — non-surgical facial contouring</p>
             </div>
-            <a href="https://aaaclinics.com/pages/contact" target="_blank" rel="noopener noreferrer" class="btn btn-outline" style="padding:.5rem 1rem;font-size:.68rem;margin-top:auto">Book Now →</a>
+            <a href="https://aaaclinics.com/pages/contact" target="_blank" rel="noopener noreferrer" class="btn btn-outline" style="padding:.5rem 1rem;font-size:.67rem;margin-top:auto">Book Now →</a>
+          </div>
+
+          <div class="treatment-card">
+            <div class="treat-icon">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--ac)" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            </div>
+            <div>
+              <div class="lbl" style="color:var(--ac);margin-bottom:.5rem">IV Therapy</div>
+              <h4 style="font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:300;color:var(--text);margin-bottom:.5rem;line-height:1.12;letter-spacing:-.02em">Drip &amp; Revive</h4>
+              <p style="font-size:.76rem;line-height:1.85;color:var(--sub);font-weight:300">Custom IV vitamin infusions for energy, immunity, hydration &amp; skin radiance</p>
+            </div>
+            <a href="https://aaaclinics.com/pages/contact" target="_blank" rel="noopener noreferrer" class="btn btn-outline" style="padding:.5rem 1rem;font-size:.67rem;margin-top:auto">Book Now →</a>
           </div>
 
         </div>
       </div>
 
-      <div class="gold-line" style="margin-bottom:3rem"></div>
+      <div class="gold-line" style="margin-bottom:3.5rem"></div>
 
-      <!-- Shop Skincare -->
-      <div style="margin-bottom:3rem">
-        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:1.5rem">
+      <!-- ── Shop Skincare ── -->
+      <div style="margin-bottom:3.5rem">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:2rem">
           <div>
-            <div class="lbl" style="color:var(--ac);margin-bottom:.35rem">Skincare Shop</div>
-            <h2 style="font-size:clamp(1.5rem,3vw,2rem);font-weight:300;color:var(--text)">Medical-Grade Products</h2>
+            <div class="lbl" style="color:var(--ac);margin-bottom:.5rem;display:flex;align-items:center;gap:.75rem">
+              <span style="display:inline-block;width:18px;height:1px;background:var(--ac)"></span>
+              02 — Skincare Shop
+            </div>
+            <h2 style="font-size:clamp(1.5rem,3vw,2.25rem);font-weight:200;color:var(--text);letter-spacing:-.025em">Medical-Grade Products</h2>
           </div>
-          <a href="https://aaaclinics.com/collections/all" target="_blank" rel="noopener noreferrer" class="lbl" style="color:var(--ac);text-decoration:none;transition:opacity .2s" onmouseover="this.style.opacity='.7'" onmouseout="this.style.opacity='1'">Shop All →</a>
+          <a href="/shop" class="lbl" style="color:var(--ac);text-decoration:none;transition:opacity .2s" onmouseover="this.style.opacity='.6'" onmouseout="this.style.opacity='1'">Shop All →</a>
         </div>
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem" class="g2">
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border)" class="g2">
 
           <div class="product-card">
             <img class="product-img" src="https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=400&q=80&auto=format&fit=crop" alt="Vitamin C Serum"/>
-            <div style="padding:1.25rem">
+            <div style="padding:1.375rem">
               <div class="lbl" style="color:var(--ac);margin-bottom:.375rem">Brightening</div>
-              <h4 style="font-size:1rem;font-weight:400;color:var(--text);margin-bottom:.25rem;font-family:'Cormorant Garamond',serif">Vitamin C Brightening Serum</h4>
-              <p style="font-size:.75rem;color:var(--sub);line-height:1.6;margin-bottom:.875rem">20% L-ascorbic acid with ferulic acid for maximum radiance and antioxidant protection.</p>
+              <h4 style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:300;color:var(--text);margin-bottom:.25rem;letter-spacing:-.015em">Vitamin C Brightening Serum</h4>
+              <p style="font-size:.74rem;color:var(--sub);line-height:1.7;margin-bottom:.875rem;font-weight:300">20% L-ascorbic acid with ferulic acid for maximum radiance and antioxidant protection.</p>
               <div style="display:flex;justify-content:space-between;align-items:center">
-                <span style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--text)">$89.00</span>
-                <a href="https://aaaclinics.com/collections/all" target="_blank" rel="noopener noreferrer" class="btn btn-gold" style="padding:.4rem .875rem;font-size:.65rem">Shop →</a>
+                <span style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--text);font-weight:300">$89.00</span>
+                <a href="https://aaaclinics.com/collections/all" target="_blank" rel="noopener noreferrer" class="btn btn-ac" style="padding:.4rem .875rem;font-size:.64rem">Shop →</a>
               </div>
             </div>
           </div>
 
           <div class="product-card">
-            <img class="product-img" src="https://images.unsplash.com/photo-1631390459696-c9e5ed5bbe37?w=400&q=80&auto=format&fit=crop" alt="Moisturizer"/>
-            <div style="padding:1.25rem">
+            <img class="product-img" src="https://images.unsplash.com/photo-1631390459696-c9e5ed5bbe37?w=400&q=80&auto=format&fit=crop" alt="Hyaluronic Acid Moisturizer"/>
+            <div style="padding:1.375rem">
               <div class="lbl" style="color:var(--ac);margin-bottom:.375rem">Hydration</div>
-              <h4 style="font-size:1rem;font-weight:400;color:var(--text);margin-bottom:.25rem;font-family:'Cormorant Garamond',serif">Hyaluronic Acid Moisturizer</h4>
-              <p style="font-size:.75rem;color:var(--sub);line-height:1.6;margin-bottom:.875rem">Multi-weight hyaluronic acid complex for deep, lasting hydration at every skin layer.</p>
+              <h4 style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:300;color:var(--text);margin-bottom:.25rem;letter-spacing:-.015em">Hyaluronic Acid Moisturizer</h4>
+              <p style="font-size:.74rem;color:var(--sub);line-height:1.7;margin-bottom:.875rem;font-weight:300">Multi-weight hyaluronic acid complex for deep, lasting hydration at every skin layer.</p>
               <div style="display:flex;justify-content:space-between;align-items:center">
-                <span style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--text)">$65.00</span>
-                <a href="https://aaaclinics.com/collections/all" target="_blank" rel="noopener noreferrer" class="btn btn-gold" style="padding:.4rem .875rem;font-size:.65rem">Shop →</a>
+                <span style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--text);font-weight:300">$65.00</span>
+                <a href="https://aaaclinics.com/collections/all" target="_blank" rel="noopener noreferrer" class="btn btn-ac" style="padding:.4rem .875rem;font-size:.64rem">Shop →</a>
               </div>
             </div>
           </div>
 
           <div class="product-card">
             <img class="product-img" src="https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=400&q=80&auto=format&fit=crop" alt="Retinol Cream"/>
-            <div style="padding:1.25rem">
-              <div class="lbl" style="color:var(--rose);margin-bottom:.375rem">Anti-Aging</div>
-              <h4 style="font-size:1rem;font-weight:400;color:var(--text);margin-bottom:.25rem;font-family:'Cormorant Garamond',serif">Retinol Recovery Cream</h4>
-              <p style="font-size:.75rem;color:var(--sub);line-height:1.6;margin-bottom:.875rem">0.5% encapsulated retinol with ceramides for cell renewal with minimal irritation.</p>
+            <div style="padding:1.375rem">
+              <div class="lbl" style="color:var(--ac);margin-bottom:.375rem">Anti-Aging</div>
+              <h4 style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:300;color:var(--text);margin-bottom:.25rem;letter-spacing:-.015em">Retinol Recovery Cream</h4>
+              <p style="font-size:.74rem;color:var(--sub);line-height:1.7;margin-bottom:.875rem;font-weight:300">0.5% encapsulated retinol with ceramides for cell renewal with minimal irritation.</p>
               <div style="display:flex;justify-content:space-between;align-items:center">
-                <span style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--text)">$110.00</span>
-                <a href="https://aaaclinics.com/collections/all" target="_blank" rel="noopener noreferrer" class="btn btn-gold" style="padding:.4rem .875rem;font-size:.65rem">Shop →</a>
+                <span style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--text);font-weight:300">$110.00</span>
+                <a href="https://aaaclinics.com/collections/all" target="_blank" rel="noopener noreferrer" class="btn btn-ac" style="padding:.4rem .875rem;font-size:.64rem">Shop →</a>
               </div>
             </div>
           </div>
 
           <div class="product-card">
-            <img class="product-img" src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=80&auto=format&fit=crop" alt="SPF"/>
-            <div style="padding:1.25rem">
+            <img class="product-img" src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=80&auto=format&fit=crop" alt="SPF 50 Sunscreen"/>
+            <div style="padding:1.375rem">
               <div class="lbl" style="color:var(--ac);margin-bottom:.375rem">Protection</div>
-              <h4 style="font-size:1rem;font-weight:400;color:var(--text);margin-bottom:.25rem;font-family:'Cormorant Garamond',serif">SPF 50 Physical Sunscreen</h4>
-              <p style="font-size:.75rem;color:var(--sub);line-height:1.6;margin-bottom:.875rem">Zinc oxide &amp; titanium dioxide. Invisible finish, reef-safe, ideal post-treatment.</p>
+              <h4 style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:300;color:var(--text);margin-bottom:.25rem;letter-spacing:-.015em">SPF 50 Physical Sunscreen</h4>
+              <p style="font-size:.74rem;color:var(--sub);line-height:1.7;margin-bottom:.875rem;font-weight:300">Zinc oxide &amp; titanium dioxide. Invisible finish, reef-safe, ideal post-treatment.</p>
               <div style="display:flex;justify-content:space-between;align-items:center">
-                <span style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--text)">$48.00</span>
-                <a href="https://aaaclinics.com/collections/all" target="_blank" rel="noopener noreferrer" class="btn btn-gold" style="padding:.4rem .875rem;font-size:.65rem">Shop →</a>
+                <span style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--text);font-weight:300">$48.00</span>
+                <a href="https://aaaclinics.com/collections/all" target="_blank" rel="noopener noreferrer" class="btn btn-ac" style="padding:.4rem .875rem;font-size:.64rem">Shop →</a>
               </div>
             </div>
           </div>
@@ -332,95 +345,109 @@
         </div>
       </div>
 
-      <div class="gold-line" style="margin-bottom:3rem"></div>
+      <div class="gold-line" style="margin-bottom:3.5rem"></div>
 
-      <!-- Rewards + Account -->
-      <div style="display:grid;grid-template-columns:2fr 1fr;gap:1.5rem;margin-bottom:3rem" class="g1m">
+      <!-- ── Rewards + Account ── -->
+      <div style="display:grid;grid-template-columns:2fr 1fr;gap:1px;background:var(--border);margin-bottom:3rem" class="g1m">
 
-        <!-- Rewards Coming Soon -->
-        <div class="card-flat" style="padding:2rem;position:relative;overflow:hidden">
-          <div style="position:absolute;top:0;right:0;width:200px;height:200px;background:radial-gradient(circle,rgba(201,169,110,.08) 0%,transparent 70%);pointer-events:none"></div>
-          <div class="lbl" style="color:var(--ac);margin-bottom:.875rem">Loyalty &amp; Rewards</div>
-          <h3 style="font-size:1.75rem;font-weight:300;color:var(--text);margin-bottom:.75rem">Earn points.<br/><em>Redeem rewards.</em></h3>
-          <p style="font-size:.82rem;line-height:1.8;color:var(--sub);margin-bottom:1.5rem;max-width:48ch">Coming soon — earn points for every visit, product purchase, and referral. Redeem for clinic credits, complimentary treatments, and exclusive offers from AAA Clinics.</p>
-          <div style="display:flex;flex-wrap:wrap;gap:.625rem;margin-bottom:1.75rem">
-            <span style="display:inline-flex;align-items:center;gap:.375rem;padding:.3rem .75rem;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;background:rgba(201,169,110,.08);border:1px solid rgba(201,169,110,.2);color:var(--ac)">Appointment Check-ins</span>
-            <span style="display:inline-flex;align-items:center;gap:.375rem;padding:.3rem .75rem;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;background:rgba(201,169,110,.08);border:1px solid rgba(201,169,110,.2);color:var(--ac)">Product Purchases</span>
-            <span style="display:inline-flex;align-items:center;gap:.375rem;padding:.3rem .75rem;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;background:rgba(201,169,110,.08);border:1px solid rgba(201,169,110,.2);color:var(--ac)">Referrals</span>
+        <!-- Rewards -->
+        <div style="background:var(--bg2);padding:2.5rem;position:relative;overflow:hidden">
+          <div style="position:absolute;top:0;right:0;width:220px;height:220px;background:radial-gradient(circle,rgba(201,169,110,.05) 0%,transparent 70%);pointer-events:none"></div>
+          <div class="lbl" style="color:var(--ac);margin-bottom:1rem;display:flex;align-items:center;gap:.75rem">
+            <span style="display:inline-block;width:18px;height:1px;background:var(--ac)"></span>
+            03 — Loyalty &amp; Rewards
           </div>
-          <span class="lbl" style="color:var(--mute)">Launching Soon — stay tuned</span>
+          <h3 style="font-size:clamp(1.5rem,2.5vw,2rem);font-weight:200;color:var(--text);margin-bottom:.75rem;letter-spacing:-.025em">Earn points.<br/><em style="color:var(--ac);font-style:italic">Redeem rewards.</em></h3>
+          <p style="font-size:.82rem;line-height:1.85;color:var(--sub);margin-bottom:1.75rem;max-width:50ch;font-weight:300">Coming soon — earn points for every visit, product purchase, and referral. Redeem for clinic credits, complimentary treatments, and exclusive offers.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:.625rem;margin-bottom:1.75rem">
+            <span style="display:inline-flex;align-items:center;gap:.375rem;padding:.3rem .75rem;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;background:rgba(201,169,110,.06);border:1px solid rgba(201,169,110,.18);color:var(--ac)">Appointment Check-ins</span>
+            <span style="display:inline-flex;align-items:center;gap:.375rem;padding:.3rem .75rem;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;background:rgba(201,169,110,.06);border:1px solid rgba(201,169,110,.18);color:var(--ac)">Product Purchases</span>
+            <span style="display:inline-flex;align-items:center;gap:.375rem;padding:.3rem .75rem;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;background:rgba(201,169,110,.06);border:1px solid rgba(201,169,110,.18);color:var(--ac)">Referrals</span>
+          </div>
+          <span class="lbl" style="color:var(--mute)">Launching soon — stay tuned</span>
         </div>
 
-        <!-- Account card -->
-        <div class="card-flat" style="padding:2rem">
-          <div class="lbl" style="margin-bottom:1rem">Account</div>
-          <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem">
-            <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--ac),var(--rose));display:flex;align-items:center;justify-content:center;flex-shrink:0">
-              <span id="dash-avatar" style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:#fff;font-weight:400">P</span>
+        <!-- Account -->
+        <div style="background:var(--bg2);padding:2.5rem">
+          <div class="lbl" style="margin-bottom:1.25rem;display:flex;align-items:center;gap:.75rem">
+            <span style="display:inline-block;width:18px;height:1px;background:var(--ac)"></span>
+            04 — Account
+          </div>
+          <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.75rem">
+            <div style="width:42px;height:42px;background:rgba(201,169,110,.12);border:1px solid rgba(201,169,110,.25);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <span id="dash-avatar" style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--ac);font-weight:300">P</span>
             </div>
             <div>
-              <div style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--text)" id="dash-full-name">—</div>
-              <div style="font-size:.75rem;color:var(--mute)" id="dash-email-display">—</div>
+              <div style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:300;color:var(--text);letter-spacing:-.015em" id="dash-full-name">—</div>
+              <div style="font-size:.74rem;color:var(--mute);font-weight:300" id="dash-email-display">—</div>
             </div>
           </div>
           <div style="height:1px;background:var(--border);margin-bottom:1.25rem"></div>
-          <div style="margin-bottom:1.25rem">
-            <div class="lbl" style="margin-bottom:.375rem">Connected Clinic</div>
-            <div style="font-size:.82rem;color:var(--sub)" id="dash-org-name-display">Anti-Aging Academic Clinic</div>
+          <div style="margin-bottom:1.5rem">
+            <div class="lbl" style="margin-bottom:.5rem">Connected Clinic</div>
+            <div style="font-size:.82rem;color:var(--sub);font-weight:300" id="dash-org-name-display">Anti-Aging Academic Clinic</div>
           </div>
-          <button onclick="ptLogout()" style="width:100%;justify-content:center" class="btn btn-outline" style="font-size:.7rem;padding:.5rem 1rem">Sign Out</button>
+          <button onclick="ptLogout()" style="width:100%;justify-content:center" class="btn btn-outline">Sign Out</button>
         </div>
+
       </div>
 
     </div><!-- /dash body -->
 
     <footer style="border-top:1px solid var(--border);background:var(--bg2)">
-      <div style="max-width:1400px;margin:0 auto;padding:1.5rem 2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
-        <div style="display:flex;align-items:center;gap:1.5rem">
-          <p style="font-size:.7rem;color:var(--mute)">© 2025 Anti-Aging Academic Clinic</p>
+      <div style="max-width:1400px;margin:0 auto;padding:1.75rem 2.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
+        <div style="display:flex;align-items:center;gap:1.75rem">
+          <p style="font-size:.7rem;color:var(--mute);font-weight:300">© 2025 Anti-Aging Academic Clinic</p>
           <span style="font-size:.7rem;color:var(--border)">|</span>
-          <p style="font-size:.7rem;color:var(--mute)">Powered by <a href="/" style="color:var(--ac);text-decoration:none">Acuros Health</a></p>
+          <p style="font-size:.7rem;color:var(--mute);font-weight:300">Powered by <a href="/" style="color:var(--ac);text-decoration:none">Acuros Health</a></p>
         </div>
-        <div style="display:flex;gap:1.5rem">
+        <div style="display:flex;gap:1.75rem">
           <a href="/privacy" class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Privacy</a>
           <a href="/terms"   class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Terms</a>
           <a href="https://aaaclinics.com" target="_blank" rel="noopener noreferrer" class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--ac)'" onmouseout="this.style.color=''">aaaclinics.com</a>
         </div>
       </div>
     </footer>
+
   </div><!-- /portal-dash -->
 
 </div><!-- /padding-top -->
 
-<!-- AI Advisor Widget -->
+<!-- ── AI Advisor Widget ── -->
 <div id="ai-widget">
   <div id="ai-panel">
     <div style="padding:.875rem 1.125rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--bg2)">
       <div style="display:flex;align-items:center;gap:.625rem">
-        <div style="width:8px;height:8px;border-radius:50%;background:var(--ac)"></div>
+        <div style="width:7px;height:7px;background:var(--ac)"></div>
         <div>
-          <div style="font-size:.78rem;font-weight:500;color:var(--text);letter-spacing:.03em">AAA Beauty Advisor</div>
-          <div style="font-size:.62rem;color:var(--mute);letter-spacing:.08em;text-transform:uppercase">Powered by Acuros AI</div>
+          <div style="font-size:.78rem;font-weight:400;color:var(--text);letter-spacing:.04em">AAA Beauty Advisor</div>
+          <div style="font-size:.6rem;color:var(--mute);letter-spacing:.1em;text-transform:uppercase">Powered by Acuros AI</div>
         </div>
       </div>
       <button onclick="toggleAdvisor()" style="background:none;border:none;cursor:pointer;color:var(--mute);padding:.25rem;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--mute)'">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
       </button>
     </div>
     <div id="ai-msgs"></div>
     <div style="padding:.75rem;border-top:1px solid var(--border);display:flex;gap:.5rem;background:var(--bg2)">
-      <input id="ai-inp" type="text" placeholder="Ask about treatments, skincare…" style="flex:1;background:var(--bg);border:1px solid var(--border);padding:.55rem .875rem;font-size:.8rem;color:var(--text);font-family:inherit;outline:none;transition:border-color .2s" onfocus="this.style.borderColor='var(--ac)'" onblur="this.style.borderColor='var(--border)'" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendAdvisorMsg();}"/>
-      <button onclick="sendAdvisorMsg()" style="width:36px;height:36px;background:var(--ac);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s" onmouseover="this.style.background='var(--gold2)'" onmouseout="this.style.background='var(--ac)'">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z"/></svg>
+      <input id="ai-inp" type="text" placeholder="Ask about treatments, skincare…" style="flex:1;background:var(--bg3);border:1px solid var(--border);padding:.55rem .875rem;font-size:.8rem;color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;outline:none;transition:border-color .2s" onfocus="this.style.borderColor='var(--ac)'" onblur="this.style.borderColor='var(--border)'" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendAdvisorMsg();}"/>
+      <button onclick="sendAdvisorMsg()" style="width:36px;height:36px;background:var(--ac);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s" onmouseover="this.style.background='#b8962e'" onmouseout="this.style.background='var(--ac)'">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--bg)" stroke-width="2.5"><path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z"/></svg>
       </button>
     </div>
   </div>
   <button id="ai-widget-btn" onclick="toggleAdvisor()" aria-label="AI Beauty Advisor">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
   </button>
 </div>
 
 <script>
+/* ── Always dark ── */
+(function initTheme() {
+  document.documentElement.classList.add('dark');
+  localStorage.setItem('ah-theme', 'dark');
+})();
+
 const CONFIG = {
   supabaseUrl: 'https://pyexkdoupqzbnrybiubo.supabase.co',
   supabaseKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB5ZXhrZG91cHF6Ym5yeWJpdWJvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4Mzg4MzYsImV4cCI6MjA4NzQxNDgzNn0.3_dLQEJfmC08A2-hlgOfwlu4ngx7hslUR3Dun4BoXLU',
@@ -429,14 +456,11 @@ const CONFIG = {
 
 let sb = null;
 try { if (CONFIG.supabaseKey) sb = window.supabase.createClient(CONFIG.supabaseUrl, CONFIG.supabaseKey); } catch(e) {}
-
 let currentUser = null;
 
 function isAAAPatient(user) {
   if (!user) return false;
-  // Check profile code
   if (String(user.code || '').toUpperCase().startsWith('AAACLINICS')) return true;
-  // Fallback: localStorage (written by joinOrg before profile DB write completes)
   return String(localStorage.getItem('ah-org-code') || '').toUpperCase().startsWith('AAACLINICS');
 }
 
@@ -448,37 +472,18 @@ function mergeLocalStorageOrg(user) {
   if (lsCode && !user.code) { user.code = lsCode; user.org_id = lsId || ''; user.org_name = lsName || ''; }
 }
 
-// ── Theme ──
-function toggleTheme() {
-  const dark = document.documentElement.classList.toggle('dark');
-  document.getElementById('th-icon').textContent = dark ? '☽' : '☀';
-  localStorage.setItem('ah-theme', dark ? 'dark' : 'light');
-}
-(function initTheme() {
-  const s = localStorage.getItem('ah-theme');
-  if (s === 'dark' || (!s && window.matchMedia('(prefers-color-scheme:dark)').matches)) {
-    document.documentElement.classList.add('dark');
-    document.getElementById('th-icon').textContent = '☽';
-  }
-})();
-
 function openMob()  { document.getElementById('mob-menu').classList.add('open'); }
 function closeMob() { document.getElementById('mob-menu').classList.remove('open'); }
-window.addEventListener('scroll', () => { document.getElementById('main-nav').style.boxShadow = window.scrollY > 10 ? '0 1px 24px rgba(0,0,0,.06)' : ''; });
 
-// Fetch profile with org join; falls back to plain select if join errors
+window.addEventListener('scroll', () => {
+  document.getElementById('main-nav').classList.toggle('scrolled', window.scrollY > 40);
+}, {passive:true});
+
 async function fetchProfile(userId) {
   if (!sb || !userId) return null;
   try {
-    const { data, error } = await sb
-      .from('profiles')
-      .select('*, org:org_id(id, name)')
-      .eq('id', userId)
-      .maybeSingle();
-    if (error) {
-      const { data: plain } = await sb.from('profiles').select('*').eq('id', userId).maybeSingle();
-      return plain;
-    }
+    const { data, error } = await sb.from('profiles').select('*, org:org_id(id, name)').eq('id', userId).maybeSingle();
+    if (error) { const { data: plain } = await sb.from('profiles').select('*').eq('id', userId).maybeSingle(); return plain; }
     return data;
   } catch (e) { return null; }
 }
@@ -497,17 +502,14 @@ function showDashboard() {
 
 function syncPortal() {
   if (!currentUser) return;
-
   const first = currentUser.first || currentUser.name || 'Patient';
   document.getElementById('dash-name').textContent = first;
   document.getElementById('dash-email-lbl').textContent = currentUser.email || '';
   document.getElementById('dash-full-name').textContent =
     (currentUser.first && currentUser.last) ? currentUser.first + ' ' + currentUser.last : currentUser.name || '—';
   document.getElementById('dash-email-display').textContent = currentUser.email || '—';
-
   const av = document.getElementById('dash-avatar');
   if (av) av.textContent = (currentUser.first || currentUser.name || 'P')[0].toUpperCase();
-
   const orgName = currentUser.org_name || 'Anti-Aging Academic Clinic';
   const navBadge = document.getElementById('nav-org-badge');
   if (navBadge) { navBadge.textContent = orgName; navBadge.style.display = ''; }
@@ -517,7 +519,7 @@ function syncPortal() {
   if (orgNameDisplay) orgNameDisplay.textContent = orgName;
 }
 
-// ── Session guard ──
+/* ── Session guard ── */
 if (sb?.auth?.onAuthStateChange) {
   sb.auth.onAuthStateChange((event, session) => {
     if (session?.user) {
@@ -526,15 +528,10 @@ if (sb?.auth?.onAuthStateChange) {
         name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'Patient',
         first: '', last: '', code: '', org_id: '', org_name: '',
       };
-
-      // 1. Merge localStorage immediately (synchronous — no await, never hangs)
       mergeLocalStorageOrg(currentUser);
-
-      // 2. If AAA code confirmed → show dashboard right away
       if (isAAAPatient(currentUser)) {
         showDashboard();
         syncPortal();
-        // Enrich display name in background — fire-and-forget, never blocks
         fetchProfile(session.user.id).then(profile => {
           if (!profile || !currentUser) return;
           currentUser.name     = profile.name     || currentUser.name;
@@ -545,9 +542,6 @@ if (sb?.auth?.onAuthStateChange) {
         }).catch(() => {});
         return;
       }
-
-      // 3. No localStorage code — fetch profile with a hard 5s timeout
-      //    (catches users who have patient_code in DB but cleared localStorage)
       const profileRace = Promise.race([
         fetchProfile(session.user.id),
         new Promise(resolve => setTimeout(() => resolve(null), 5000)),
@@ -582,10 +576,10 @@ if (sb?.auth?.onAuthStateChange) {
   document.getElementById('portal-dash').style.display = 'block';
 }
 
-// ── AI Advisor Widget ──
+/* ── AI Advisor Widget ── */
 let advisorOpen = false;
 let advisorHistory = [];
-const ADVISOR_WELCOME = "Hello! I'm your AAA Clinics beauty advisor, powered by Acuros AI. I can help you explore our treatments, skincare products, and answer any questions about anti-aging solutions. What can I help you with today?";
+const ADVISOR_WELCOME = "Hello — I'm your AAA Clinics beauty advisor, powered by Acuros AI. I can help you explore our treatments, skincare products, and answer questions about anti-aging solutions. What can I help you with today?";
 
 function toggleAdvisor() {
   advisorOpen = !advisorOpen;
@@ -617,13 +611,11 @@ async function sendAdvisorMsg() {
   inp.value = '';
   addAdvisorBubble(msg, 'usr');
   advisorHistory.push({ role: 'user', text: msg });
-
   const thinking = document.createElement('div');
   thinking.className = 'ai-bubble bot typing';
   thinking.innerHTML = '<span></span><span></span><span></span>';
   document.getElementById('ai-msgs').appendChild(thinking);
   document.getElementById('ai-msgs').scrollTop = 999999;
-
   try {
     const resp = await fetch(CONFIG.aiApiUrl, {
       method: 'POST',
@@ -633,7 +625,7 @@ async function sendAdvisorMsg() {
     thinking.remove();
     if (!resp.ok) throw new Error('API error');
     const data = await resp.json();
-    const reply = data.text || 'I apologize — I had trouble generating a response. Please try again.';
+    const reply = data.text || 'I had trouble generating a response. Please try again.';
     advisorHistory.push({ role: 'model', text: reply });
     addAdvisorBubble(reply, 'bot');
   } catch (_) {
