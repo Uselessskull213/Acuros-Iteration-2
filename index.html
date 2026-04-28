@@ -199,6 +199,38 @@
       .hero-title{font-size:clamp(3.75rem,15vw,6rem)!important}
       .hero-sub{display:none}
     }
+
+    /* ── Glassmorphism system ── */
+    .g-card{
+      background:rgba(255,255,255,.042);
+      backdrop-filter:blur(22px) saturate(160%);
+      -webkit-backdrop-filter:blur(22px) saturate(160%);
+      border:1px solid rgba(255,255,255,.09);
+      box-shadow:0 8px 40px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.09);
+      transition:transform .48s cubic-bezier(.22,1,.36,1),box-shadow .48s cubic-bezier(.22,1,.36,1),background .32s
+    }
+    .g-card:hover{
+      transform:translateY(-8px);
+      background:rgba(255,255,255,.07);
+      box-shadow:0 28px 80px rgba(0,0,0,.52),inset 0 1px 0 rgba(255,255,255,.13),0 0 0 1px rgba(201,169,110,.14)
+    }
+    .g-card:not(:hover){transform:none}
+
+    /* Float animations — decorative only */
+    @keyframes float-a{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+    @keyframes float-b{0%,100%{transform:translateY(-6px) rotate(-.4deg)}50%{transform:translateY(8px) rotate(.4deg)}}
+    @keyframes float-c{0%,100%{transform:translateY(0) rotate(.3deg)}50%{transform:translateY(-10px) rotate(-.3deg)}}
+
+    /* Hero split */
+    .hero-split{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center}
+    @media(max-width:900px){
+      .hero-split{grid-template-columns:1fr;gap:0}
+      .hero-right-cluster{display:none}
+    }
+    .hero-title{font-family:'Cormorant Garamond',serif;font-weight:200;font-size:clamp(4.5rem,11vw,10.5rem);line-height:.9;letter-spacing:-.04em;text-align:left}
+
+    /* Ambient orbs */
+    .orb{position:absolute;border-radius:50%;pointer-events:none;will-change:opacity}
   </style>
 </head>
 <body>
@@ -262,40 +294,79 @@
 
 
 <!-- ══════════════════════════════════
-     HERO — centered lockup, full-bleed video
+     HERO — left-aligned, glass card cluster right
 ════════════════════════════════════ -->
-<section style="position:relative;min-height:100dvh;display:flex;align-items:center;justify-content:center;overflow:hidden">
+<section style="position:relative;min-height:100dvh;display:flex;align-items:center;overflow:hidden">
   <video id="hero-video" autoplay muted loop playsinline preload="auto" aria-hidden="true"></video>
-  <!-- Bottom gradient (JS updates this) -->
-  <div id="hero-bottom" style="position:absolute;bottom:0;left:0;right:0;height:65%;pointer-events:none"></div>
-  <!-- Top vignette -->
-  <div style="position:absolute;top:0;left:0;right:0;height:28%;background:linear-gradient(180deg,rgba(0,0,0,.5) 0%,transparent 100%);pointer-events:none"></div>
+  <div id="hero-bottom" style="position:absolute;bottom:0;left:0;right:0;height:70%;pointer-events:none"></div>
+  <div style="position:absolute;top:0;left:0;right:0;height:32%;background:linear-gradient(180deg,rgba(0,0,0,.55) 0%,transparent 100%);pointer-events:none"></div>
   <div id="hero-tint" style="position:absolute;inset:0;pointer-events:none"></div>
 
-  <div style="position:relative;z-index:10;text-align:center;max-width:1060px;margin:0 auto;padding:0 2.5rem;width:100%">
+  <!-- Ambient orbs -->
+  <div class="orb" style="top:-8%;right:-4%;width:56vw;height:56vw;background:radial-gradient(circle,rgba(201,169,110,.07) 0%,transparent 65%)"></div>
+  <div class="orb" style="bottom:-12%;left:-8%;width:38vw;height:38vw;background:radial-gradient(circle,rgba(201,169,110,.04) 0%,transparent 65%)"></div>
 
-    <!-- Eyebrow badge (centered) -->
-    <div class="hero-badge" style="display:flex;align-items:center;justify-content:center;gap:1.25rem;margin-bottom:3rem">
-      <span style="display:inline-block;width:22px;height:1px;background:var(--ac)"></span>
-      <span style="font-size:.5rem;letter-spacing:.36em;text-transform:uppercase;color:rgba(255,255,255,.4);font-family:'DM Sans',sans-serif">Patient Engagement · Canada</span>
-      <span style="display:inline-block;width:22px;height:1px;background:var(--ac)"></span>
-    </div>
+  <div style="position:relative;z-index:10;max-width:1440px;margin:0 auto;padding:0 3rem;width:100%">
+    <div class="hero-split">
 
-    <!-- Headline — centered display type -->
-    <h1 class="hero-title" style="margin-bottom:2.5rem">
-      <span class="hl" style="color:#fff"><span class="hl-inner" id="hl1">Power Your</span></span>
-      <span class="hl"><span class="hl-inner" id="hl2" style="color:rgba(255,255,255,.25);font-style:italic">Practice.</span></span>
-    </h1>
+      <!-- LEFT: text -->
+      <div>
+        <h1 class="hero-title" style="margin-bottom:2.75rem">
+          <span class="hl" style="color:#fff"><span class="hl-inner" id="hl1">Power Your</span></span>
+          <span class="hl"><span class="hl-inner" id="hl2" style="color:rgba(255,255,255,.22);font-style:italic">Practice.</span></span>
+        </h1>
 
-    <!-- Sub copy (hidden on mobile) -->
-    <p class="hero-desc hero-sub" style="font-size:.9rem;color:rgba(255,255,255,.48);line-height:2;font-weight:300;max-width:40ch;margin:0 auto 3rem">
-      Give your clinic a branded patient portal — AI health guidance, loyalty rewards, and appointment tools that keep patients engaged between every visit.
-    </p>
+        <p class="hero-desc hero-sub" style="font-size:.92rem;color:rgba(255,255,255,.46);line-height:2.05;font-weight:300;max-width:38ch;margin:0 0 3rem">
+          Give your clinic a branded patient portal — AI health guidance, loyalty rewards, and appointment tools that keep patients engaged between every visit.
+        </p>
 
-    <!-- CTA row — centered pill buttons -->
-    <div class="hero-ctas" style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
-      <a href="#contact" class="btn btn-solid btn-pill mag" style="padding:.875rem 2.25rem">Request a Demo</a>
-      <a href="/patient-portal" class="btn btn-outline btn-pill mag" style="padding:.875rem 2.25rem;backdrop-filter:blur(10px)" onmouseover="this.style.background='rgba(255,255,255,.08)'" onmouseout="this.style.background=''">Patient Login</a>
+        <div class="hero-ctas" style="display:flex;gap:1rem;flex-wrap:wrap">
+          <a href="#contact" class="btn btn-solid btn-pill mag" style="padding:.875rem 2.25rem">Request a Demo</a>
+          <a href="/patient-portal" class="btn btn-outline btn-pill mag" style="padding:.875rem 2.25rem;backdrop-filter:blur(10px)" onmouseover="this.style.background='rgba(255,255,255,.08)'" onmouseout="this.style.background=''">Patient Login</a>
+        </div>
+      </div>
+
+      <!-- RIGHT: floating glass card cluster -->
+      <div class="hero-right-cluster" style="position:relative;height:520px">
+
+        <!-- Card 1: AI chat preview -->
+        <div class="g-card" style="position:absolute;top:0;left:5%;right:0;padding:1.75rem;border-radius:1.25rem;animation:float-a 7s ease-in-out infinite">
+          <div style="display:flex;align-items:center;gap:.625rem;margin-bottom:1.25rem">
+            <div style="width:8px;height:8px;border-radius:50%;background:var(--ac);animation:pulse 2s ease-in-out infinite"></div>
+            <span style="font-size:.52rem;letter-spacing:.22em;text-transform:uppercase;color:rgba(240,237,232,.38);font-family:'DM Sans',sans-serif">Acuros AI · Live</span>
+          </div>
+          <div style="font-family:'DM Sans',sans-serif;font-size:.78rem;color:rgba(240,237,232,.55);background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);padding:.875rem 1rem;border-radius:.5rem;margin-bottom:.625rem;line-height:1.72">
+            "What does my ferritin level of 12 ng/mL mean?"
+          </div>
+          <div style="font-family:'DM Sans',sans-serif;font-size:.8rem;color:rgba(240,237,232,.78);line-height:1.78;background:rgba(201,169,110,.05);border:1px solid rgba(201,169,110,.14);padding:.875rem 1rem;border-radius:.5rem">
+            A ferritin of 12 ng/mL is at the low end of normal and may indicate early iron depletion. Dietary adjustments or supplementation may be recommended.
+          </div>
+        </div>
+
+        <!-- Card 2: Stats -->
+        <div class="g-card" style="position:absolute;bottom:10%;left:0;width:52%;padding:1.5rem;border-radius:1.25rem;animation:float-b 8.5s ease-in-out infinite">
+          <div style="font-size:.48rem;letter-spacing:.26em;text-transform:uppercase;color:rgba(201,169,110,.6);font-family:'DM Sans',sans-serif;margin-bottom:.875rem">Platform stats</div>
+          <div style="display:flex;flex-direction:column;gap:.75rem">
+            <div style="display:flex;justify-content:space-between;align-items:baseline">
+              <span style="font-size:.72rem;color:rgba(240,237,232,.5)">Clinics</span>
+              <span style="font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:200;color:var(--text)">120+</span>
+            </div>
+            <div style="height:1px;background:rgba(255,255,255,.06)"></div>
+            <div style="display:flex;justify-content:space-between;align-items:baseline">
+              <span style="font-size:.72rem;color:rgba(240,237,232,.5)">Satisfaction</span>
+              <span style="font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:200;color:var(--ac)">96.3%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3: Setup badge -->
+        <div class="g-card" style="position:absolute;bottom:10%;right:0;width:42%;padding:1.25rem;border-radius:1.25rem;animation:float-c 6.5s ease-in-out infinite;text-align:center">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:2.25rem;font-weight:200;color:var(--text);line-height:1;margin-bottom:.35rem">1</div>
+          <div style="font-size:.48rem;letter-spacing:.26em;text-transform:uppercase;color:rgba(240,237,232,.36);font-family:'DM Sans',sans-serif">Day setup</div>
+          <div style="margin-top:.875rem;font-size:.68rem;color:rgba(240,237,232,.42);font-family:'DM Sans',sans-serif">Portal live same day</div>
+        </div>
+
+      </div>
     </div>
   </div>
 
@@ -327,32 +398,33 @@
 
 
 <!-- ══════════════════════════════════
-     STATS — editorial horizontal strip
+     STATS — glass strip
 ════════════════════════════════════ -->
-<section style="background:var(--bg)">
-  <div style="max-width:1440px;margin:0 auto">
+<section style="background:var(--bg);position:relative;overflow:hidden">
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 120%,rgba(201,169,110,.05) 0%,transparent 65%);pointer-events:none"></div>
+  <div style="max-width:1440px;margin:0 auto;position:relative;z-index:1">
     <div style="display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--border)" class="g1m">
-      <div style="padding:4rem 3.5rem;border-right:1px solid var(--border)" class="rv">
+      <div class="g-card rv" style="padding:4rem 3.5rem;border-radius:0;border-left:none;border-top:none;border-bottom:none;border-right:1px solid rgba(255,255,255,.06)">
         <div class="stat-num" data-target="120" data-suffix="+">0+</div>
-        <div style="height:1px;background:var(--border);margin:1.5rem 0"></div>
+        <div style="height:1px;background:rgba(255,255,255,.06);margin:1.5rem 0"></div>
         <div class="lbl" style="margin-bottom:.35rem">Clinics onboarded</div>
         <p style="font-size:.72rem;color:var(--mute);line-height:1.78;max-width:16ch">Across Ontario and growing</p>
       </div>
-      <div style="padding:4rem 3.5rem;border-right:1px solid var(--border)" class="rv d1">
+      <div class="g-card rv d1" style="padding:4rem 3.5rem;border-radius:0;border-left:none;border-top:none;border-bottom:none;border-right:1px solid rgba(255,255,255,.06)">
         <div class="stat-num" data-target="8400" data-suffix="+">0+</div>
-        <div style="height:1px;background:var(--border);margin:1.5rem 0"></div>
+        <div style="height:1px;background:rgba(255,255,255,.06);margin:1.5rem 0"></div>
         <div class="lbl" style="margin-bottom:.35rem">Patients engaged</div>
         <p style="font-size:.72rem;color:var(--mute);line-height:1.78;max-width:16ch">Active monthly portal users</p>
       </div>
-      <div style="padding:4rem 3.5rem;border-right:1px solid var(--border)" class="rv d2">
+      <div class="g-card rv d2" style="padding:4rem 3.5rem;border-radius:0;border-left:none;border-top:none;border-bottom:none;border-right:1px solid rgba(255,255,255,.06)">
         <div class="stat-num">96.3%</div>
-        <div style="height:1px;background:var(--border);margin:1.5rem 0"></div>
+        <div style="height:1px;background:rgba(255,255,255,.06);margin:1.5rem 0"></div>
         <div class="lbl" style="margin-bottom:.35rem">Satisfaction rate</div>
         <p style="font-size:.72rem;color:var(--mute);line-height:1.78;max-width:16ch">Based on post-visit surveys</p>
       </div>
-      <div style="padding:4rem 3.5rem" class="rv d3">
+      <div class="g-card rv d3" style="padding:4rem 3.5rem;border-radius:0;border-left:none;border-top:none;border-bottom:none;border-right:none">
         <div class="stat-num" data-target="1" data-suffix=" Day">0</div>
-        <div style="height:1px;background:var(--border);margin:1.5rem 0"></div>
+        <div style="height:1px;background:rgba(255,255,255,.06);margin:1.5rem 0"></div>
         <div class="lbl" style="margin-bottom:.35rem">Average setup time</div>
         <p style="font-size:.72rem;color:var(--mute);line-height:1.78;max-width:16ch">Portal live same day</p>
       </div>
@@ -564,20 +636,20 @@
       </div>
     </div>
 
-    <!-- Chat demo -->
+    <!-- Chat demo — glass -->
     <div style="display:flex;flex-direction:column;gap:.875rem" class="rv d2">
       <!-- Terminal chrome -->
-      <div style="background:var(--bg3);border:1px solid var(--border);padding:1.25rem 1.5rem;display:flex;align-items:center;gap:.5rem;border-bottom:none">
-        <span style="width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.12)"></span>
-        <span style="width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.12)"></span>
-        <span style="width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.12)"></span>
+      <div class="g-card" style="padding:1.25rem 1.5rem;display:flex;align-items:center;gap:.5rem;border-radius:1rem 1rem 0 0;border-bottom:1px solid rgba(255,255,255,.06)">
+        <span style="width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.14)"></span>
+        <span style="width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.14)"></span>
+        <span style="width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.14)"></span>
         <span style="margin-left:auto;font-size:.5rem;letter-spacing:.22em;text-transform:uppercase;color:var(--mute)">Acuros AI</span>
       </div>
-      <div style="background:var(--bg3);border:1px solid var(--border);padding:2rem;display:flex;flex-direction:column;gap:1rem">
-        <div class="bubble bubble-q">"What does my ferritin level of 12 ng/mL mean?"</div>
-        <div class="bubble bubble-a">A ferritin of 12 ng/mL is at the low end of the normal range and may indicate early iron depletion. Your doctor may recommend dietary adjustments or supplementation.</div>
-        <div class="bubble bubble-q">"Can you help me prepare questions for my checkup?"</div>
-        <div class="bubble bubble-a">Absolutely. Based on your profile, here are three questions worth discussing with your care team — tailored to your current health record.</div>
+      <div class="g-card" style="padding:2rem;display:flex;flex-direction:column;gap:1rem;border-radius:0 0 1rem 1rem;border-top:none">
+        <div class="bubble bubble-q" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:.5rem">"What does my ferritin level of 12 ng/mL mean?"</div>
+        <div class="bubble bubble-a" style="background:rgba(201,169,110,.05);border:1px solid rgba(201,169,110,.16);border-radius:.5rem">A ferritin of 12 ng/mL is at the low end of the normal range and may indicate early iron depletion. Your doctor may recommend dietary adjustments or supplementation.</div>
+        <div class="bubble bubble-q" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:.5rem">"Can you help me prepare questions for my checkup?"</div>
+        <div class="bubble bubble-a" style="background:rgba(201,169,110,.05);border:1px solid rgba(201,169,110,.16);border-radius:.5rem">Absolutely. Based on your profile, here are three questions worth discussing with your care team — tailored to your current health record.</div>
         <div style="display:flex;align-items:center;gap:.625rem;padding-left:.25rem">
           <div style="width:4px;height:4px;background:var(--ac);animation:pulse 1.8s ease-in-out infinite;border-radius:50%"></div>
           <span style="font-size:.58rem;letter-spacing:.16em;color:var(--mute);font-family:'DM Sans',sans-serif">AI is typing…</span>

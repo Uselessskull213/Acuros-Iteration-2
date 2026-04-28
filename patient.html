@@ -155,6 +155,55 @@
       .dash-stat-strip .stat-div{display:none}
       .dash-actions{width:100%;flex-wrap:wrap}
     }
+
+    /* ── Glassmorphism ── */
+    .g-card{
+      background:rgba(255,255,255,.042);
+      backdrop-filter:blur(22px) saturate(160%);
+      -webkit-backdrop-filter:blur(22px) saturate(160%);
+      border:1px solid rgba(255,255,255,.09);
+      box-shadow:0 8px 40px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.09);
+      transition:transform .48s cubic-bezier(.22,1,.36,1),box-shadow .48s,background .32s
+    }
+    .g-card:hover{
+      transform:translateY(-7px);
+      background:rgba(255,255,255,.068);
+      box-shadow:0 28px 80px rgba(0,0,0,.52),inset 0 1px 0 rgba(255,255,255,.13),0 0 0 1px rgba(201,169,110,.13)
+    }
+    @keyframes float-a{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+    @keyframes float-b{0%,100%{transform:translateY(-5px) rotate(-.3deg)}50%{transform:translateY(7px) rotate(.3deg)}}
+
+    /* Gate right glass panel */
+    .gate-right{
+      background:rgba(17,17,16,.72)!important;
+      backdrop-filter:blur(28px) saturate(160%);
+      -webkit-backdrop-filter:blur(28px) saturate(160%);
+      border-left:1px solid rgba(255,255,255,.07)!important;
+      box-shadow:-20px 0 60px rgba(0,0,0,.4)
+    }
+
+    /* Org modal glass */
+    #org-modal .modal-glass{
+      background:rgba(17,17,16,.88);
+      backdrop-filter:blur(28px) saturate(160%);
+      -webkit-backdrop-filter:blur(28px) saturate(160%);
+      border:1px solid rgba(255,255,255,.08);
+      box-shadow:0 40px 100px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.08)
+    }
+
+    /* Orb */
+    .orb{position:absolute;border-radius:50%;pointer-events:none}
+
+    /* Tool card glass hover */
+    .tool-card{
+      background:rgba(255,255,255,.018)!important;
+      backdrop-filter:blur(12px) saturate(140%);
+      -webkit-backdrop-filter:blur(12px) saturate(140%)
+    }
+    .tool-card:hover{
+      background:rgba(255,255,255,.04)!important;
+      box-shadow:0 12px 48px rgba(0,0,0,.32),inset 0 1px 0 rgba(255,255,255,.07)
+    }
   </style>
 </head>
 <body>
@@ -217,6 +266,9 @@
       <img src="https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=1400&q=80&auto=format&fit=crop"
            alt="" aria-hidden="true"
            style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(0) brightness(0.055);pointer-events:none;z-index:0"/>
+      <!-- Ambient orbs -->
+      <div class="orb" style="top:-10%;right:-15%;width:50vw;height:50vw;background:radial-gradient(circle,rgba(201,169,110,.06) 0%,transparent 65%);z-index:1"></div>
+      <div class="orb" style="bottom:-5%;left:-5%;width:30vw;height:30vw;background:radial-gradient(circle,rgba(201,169,110,.04) 0%,transparent 65%);z-index:1"></div>
       <!-- Vignette -->
       <div style="position:absolute;inset:0;background:linear-gradient(to right,rgba(12,12,10,0) 60%,rgba(12,12,10,.95));z-index:1;pointer-events:none"></div>
 
@@ -374,7 +426,7 @@
 
   <!-- Org join modal (unchanged structure, updated visual) -->
   <div id="org-modal" style="display:none;position:fixed;inset:0;z-index:400;align-items:center;justify-content:center;background:rgba(0,0,0,.78);backdrop-filter:blur(16px)">
-    <div style="background:var(--bg2);border:1px solid var(--border);width:100%;max-width:460px;padding:3.25rem;position:relative;margin:1.5rem">
+    <div class="modal-glass" style="width:100%;max-width:460px;padding:3.25rem;position:relative;margin:1.5rem;border-radius:.75rem">
       <button onclick="hideOrgPrompt()" style="position:absolute;top:1.25rem;right:1.25rem;background:none;border:none;cursor:pointer;color:var(--mute);transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--mute)'">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
       </button>

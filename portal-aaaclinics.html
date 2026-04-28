@@ -94,6 +94,68 @@
     ::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:1px}
     @media(max-width:900px){.g1m{grid-template-columns:1fr!important}.hnm{display:none!important}#mob-btn{display:flex!important}#nav-cta-area{display:none!important}}
     @media(max-width:640px){.g2{grid-template-columns:1fr!important}.g3{grid-template-columns:1fr!important}}
+
+    /* ── Glassmorphism ── */
+    .orb{position:absolute;border-radius:50%;pointer-events:none}
+
+    /* Glass treatment cards */
+    .treatment-card{
+      background:rgba(255,255,255,.038)!important;
+      backdrop-filter:blur(20px) saturate(155%);
+      -webkit-backdrop-filter:blur(20px) saturate(155%);
+      border:1px solid rgba(255,255,255,.08)!important;
+      border-top:2px solid transparent!important;
+      box-shadow:0 8px 32px rgba(0,0,0,.32),inset 0 1px 0 rgba(255,255,255,.08);
+      transition:border-color .32s,border-top-color .32s,transform .42s cubic-bezier(.22,1,.36,1),box-shadow .42s,background .3s!important
+    }
+    .treatment-card:hover{
+      border-color:rgba(201,169,110,.25)!important;
+      border-top-color:var(--ac)!important;
+      transform:translateY(-8px)!important;
+      background:rgba(255,255,255,.065)!important;
+      box-shadow:0 28px 72px rgba(0,0,0,.48),inset 0 1px 0 rgba(255,255,255,.12),0 0 0 1px rgba(201,169,110,.1)!important
+    }
+
+    /* Glass product cards (portal) */
+    .product-card{
+      background:rgba(255,255,255,.035)!important;
+      backdrop-filter:blur(18px) saturate(150%);
+      -webkit-backdrop-filter:blur(18px) saturate(150%);
+      border:1px solid rgba(255,255,255,.08)!important;
+      box-shadow:0 6px 28px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.07);
+      transition:border-color .28s,transform .4s cubic-bezier(.22,1,.36,1),box-shadow .4s,background .28s!important
+    }
+    .product-card:hover{
+      border-color:rgba(201,169,110,.28)!important;
+      transform:translateY(-6px)!important;
+      background:rgba(255,255,255,.062)!important;
+      box-shadow:0 24px 64px rgba(0,0,0,.44),inset 0 1px 0 rgba(255,255,255,.11),0 0 0 1px rgba(201,169,110,.1)!important
+    }
+
+    /* Glass generic cards */
+    .card{
+      background:rgba(255,255,255,.032)!important;
+      backdrop-filter:blur(18px) saturate(150%);
+      -webkit-backdrop-filter:blur(18px) saturate(150%);
+      border:1px solid rgba(255,255,255,.07)!important;
+      box-shadow:0 6px 24px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.07);
+      transition:border-color .25s,transform .38s cubic-bezier(.22,1,.36,1),box-shadow .38s!important
+    }
+    .card:hover{
+      border-color:rgba(201,169,110,.3)!important;
+      transform:translateY(-4px)!important;
+      box-shadow:0 20px 60px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.1)!important
+    }
+
+    /* Glass AI widget panel */
+    #ai-panel{
+      background:rgba(17,17,16,.88)!important;
+      backdrop-filter:blur(28px) saturate(160%)!important;
+      -webkit-backdrop-filter:blur(28px) saturate(160%)!important;
+      border:1px solid rgba(255,255,255,.08)!important;
+      box-shadow:0 20px 80px rgba(0,0,0,.65),inset 0 1px 0 rgba(255,255,255,.08)!important;
+      border-radius:.75rem!important
+    }
   </style>
 </head>
 <body>
@@ -158,8 +220,9 @@
 
     <!-- Dashboard Header -->
     <section style="background:var(--bg2);border-bottom:1px solid var(--border);position:relative;overflow:hidden">
-      <!-- Ambient glow -->
-      <div style="position:absolute;top:-80px;right:-40px;width:380px;height:380px;background:radial-gradient(circle,rgba(201,169,110,.04) 0%,transparent 70%);pointer-events:none"></div>
+      <!-- Ambient orbs -->
+      <div class="orb" style="top:-12%;right:-6%;width:48vw;height:48vw;background:radial-gradient(circle,rgba(201,169,110,.07) 0%,transparent 65%)"></div>
+      <div class="orb" style="bottom:-8%;left:-4%;width:28vw;height:28vw;background:radial-gradient(circle,rgba(201,169,110,.04) 0%,transparent 65%)"></div>
       <div style="position:absolute;inset:0;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:60px 60px;opacity:.12;pointer-events:none"></div>
 
       <div style="max-width:1400px;margin:0 auto;padding:3rem 2.5rem 0;position:relative">

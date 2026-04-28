@@ -119,6 +119,57 @@
 
     ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
     @media(max-width:900px){.g1m{grid-template-columns:1fr!important}.hnm{display:none!important}#mob-btn{display:flex!important}#nav-cta{display:none!important}}
+
+    /* ── Glassmorphism ── */
+    .g-card{
+      background:rgba(255,255,255,.04);
+      backdrop-filter:blur(22px) saturate(160%);
+      -webkit-backdrop-filter:blur(22px) saturate(160%);
+      border:1px solid rgba(255,255,255,.09);
+      box-shadow:0 8px 40px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.09);
+      transition:transform .48s cubic-bezier(.22,1,.36,1),box-shadow .48s,background .32s
+    }
+    .g-card:hover{
+      transform:translateY(-6px);
+      background:rgba(255,255,255,.068);
+      box-shadow:0 24px 72px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.13),0 0 0 1px rgba(201,169,110,.12)
+    }
+    .orb{position:absolute;border-radius:50%;pointer-events:none}
+
+    /* Glass chat window */
+    .card.glass-chat{
+      background:rgba(255,255,255,.032)!important;
+      backdrop-filter:blur(22px) saturate(150%);
+      -webkit-backdrop-filter:blur(22px) saturate(150%);
+      border:1px solid rgba(255,255,255,.08)!important;
+      box-shadow:0 16px 60px rgba(0,0,0,.44),inset 0 1px 0 rgba(255,255,255,.08)
+    }
+
+    /* Glass use-case cards */
+    .use-card{
+      background:rgba(255,255,255,.032)!important;
+      backdrop-filter:blur(18px) saturate(150%);
+      -webkit-backdrop-filter:blur(18px) saturate(150%);
+      border:1px solid rgba(255,255,255,.08)!important;
+      box-shadow:0 4px 24px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.07);
+      transition:transform .42s cubic-bezier(.22,1,.36,1),box-shadow .42s,background .3s!important
+    }
+    .use-card:hover{
+      transform:translateY(-7px)!important;
+      background:rgba(255,255,255,.062)!important;
+      box-shadow:0 20px 60px rgba(0,0,0,.46),inset 0 1px 0 rgba(255,255,255,.12),0 0 0 1px rgba(201,169,110,.12)!important
+    }
+
+    /* Glass how-it-works panel */
+    .glass-panel{
+      background:rgba(255,255,255,.028);
+      backdrop-filter:blur(18px) saturate(150%);
+      -webkit-backdrop-filter:blur(18px) saturate(150%);
+      border:1px solid rgba(255,255,255,.07);
+      box-shadow:0 8px 32px rgba(0,0,0,.32),inset 0 1px 0 rgba(255,255,255,.07)
+    }
+    .glass-panel-row{transition:background .22s}
+    .glass-panel-row:hover{background:rgba(255,255,255,.03)}
   </style>
 </head>
 <body>
@@ -174,6 +225,9 @@
     <img src="https://images.unsplash.com/photo-1530026405186-ed1f139313f8?w=1600&q=80&auto=format&fit=crop" alt="Medical research" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;filter:saturate(0.2) brightness(0.1)"/>
     <div style="position:absolute;inset:0;background:linear-gradient(0deg,var(--bg) 0%,rgba(0,0,0,.4) 60%,rgba(0,0,0,.15) 100%)"></div>
     <div class="mesh" style="position:absolute;inset:0;opacity:.1"></div>
+    <!-- Ambient orbs -->
+    <div class="orb" style="top:-10%;right:-5%;width:50vw;height:50vw;background:radial-gradient(circle,rgba(201,169,110,.07) 0%,transparent 65%)"></div>
+    <div class="orb" style="bottom:0%;left:10%;width:30vw;height:30vw;background:radial-gradient(circle,rgba(201,169,110,.04) 0%,transparent 65%)"></div>
     <div style="position:relative;max-width:1320px;margin:0 auto;width:100%">
       <div class="lbl rv" style="margin-bottom:1.5rem;color:var(--ac)">AI Health Assistant</div>
       <h1 class="rv d1" style="font-size:clamp(3rem,7.5vw,6rem);font-weight:200;color:var(--text);margin-bottom:1.5rem;letter-spacing:-.035em;line-height:.95">Intelligent Health<br/><em style="color:var(--sub);font-style:italic">Dialogue.</em></h1>
@@ -195,7 +249,7 @@
         <div id="guest-notice" style="display:none;margin-bottom:.875rem" class="warn-box">
           You're using Acuros AI as a guest — <strong>1 free message</strong> per session. <a href="/patient-portal" style="color:inherit;font-weight:600;text-decoration:underline">Sign in</a> or join an organization for unlimited access.
         </div>
-        <div class="card" style="display:flex;flex-direction:column;height:560px;position:relative">
+        <div class="card glass-chat" style="display:flex;flex-direction:column;height:560px;position:relative">
           <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.625rem">
             <div class="glow-dot" style="width:7px;height:7px;border-radius:50%;background:var(--ac);flex-shrink:0"></div>
             <span class="lbl">Acuros AI · Gemini-Powered</span>
@@ -225,29 +279,29 @@
 
       <div style="display:flex;flex-direction:column;gap:1.25rem" class="rv d1">
         <div class="lbl" style="margin-bottom:.25rem">How It Works</div>
-        <div style="background:var(--bg2);border:1px solid var(--border)">
-          <div style="padding:1.25rem;border-bottom:1px solid var(--border);transition:background .22s" onmouseover="this.style.background='var(--bg3)'" onmouseout="this.style.background=''">
+        <div class="glass-panel" style="border-radius:.75rem;overflow:hidden">
+          <div class="glass-panel-row" style="padding:1.25rem;border-bottom:1px solid rgba(255,255,255,.06)">
             <div class="lbl" style="color:var(--ac);margin-bottom:.4rem">01</div>
             <h4 style="font-size:1.2rem;font-weight:300;color:var(--text);margin-bottom:.35rem">Symptom Logic</h4>
             <p style="font-size:.78rem;line-height:1.82;color:var(--sub)">Deterministic reasoning chains minimise hallucination. Every step is structured.</p>
           </div>
-          <div style="padding:1.25rem;border-bottom:1px solid var(--border);transition:background .22s" onmouseover="this.style.background='var(--bg3)'" onmouseout="this.style.background=''">
+          <div class="glass-panel-row" style="padding:1.25rem;border-bottom:1px solid rgba(255,255,255,.06)">
             <div class="lbl" style="color:var(--ac);margin-bottom:.4rem">02</div>
             <h4 style="font-size:1.2rem;font-weight:300;color:var(--text);margin-bottom:.35rem">Grounded Retrieval</h4>
             <p style="font-size:.78rem;line-height:1.82;color:var(--sub)">Queries cross-referenced against peer-reviewed sources before generation.</p>
           </div>
-          <div style="padding:1.25rem;border-bottom:1px solid var(--border);transition:background .22s" onmouseover="this.style.background='var(--bg3)'" onmouseout="this.style.background=''">
+          <div class="glass-panel-row" style="padding:1.25rem;border-bottom:1px solid rgba(255,255,255,.06)">
             <div class="lbl" style="color:var(--ac);margin-bottom:.4rem">03</div>
             <h4 style="font-size:1.2rem;font-weight:300;color:var(--text);margin-bottom:.35rem">Safety Governance</h4>
             <p style="font-size:.78rem;line-height:1.82;color:var(--sub)">A secondary review layer intercepts risky advice before it reaches you.</p>
           </div>
-          <div style="padding:1.25rem;transition:background .22s" onmouseover="this.style.background='var(--bg3)'" onmouseout="this.style.background=''">
+          <div class="glass-panel-row" style="padding:1.25rem">
             <div class="lbl" style="color:var(--ac);margin-bottom:.4rem">04</div>
             <h4 style="font-size:1.2rem;font-weight:300;color:var(--text);margin-bottom:.35rem">Session Privacy</h4>
             <p style="font-size:.78rem;line-height:1.82;color:var(--sub)">Conversation history stored only on your device. Zero third-party sharing.</p>
           </div>
         </div>
-        <div style="background:var(--bg2);border:1px solid var(--border);padding:1.5rem">
+        <div class="glass-panel" style="padding:1.5rem;border-radius:.75rem">
           <div class="lbl" style="color:var(--ac);margin-bottom:.75rem">Want unlimited access?</div>
           <p style="font-size:.78rem;color:var(--sub);line-height:1.82;margin-bottom:1rem">Sign in and join an organization to unlock unlimited AI conversations and your full patient dashboard.</p>
           <a href="/patient-portal" class="btn btn-outline mag" style="width:100%;justify-content:center;font-size:.7rem">Go to Patient Portal →</a>
@@ -257,8 +311,10 @@
   </section>
 
   <!-- Use cases -->
-  <section style="border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--bg2)">
-    <div style="max-width:1320px;margin:0 auto;padding:5rem 2rem">
+  <section style="border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--bg2);position:relative;overflow:hidden">
+    <div class="orb" style="top:-20%;right:-10%;width:44vw;height:44vw;background:radial-gradient(circle,rgba(201,169,110,.05) 0%,transparent 65%)"></div>
+    <div class="orb" style="bottom:-10%;left:-5%;width:28vw;height:28vw;background:radial-gradient(circle,rgba(201,169,110,.04) 0%,transparent 65%)"></div>
+    <div style="max-width:1320px;margin:0 auto;padding:5rem 2rem;position:relative;z-index:1">
       <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:3rem;flex-wrap:wrap;gap:1.5rem">
         <div>
           <div class="lbl rv" style="margin-bottom:.875rem">What you can do</div>
