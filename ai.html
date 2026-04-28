@@ -109,8 +109,19 @@
     .img-panel-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(11,122,109,.07) 0%,rgba(0,0,0,.32) 100%)}
 
     /* ── Use case cards ── */
-    .use-card{background:var(--bg2);padding:1.5rem;border:1px solid var(--border);transition:border-color .28s,transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s;will-change:transform}
-    .use-card:hover{border-color:var(--ac);transform:translateY(-3px);box-shadow:0 12px 40px rgba(11,122,109,.09)}
+    .use-card{background:var(--bg2);padding:2rem;border:1px solid var(--border);transition:border-color .28s,transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s;will-change:transform;position:relative;overflow:hidden}
+    .use-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--ac);transform:scaleX(0);transform-origin:left;transition:transform .38s cubic-bezier(.22,1,.36,1)}
+    .use-card:hover{border-color:rgba(11,122,109,.35);transform:translateY(-3px);box-shadow:0 16px 48px rgba(11,122,109,.08)}
+    .use-card:hover::before{transform:scaleX(1)}
+
+    /* ── Chat chrome ── */
+    .chat-label{font-size:.48rem;letter-spacing:.22em;text-transform:uppercase;padding:.18rem .55rem;background:var(--ac);color:#fff;font-family:'DM Sans',sans-serif;font-weight:500;flex-shrink:0}
+    .bubble.ai .chat-label{display:inline-block;margin-bottom:.5rem}
+
+    /* ── Hero stat chips ── */
+    .hero-chip{display:inline-flex;align-items:center;gap:.625rem;padding:.55rem 1.125rem;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);backdrop-filter:blur(8px)}
+    .hero-chip-dot{width:5px;height:5px;border-radius:50%;background:var(--ac)}
+    .hero-chip-text{font-family:'DM Sans',sans-serif;font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.6)}
 
     /* ── Mob menu ── */
     #mob-menu{display:none;position:fixed;inset:0;z-index:300;background:var(--bg);flex-direction:column;padding:2.5rem}
@@ -177,14 +188,21 @@
 <div style="padding-top:4rem">
 
   <!-- Hero -->
-  <section style="position:relative;padding:7rem 2rem 5.5rem;border-bottom:1px solid var(--border);overflow:hidden;min-height:340px;display:flex;align-items:flex-end">
-    <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1400&q=80&auto=format&fit=crop" alt="Forest" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(0.3) brightness(0.16)"/>
-    <div style="position:absolute;inset:0;background:linear-gradient(0deg,var(--bg) 0%,rgba(0,0,0,.42) 100%)"></div>
-    <div class="mesh" style="position:absolute;inset:0;opacity:.18"></div>
+  <section style="position:relative;padding:8rem 2rem 6rem;border-bottom:1px solid var(--border);overflow:hidden;min-height:480px;display:flex;align-items:flex-end">
+    <img src="https://images.unsplash.com/photo-1530026405186-ed1f139313f8?w=1600&q=80&auto=format&fit=crop" alt="Medical research" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;filter:saturate(0.2) brightness(0.12)"/>
+    <div style="position:absolute;inset:0;background:linear-gradient(0deg,var(--bg) 0%,rgba(0,0,0,.3) 60%,rgba(0,0,0,.1) 100%)"></div>
+    <div class="mesh" style="position:absolute;inset:0;opacity:.12"></div>
     <div style="position:relative;max-width:1280px;margin:0 auto;width:100%">
-      <div class="lbl rv" style="margin-bottom:1.25rem;color:var(--ac)">AI Assistant</div>
-      <h1 class="rv d1" style="font-size:clamp(3rem,7vw,5.5rem);font-weight:300;color:var(--text);margin-bottom:1.25rem">Intelligent Health<br/><em>Dialogue.</em></h1>
-      <p class="rv d2" style="font-size:.95rem;color:var(--sub);max-width:46ch;line-height:1.85">Ask medical questions with confidence. Powered by Gemini with evidence-based reasoning, structured logic, and safety governance.</p>
+      <div class="lbl rv" style="margin-bottom:1.5rem;color:var(--ac)">AI Health Assistant</div>
+      <h1 class="rv d1" style="font-size:clamp(3rem,7.5vw,6rem);font-weight:200;color:var(--text);margin-bottom:1.5rem;letter-spacing:-.035em;line-height:.95">Intelligent Health<br/><em style="color:var(--mute);font-style:italic">Dialogue.</em></h1>
+      <p class="rv d2" style="font-size:.95rem;color:var(--sub);max-width:46ch;line-height:1.88;margin-bottom:2.5rem">Ask medical questions with confidence. Powered by Gemini with evidence-based reasoning, structured logic, and safety governance.</p>
+      <!-- Stat chips -->
+      <div class="rv d3" style="display:flex;flex-wrap:wrap;gap:.625rem">
+        <div class="hero-chip"><div class="hero-chip-dot"></div><span class="hero-chip-text">Gemini-Powered</span></div>
+        <div class="hero-chip"><div class="hero-chip-dot"></div><span class="hero-chip-text">Evidence-Based</span></div>
+        <div class="hero-chip"><div class="hero-chip-dot"></div><span class="hero-chip-text">PIPEDA Compliant</span></div>
+        <div class="hero-chip"><div class="hero-chip-dot"></div><span class="hero-chip-text">Zero Data Sharing</span></div>
+      </div>
     </div>
   </section>
 
@@ -258,17 +276,45 @@
   </section>
 
   <!-- Use cases -->
-  <section style="display:grid;grid-template-columns:1fr 2fr;border-top:1px solid var(--border);border-bottom:1px solid var(--border)" class="g1m">
-    <div class="img-panel" style="min-height:360px">
-      <img src="https://images.unsplash.com/photo-1423345810305-b83a872a8344?w=700&q=80&auto=format&fit=crop" alt="Dark forest" loading="lazy"/>
-      <div class="img-panel-overlay"></div>
-      <div style="position:absolute;bottom:2rem;left:2rem"><div class="lbl" style="color:rgba(255,255,255,.4)">Use Cases</div></div>
-    </div>
-    <div class="bg-dots g1m" style="padding:3.5rem 3rem;display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-content:center">
-      <div class="use-card rv"><h4 style="font-size:1.3rem;font-weight:300;color:var(--text);margin-bottom:.5rem">Report Translation</h4><p style="font-size:.8rem;line-height:1.8;color:var(--sub)">Paste lab results or discharge summaries for plain-English explanations.</p></div>
-      <div class="use-card rv d1"><h4 style="font-size:1.3rem;font-weight:300;color:var(--text);margin-bottom:.5rem">Appointment Prep</h4><p style="font-size:.8rem;line-height:1.8;color:var(--sub)">Organise symptoms and generate targeted questions before specialist visits.</p></div>
-      <div class="use-card rv d2"><h4 style="font-size:1.3rem;font-weight:300;color:var(--text);margin-bottom:.5rem">Medication Safety</h4><p style="font-size:.8rem;line-height:1.8;color:var(--sub)">Check drug interactions, dosage guidelines, and side effect profiles instantly.</p></div>
-      <div class="use-card rv d3"><h4 style="font-size:1.3rem;font-weight:300;color:var(--text);margin-bottom:.5rem">Health Education</h4><p style="font-size:.8rem;line-height:1.8;color:var(--sub)">Understand diagnoses, procedures, and treatment options in plain language.</p></div>
+  <section style="border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--bg2)">
+    <div style="max-width:1280px;margin:0 auto;padding:5rem 2rem">
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:3rem;flex-wrap:wrap;gap:1.5rem">
+        <div>
+          <div class="lbl rv" style="margin-bottom:.875rem">What you can do</div>
+          <h2 class="rv d1" style="font-family:'Cormorant Garamond',serif;font-size:clamp(1.75rem,3.5vw,3rem);font-weight:200;letter-spacing:-.03em;line-height:1.08;color:var(--text)">Four ways to use<br/><em style="color:var(--mute);font-style:italic">Acuros AI.</em></h2>
+        </div>
+        <a href="/patient-portal" class="btn btn-outline mag rv d2" style="flex-shrink:0">Unlock full access →</a>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border)" class="g1m">
+        <div class="use-card rv" style="background:var(--bg2)">
+          <div style="width:32px;height:32px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--ac);margin-bottom:1.5rem">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          </div>
+          <h4 style="font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:300;color:var(--text);margin-bottom:.625rem;line-height:1.15">Report Translation</h4>
+          <p style="font-size:.79rem;line-height:1.85;color:var(--sub);max-width:24ch">Paste lab results or discharge summaries for plain-English explanations.</p>
+        </div>
+        <div class="use-card rv d1" style="background:var(--bg2)">
+          <div style="width:32px;height:32px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--ac);margin-bottom:1.5rem">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          </div>
+          <h4 style="font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:300;color:var(--text);margin-bottom:.625rem;line-height:1.15">Appointment Prep</h4>
+          <p style="font-size:.79rem;line-height:1.85;color:var(--sub);max-width:24ch">Organise symptoms and generate targeted questions before specialist visits.</p>
+        </div>
+        <div class="use-card rv d2" style="background:var(--bg2)">
+          <div style="width:32px;height:32px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--ac);margin-bottom:1.5rem">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0016.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 002 8.5c0 2.3 1.5 4.05 3 5.5l7 7z"/></svg>
+          </div>
+          <h4 style="font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:300;color:var(--text);margin-bottom:.625rem;line-height:1.15">Medication Safety</h4>
+          <p style="font-size:.79rem;line-height:1.85;color:var(--sub);max-width:24ch">Check drug interactions, dosage guidelines, and side effect profiles instantly.</p>
+        </div>
+        <div class="use-card rv d3" style="background:var(--bg2)">
+          <div style="width:32px;height:32px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--ac);margin-bottom:1.5rem">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+          </div>
+          <h4 style="font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:300;color:var(--text);margin-bottom:.625rem;line-height:1.15">Health Education</h4>
+          <p style="font-size:.79rem;line-height:1.85;color:var(--sub);max-width:24ch">Understand diagnoses, procedures, and treatment options in plain language.</p>
+        </div>
+      </div>
     </div>
   </section>
 

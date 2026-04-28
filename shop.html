@@ -5,125 +5,211 @@
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-80K00SEBQK');</script>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>OTC Shop — Acuros Health</title>
+  <title>Shop — Acuros Health</title>
   <link rel="icon" type="image/png" href="favicon.png"/>
   <link rel="apple-touch-icon" href="favicon.png"/>
-  <meta name="description" content="Clinic-approved over-the-counter health and wellness products, curated by your care team."/>
+  <meta name="description" content="Clinic-curated over-the-counter products — recommended and approved by your healthcare team."/>
   <link rel="canonical" href="https://acuros.ca/shop"/>
   <meta property="og:type" content="website"/>
   <meta property="og:url" content="https://acuros.ca/shop"/>
-  <meta property="og:title" content="OTC Shop — Acuros Health"/>
-  <meta property="og:description" content="Clinic-approved over-the-counter health and wellness products."/>
+  <meta property="og:title" content="Shop — Acuros Health"/>
+  <meta property="og:description" content="Clinic-curated health and wellness products, recommended by your care team."/>
   <meta property="og:site_name" content="Acuros Health"/>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,200;0,300;0,400;0,500;1,200;1,300;1,400&family=Inter:wght@300;400;500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
   <script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{display:['Cormorant Garamond','Georgia','serif'],sans:['Inter','DM Sans','sans-serif']}}}}</script>
   <style>
-    :root{--bg:#f3f2ef;--bg2:#fdfcfa;--bg3:#eceae5;--border:#dbd9d1;--text:#181714;--sub:#57564f;--mute:#99978e;--ac:#0b7a6d;--gold:#b8892a;--nav:rgba(243,242,239,.93)}
-    html.dark{--bg:#0d0d0b;--bg2:#151512;--bg3:#1a1a17;--border:#262620;--text:#eeeee7;--sub:#94938b;--mute:#565650;--ac:#2bbfaf;--gold:#d4a84a;--nav:rgba(13,13,11,.93)}
+    :root{
+      --bg:#f3f2ef;--bg2:#fdfcfa;--bg3:#eceae5;
+      --border:#dbd9d1;--text:#181714;--sub:#57564f;--mute:#99978e;
+      --ac:#0b7a6d;--gold:#b8892a;
+      --nav:rgba(243,242,239,.93);--shadow:0 4px 40px rgba(0,0,0,.08)
+    }
+    html.dark{
+      --bg:#0d0d0b;--bg2:#151512;--bg3:#1a1a17;
+      --border:#262620;--text:#eeeee7;--sub:#94938b;--mute:#565650;
+      --ac:#2bbfaf;--gold:#d4a84a;
+      --nav:rgba(13,13,11,.93);--shadow:0 4px 40px rgba(0,0,0,.38)
+    }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     html{scroll-behavior:smooth}
     body{font-family:'Inter','DM Sans',sans-serif;background:var(--bg);color:var(--text);transition:background .35s,color .35s;overflow-x:hidden;cursor:none}
     @media(hover:none),(pointer:coarse){body{cursor:auto}#cursor-dot,#cursor-ring{display:none!important}}
-    h1,h2,h3,h4{font-family:'Cormorant Garamond',serif;line-height:1.06;letter-spacing:-.02em}
+    h1,h2,h3,h4{font-family:'Cormorant Garamond',serif;line-height:1.04;letter-spacing:-.025em}
 
-    /* ── Custom cursor ── */
-    #cursor-dot{position:fixed;top:0;left:0;width:7px;height:7px;background:var(--ac);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .15s,background .2s,opacity .2s;will-change:left,top}
-    #cursor-ring{position:fixed;top:0;left:0;width:34px;height:34px;border:1.5px solid var(--ac);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);opacity:.55;transition:width .3s cubic-bezier(.22,1,.36,1),height .3s cubic-bezier(.22,1,.36,1),opacity .3s,border-color .2s;will-change:left,top}
-    body.cursor-expand #cursor-dot{transform:translate(-50%,-50%) scale(1.8)}
-    body.cursor-expand #cursor-ring{width:52px;height:52px;opacity:.35}
+    /* ── Grain ── */
+    #grain{position:fixed;inset:0;z-index:9992;pointer-events:none;opacity:.038;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-repeat:repeat;background-size:180px 180px}
+    html.dark #grain{opacity:.06}
+
+    /* ── Cursor ── */
+    #cursor-dot{position:fixed;top:0;left:0;width:6px;height:6px;background:var(--ac);border-radius:50%;pointer-events:none;z-index:8999;transform:translate(-50%,-50%);transition:background .2s,transform .18s cubic-bezier(.22,1,.36,1);will-change:left,top}
+    #cursor-ring{position:fixed;top:0;left:0;width:32px;height:32px;border:1px solid var(--ac);border-radius:50%;pointer-events:none;z-index:8998;transform:translate(-50%,-50%);opacity:.45;transition:width .32s cubic-bezier(.22,1,.36,1),height .32s,opacity .3s,border-color .3s;will-change:left,top}
+    body.c-expand #cursor-dot{transform:translate(-50%,-50%) scale(1.8)}
+    body.c-expand #cursor-ring{width:50px;height:50px;opacity:.28}
 
     /* ── Scroll progress ── */
-    #scroll-prog{position:fixed;top:0;left:0;height:1.5px;width:0;background:var(--ac);z-index:9997;transition:width .08s linear;pointer-events:none}
+    #scroll-prog{position:fixed;top:0;left:0;height:1.5px;width:0;background:var(--ac);z-index:9997;pointer-events:none}
 
     /* ── Nav ── */
-    nav{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--nav);backdrop-filter:blur(28px) saturate(200%);-webkit-backdrop-filter:blur(28px) saturate(200%);border-bottom:1px solid rgba(0,0,0,.06);transition:background .35s,box-shadow .35s}
+    nav{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--nav);backdrop-filter:blur(32px) saturate(200%);-webkit-backdrop-filter:blur(32px) saturate(200%);border-bottom:1px solid rgba(0,0,0,.055);transition:background .35s,box-shadow .35s}
     html.dark nav{border-bottom-color:rgba(255,255,255,.04)}
-    nav.scrolled{box-shadow:0 4px 32px rgba(0,0,0,.06)}
-    .nav-inner{height:64px;max-width:1280px;margin:0 auto;padding:0 2rem;display:flex;align-items:center;justify-content:space-between;transition:height .38s cubic-bezier(.22,1,.36,1)}
+    nav.scrolled{box-shadow:var(--shadow)}
+    .nav-inner{height:64px;max-width:1280px;margin:0 auto;padding:0 2.5rem;display:flex;align-items:center;justify-content:space-between;transition:height .38s cubic-bezier(.22,1,.36,1)}
     nav.scrolled .nav-inner{height:52px}
-    .nav-link{position:relative;font-size:.68rem;letter-spacing:.13em;text-transform:uppercase;color:var(--sub);background:none;border:none;cursor:pointer;padding:0;font-family:inherit;transition:color .2s;text-decoration:none;display:inline-block}
+    .nav-link{position:relative;font-size:.67rem;letter-spacing:.14em;text-transform:uppercase;color:var(--sub);background:none;border:none;cursor:pointer;padding:0;font-family:inherit;transition:color .2s;text-decoration:none;display:inline-block}
     .nav-link::after{content:'';position:absolute;left:0;bottom:-2px;width:0;height:1px;background:var(--ac);transition:width .28s cubic-bezier(.22,1,.36,1)}
     .nav-link:hover::after,.nav-link.active::after{width:100%}
     .nav-link:hover,.nav-link.active{color:var(--text)}
 
     /* ── Buttons ── */
-    .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.72rem 1.75rem;font-size:.76rem;letter-spacing:.1em;text-transform:uppercase;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;border:none;transition:background-color .22s cubic-bezier(.22,1,.36,1),color .22s cubic-bezier(.22,1,.36,1),transform .22s cubic-bezier(.22,1,.36,1),box-shadow .22s cubic-bezier(.22,1,.36,1),border-color .22s cubic-bezier(.22,1,.36,1);text-decoration:none;position:relative;overflow:hidden}
-    .btn::before{content:'';position:absolute;inset:0;background:rgba(255,255,255,.1);opacity:0;transition:opacity .2s}
+    .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.7rem 1.7rem;font-size:.74rem;letter-spacing:.11em;text-transform:uppercase;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;border:none;transition:background-color .22s cubic-bezier(.22,1,.36,1),color .22s,transform .22s cubic-bezier(.22,1,.36,1),box-shadow .22s,border-color .22s;text-decoration:none;position:relative;overflow:hidden}
+    .btn::before{content:'';position:absolute;inset:0;background:rgba(255,255,255,.09);opacity:0;transition:opacity .2s}
     .btn:hover::before{opacity:1}
     .btn:not([disabled]):active{transform:scale(0.97);transition-duration:80ms}
     .btn-solid{background:var(--text);color:var(--bg)}
-    .btn-solid:hover{background:var(--ac);color:#fff;transform:translateY(-1px)}
-    .btn-outline{background:transparent;color:var(--text);border:1px solid rgba(24,24,22,.2)}
-    html.dark .btn-outline{border-color:rgba(238,238,232,.18)}
-    .btn-outline:hover{border-color:var(--ac);color:var(--ac);transform:translateY(-1px)}
+    .btn-solid:hover{background:var(--ac);color:#fff;transform:translateY(-2px);box-shadow:0 8px 28px rgba(11,122,109,.28)}
+    .btn-outline{background:transparent;color:var(--text);border:1px solid rgba(24,24,22,.18)}
+    html.dark .btn-outline{border-color:rgba(238,238,232,.16)}
+    .btn-outline:hover{border-color:var(--ac);color:var(--ac);transform:translateY(-2px)}
     .btn-ac{background:var(--ac);color:#fff}
-    .btn-ac:hover{filter:brightness(1.08);transform:translateY(-1px)}
+    .btn-ac:hover{filter:brightness(1.08);transform:translateY(-2px);box-shadow:0 8px 28px rgba(11,122,109,.28)}
     .mag{display:inline-flex;transition:transform .38s cubic-bezier(.22,1,.36,1)}
 
-    /* ── Labels & utils ── */
-    .lbl{font-family:'DM Sans',sans-serif;font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--mute);font-weight:500}
-    .hr{height:1px;background:var(--border)}
-    @keyframes pgIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+    /* ── Atoms ── */
+    .lbl{font-family:'DM Sans',sans-serif;font-size:.59rem;letter-spacing:.24em;text-transform:uppercase;color:var(--mute);font-weight:500}
 
-    /* ── Reveal system ── */
-    .rv{opacity:0;transform:translateY(14px);transition:opacity .78s cubic-bezier(.22,1,.36,1),transform .78s cubic-bezier(.22,1,.36,1);will-change:opacity,transform}
+    /* ── Reveal ── */
+    .rv{opacity:0;transform:translateY(14px);transition:opacity .82s cubic-bezier(.22,1,.36,1),transform .82s cubic-bezier(.22,1,.36,1);will-change:opacity,transform}
     .rv.in{opacity:1;transform:none}
     .rv.d1{transition-delay:.08s}.rv.d2{transition-delay:.16s}.rv.d3{transition-delay:.24s}
     .rv.d4{transition-delay:.32s}.rv.d5{transition-delay:.4s}.rv.d6{transition-delay:.48s}
-    .line-draw{transform-origin:left;transform:scaleX(0);display:block;transition:transform .95s cubic-bezier(.22,1,.36,1)}
-    .line-draw.in{transform:scaleX(1)}
 
     /* ── Mesh bg ── */
     .mesh{background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:52px 52px}
 
     /* ── Mobile menu ── */
     #mob-menu{display:none;position:fixed;inset:0;z-index:300;background:var(--bg);flex-direction:column;padding:2.5rem}
-    #mob-menu.open{display:flex;animation:pgIn .3s ease}
+    @keyframes mobIn{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:none}}
+    #mob-menu.open{display:flex;animation:mobIn .3s cubic-bezier(.22,1,.36,1)}
 
-    /* ── Product card ── */
-    .product-card{background:var(--bg2);border:1px solid var(--border);display:flex;flex-direction:column;transition:border-color .28s,box-shadow .35s;position:relative;overflow:hidden;transform-style:preserve-3d;will-change:transform}
-    .product-card img{width:100%;aspect-ratio:4/3;object-fit:cover;transition:transform .6s cubic-bezier(.22,1,.36,1)}
-    .product-card:hover img{transform:scale(1.04)}
-    .product-badge{position:absolute;top:.75rem;left:.75rem;font-family:'DM Sans',sans-serif;font-size:.56rem;letter-spacing:.18em;text-transform:uppercase;font-weight:500;padding:.25rem .625rem;background:var(--ac);color:#fff;z-index:1}
-    .product-badge.sold-out{background:var(--mute)}
+    /* ── Clinic banner ── */
+    #clinic-banner{border-bottom:1px solid var(--border);background:var(--bg2)}
+    .clinic-dot{width:7px;height:7px;border-radius:50%;background:var(--ac);flex-shrink:0;animation:clinicPulse 2.4s ease-in-out infinite}
+    @keyframes clinicPulse{0%,100%{opacity:.4;transform:scale(1)}50%{opacity:1;transform:scale(1.25)}}
 
-    /* ── Filter tabs ── */
-    .filter-btn{font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;font-weight:500;font-family:'DM Sans',sans-serif;padding:.5rem 1.25rem;border:1px solid var(--border);background:none;color:var(--mute);cursor:pointer;transition:all .22s cubic-bezier(.22,1,.36,1)}
+    /* ── Filter bar ── */
+    .filter-btn{font-size:.64rem;letter-spacing:.12em;text-transform:uppercase;font-weight:500;font-family:'DM Sans',sans-serif;padding:.5rem 1.25rem;border:1px solid transparent;background:none;color:var(--mute);cursor:pointer;transition:all .22s cubic-bezier(.22,1,.36,1);white-space:nowrap}
     .filter-btn.active{background:var(--text);color:var(--bg);border-color:var(--text)}
-    .filter-btn:hover:not(.active){color:var(--text);border-color:var(--text)}
+    .filter-btn:hover:not(.active){color:var(--text);border-color:rgba(24,24,22,.2)}
+    html.dark .filter-btn:hover:not(.active){border-color:rgba(238,238,232,.18)}
 
-    /* ── Product grid fade transition ── */
-    #product-grid{transition:opacity .3s cubic-bezier(.22,1,.36,1);min-height:200px}
+    /* ── Product grid transition ── */
+    #product-grid{transition:opacity .28s cubic-bezier(.22,1,.36,1);min-height:200px}
     #product-grid.fading{opacity:0;pointer-events:none}
 
+    /* ── Product card ── */
+    .product-card{background:var(--bg2);border:1px solid var(--border);display:flex;flex-direction:column;transition:border-color .28s cubic-bezier(.22,1,.36,1),box-shadow .32s,transform .28s cubic-bezier(.22,1,.36,1);position:relative;overflow:hidden;will-change:transform}
+    .product-card:hover{border-color:var(--ac);box-shadow:0 16px 48px rgba(11,122,109,.1);transform:translateY(-3px)}
+    .product-card img{width:100%;aspect-ratio:4/3;object-fit:cover;transition:transform .65s cubic-bezier(.22,1,.36,1)}
+    .product-card:hover img{transform:scale(1.04)}
+    .product-badge{position:absolute;top:.875rem;left:.875rem;font-family:'DM Sans',sans-serif;font-size:.54rem;letter-spacing:.18em;text-transform:uppercase;font-weight:500;padding:.25rem .625rem;background:var(--ac);color:#fff;z-index:1}
+    .product-badge.gold{background:var(--gold)}
+    .product-badge.muted{background:var(--mute)}
+
     /* ── Cart drawer ── */
-    #cart-drawer{position:fixed;top:0;right:-420px;width:420px;max-width:100vw;height:100vh;background:var(--bg2);border-left:1px solid var(--border);z-index:500;transition:right .45s cubic-bezier(.22,1,.36,1);display:flex;flex-direction:column;box-shadow:-8px 0 64px rgba(0,0,0,.12)}
+    #cart-drawer{position:fixed;top:0;right:-440px;width:440px;max-width:100vw;height:100%;background:var(--bg2);border-left:1px solid var(--border);z-index:500;transition:right .45s cubic-bezier(.22,1,.36,1);display:flex;flex-direction:column;box-shadow:-8px 0 60px rgba(0,0,0,.1)}
     #cart-drawer.open{right:0}
-    #cart-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:490;opacity:0;pointer-events:none;transition:opacity .35s}
+    #cart-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.38);z-index:490;opacity:0;pointer-events:none;transition:opacity .32s}
     #cart-backdrop.show{opacity:1;pointer-events:all}
 
     /* ── Checkout modal ── */
-    #checkout-modal{display:none;position:fixed;inset:0;z-index:600;align-items:center;justify-content:center;background:rgba(0,0,0,.55);backdrop-filter:blur(8px)}
+    #checkout-modal{display:none;position:fixed;inset:0;z-index:600;align-items:center;justify-content:center;background:rgba(0,0,0,.52);backdrop-filter:blur(10px)}
     #checkout-modal.show{display:flex}
-    #checkout-modal .modal-inner{animation:pgIn .35s cubic-bezier(.22,1,.36,1)}
+    @keyframes pgIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+    #checkout-modal .modal-inner{animation:pgIn .32s cubic-bezier(.22,1,.36,1)}
 
-    /* ── Cart item entrance ── */
-    @keyframes cartItemIn{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:none}}
-    .cart-line-new{animation:cartItemIn .35s cubic-bezier(.22,1,.36,1) forwards}
+    /* ── Cart item ── */
+    @keyframes cartIn{from{opacity:0;transform:translateX(14px)}to{opacity:1;transform:none}}
+    .cart-line-new{animation:cartIn .32s cubic-bezier(.22,1,.36,1) forwards}
 
-    ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
-    @media(max-width:900px){.g1m{grid-template-columns:1fr!important}.hnm{display:none!important}#mob-btn{display:flex!important}#nav-cta{display:none!important}}
-    @media(max-width:600px){#cart-drawer{width:100vw}}
+    ::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+    @media(max-width:900px){
+      .g1m{grid-template-columns:1fr!important}
+      .hnm{display:none!important}
+      #mob-btn{display:flex!important}
+      #nav-cta{display:none!important}
+    }
+    @media(max-width:600px){
+      #cart-drawer{width:100vw}
+      .product-grid-wrap{grid-template-columns:1fr 1fr!important}
+    }
+    @media(max-width:420px){
+      .product-grid-wrap{grid-template-columns:1fr!important}
+    }
   </style>
 </head>
 <body>
 
-<div id="cursor-dot"></div>
-<div id="cursor-ring"></div>
-<div id="scroll-prog"></div>
+<div id="grain" aria-hidden="true"></div>
+<div id="cursor-dot" aria-hidden="true"></div>
+<div id="cursor-ring" aria-hidden="true"></div>
+<div id="scroll-prog" aria-hidden="true"></div>
+
+<!-- ── CART BACKDROP ── -->
+<div id="cart-backdrop" onclick="closeCart()"></div>
+
+<!-- ── CART DRAWER ── -->
+<div id="cart-drawer" role="dialog" aria-label="Shopping cart">
+  <div style="padding:1.5rem 1.75rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-shrink:0">
+    <div>
+      <div class="lbl" style="margin-bottom:.25rem">Your Cart</div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:300;color:var(--text)" id="cart-title">0 items</div>
+    </div>
+    <button onclick="closeCart()" aria-label="Close cart" style="background:none;border:none;cursor:pointer;color:var(--mute);padding:.35rem;transition:color .2s;border-radius:2px" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--mute)'">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <div id="cart-items" style="flex:1;overflow-y:auto;padding:1.25rem 1.75rem;display:flex;flex-direction:column;gap:.875rem">
+    <div id="cart-empty" style="text-align:center;padding:3.5rem 1rem">
+      <div style="font-family:'Cormorant Garamond',serif;font-size:1.65rem;font-weight:300;color:var(--mute);margin-bottom:.5rem">Your cart is empty.</div>
+      <p style="font-size:.8rem;color:var(--mute);line-height:1.75">Browse products below and add items to your cart.</p>
+    </div>
+  </div>
+  <div id="cart-footer" style="display:none;padding:1.5rem 1.75rem;border-top:1px solid var(--border);flex-shrink:0">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:1rem">
+      <span class="lbl">Subtotal</span>
+      <span style="font-family:'Cormorant Garamond',serif;font-size:1.65rem;font-weight:300;color:var(--text)" id="cart-total">$0.00</span>
+    </div>
+    <p style="font-size:.71rem;color:var(--mute);margin-bottom:1.125rem;line-height:1.65">Taxes and shipping calculated at checkout. Online payment coming soon.</p>
+    <button onclick="openCheckout()" class="btn btn-solid mag" style="width:100%;justify-content:center">Proceed to Checkout</button>
+  </div>
+</div>
+
+<!-- ── CHECKOUT MODAL ── -->
+<div id="checkout-modal" role="dialog" aria-label="Checkout">
+  <div class="modal-inner" style="background:var(--bg2);border:1px solid var(--border);width:100%;max-width:480px;padding:3rem 3rem 2.5rem;margin:1.5rem;position:relative;text-align:center">
+    <button onclick="closeCheckout()" aria-label="Close" style="position:absolute;top:1rem;right:1rem;background:none;border:none;cursor:pointer;color:var(--mute);transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--mute)'">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+    <div style="width:48px;height:48px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--ac)" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    </div>
+    <div class="lbl" style="color:var(--ac);margin-bottom:.75rem">Checkout</div>
+    <h3 style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;color:var(--text);margin-bottom:.875rem;line-height:1.08">Online payment<br/><em>coming soon.</em></h3>
+    <p style="font-size:.83rem;color:var(--sub);line-height:1.85;max-width:32ch;margin:0 auto 1.75rem">To purchase, contact your clinic directly or mention your order at your next appointment.</p>
+    <div style="background:var(--bg3);border:1px solid var(--border);padding:1.25rem;text-align:left;margin-bottom:1.5rem">
+      <div class="lbl" style="margin-bottom:.625rem">Your Order</div>
+      <div id="checkout-summary" style="font-size:.82rem;color:var(--sub);line-height:1.85"></div>
+    </div>
+    <a id="checkout-email-link" href="mailto:info@acuros.ca?subject=Product%20Order%20Request" class="btn btn-solid mag" style="justify-content:center;width:100%;margin-bottom:.625rem">Contact Clinic to Order</a>
+    <button onclick="closeCheckout()" class="btn btn-outline mag" style="justify-content:center;width:100%;font-size:.71rem">Continue Shopping</button>
+  </div>
+</div>
 
 <!-- ── NAV ── -->
 <nav id="main-nav">
@@ -131,20 +217,21 @@
     <a href="/" style="display:flex;align-items:center;gap:.875rem;text-decoration:none">
       <img src="logo.png" alt="Acuros" width="36" height="36" style="flex-shrink:0;object-fit:contain"/>
       <div>
-        <div style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:.95rem;letter-spacing:.12em;color:var(--text);line-height:1">ACUROS</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-weight:400;font-size:.95rem;letter-spacing:.14em;color:var(--text);line-height:1">ACUROS</div>
         <div class="lbl" style="font-size:.46rem;letter-spacing:.34em">HEALTH</div>
       </div>
     </a>
-    <div style="display:flex;align-items:center;gap:2rem" class="hnm">
+    <div style="display:flex;align-items:center;gap:2.25rem" class="hnm">
       <a class="nav-link" href="/">Home</a>
       <a class="nav-link" href="/ai-assistant">AI Assistant</a>
       <a class="nav-link" href="/patient-portal">Patient Login</a>
+      <a class="nav-link active" href="/shop">Shop</a>
     </div>
     <div style="display:flex;align-items:center;gap:.875rem">
-      <button onclick="toggleTheme()" aria-label="Toggle theme" style="width:36px;height:36px;border:1px solid var(--border);background:none;color:var(--sub);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .22s,color .22s;font-size:.9rem"><span id="th-icon">☀</span></button>
-      <button onclick="openCart()" aria-label="Cart" id="cart-btn" style="position:relative;width:36px;height:36px;border:1px solid var(--border);background:none;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .22s,color .22s" class="hnm mag">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4zM3 6h18M16 10a4 4 0 01-8 0"/></svg>
-        <span id="cart-count" style="display:none;position:absolute;top:-4px;right:-4px;background:var(--ac);color:#fff;font-size:.52rem;font-weight:700;width:16px;height:16px;border-radius:50%;align-items:center;justify-content:center;font-family:'DM Sans',sans-serif">0</span>
+      <button onclick="toggleTheme()" aria-label="Toggle theme" style="width:36px;height:36px;border:1px solid var(--border);background:none;color:var(--sub);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .22s,color .22s;font-size:.88rem"><span id="th-icon">☀</span></button>
+      <button onclick="openCart()" aria-label="View cart" id="cart-nav-btn" class="mag" style="position:relative;width:36px;height:36px;border:1px solid var(--border);background:none;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .22s,color .22s">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4zM3 6h18M16 10a4 4 0 01-8 0"/></svg>
+        <span id="cart-count" style="display:none;position:absolute;top:-5px;right:-5px;background:var(--ac);color:#fff;font-size:.5rem;font-weight:700;width:16px;height:16px;border-radius:50%;align-items:center;justify-content:center;font-family:'DM Sans',sans-serif">0</span>
       </button>
       <a href="/patient-portal" class="btn btn-solid mag" style="padding:.55rem 1.25rem" id="nav-cta">Patient Login</a>
       <button onclick="openMob()" style="display:none;background:none;border:none;cursor:pointer;color:var(--text);padding:.25rem" id="mob-btn" aria-label="Menu">
@@ -154,150 +241,98 @@
   </div>
 </nav>
 
-<!-- ── Mobile Menu ── -->
+<!-- ── MOBILE MENU ── -->
 <div id="mob-menu">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3rem">
-    <span style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--text)">Acuros Health</span>
+    <span style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:300;color:var(--text)">Acuros Health</span>
     <button onclick="closeMob()" style="background:none;border:none;cursor:pointer;color:var(--text)">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
     </button>
   </div>
   <div style="display:flex;flex-direction:column;gap:1.5rem">
-    <a href="/"             style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Home</a>
-    <a href="/ai-assistant" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">AI Assistant</a>
-    <a href="/patient-portal" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--ac);text-decoration:none">Patient Login</a>
-  </div>
-</div>
-
-<!-- ── Cart Backdrop ── -->
-<div id="cart-backdrop" onclick="closeCart()"></div>
-
-<!-- ── Cart Drawer ── -->
-<div id="cart-drawer">
-  <div style="padding:1.5rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
-    <div>
-      <div class="lbl" style="margin-bottom:.2rem">Your Cart</div>
-      <div style="font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:300;color:var(--text)" id="cart-title">0 items</div>
-    </div>
-    <button onclick="closeCart()" style="background:none;border:none;cursor:pointer;color:var(--mute);padding:.25rem;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--mute)'">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
-    </button>
-  </div>
-  <div id="cart-items" style="flex:1;overflow-y:auto;padding:1.25rem;display:flex;flex-direction:column;gap:1rem">
-    <div id="cart-empty" style="text-align:center;padding:3rem 1rem">
-      <div style="font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:300;color:var(--mute);margin-bottom:.5rem">Your cart is empty.</div>
-      <p style="font-size:.82rem;color:var(--mute)">Add clinic-approved products to get started.</p>
-    </div>
-  </div>
-  <div id="cart-footer" style="display:none;padding:1.5rem;border-top:1px solid var(--border)">
-    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:1.25rem">
-      <span class="lbl">Subtotal</span>
-      <span style="font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:300;color:var(--text)" id="cart-total">$0.00</span>
-    </div>
-    <p style="font-size:.72rem;color:var(--mute);margin-bottom:1rem;line-height:1.6">Taxes and shipping calculated at checkout. Payment integration coming soon.</p>
-    <button onclick="openCheckout()" class="btn btn-solid mag" style="width:100%;justify-content:center">Proceed to Checkout</button>
-  </div>
-</div>
-
-<!-- ── Checkout Modal ── -->
-<div id="checkout-modal">
-  <div class="modal-inner" style="background:var(--bg2);border:1px solid var(--border);width:100%;max-width:480px;padding:3rem;margin:1.5rem;position:relative;text-align:center">
-    <button onclick="closeCheckout()" style="position:absolute;top:1rem;right:1rem;background:none;border:none;cursor:pointer;color:var(--mute);transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--mute)'">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
-    </button>
-    <div style="width:52px;height:52px;border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--ac)" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-    </div>
-    <div class="lbl" style="color:var(--ac);margin-bottom:.75rem">Payment Portal</div>
-    <h3 style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;color:var(--text);margin-bottom:.875rem">Checkout Coming<br/><em>Very Soon.</em></h3>
-    <p style="font-size:.85rem;color:var(--sub);line-height:1.85;max-width:34ch;margin:0 auto 1.75rem">Online payment is being set up. To purchase products, please contact your clinic directly or ask at your next appointment.</p>
-    <div style="background:var(--bg3);border:1px solid var(--border);padding:1.25rem;text-align:left;margin-bottom:1.5rem">
-      <div class="lbl" style="margin-bottom:.625rem">Your Cart Summary</div>
-      <div id="checkout-summary" style="font-size:.82rem;color:var(--sub);line-height:1.8"></div>
-    </div>
-    <a href="mailto:info@acuros.ca?subject=Product%20Order%20Request" class="btn btn-solid mag" style="justify-content:center;width:100%;margin-bottom:.625rem">Contact Clinic to Order</a>
-    <button onclick="closeCheckout()" class="btn btn-outline mag" style="justify-content:center;width:100%;font-size:.72rem">Continue Shopping</button>
+    <a href="/"              style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:200;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Home</a>
+    <a href="/ai-assistant"  style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:200;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">AI Assistant</a>
+    <a href="/patient-portal"style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:200;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1.25rem">Patient Login</a>
+    <a href="/shop"          style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:200;color:var(--ac);text-decoration:none">Shop</a>
   </div>
 </div>
 
 <div style="padding-top:4rem">
 
-  <!-- ── Hero ── -->
-  <section style="position:relative;padding:7rem 2rem 5.5rem;border-bottom:1px solid var(--border);overflow:hidden;min-height:320px;display:flex;align-items:flex-end">
-    <img src="https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=1400&q=80&auto=format&fit=crop" alt="Health products" id="hero-img" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(0.3) brightness(0.14);will-change:transform"/>
-    <div style="position:absolute;inset:0;background:linear-gradient(0deg,var(--bg) 0%,rgba(0,0,0,.4) 100%)"></div>
-    <div class="mesh" style="position:absolute;inset:0;opacity:.15"></div>
-    <div style="position:relative;max-width:1280px;margin:0 auto;width:100%;display:flex;align-items:flex-end;justify-content:space-between;gap:2rem;flex-wrap:wrap">
+  <!-- ── HERO ── -->
+  <section style="position:relative;padding:7rem 2.5rem 5.5rem;border-bottom:1px solid var(--border);overflow:hidden;min-height:340px;display:flex;align-items:flex-end">
+    <img src="https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=1400&q=80&auto=format&fit=crop" alt="Health and wellness products" id="hero-img" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(0.28) brightness(0.15);will-change:transform"/>
+    <div style="position:absolute;inset:0;background:linear-gradient(0deg,var(--bg) 0%,rgba(0,0,0,.42) 100%);pointer-events:none"></div>
+    <div class="mesh" style="position:absolute;inset:0;opacity:.14;pointer-events:none"></div>
+    <div style="position:relative;max-width:1280px;margin:0 auto;width:100%;display:flex;align-items:flex-end;justify-content:space-between;gap:2.5rem;flex-wrap:wrap">
       <div>
-        <div class="lbl rv" style="margin-bottom:1.25rem;color:var(--ac)" id="hero-badge">OTC Product Shop</div>
-        <h1 style="font-size:clamp(2.75rem,7vw,5rem);font-weight:300;color:var(--text);margin-bottom:1rem;overflow:hidden">
-          <span class="hero-line" style="display:block;overflow:hidden;line-height:1.05"><span class="hero-line-inner" id="hl1" style="display:block;transform:translateY(110%);transition:transform 1.05s cubic-bezier(.22,1,.36,1)">Clinic-approved</span></span>
-          <span class="hero-line" style="display:block;overflow:hidden;line-height:1.05"><span class="hero-line-inner" id="hl2" style="display:block;transform:translateY(110%);transition:transform 1.05s cubic-bezier(.22,1,.36,1)"><em>wellness products.</em></span></span>
+        <div class="lbl rv" style="margin-bottom:1.25rem;color:var(--ac)" id="hero-badge">Clinic Shop</div>
+        <h1 style="font-size:clamp(2.75rem,7vw,5.25rem);font-weight:200;color:var(--text);margin-bottom:1.125rem;overflow:hidden;letter-spacing:-.03em">
+          <span style="display:block;overflow:hidden;line-height:1.06"><span id="hl1" style="display:block;transform:translateY(110%);transition:transform 1.05s cubic-bezier(.22,1,.36,1)">Products from</span></span>
+          <span style="display:block;overflow:hidden;line-height:1.06"><span id="hl2" style="display:block;transform:translateY(110%);transition:transform 1.05s cubic-bezier(.22,1,.36,1)"><em id="hero-clinic-name">your clinic.</em></span></span>
         </h1>
-        <p class="rv" id="hero-desc" style="font-size:.9rem;color:var(--sub);max-width:44ch;line-height:1.85">Browse over-the-counter health and wellness products curated and recommended by your care team.</p>
+        <p class="rv" id="hero-desc" style="font-size:.9rem;color:var(--sub);max-width:44ch;line-height:1.88">Browse products curated and recommended by your healthcare team — every item chosen for your care plan.</p>
       </div>
-      <button onclick="openCart()" class="btn btn-outline mag rv" id="hero-cart-btn" style="flex-shrink:0;gap:.75rem">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4zM3 6h18M16 10a4 4 0 01-8 0"/></svg>
-        View Cart <span id="hero-cart-count" style="display:none;background:var(--ac);color:#fff;padding:.1rem .4rem;font-size:.6rem;border-radius:2px">0</span>
+      <button onclick="openCart()" class="btn btn-outline mag rv" id="hero-cart-btn" style="flex-shrink:0;gap:.75rem;align-self:flex-end">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4zM3 6h18M16 10a4 4 0 01-8 0"/></svg>
+        View Cart <span id="hero-cart-count" style="display:none;background:var(--ac);color:#fff;padding:.1rem .45rem;font-size:.58rem">0</span>
       </button>
     </div>
   </section>
 
-  <!-- ── Filters + Grid ── -->
-  <!-- ── Patient Portal Gateway Banner ── -->
-  <div style="background:var(--bg2);border-bottom:1px solid var(--border)">
-    <div style="max-width:1280px;margin:0 auto;padding:1.25rem 2rem;display:flex;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap">
-      <div style="display:flex;align-items:center;gap:1rem">
-        <div style="width:8px;height:8px;background:var(--gold);border-radius:50%;flex-shrink:0"></div>
+  <!-- ── CLINIC BANNER ── -->
+  <div id="clinic-banner">
+    <div style="max-width:1280px;margin:0 auto;padding:1.125rem 2.5rem;display:flex;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:.875rem">
+        <div class="clinic-dot"></div>
         <div>
-          <span style="font-size:.76rem;color:var(--text);font-weight:500;letter-spacing:.01em">This shop is available to Acuros patients.</span>
-          <span style="font-size:.76rem;color:var(--sub);margin-left:.5rem">Log in to your Patient Portal to save your cart and complete checkout securely.</span>
+          <span id="banner-primary" style="font-size:.77rem;color:var(--text);font-weight:500;letter-spacing:.01em"></span>
+          <span id="banner-secondary" style="font-size:.77rem;color:var(--sub);margin-left:.5rem"></span>
         </div>
       </div>
-      <a href="/patient-portal" style="display:inline-flex;align-items:center;gap:.5rem;font-size:.67rem;letter-spacing:.12em;text-transform:uppercase;font-weight:500;color:var(--ac);text-decoration:none;white-space:nowrap;transition:gap .25s cubic-bezier(.22,1,.36,1)" onmouseover="this.style.gap='.875rem'" onmouseout="this.style.gap='.5rem'">
+      <a id="banner-cta" href="/patient-portal" style="display:inline-flex;align-items:center;gap:.5rem;font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;font-weight:500;color:var(--ac);text-decoration:none;white-space:nowrap;transition:gap .25s cubic-bezier(.22,1,.36,1)" onmouseover="this.style.gap='.875rem'" onmouseout="this.style.gap='.5rem'">
         Patient Login
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
       </a>
     </div>
   </div>
 
-  <section style="max-width:1280px;margin:0 auto;padding:4rem 2rem">
+  <!-- ── FILTER + GRID ── -->
+  <section style="max-width:1280px;margin:0 auto;padding:3.5rem 2.5rem 5rem">
 
     <!-- Filter row -->
-    <div class="rv" style="display:flex;gap:0;flex-wrap:wrap;margin-bottom:3rem;border:1px solid var(--border);align-self:flex-start;width:fit-content">
-      <button class="filter-btn active" onclick="filterProducts('all')"         id="f-all">All Products</button>
-      <button class="filter-btn"        onclick="filterProducts('skincare')"    id="f-skincare">Skincare</button>
-      <button class="filter-btn"        onclick="filterProducts('supplements')" id="f-supplements">Supplements</button>
-      <button class="filter-btn"        onclick="filterProducts('wellness')"    id="f-wellness">Wellness</button>
-      <button class="filter-btn"        onclick="filterProducts('pain')"        id="f-pain">Pain Relief</button>
+    <div id="filter-row" class="rv" style="display:flex;gap:0;flex-wrap:wrap;margin-bottom:3rem;border:1px solid var(--border);width:fit-content;overflow:hidden">
+      <!-- Populated by JS -->
     </div>
 
     <!-- Product grid -->
-    <div id="product-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem" class="g1m"></div>
-    <p id="no-products" style="display:none;text-align:center;padding:4rem 2rem;font-size:.88rem;color:var(--mute)">No products in this category yet.</p>
+    <div id="product-grid" class="product-grid-wrap" style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem"></div>
+    <p id="no-products" style="display:none;text-align:center;padding:5rem 2rem;font-size:.88rem;color:var(--mute)">No products in this category yet.</p>
+
   </section>
 
-  <!-- ── Info strip ── -->
+  <!-- ── INFO STRIP ── -->
   <section style="border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--bg2)">
-    <div style="max-width:1280px;margin:0 auto;padding:3rem 2rem;display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;text-align:center" class="g1m">
+    <div id="info-strip" style="max-width:1280px;margin:0 auto;padding:3rem 2.5rem;display:grid;grid-template-columns:repeat(3,1fr);gap:2.5rem" class="g1m">
       <div class="rv">
-        <div style="font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:300;color:var(--text);margin-bottom:.375rem">Clinic Curated</div>
-        <p style="font-size:.8rem;color:var(--sub);line-height:1.75">Every product is reviewed and recommended by your healthcare providers.</p>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:1.45rem;font-weight:300;color:var(--text);margin-bottom:.375rem">Clinic Curated</div>
+        <p style="font-size:.8rem;color:var(--sub);line-height:1.8">Every product reviewed and recommended by your healthcare providers — not off the shelf.</p>
       </div>
-      <div class="rv d2" style="border-left:1px solid var(--border);border-right:1px solid var(--border);padding:0 2rem">
-        <div style="font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:300;color:var(--text);margin-bottom:.375rem">Canadian Standards</div>
-        <p style="font-size:.8rem;color:var(--sub);line-height:1.75">All products meet Health Canada's quality and safety requirements.</p>
+      <div class="rv d2" style="border-left:1px solid var(--border);border-right:1px solid var(--border);padding:0 2.5rem">
+        <div style="font-family:'Cormorant Garamond',serif;font-size:1.45rem;font-weight:300;color:var(--text);margin-bottom:.375rem">Canadian Standards</div>
+        <p style="font-size:.8rem;color:var(--sub);line-height:1.8">All products meet Health Canada quality and safety requirements.</p>
       </div>
       <div class="rv d4">
-        <div style="font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:300;color:var(--text);margin-bottom:.375rem">Earn Rewards</div>
-        <p style="font-size:.8rem;color:var(--sub);line-height:1.75">Every purchase earns loyalty points redeemable at your clinic.</p>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:1.45rem;font-weight:300;color:var(--text);margin-bottom:.375rem">Earn Rewards</div>
+        <p style="font-size:.8rem;color:var(--sub);line-height:1.8">Every purchase earns loyalty points, redeemable for clinic credits.</p>
       </div>
     </div>
   </section>
 
+  <!-- ── FOOTER ── -->
   <footer style="border-top:1px solid var(--border);background:var(--bg2)">
-    <div style="max-width:1280px;margin:0 auto;padding:2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
-      <p style="font-size:.74rem;color:var(--mute)">© 2025 Acuros Health Inc. Products are for informational purposes. Consult your healthcare provider before use.</p>
+    <div style="max-width:1280px;margin:0 auto;padding:2rem 2.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
+      <p style="font-size:.72rem;color:var(--mute)">© 2025 Acuros Health Inc. Products are for informational purposes. Consult your healthcare provider before use.</p>
       <div style="display:flex;gap:1.5rem">
         <a href="/"        class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Home</a>
         <a href="/privacy" class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Privacy</a>
@@ -308,121 +343,14 @@
 </div>
 
 <script>
-// ── Theme ──
-function toggleTheme() {
-  const dark = document.documentElement.classList.toggle('dark');
-  document.getElementById('th-icon').textContent = dark ? '☽' : '☀';
-  localStorage.setItem('ah-theme', dark ? 'dark' : 'light');
-}
-(function initTheme() {
-  const s = localStorage.getItem('ah-theme');
-  if (s === 'dark' || (!s && window.matchMedia('(prefers-color-scheme:dark)').matches)) {
-    document.documentElement.classList.add('dark');
-    document.getElementById('th-icon').textContent = '☽';
-  }
-})();
-function openMob()  { document.getElementById('mob-menu').classList.add('open'); document.body.style.overflow='hidden'; }
-function closeMob() { document.getElementById('mob-menu').classList.remove('open'); document.body.style.overflow=''; }
+/* ─────────────────────────────────────────
+   CLINIC PRODUCT CATALOG
+   Each clinic maps to its own curated product list.
+   Products are an extension of what the clinic offers clinically.
+───────────────────────────────────────── */
 
-// ── Custom cursor ──
-(function initCursor() {
-  const dot  = document.getElementById('cursor-dot');
-  const ring = document.getElementById('cursor-ring');
-  if (!dot || !ring) return;
-  let mx=-100, my=-100, rx=-100, ry=-100;
-  document.addEventListener('mousemove', e => {
-    mx = e.clientX; my = e.clientY;
-    dot.style.left = mx + 'px'; dot.style.top = my + 'px';
-  });
-  (function animRing() {
-    rx += (mx - rx) * .12;
-    ry += (my - ry) * .12;
-    ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
-    requestAnimationFrame(animRing);
-  })();
-  document.querySelectorAll('a,button,.filter-btn,.product-card').forEach(el => {
-    el.addEventListener('mouseenter', () => document.body.classList.add('cursor-expand'));
-    el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-expand'));
-  });
-})();
-
-// ── Scroll: progress + nav shrink + parallax ──
-const mainNav  = document.getElementById('main-nav');
-const prog     = document.getElementById('scroll-prog');
-const heroImg  = document.getElementById('hero-img');
-window.addEventListener('scroll', () => {
-  const sy    = window.scrollY;
-  const total = document.documentElement.scrollHeight - window.innerHeight;
-  if (prog)    prog.style.width = (total > 0 ? (sy / total * 100) : 0) + '%';
-  if (mainNav) mainNav.classList.toggle('scrolled', sy > 40);
-  if (heroImg) heroImg.style.transform = `translateY(${sy * .22}px)`;
-}, { passive: true });
-
-// ── Magnetic buttons ──
-function initMagnetic() {
-  document.querySelectorAll('.mag').forEach(el => {
-    el.addEventListener('mousemove', e => {
-      const r  = el.getBoundingClientRect();
-      const dx = (e.clientX - (r.left + r.width  / 2)) * .3;
-      const dy = (e.clientY - (r.top  + r.height / 2)) * .3;
-      el.style.transform = `translate(${dx}px,${dy}px)`;
-    });
-    el.addEventListener('mouseleave', () => { el.style.transform = ''; });
-  });
-}
-
-// ── 3D Tilt ──
-function initTilt() {
-  document.querySelectorAll('.tilt').forEach(card => {
-    card.addEventListener('mousemove', e => {
-      const r  = card.getBoundingClientRect();
-      const rx = ((e.clientY - (r.top  + r.height / 2)) / r.height) * -4;
-      const ry = ((e.clientX - (r.left + r.width  / 2)) / r.width)  *  4;
-      card.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-4px)`;
-      card.style.boxShadow = `0 20px 60px rgba(11,122,109,.13)`;
-      card.style.borderColor = 'var(--ac)';
-    });
-    card.addEventListener('mouseleave', () => {
-      card.style.transform  = '';
-      card.style.boxShadow  = '';
-      card.style.borderColor = '';
-    });
-  });
-}
-
-// ── Reveal system ──
-function setupReveal() {
-  if (!('IntersectionObserver' in window)) {
-    document.querySelectorAll('.rv').forEach(el => el.classList.add('in'));
-    return;
-  }
-  const io = new IntersectionObserver(entries => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
-  }, { threshold: 0, rootMargin: '0px 0px -40px 0px' });
-  document.querySelectorAll('.rv:not(.in)').forEach(el => io.observe(el));
-}
-
-// ── Hero entrance ──
-function fireHeroAnims() {
-  const badge = document.getElementById('hero-badge');
-  const hl1   = document.getElementById('hl1');
-  const hl2   = document.getElementById('hl2');
-  const desc  = document.getElementById('hero-desc');
-  const btn   = document.getElementById('hero-cart-btn');
-  if (badge) badge.classList.add('in');
-  if (hl1)   setTimeout(() => hl1.style.transform = 'none', 200);
-  if (hl2)   setTimeout(() => hl2.style.transform = 'none', 360);
-  if (desc)  setTimeout(() => desc.classList.add('in'), 540);
-  if (btn)   setTimeout(() => btn.classList.add('in'), 660);
-}
-document.addEventListener('DOMContentLoaded', () => {
-  loadCart(); renderProducts(); updateCartUI(); setupReveal(); initMagnetic(); initTilt();
-  setTimeout(fireHeroAnims, 120);
-});
-setTimeout(() => document.querySelectorAll('.rv').forEach(el => el.classList.add('in')), 3500);
-
-// ── Products data ──
-const PRODUCTS = [
+// Generic OTC catalog (no clinic connected)
+const GENERIC_PRODUCTS = [
   { id:1,  name:'Vitamin D3 + K2',          category:'supplements', price:28.99, badge:'Best Seller', img:'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=600&q=80&auto=format&fit=crop', desc:'High-potency D3 with K2 for optimal calcium absorption and bone health.' },
   { id:2,  name:'Omega-3 Fish Oil',          category:'supplements', price:34.99, badge:'Clinic Pick', img:'https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=600&q=80&auto=format&fit=crop', desc:'Pharmaceutical-grade omega-3 for cardiovascular and cognitive support.' },
   { id:3,  name:'Magnesium Glycinate',       category:'supplements', price:26.50, badge:null,          img:'https://images.unsplash.com/photo-1550572017-37b7e469e558?w=600&q=80&auto=format&fit=crop', desc:'Highly bioavailable magnesium for sleep quality and muscle recovery.' },
@@ -433,64 +361,157 @@ const PRODUCTS = [
   { id:8,  name:'Sleep Support Formula',     category:'wellness',    price:29.99, badge:null,          img:'https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?w=600&q=80&auto=format&fit=crop', desc:'Melatonin, L-theanine, and ashwagandha for restorative sleep.' },
   { id:9,  name:'Electrolyte Powder',        category:'wellness',    price:32.00, badge:'New',         img:'https://images.unsplash.com/photo-1487530811015-780ba6c09aad?w=600&q=80&auto=format&fit=crop', desc:'Clean electrolyte blend with no artificial sweeteners or dyes.' },
   { id:10, name:'Arnica Gel 500mg',          category:'pain',        price:18.50, badge:null,          img:'https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=600&q=80&auto=format&fit=crop', desc:'Topical arnica for bruising, muscle soreness, and joint pain.' },
-  { id:11, name:'Biofreeze Roll-On',         category:'pain',        price:15.00, badge:'Best Seller', img:'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=600&q=80&auto=format&fit=crop', desc:'Fast-acting menthol pain relief gel for muscles and joints.' },
+  { id:11, name:'Biofreeze Roll-On',         category:'pain',        price:15.00, badge:'Best Seller', img:'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=600&q=80&auto=format&fit=crop', desc:'Fast-acting menthol pain relief for muscles and joints.' },
   { id:12, name:'Collagen Peptides',         category:'supplements', price:49.99, badge:'New',         img:'https://images.unsplash.com/photo-1551847812-3b03a2c07ad1?w=600&q=80&auto=format&fit=crop', desc:'Hydrolysed Type I & III collagen for skin, hair, nails, and joints.' },
 ];
+
+// AAA Clinics product catalog — extensions of their clinical offerings:
+// Injectables → post-treatment skincare, sun protection, recovery products
+// Skin treatments → medical-grade serums, exfoliant support, barrier repair
+// Thread lifting → collagen support, antioxidant protection
+// IV therapy → oral vitamin supplements, electrolytes, biotin
+const AAA_PRODUCTS = [
+  { id:1,  name:'Vitamin C Brightening Serum',   category:'skincare',    price:89.00, badge:'Clinic Pick', img:'https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=600&q=80&auto=format&fit=crop', desc:'20% L-ascorbic acid with ferulic acid. Maximum radiance and antioxidant protection. Recommended post-injectable.' },
+  { id:2,  name:'SPF 50 Physical Sunscreen',      category:'skincare',    price:48.00, badge:'Essential',   img:'https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=600&q=80&auto=format&fit=crop', desc:'Zinc oxide & titanium dioxide. Invisible finish, reef-safe. Required daily after all skin treatments.' },
+  { id:3,  name:'Hyaluronic Acid Moisturizer',    category:'skincare',    price:65.00, badge:'Best Seller', img:'https://images.unsplash.com/photo-1631390459696-c9e5ed5bbe37?w=600&q=80&auto=format&fit=crop', desc:'Multi-weight hyaluronic acid complex for deep, lasting hydration. Ideal for post-filler recovery.' },
+  { id:4,  name:'Retinol Recovery Cream',         category:'skincare',    price:110.00, badge:null,         img:'https://images.unsplash.com/photo-1570194065650-d99fb4bedf0a?w=600&q=80&auto=format&fit=crop', desc:'0.5% encapsulated retinol with ceramides for cell renewal with minimal irritation.' },
+  { id:5,  name:'Peptide Eye Concentrate',        category:'skincare',    price:92.00, badge:'New',         img:'https://images.unsplash.com/photo-1601612628452-9e99ced43524?w=600&q=80&auto=format&fit=crop', desc:'Tripeptide-5 and caffeine complex targeting fine lines, puffiness, and dark circles.' },
+  { id:6,  name:'Barrier Repair Balm',            category:'skincare',    price:54.00, badge:'Clinic Pick', img:'https://images.unsplash.com/photo-1556228841-a3c527ebefe5?w=600&q=80&auto=format&fit=crop', desc:'Ceramide-rich recovery balm for post-microneedling and peel aftercare. Soothes and seals.' },
+  { id:7,  name:'Collagen Peptides',              category:'supplements', price:74.00, badge:'Best Seller', img:'https://images.unsplash.com/photo-1551847812-3b03a2c07ad1?w=600&q=80&auto=format&fit=crop', desc:'Marine-sourced Type I & III collagen to support skin structure after thread lifting treatments.' },
+  { id:8,  name:'Oral Vitamin C 1000mg',          category:'supplements', price:32.00, badge:null,          img:'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=600&q=80&auto=format&fit=crop', desc:'Buffered vitamin C with bioflavonoids. Supports skin healing and collagen synthesis between IV sessions.' },
+  { id:9,  name:'Biotin Complex 10,000 mcg',      category:'supplements', price:28.00, badge:null,          img:'https://images.unsplash.com/photo-1550572017-37b7e469e558?w=600&q=80&auto=format&fit=crop', desc:'High-potency biotin with B-complex for hair, skin, and nail strength.' },
+  { id:10, name:'Electrolyte Recovery Powder',    category:'wellness',    price:38.00, badge:'New',         img:'https://images.unsplash.com/photo-1487530811015-780ba6c09aad?w=600&q=80&auto=format&fit=crop', desc:'Clean electrolyte blend with magnesium and potassium. Ideal between IV therapy sessions.' },
+  { id:11, name:'Glutathione Skin Supplement',    category:'wellness',    price:68.00, badge:'Clinic Pick', img:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80&auto=format&fit=crop', desc:'Liposomal glutathione for antioxidant support, skin brightening, and cellular protection.' },
+  { id:12, name:'Omega-3 Anti-Inflammatory',      category:'wellness',    price:44.00, badge:null,          img:'https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=600&q=80&auto=format&fit=crop', desc:'Pharmaceutical-grade omega-3 EPA/DHA. Reduces inflammation to support skin health and treatment recovery.' },
+];
+
+// Catalog registry — add future clinics here
+const CLINIC_CATALOGS = {
+  AAACLINICS: {
+    name: 'Anti-Aging Academic Clinic',
+    shortName: 'AAA Clinics',
+    contactEmail: 'info@aaaclinics.com',
+    products: AAA_PRODUCTS,
+    categories: ['skincare', 'supplements', 'wellness'],
+    categoryLabels: { skincare: 'Medical Skincare', supplements: 'Supplements', wellness: 'Wellness' },
+  },
+};
+
+// Detect which clinic this patient belongs to
+function detectClinic() {
+  const raw = (localStorage.getItem('ah-org-code') || '').toUpperCase().trim();
+  if (raw.startsWith('AAACLINICS')) return 'AAACLINICS';
+  return null;
+}
+
+/* ─────────────────────────────────────────
+   STATE
+───────────────────────────────────────── */
+let clinicKey = detectClinic();
+let catalog    = clinicKey ? CLINIC_CATALOGS[clinicKey] : null;
+let PRODUCTS   = catalog ? catalog.products : GENERIC_PRODUCTS;
+let CATEGORIES = catalog ? catalog.categories : ['skincare', 'supplements', 'wellness', 'pain'];
+let CAT_LABELS = catalog ? catalog.categoryLabels : { skincare:'Skincare', supplements:'Supplements', wellness:'Wellness', pain:'Pain Relief' };
 
 let cart = [];
 let activeFilter = 'all';
 
+/* ─────────────────────────────────────────
+   INIT UI BASED ON CLINIC
+───────────────────────────────────────── */
+function initClinicUI() {
+  // Hero
+  const clinicNameEl = document.getElementById('hero-clinic-name');
+  if (catalog && clinicNameEl) clinicNameEl.textContent = catalog.shortName + '.';
+
+  // Banner
+  const bannerPrimary    = document.getElementById('banner-primary');
+  const bannerSecondary  = document.getElementById('banner-secondary');
+  const bannerCta        = document.getElementById('banner-cta');
+  const checkoutEmailLink = document.getElementById('checkout-email-link');
+
+  if (catalog) {
+    bannerPrimary.textContent = 'Showing products from ' + catalog.name + '.';
+    bannerSecondary.textContent = 'Log in to your patient portal to complete checkout securely.';
+    bannerCta.textContent = 'My Portal';
+    bannerCta.href = '/patient-portal';
+    if (checkoutEmailLink) checkoutEmailLink.href = 'mailto:' + catalog.contactEmail + '?subject=Product%20Order%20Request';
+  } else {
+    bannerPrimary.textContent = 'Connect to your clinic for a personalized product selection.';
+    bannerSecondary.textContent = 'Log in or register to see products curated for your care plan.';
+  }
+
+  // Filter row
+  buildFilterRow();
+}
+
+function buildFilterRow() {
+  const row = document.getElementById('filter-row');
+  const cats = ['all', ...CATEGORIES];
+  row.innerHTML = cats.map(c => {
+    const label = c === 'all' ? 'All Products' : (CAT_LABELS[c] || c.charAt(0).toUpperCase() + c.slice(1));
+    return `<button class="filter-btn${c==='all'?' active':''}" onclick="filterProducts('${c}')" id="f-${c}">${label}</button>`;
+  }).join('');
+}
+
+/* ─────────────────────────────────────────
+   PRODUCTS
+───────────────────────────────────────── */
 function fmt(n) { return '$' + n.toFixed(2); }
 
-// ── Render products ──
 function renderProducts() {
   const grid    = document.getElementById('product-grid');
   const none    = document.getElementById('no-products');
   const filtered = activeFilter === 'all' ? PRODUCTS : PRODUCTS.filter(p => p.category === activeFilter);
   if (!filtered.length) { grid.innerHTML = ''; none.style.display = 'block'; return; }
   none.style.display = 'none';
-  grid.innerHTML = filtered.map((p, i) => `
-    <div class="product-card tilt rv ${i < 3 ? '' : 'd' + Math.min((i % 3) + 1, 6)}" data-category="${p.category}">
-      ${p.badge ? `<span class="product-badge">${p.badge}</span>` : ''}
+  grid.innerHTML = filtered.map((p, i) => {
+    const badgeHtml = p.badge
+      ? `<span class="product-badge${p.badge==='Essential'?' gold':''}">${p.badge}</span>` : '';
+    return `
+    <div class="product-card rv ${i > 2 ? 'd' + Math.min((i % 3) + 1, 4) : ''}">
+      ${badgeHtml}
       <div style="overflow:hidden"><img src="${p.img}" alt="${p.name}" loading="lazy"/></div>
-      <div style="padding:1.25rem;display:flex;flex-direction:column;flex:1">
-        <div class="lbl" style="color:var(--ac);margin-bottom:.5rem">${p.category.charAt(0).toUpperCase()+p.category.slice(1)}</div>
-        <h4 style="font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:300;color:var(--text);margin-bottom:.375rem;line-height:1.2">${p.name}</h4>
-        <p style="font-size:.78rem;color:var(--sub);line-height:1.75;flex:1;margin-bottom:1rem">${p.desc}</p>
+      <div style="padding:1.375rem;display:flex;flex-direction:column;flex:1;gap:0">
+        <div class="lbl" style="color:var(--ac);margin-bottom:.5rem">${(CAT_LABELS[p.category] || p.category).charAt(0).toUpperCase() + (CAT_LABELS[p.category] || p.category).slice(1)}</div>
+        <h4 style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:300;color:var(--text);margin-bottom:.375rem;line-height:1.2">${p.name}</h4>
+        <p style="font-size:.77rem;color:var(--sub);line-height:1.78;flex:1;margin-bottom:1.125rem">${p.desc}</p>
         <div style="display:flex;align-items:center;justify-content:space-between;gap:.75rem">
-          <span style="font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:300;color:var(--text)">${fmt(p.price)}</span>
-          <button onclick="addToCart(${p.id})" class="btn btn-solid mag" style="padding:.5rem 1.1rem;font-size:.68rem">Add to Cart</button>
+          <span style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:300;color:var(--text);font-variant-numeric:tabular-nums">${fmt(p.price)}</span>
+          <button onclick="addToCart(${p.id})" class="btn btn-solid mag" style="padding:.5rem 1.1rem;font-size:.67rem">Add to Cart</button>
         </div>
       </div>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
   setupReveal();
-  initTilt();
   initMagnetic();
 }
 
-// ── Filter with fade transition ──
 function filterProducts(cat) {
   if (cat === activeFilter) return;
   activeFilter = cat;
-  ['all','skincare','supplements','wellness','pain'].forEach(c => {
-    document.getElementById('f-' + c)?.classList.toggle('active', c === cat);
+  const allCats = ['all', ...CATEGORIES];
+  allCats.forEach(c => {
+    const btn = document.getElementById('f-' + c);
+    if (btn) btn.classList.toggle('active', c === cat);
   });
   const grid = document.getElementById('product-grid');
   grid.classList.add('fading');
   setTimeout(() => {
     renderProducts();
     grid.classList.remove('fading');
-  }, 280);
+  }, 260);
 }
 
-// ── Cart ──
+/* ─────────────────────────────────────────
+   CART
+───────────────────────────────────────── */
 function addToCart(id) {
   const p = PRODUCTS.find(x => x.id === id);
   if (!p) return;
   const existing = cart.find(x => x.id === id);
   if (existing) existing.qty++;
-  else cart.push({ ...p, qty: 1 });
+  else cart.push({ ...p, qty:1 });
   saveCart(); updateCartUI(); openCart();
 }
 function removeFromCart(id) { cart = cart.filter(x => x.id !== id); saveCart(); updateCartUI(); }
@@ -503,11 +524,11 @@ function updateQty(id, delta) {
 }
 function saveCart()  { localStorage.setItem('ah-cart', JSON.stringify(cart)); }
 function loadCart()  { try { cart = JSON.parse(localStorage.getItem('ah-cart') || '[]'); } catch { cart = []; } }
-function totalItems()  { return cart.reduce((s, x) => s + x.qty, 0); }
-function totalPrice()  { return cart.reduce((s, x) => s + x.price * x.qty, 0); }
+function totalItems() { return cart.reduce((s, x) => s + x.qty, 0); }
+function totalPrice() { return cart.reduce((s, x) => s + x.price * x.qty, 0); }
 
 function updateCartUI() {
-  const count   = totalItems();
+  const count    = totalItems();
   const countEl  = document.getElementById('cart-count');
   const hCountEl = document.getElementById('hero-cart-count');
   const titleEl  = document.getElementById('cart-title');
@@ -520,30 +541,29 @@ function updateCartUI() {
   if (titleEl)   titleEl.textContent = count + ' item' + (count !== 1 ? 's' : '');
   if (totalEl)   totalEl.textContent = fmt(totalPrice());
   if (footerEl)  footerEl.style.display = count ? 'block' : 'none';
-  if (emptyEl)   emptyEl.style.display  = count ? 'none' : 'block';
+  if (emptyEl)   emptyEl.style.display  = count ? 'none'  : 'block';
   if (itemsEl) {
     itemsEl.querySelectorAll('.cart-line').forEach(el => el.remove());
     cart.forEach(item => {
       const div = document.createElement('div');
       div.className = 'cart-line cart-line-new';
-      div.style.cssText = 'display:flex;gap:1rem;align-items:flex-start;padding:1rem 0;border-bottom:1px solid var(--border)';
+      div.style.cssText = 'display:flex;gap:1rem;align-items:flex-start;padding:.875rem 0;border-bottom:1px solid var(--border)';
       div.innerHTML = `
-        <img src="${item.img}" alt="${item.name}" style="width:60px;height:60px;object-fit:cover;flex-shrink:0;border:1px solid var(--border)"/>
+        <img src="${item.img}" alt="${item.name}" style="width:58px;height:58px;object-fit:cover;flex-shrink:0;border:1px solid var(--border)"/>
         <div style="flex:1;min-width:0">
           <div style="font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:300;color:var(--text);margin-bottom:.2rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${item.name}</div>
-          <div style="font-size:.75rem;color:var(--mute);margin-bottom:.5rem">${fmt(item.price)} each</div>
+          <div style="font-size:.72rem;color:var(--mute);margin-bottom:.5rem">${fmt(item.price)} each</div>
           <div style="display:flex;align-items:center;gap:.5rem">
-            <button onclick="updateQty(${item.id},-1)" style="width:24px;height:24px;border:1px solid var(--border);background:none;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.9rem;transition:border-color .2s" onmouseover="this.style.borderColor='var(--ac)'" onmouseout="this.style.borderColor='var(--border)'">−</button>
-            <span style="font-size:.82rem;color:var(--text);min-width:20px;text-align:center">${item.qty}</span>
-            <button onclick="updateQty(${item.id},1)"  style="width:24px;height:24px;border:1px solid var(--border);background:none;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.9rem;transition:border-color .2s" onmouseover="this.style.borderColor='var(--ac)'" onmouseout="this.style.borderColor='var(--border)'">+</button>
-            <span style="margin-left:auto;font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:300;color:var(--text)">${fmt(item.price * item.qty)}</span>
+            <button onclick="updateQty(${item.id},-1)" style="width:24px;height:24px;border:1px solid var(--border);background:none;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.95rem;transition:border-color .2s" onmouseover="this.style.borderColor='var(--ac)'" onmouseout="this.style.borderColor='var(--border)'">−</button>
+            <span style="font-size:.82rem;color:var(--text);min-width:20px;text-align:center;font-variant-numeric:tabular-nums">${item.qty}</span>
+            <button onclick="updateQty(${item.id},1)"  style="width:24px;height:24px;border:1px solid var(--border);background:none;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.95rem;transition:border-color .2s" onmouseover="this.style.borderColor='var(--ac)'" onmouseout="this.style.borderColor='var(--border)'">+</button>
+            <span style="margin-left:auto;font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:300;color:var(--text);font-variant-numeric:tabular-nums">${fmt(item.price * item.qty)}</span>
           </div>
         </div>
-        <button onclick="removeFromCart(${item.id})" style="background:none;border:none;cursor:pointer;color:var(--mute);flex-shrink:0;padding:.25rem;transition:color .2s" onmouseover="this.style.color='#dc2626'" onmouseout="this.style.color='var(--mute)'">
+        <button onclick="removeFromCart(${item.id})" style="background:none;border:none;cursor:pointer;color:var(--mute);flex-shrink:0;padding:.25rem;transition:color .2s" onmouseover="this.style.color='#dc2626'" onmouseout="this.style.color='var(--mute)'" aria-label="Remove item">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
-        </button>
-      `;
-      itemsEl.insertBefore(div, itemsEl.querySelector('#cart-empty'));
+        </button>`;
+      itemsEl.insertBefore(div, emptyEl);
       setTimeout(() => div.classList.remove('cart-line-new'), 400);
     });
   }
@@ -563,12 +583,118 @@ function openCheckout() {
   closeCart();
   const summary = document.getElementById('checkout-summary');
   if (summary) {
-    summary.innerHTML = cart.map(x => `<div style="display:flex;justify-content:space-between"><span>${x.name} × ${x.qty}</span><span>${fmt(x.price * x.qty)}</span></div>`).join('') +
-      `<div style="margin-top:.625rem;padding-top:.625rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-weight:500"><span>Total</span><span>${fmt(totalPrice())}</span></div>`;
+    summary.innerHTML = cart.map(x => `<div style="display:flex;justify-content:space-between;margin-bottom:.25rem"><span>${x.name} × ${x.qty}</span><span style="font-variant-numeric:tabular-nums">${fmt(x.price * x.qty)}</span></div>`).join('') +
+      `<div style="margin-top:.75rem;padding-top:.75rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-weight:500"><span>Total</span><span style="font-variant-numeric:tabular-nums">${fmt(totalPrice())}</span></div>`;
   }
   document.getElementById('checkout-modal').classList.add('show');
 }
 function closeCheckout() { document.getElementById('checkout-modal').classList.remove('show'); }
+
+/* ─────────────────────────────────────────
+   THEME
+───────────────────────────────────────── */
+function toggleTheme() {
+  const dark = document.documentElement.classList.toggle('dark');
+  document.getElementById('th-icon').textContent = dark ? '☽' : '☀';
+  localStorage.setItem('ah-theme', dark ? 'dark' : 'light');
+}
+(function initTheme() {
+  const s = localStorage.getItem('ah-theme');
+  if (s === 'dark' || (!s && window.matchMedia('(prefers-color-scheme:dark)').matches)) {
+    document.documentElement.classList.add('dark');
+    document.getElementById('th-icon').textContent = '☽';
+  }
+})();
+function openMob()  { document.getElementById('mob-menu').classList.add('open'); document.body.style.overflow='hidden'; }
+function closeMob() { document.getElementById('mob-menu').classList.remove('open'); document.body.style.overflow=''; }
+
+/* ─────────────────────────────────────────
+   CURSOR
+───────────────────────────────────────── */
+(function initCursor() {
+  if (window.matchMedia('(pointer:coarse),(hover:none)').matches) return;
+  const dot  = document.getElementById('cursor-dot');
+  const ring = document.getElementById('cursor-ring');
+  if (!dot || !ring) return;
+  let mx=-100, my=-100, rx=-100, ry=-100;
+  document.addEventListener('mousemove', e => {
+    mx=e.clientX; my=e.clientY;
+    dot.style.left=mx+'px'; dot.style.top=my+'px';
+  }, {passive:true});
+  (function animRing() {
+    rx+=(mx-rx)*.11; ry+=(my-ry)*.11;
+    ring.style.left=rx+'px'; ring.style.top=ry+'px';
+    requestAnimationFrame(animRing);
+  })();
+  document.addEventListener('mouseover', e => {
+    document.body.classList.toggle('c-expand', !!e.target.closest('a,button,.btn,.product-card,.filter-btn'));
+  });
+})();
+
+/* ─────────────────────────────────────────
+   SCROLL
+───────────────────────────────────────── */
+const mainNav = document.getElementById('main-nav');
+const prog    = document.getElementById('scroll-prog');
+const heroImg = document.getElementById('hero-img');
+window.addEventListener('scroll', () => {
+  const sy    = window.scrollY;
+  const total = document.documentElement.scrollHeight - window.innerHeight;
+  if (prog)    prog.style.width = (total > 0 ? (sy/total*100) : 0) + '%';
+  if (mainNav) mainNav.classList.toggle('scrolled', sy > 40);
+  if (heroImg) heroImg.style.transform = `translateY(${sy * .2}px)`;
+}, {passive:true});
+
+/* ─────────────────────────────────────────
+   MAGNETIC
+───────────────────────────────────────── */
+function initMagnetic() {
+  document.querySelectorAll('.mag').forEach(el => {
+    el.addEventListener('mousemove', e => {
+      const r = el.getBoundingClientRect();
+      el.style.transform = `translate(${(e.clientX-(r.left+r.width/2))*.3}px,${(e.clientY-(r.top+r.height/2))*.3}px)`;
+    });
+    el.addEventListener('mouseleave', () => { el.style.transform = ''; });
+  });
+}
+
+/* ─────────────────────────────────────────
+   REVEAL
+───────────────────────────────────────── */
+function setupReveal() {
+  if (!('IntersectionObserver' in window)) {
+    document.querySelectorAll('.rv').forEach(el => el.classList.add('in'));
+    return;
+  }
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, {threshold:0, rootMargin:'0px 0px -40px 0px'});
+  document.querySelectorAll('.rv:not(.in)').forEach(el => io.observe(el));
+}
+
+/* ─────────────────────────────────────────
+   HERO ANIMS
+───────────────────────────────────────── */
+function fireHeroAnims() {
+  const hl1 = document.getElementById('hl1');
+  const hl2 = document.getElementById('hl2');
+  if (hl1) setTimeout(() => hl1.style.transform = 'none', 150);
+  if (hl2) setTimeout(() => hl2.style.transform = 'none', 300);
+}
+
+/* ─────────────────────────────────────────
+   BOOT
+───────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', () => {
+  loadCart();
+  initClinicUI();
+  renderProducts();
+  updateCartUI();
+  setupReveal();
+  initMagnetic();
+  setTimeout(fireHeroAnims, 100);
+});
+setTimeout(() => document.querySelectorAll('.rv').forEach(el => el.classList.add('in')), 3500);
 </script>
 </body>
 </html>

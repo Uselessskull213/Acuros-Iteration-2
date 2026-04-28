@@ -67,8 +67,10 @@
     .product-card{background:var(--bg2);border:1px solid var(--border);overflow:hidden;transition:border-color .25s,box-shadow .25s}
     .product-card:hover{border-color:var(--ac);box-shadow:0 4px 24px rgba(201,169,110,.1)}
     .product-img{width:100%;height:220px;object-fit:cover;display:block;background:var(--bg);filter:saturate(.85)}
-    .treatment-card{background:var(--bg2);border:1px solid var(--border);padding:1.75rem;display:flex;flex-direction:column;gap:.875rem;transition:border-color .25s,box-shadow .25s;border-top:2px solid transparent}
-    .treatment-card:hover{border-color:var(--border);border-top-color:var(--ac);box-shadow:0 4px 24px rgba(201,169,110,.1)}
+    .treatment-card{background:var(--bg2);border:1px solid var(--border);padding:2rem;display:flex;flex-direction:column;gap:1rem;transition:border-color .28s,box-shadow .3s,transform .28s cubic-bezier(.22,1,.36,1);border-top:2px solid transparent;position:relative;will-change:transform}
+    .treatment-card:hover{border-color:rgba(201,169,110,.4);border-top-color:var(--ac);box-shadow:0 12px 40px rgba(201,169,110,.12);transform:translateY(-3px)}
+    .treat-icon{width:44px;height:44px;border:1px solid rgba(201,169,110,.25);background:rgba(201,169,110,.06);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .25s,border-color .25s}
+    .treatment-card:hover .treat-icon{background:rgba(201,169,110,.12);border-color:var(--ac)}
     .reward-badge{display:inline-flex;align-items:center;gap:.375rem;padding:.3rem .75rem;font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;font-weight:500;background:linear-gradient(135deg,rgba(201,169,110,.15),rgba(212,160,144,.15));border:1px solid rgba(201,169,110,.3);color:var(--ac)}
     .gold-line{height:1px;background:linear-gradient(90deg,transparent,var(--ac),transparent)}
     #ai-widget{position:fixed;bottom:2rem;right:2rem;z-index:500}
@@ -149,13 +151,19 @@
   <div id="portal-dash" style="display:none">
 
     <!-- Dashboard Header -->
-    <section style="background:var(--bg2);border-bottom:1px solid var(--border)">
-      <div style="max-width:1400px;margin:0 auto;padding:2rem">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1.5rem;margin-bottom:2rem">
+    <section style="background:var(--bg2);border-bottom:1px solid var(--border);position:relative;overflow:hidden">
+      <!-- Ambient warm gradient -->
+      <div style="position:absolute;top:-60px;right:-60px;width:340px;height:340px;background:radial-gradient(circle,rgba(201,169,110,.07) 0%,transparent 70%);pointer-events:none"></div>
+      <div style="position:absolute;bottom:-40px;left:30%;width:280px;height:280px;background:radial-gradient(circle,rgba(212,160,144,.05) 0%,transparent 70%);pointer-events:none"></div>
+      <div style="max-width:1400px;margin:0 auto;padding:2.5rem 2rem 0;position:relative">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1.5rem;margin-bottom:2.5rem">
           <div>
-            <div class="lbl" style="color:var(--ac);margin-bottom:.5rem">Anti-Aging Academic Clinic</div>
-            <h1 style="font-size:clamp(1.75rem,4vw,2.5rem);font-weight:300;color:var(--text)">Welcome back, <em id="dash-name">Patient</em></h1>
-            <p style="font-size:.8rem;color:var(--mute);margin-top:.25rem" id="dash-email-lbl"></p>
+            <div class="lbl" style="color:var(--ac);margin-bottom:.75rem;display:flex;align-items:center;gap:.625rem">
+              <span style="display:inline-block;width:20px;height:1px;background:var(--ac)"></span>
+              Anti-Aging Academic Clinic
+            </div>
+            <h1 style="font-size:clamp(2rem,4.5vw,3rem);font-weight:200;color:var(--text);letter-spacing:-.025em;line-height:1.06">Welcome back, <em id="dash-name" style="color:var(--ac);font-style:italic">Patient</em></h1>
+            <p style="font-size:.79rem;color:var(--mute);margin-top:.5rem;font-family:'DM Sans',sans-serif" id="dash-email-lbl"></p>
           </div>
           <div style="display:flex;gap:.75rem;align-items:center;flex-wrap:wrap">
             <div id="dash-org-badge" style="display:none" class="reward-badge"></div>
@@ -165,22 +173,27 @@
         </div>
 
         <!-- Stats bar -->
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border)" class="g2">
-          <div style="background:var(--bg2);padding:1.25rem 1.5rem">
-            <div class="lbl" style="margin-bottom:.5rem">Loyalty Points</div>
-            <div style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;color:var(--ac)">0 <span style="font-size:1rem;color:var(--mute)">pts</span></div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--border)" class="g2">
+          <div style="padding:1.5rem 1.75rem;border-right:1px solid var(--border)">
+            <div class="lbl" style="margin-bottom:.625rem">Loyalty Points</div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:200;color:var(--ac);line-height:1;letter-spacing:-.03em">0 <span style="font-size:1.1rem;color:var(--mute);font-weight:300">pts</span></div>
+            <div style="font-size:.7rem;color:var(--mute);margin-top:.375rem">Earn on every visit</div>
           </div>
-          <div style="background:var(--bg2);padding:1.25rem 1.5rem">
-            <div class="lbl" style="margin-bottom:.5rem">Treatments Booked</div>
-            <div style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;color:var(--text)">0</div>
+          <div style="padding:1.5rem 1.75rem;border-right:1px solid var(--border)">
+            <div class="lbl" style="margin-bottom:.625rem">Treatments Booked</div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:200;color:var(--text);line-height:1;letter-spacing:-.03em">0</div>
+            <div style="font-size:.7rem;color:var(--mute);margin-top:.375rem">Total lifetime</div>
           </div>
-          <div style="background:var(--bg2);padding:1.25rem 1.5rem">
-            <div class="lbl" style="margin-bottom:.5rem">Next Appointment</div>
-            <div style="font-size:.82rem;color:var(--sub);margin-top:.25rem">No upcoming visits</div>
+          <div style="padding:1.5rem 1.75rem;border-right:1px solid var(--border)">
+            <div class="lbl" style="margin-bottom:.625rem">Next Appointment</div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:300;color:var(--sub);margin-top:.375rem;line-height:1.2">No upcoming<br/>visits</div>
           </div>
-          <div style="background:var(--bg2);padding:1.25rem 1.5rem">
-            <div class="lbl" style="margin-bottom:.5rem;color:var(--ac)">Rewards Tier</div>
-            <div style="font-size:.8rem;color:var(--sub)">New Member</div>
+          <div style="padding:1.5rem 1.75rem">
+            <div class="lbl" style="margin-bottom:.625rem;color:var(--ac)">Rewards Tier</div>
+            <div style="display:inline-flex;align-items:center;gap:.375rem;padding:.3rem .75rem;background:rgba(201,169,110,.08);border:1px solid rgba(201,169,110,.2);margin-top:.25rem">
+              <span style="font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ac);font-weight:500">New Member</span>
+            </div>
+            <div style="font-size:.7rem;color:var(--mute);margin-top:.5rem">Book a treatment to level up</div>
           </div>
         </div>
       </div>
@@ -201,51 +214,51 @@
         <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem" class="g2">
 
           <div class="treatment-card">
-            <div style="width:36px;height:36px;border-radius:50%;background:rgba(201,169,110,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ac)" stroke-width="1.5"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+            <div class="treat-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ac)" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
             </div>
             <div>
-              <div class="lbl" style="color:var(--ac);margin-bottom:.3rem">Cosmetic Injections</div>
-              <h4 style="font-size:1.2rem;font-weight:300;color:var(--text);margin-bottom:.375rem">Injectables</h4>
-              <p style="font-size:.75rem;line-height:1.75;color:var(--sub)">Botox, Fillers, PRP, Skin Boosters, Belkyra, Radiesse, Sculptra, PDRN</p>
+              <div class="lbl" style="color:var(--ac);margin-bottom:.4rem">Cosmetic Injections</div>
+              <h4 style="font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:300;color:var(--text);margin-bottom:.5rem;line-height:1.15">Injectables</h4>
+              <p style="font-size:.76rem;line-height:1.82;color:var(--sub)">Botox, Fillers, PRP, Skin Boosters, Belkyra, Radiesse, Sculptra, PDRN</p>
             </div>
-            <a href="https://aaaclinics.com/pages/contact" target="_blank" rel="noopener noreferrer" class="btn btn-outline" style="padding:.45rem 1rem;font-size:.68rem;margin-top:auto">Book Now →</a>
+            <a href="https://aaaclinics.com/pages/contact" target="_blank" rel="noopener noreferrer" class="btn btn-outline" style="padding:.5rem 1rem;font-size:.68rem;margin-top:auto">Book Now →</a>
           </div>
 
           <div class="treatment-card">
-            <div style="width:36px;height:36px;border-radius:50%;background:rgba(212,160,144,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <div class="treat-icon" style="border-color:rgba(212,160,144,.25);background:rgba(212,160,144,.06)">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--rose)" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
             </div>
             <div>
-              <div class="lbl" style="color:var(--rose);margin-bottom:.3rem">Skin Therapy</div>
-              <h4 style="font-size:1.2rem;font-weight:300;color:var(--text);margin-bottom:.375rem">Skin Treatments</h4>
-              <p style="font-size:.75rem;line-height:1.75;color:var(--sub)">Microneedling, Chemical Peel, Exosome, Mesotherapy, Medical-Grade Skincare</p>
+              <div class="lbl" style="color:var(--rose);margin-bottom:.4rem">Skin Therapy</div>
+              <h4 style="font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:300;color:var(--text);margin-bottom:.5rem;line-height:1.15">Skin Treatments</h4>
+              <p style="font-size:.76rem;line-height:1.82;color:var(--sub)">Microneedling, Chemical Peel, Exosome, Mesotherapy, Medical-Grade Skincare</p>
             </div>
-            <a href="https://aaaclinics.com/pages/contact" target="_blank" rel="noopener noreferrer" class="btn btn-outline" style="padding:.45rem 1rem;font-size:.68rem;margin-top:auto">Book Now →</a>
+            <a href="https://aaaclinics.com/pages/contact" target="_blank" rel="noopener noreferrer" class="btn btn-outline" style="padding:.5rem 1rem;font-size:.68rem;margin-top:auto">Book Now →</a>
           </div>
 
           <div class="treatment-card">
-            <div style="width:36px;height:36px;border-radius:50%;background:rgba(201,169,110,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <div class="treat-icon">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ac)" stroke-width="1.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
             </div>
             <div>
-              <div class="lbl" style="color:var(--ac);margin-bottom:.3rem">Thread Lifting</div>
-              <h4 style="font-size:1.2rem;font-weight:300;color:var(--text);margin-bottom:.375rem">Lift &amp; Contour</h4>
-              <p style="font-size:.75rem;line-height:1.75;color:var(--sub)">Silhouette Soft®, APTOS®, PDO Thread Lift — non-surgical facial contouring</p>
+              <div class="lbl" style="color:var(--ac);margin-bottom:.4rem">Thread Lifting</div>
+              <h4 style="font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:300;color:var(--text);margin-bottom:.5rem;line-height:1.15">Lift &amp; Contour</h4>
+              <p style="font-size:.76rem;line-height:1.82;color:var(--sub)">Silhouette Soft®, APTOS®, PDO Thread Lift — non-surgical facial contouring</p>
             </div>
-            <a href="https://aaaclinics.com/pages/contact" target="_blank" rel="noopener noreferrer" class="btn btn-outline" style="padding:.45rem 1rem;font-size:.68rem;margin-top:auto">Book Now →</a>
+            <a href="https://aaaclinics.com/pages/contact" target="_blank" rel="noopener noreferrer" class="btn btn-outline" style="padding:.5rem 1rem;font-size:.68rem;margin-top:auto">Book Now →</a>
           </div>
 
           <div class="treatment-card">
-            <div style="width:36px;height:36px;border-radius:50%;background:rgba(212,160,144,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--rose)" stroke-width="1.5"><path d="M12 2a5 5 0 015 5v3H7V7a5 5 0 015-5zM5 12h14l-1 10H6L5 12z"/></svg>
+            <div class="treat-icon" style="border-color:rgba(212,160,144,.25);background:rgba(212,160,144,.06)">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--rose)" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
             </div>
             <div>
-              <div class="lbl" style="color:var(--rose);margin-bottom:.3rem">IV Therapy</div>
-              <h4 style="font-size:1.2rem;font-weight:300;color:var(--text);margin-bottom:.375rem">Drip &amp; Revive</h4>
-              <p style="font-size:.75rem;line-height:1.75;color:var(--sub)">Custom IV vitamin infusions for energy, immunity, hydration &amp; skin radiance</p>
+              <div class="lbl" style="color:var(--rose);margin-bottom:.4rem">IV Therapy</div>
+              <h4 style="font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:300;color:var(--text);margin-bottom:.5rem;line-height:1.15">Drip &amp; Revive</h4>
+              <p style="font-size:.76rem;line-height:1.82;color:var(--sub)">Custom IV vitamin infusions for energy, immunity, hydration &amp; skin radiance</p>
             </div>
-            <a href="https://aaaclinics.com/pages/contact" target="_blank" rel="noopener noreferrer" class="btn btn-outline" style="padding:.45rem 1rem;font-size:.68rem;margin-top:auto">Book Now →</a>
+            <a href="https://aaaclinics.com/pages/contact" target="_blank" rel="noopener noreferrer" class="btn btn-outline" style="padding:.5rem 1rem;font-size:.68rem;margin-top:auto">Book Now →</a>
           </div>
 
         </div>
