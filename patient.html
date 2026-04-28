@@ -27,7 +27,6 @@
       --bg:#0c0c0a;--bg2:#111110;--bg3:#161614;
       --border:#1e1e1b;--text:#f0ede8;--sub:#8c8880;--mute:#4e4c48;
       --ac:#c9a96e;--nav:rgba(12,12,10,.97);
-      --shadow:0 4px 60px rgba(0,0,0,.6)
     }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     html{scroll-behavior:smooth}
@@ -36,93 +35,126 @@
     h1,h2,h3,h4{font-family:'Cormorant Garamond',serif;line-height:1.04;letter-spacing:-.025em}
 
     /* ── Grain ── */
-    #grain{position:fixed;inset:0;z-index:9992;pointer-events:none;opacity:.065;
+    #grain{position:fixed;inset:0;z-index:9992;pointer-events:none;opacity:.055;
       background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
       background-repeat:repeat;background-size:180px 180px}
 
     /* ── Cursor ── */
-    #cursor-dot{position:fixed;top:0;left:0;width:6px;height:6px;background:var(--text);border-radius:50%;pointer-events:none;z-index:8999;transform:translate(-50%,-50%);transition:background .2s,transform .2s cubic-bezier(.22,1,.36,1);will-change:left,top}
-    #cursor-ring{position:fixed;top:0;left:0;width:32px;height:32px;border:1px solid rgba(240,237,232,.28);border-radius:50%;pointer-events:none;z-index:8998;transform:translate(-50%,-50%);opacity:1;transition:width .32s cubic-bezier(.22,1,.36,1),height .32s,border-color .3s;will-change:left,top}
-    body.c-hover #cursor-dot{transform:translate(-50%,-50%) scale(2);background:var(--ac)}
-    body.c-hover #cursor-ring{width:52px;height:52px;border-color:rgba(201,169,110,.35)}
+    #cursor-dot{position:fixed;top:0;left:0;width:5px;height:5px;background:var(--text);border-radius:50%;pointer-events:none;z-index:8999;transform:translate(-50%,-50%);transition:background .2s,transform .2s cubic-bezier(.22,1,.36,1);will-change:left,top}
+    #cursor-ring{position:fixed;top:0;left:0;width:30px;height:30px;border:1px solid rgba(240,237,232,.22);border-radius:50%;pointer-events:none;z-index:8998;transform:translate(-50%,-50%);transition:width .32s cubic-bezier(.22,1,.36,1),height .32s,border-color .3s;will-change:left,top}
+    body.c-hover #cursor-dot{transform:translate(-50%,-50%) scale(2.2);background:var(--ac)}
+    body.c-hover #cursor-ring{width:48px;height:48px;border-color:rgba(201,169,110,.3)}
     @media(hover:none),(pointer:coarse){#cursor-dot,#cursor-ring{display:none}}
 
     /* ── Scroll progress ── */
     #scroll-prog{position:fixed;top:0;left:0;z-index:9001;height:1px;background:var(--ac);width:0%;transform-origin:left;pointer-events:none}
 
-    /* ── Nav ── */
-    nav{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--nav);backdrop-filter:blur(32px) saturate(180%);-webkit-backdrop-filter:blur(32px) saturate(180%);border-bottom:1px solid var(--border);transition:box-shadow .3s}
-    nav.scrolled{box-shadow:0 1px 40px rgba(0,0,0,.5)}
-    .nav-inner{height:64px;max-width:1280px;margin:0 auto;padding:0 2.5rem;display:flex;align-items:center;justify-content:space-between;transition:height .38s cubic-bezier(.22,1,.36,1)}
-    nav.scrolled .nav-inner{height:52px}
-    .nav-link{position:relative;font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--sub);background:none;border:none;cursor:pointer;padding:0;font-family:'DM Sans',sans-serif;font-weight:400;transition:color .2s;text-decoration:none;display:inline-block}
+    /* ── Nav — transparent initial, solid on scroll / solid class ── */
+    nav{position:fixed;top:0;left:0;right:0;z-index:200;
+      background:transparent;
+      transition:background .42s cubic-bezier(.22,1,.36,1),border-color .42s,backdrop-filter .42s}
+    nav.scrolled,nav.solid{
+      background:var(--nav);backdrop-filter:blur(32px) saturate(180%);-webkit-backdrop-filter:blur(32px) saturate(180%);
+      border-bottom:1px solid var(--border);box-shadow:0 1px 40px rgba(0,0,0,.4)}
+    .nav-inner{height:68px;max-width:1440px;margin:0 auto;padding:0 3rem;display:flex;align-items:center;justify-content:space-between;transition:height .38s cubic-bezier(.22,1,.36,1)}
+    nav.scrolled .nav-inner,nav.solid .nav-inner{height:56px}
+    .nav-link{position:relative;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--sub);background:none;border:none;cursor:pointer;padding:0;font-family:'DM Sans',sans-serif;font-weight:400;transition:color .2s;text-decoration:none;display:inline-block}
     .nav-link::after{content:'';position:absolute;left:0;bottom:-2px;width:0;height:1px;background:var(--ac);transition:width .28s cubic-bezier(.22,1,.36,1)}
     .nav-link:hover::after,.nav-link.active::after{width:100%}
     .nav-link:hover,.nav-link.active{color:var(--text)}
 
     /* ── Buttons ── */
-    .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.72rem 1.75rem;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;font-weight:400;font-family:'DM Sans',sans-serif;cursor:pointer;border:none;transition:background .22s,color .22s,transform .22s,border-color .22s;text-decoration:none;position:relative;overflow:hidden}
+    .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.72rem 1.75rem;font-size:.65rem;letter-spacing:.16em;text-transform:uppercase;font-weight:400;font-family:'DM Sans',sans-serif;cursor:pointer;border:none;transition:background .22s,color .22s,transform .22s,border-color .22s;text-decoration:none;position:relative;overflow:hidden}
     .btn:not([disabled]):active{transform:scale(0.97);transition-duration:80ms}
     .btn-solid{background:var(--text);color:var(--bg)}
     .btn-solid:hover{background:var(--ac);color:var(--bg)}
-    .btn-outline{background:transparent;color:var(--text);border:1px solid rgba(240,237,232,.18)}
+    .btn-outline{background:transparent;color:var(--text);border:1px solid rgba(240,237,232,.14)}
     .btn-outline:hover{border-color:var(--ac);color:var(--ac)}
     .mag{display:inline-flex;transition:transform .38s cubic-bezier(.22,1,.36,1)}
 
     /* ── Atoms ── */
-    .lbl{font-family:'DM Sans',sans-serif;font-size:.58rem;letter-spacing:.22em;text-transform:uppercase;color:var(--mute);font-weight:400}
-    .hr{height:1px;background:var(--border)}
+    .lbl{font-family:'DM Sans',sans-serif;font-size:.57rem;letter-spacing:.24em;text-transform:uppercase;color:var(--mute);font-weight:400}
 
-    /* ── Inputs ── */
-    .inp{width:100%;background:var(--bg3);border:1px solid var(--border);padding:.78rem 1rem;font-size:.875rem;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s,box-shadow .2s}
-    .inp:focus{border-color:var(--ac);box-shadow:0 0 0 2px rgba(201,169,110,.1)}
+    /* ── Underline inputs (no box borders) ── */
+    .inp{width:100%;background:transparent;border:none;border-bottom:1px solid var(--border);
+      padding:.9rem 0;font-size:.875rem;color:var(--text);font-family:'DM Sans',sans-serif;
+      outline:none;transition:border-color .22s;border-radius:0}
+    .inp:focus{border-bottom-color:var(--ac)}
     .inp::placeholder{color:var(--mute)}
 
-    /* ── Status boxes ── */
-    .err-box{background:rgba(220,38,38,.08);border:1px solid rgba(220,38,38,.22);color:#f87171;padding:.75rem 1rem;font-size:.8rem}
-    .ok-box{background:rgba(21,128,61,.08);border:1px solid rgba(21,128,61,.22);color:#4ade80;padding:.75rem 1rem;font-size:.8rem}
-    .warn-box{background:rgba(201,169,110,.06);border:1px solid rgba(201,169,110,.22);color:var(--ac);padding:.75rem 1rem;font-size:.8rem}
+    /* ── Status messages ── */
+    .err-box{background:rgba(220,38,38,.07);border-left:2px solid rgba(220,38,38,.5);color:#f87171;padding:.75rem 1rem;font-size:.8rem}
+    .ok-box{background:rgba(21,128,61,.07);border-left:2px solid rgba(21,128,61,.4);color:#4ade80;padding:.75rem 1rem;font-size:.8rem}
+    .warn-box{background:rgba(201,169,110,.06);border-left:2px solid rgba(201,169,110,.4);color:var(--ac);padding:.75rem 1rem;font-size:.8rem}
 
     /* ── Spinner ── */
     @keyframes spin{to{transform:rotate(360deg)}}
-    .spin{width:16px;height:16px;border:1.5px solid transparent;border-top-color:currentColor;border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
+    .spin{width:14px;height:14px;border:1.5px solid transparent;border-top-color:currentColor;border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
 
     /* ── Reveal ── */
-    @keyframes pgIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
-    .rv{opacity:0;transform:translateY(16px);transition:opacity .82s cubic-bezier(.22,1,.36,1),transform .82s cubic-bezier(.22,1,.36,1)}
+    .rv{opacity:0;transform:translateY(14px);transition:opacity .82s cubic-bezier(.22,1,.36,1),transform .82s cubic-bezier(.22,1,.36,1)}
     .rv.in{opacity:1;transform:none}
-    .d1{transition-delay:.09s}.d2{transition-delay:.17s}.d3{transition-delay:.25s}.d4{transition-delay:.33s}
-    .stagger-item{opacity:0;transform:translateX(-12px);transition:opacity .6s cubic-bezier(.22,1,.36,1),transform .6s cubic-bezier(.22,1,.36,1)}
+    .d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}.d4{transition-delay:.4s}
+    .stagger-item{opacity:0;transform:translateX(-10px);transition:opacity .6s cubic-bezier(.22,1,.36,1),transform .6s cubic-bezier(.22,1,.36,1)}
     .stagger-item.in{opacity:1;transform:none}
 
-    /* ── Auth card ── */
-    .auth-card{background:var(--bg2);border:1px solid var(--border);width:100%;max-width:440px;padding:2.75rem;animation:pgIn .55s .2s cubic-bezier(.22,1,.36,1) both}
-    .btn-google{display:flex;align-items:center;justify-content:center;gap:.75rem;width:100%;padding:.78rem;background:var(--bg3);border:1px solid var(--border);font-size:.84rem;color:var(--text);cursor:pointer;transition:border-color .22s,background .22s;font-family:'DM Sans',sans-serif}
-    .btn-google:hover{border-color:rgba(240,237,232,.3)}
+    /* ── GATE LAYOUT ── */
+    .gate-grid{display:grid;grid-template-columns:1.15fr .85fr;min-height:100dvh}
+    .gate-left{position:relative;overflow:hidden;padding:8rem 5rem 5rem;display:flex;flex-direction:column;justify-content:center;background:var(--bg)}
+    .gate-right{background:var(--bg2);border-left:1px solid var(--border);display:flex;flex-direction:column;justify-content:center;padding:8rem 4.5rem;overflow-y:auto}
 
-    /* ── Tool cards ── */
-    .tool-card{background:var(--bg2);border:1px solid var(--border);padding:2rem;text-decoration:none;display:block;transition:border-color .28s,transform .28s cubic-bezier(.22,1,.36,1);will-change:transform;opacity:0;transform:translateY(16px);position:relative;overflow:hidden}
+    /* ── Auth elements ── */
+    .auth-divider{display:flex;align-items:center;gap:1.25rem;margin:1.5rem 0}
+    .auth-divider span{font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--mute)}
+    .auth-hr{flex:1;height:1px;background:var(--border)}
+    .btn-google{display:flex;align-items:center;justify-content:center;gap:.875rem;width:100%;padding:.875rem;background:transparent;border:1px solid var(--border);font-size:.82rem;color:var(--text);cursor:pointer;transition:border-color .22s,background .22s;font-family:'DM Sans',sans-serif;letter-spacing:.01em}
+    .btn-google:hover{border-color:rgba(240,237,232,.3);background:rgba(255,255,255,.03)}
+
+    /* ── EDITORIAL TOOL ROWS ── */
+    .tool-card{
+      display:grid;grid-template-columns:5rem 1fr auto;
+      align-items:start;padding:2.5rem 0;
+      border-bottom:1px solid var(--border);
+      text-decoration:none;color:inherit;position:relative;
+      opacity:0;transform:translateY(12px);
+      transition:opacity .6s cubic-bezier(.22,1,.36,1),transform .6s cubic-bezier(.22,1,.36,1);
+      cursor:pointer
+    }
+    .tool-card::before{
+      content:'';position:absolute;left:0;top:0;bottom:0;width:1.5px;
+      background:var(--ac);transform:scaleY(0);transform-origin:top;
+      transition:transform .45s cubic-bezier(.22,1,.36,1)
+    }
+    .tool-card:hover::before{transform:scaleY(1)}
     .tool-card.in{opacity:1;transform:none}
-    .tool-card::after{content:'→';position:absolute;bottom:1.75rem;right:2rem;font-size:1rem;color:var(--mute);transition:color .28s,transform .28s cubic-bezier(.22,1,.36,1)}
-    .tool-card:hover{border-color:var(--ac);transform:translateY(-3px)}
-    .tool-card:hover::after{color:var(--ac);transform:translate(4px,-3px)}
-    .tool-icon{width:38px;height:38px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;margin-bottom:1.5rem;color:var(--ac);transition:border-color .28s}
-    .tool-card:hover .tool-icon{border-color:rgba(201,169,110,.4)}
-
-    /* ── Org banner ── */
-    .org-banner{background:var(--bg2);border:1px solid var(--border);border-left:2px solid var(--ac);padding:1.25rem 1.5rem;display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap}
-
-    /* ── Dash stat ── */
-    .dash-stat{padding:1.25rem 2rem;border-right:1px solid var(--border);display:flex;flex-direction:column;gap:.35rem}
-    .dash-stat:last-child{border-right:none}
+    .tool-num{font-family:'Cormorant Garamond',serif;font-size:.7rem;letter-spacing:.22em;color:var(--mute);padding-top:.45rem;font-weight:300;font-style:italic}
+    .tool-cat{font-size:.56rem;letter-spacing:.24em;text-transform:uppercase;color:var(--ac);font-weight:400;margin-bottom:.75rem}
+    .tool-name{font-family:'Cormorant Garamond',serif;font-size:1.75rem;font-weight:300;color:var(--text);letter-spacing:-.025em;line-height:1.04;margin-bottom:.625rem}
+    .tool-desc{font-size:.8rem;line-height:1.92;color:var(--sub);font-weight:300;max-width:44ch}
+    .tool-arrow{font-size:1.1rem;color:var(--mute);padding-top:.4rem;transition:color .28s,transform .32s cubic-bezier(.22,1,.36,1)}
+    .tool-card:hover .tool-arrow{color:var(--ac);transform:translate(5px,-4px)}
 
     /* ── Mobile menu ── */
-    #mob-menu{display:none;position:fixed;inset:0;z-index:300;background:var(--bg);flex-direction:column;padding:2.5rem}
-    @keyframes mobIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none}}
+    #mob-menu{display:none;position:fixed;inset:0;z-index:300;background:var(--bg);flex-direction:column;padding:3rem}
+    @keyframes mobIn{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:none}}
     #mob-menu.open{display:flex;animation:mobIn .32s cubic-bezier(.22,1,.36,1)}
 
-    ::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:1px}
-    @media(max-width:900px){.g1m{grid-template-columns:1fr!important}.hnm{display:none!important}#mob-btn{display:flex!important}#nav-cta{display:none!important}}
+    ::-webkit-scrollbar{width:2px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border)}
+
+    @media(max-width:900px){
+      .gate-grid{grid-template-columns:1fr}
+      .gate-left{display:none}
+      .gate-right{min-height:100dvh;padding:7rem 2rem 3rem}
+      .nav-inner{padding:0 1.5rem}
+      .hnm{display:none!important}
+      #mob-btn{display:flex!important}
+      #nav-cta{display:none!important}
+    }
+    @media(max-width:640px){
+      .dash-stat-strip{flex-direction:column;align-items:flex-start;gap:1.25rem}
+      .dash-stat-strip .stat-div{display:none}
+      .dash-actions{width:100%;flex-wrap:wrap}
+    }
   </style>
 </head>
 <body>
@@ -136,20 +168,20 @@
 <nav id="main-nav">
   <div class="nav-inner">
     <a href="/" style="display:flex;align-items:center;gap:.875rem;text-decoration:none">
-      <img src="logo.png" alt="Acuros" width="34" height="34" style="flex-shrink:0;object-fit:contain;filter:brightness(0) invert(1)"/>
+      <img src="logo.png" alt="Acuros" width="32" height="32" style="flex-shrink:0;object-fit:contain;filter:brightness(0) invert(1)"/>
       <div>
-        <div style="font-family:'Cormorant Garamond',serif;font-weight:300;font-size:.9rem;letter-spacing:.2em;color:var(--text);line-height:1">ACUROS</div>
-        <div class="lbl" style="font-size:.44rem;letter-spacing:.36em">HEALTH</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-weight:300;font-size:.88rem;letter-spacing:.22em;color:var(--text);line-height:1">ACUROS</div>
+        <div class="lbl" style="font-size:.42rem;letter-spacing:.38em">HEALTH</div>
       </div>
     </a>
-    <div style="display:flex;align-items:center;gap:2.5rem" class="hnm">
+    <div style="display:flex;align-items:center;gap:2.75rem" class="hnm">
       <a class="nav-link" href="/">Home</a>
       <a class="nav-link" href="/ai-assistant">AI Assistant</a>
       <a class="nav-link active" href="/patient-portal">Patient Login</a>
       <a class="nav-link" href="/shop">Shop</a>
     </div>
     <div style="display:flex;align-items:center;gap:.875rem">
-      <a href="/patient-portal" class="btn btn-solid mag" style="padding:.5rem 1.25rem" id="nav-cta">Patient Portal</a>
+      <a href="/patient-portal" class="btn btn-solid mag" style="padding:.45rem 1.2rem;font-size:.62rem" id="nav-cta">Portal</a>
       <button onclick="openMob()" style="display:none;background:none;border:none;cursor:pointer;color:var(--text);padding:.25rem" id="mob-btn" aria-label="Menu">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16M4 12h12M4 18h8"/></svg>
       </button>
@@ -159,312 +191,363 @@
 
 <!-- ── Mobile Menu ── -->
 <div id="mob-menu">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3rem">
-    <span style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:300;color:var(--text);letter-spacing:.12em">ACUROS HEALTH</span>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3.5rem">
+    <span style="font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:300;color:var(--text);letter-spacing:.16em">ACUROS HEALTH</span>
     <button onclick="closeMob()" style="background:none;border:none;cursor:pointer;color:var(--text)">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
     </button>
   </div>
-  <div style="display:flex;flex-direction:column;gap:0">
-    <a href="/" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:200;color:var(--sub);text-decoration:none;border-bottom:1px solid var(--border);padding:.875rem 0">Home</a>
-    <a href="/ai-assistant" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:200;color:var(--sub);text-decoration:none;border-bottom:1px solid var(--border);padding:.875rem 0">AI Assistant</a>
-    <a href="/patient-portal" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:200;color:var(--ac);text-decoration:none;border-bottom:1px solid var(--border);padding:.875rem 0">Patient Login</a>
-    <a href="/shop" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:200;color:var(--sub);text-decoration:none;padding:.875rem 0">Shop</a>
+  <div style="display:flex;flex-direction:column">
+    <a href="/" style="font-family:'Cormorant Garamond',serif;font-size:2.25rem;font-weight:200;color:var(--sub);text-decoration:none;border-bottom:1px solid var(--border);padding:.875rem 0;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--sub)'">Home</a>
+    <a href="/ai-assistant" style="font-family:'Cormorant Garamond',serif;font-size:2.25rem;font-weight:200;color:var(--sub);text-decoration:none;border-bottom:1px solid var(--border);padding:.875rem 0;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--sub)'">AI Assistant</a>
+    <a href="/patient-portal" style="font-family:'Cormorant Garamond',serif;font-size:2.25rem;font-weight:200;color:var(--ac);text-decoration:none;border-bottom:1px solid var(--border);padding:.875rem 0">Patient Login</a>
+    <a href="/shop" style="font-family:'Cormorant Garamond',serif;font-size:2.25rem;font-weight:200;color:var(--sub);text-decoration:none;padding:.875rem 0;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--sub)'">Shop</a>
   </div>
 </div>
 
-<div style="padding-top:4rem">
+<!-- ══════════════════════════════════
+     LOGIN GATE — split screen layout
+════════════════════════════════════ -->
+<div id="portal-gate">
+  <div class="gate-grid">
 
-  <!-- ── LOGIN GATE ── -->
-  <div id="portal-gate">
-    <section style="min-height:calc(100dvh - 4rem);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden">
-      <!-- Hero video/image bg -->
-      <img src="https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=1600&q=80&auto=format&fit=crop" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(0.1) brightness(0.08)"/>
-      <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(12,12,10,.95) 0%,rgba(12,12,10,.75) 100%)"></div>
-      <!-- Grid overlay -->
-      <div style="position:absolute;inset:0;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:60px 60px;opacity:.18"></div>
+    <!-- LEFT PANEL: Editorial copy + numbered benefits -->
+    <div class="gate-left">
+      <!-- Subdued hero image -->
+      <img src="https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=1400&q=80&auto=format&fit=crop"
+           alt="" aria-hidden="true"
+           style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(0) brightness(0.055);pointer-events:none;z-index:0"/>
+      <!-- Vignette -->
+      <div style="position:absolute;inset:0;background:linear-gradient(to right,rgba(12,12,10,0) 60%,rgba(12,12,10,.95));z-index:1;pointer-events:none"></div>
 
-      <div style="position:relative;z-index:10;display:grid;grid-template-columns:1fr 1fr;gap:7rem;align-items:center;max-width:1140px;margin:0 auto;padding:4rem 2rem;width:100%" class="g1m">
+      <div style="position:relative;z-index:2;max-width:520px">
+        <!-- Eyebrow -->
+        <div class="lbl rv" style="color:var(--ac);margin-bottom:2.5rem;display:flex;align-items:center;gap:1rem">
+          <span style="display:inline-block;width:28px;height:1px;background:var(--ac);flex-shrink:0"></span>
+          Patient Portal
+        </div>
 
-        <!-- Left copy -->
-        <div>
-          <div class="lbl rv" style="margin-bottom:2rem;color:var(--ac);display:flex;align-items:center;gap:.75rem">
-            <span style="display:inline-block;width:24px;height:1px;background:var(--ac)"></span>
-            Patient Portal
+        <!-- Display headline -->
+        <h1 class="rv d1" style="font-size:clamp(3.25rem,5.5vw,5.25rem);font-weight:200;color:var(--text);line-height:1;letter-spacing:-.035em;margin-bottom:2rem">
+          Your Health,<br/><em style="color:var(--ac);font-style:italic;font-weight:200">Organised.</em>
+        </h1>
+
+        <p class="rv d2" style="font-size:.85rem;line-height:2.1;color:var(--sub);font-weight:300;max-width:36ch;margin-bottom:3.5rem">
+          A private membership portal for managing your care journey — from records to procedures and beyond.
+        </p>
+
+        <!-- From-bookings notice (shown if ?from=bookings) -->
+        <div id="from-bookings-notice" style="display:none;margin-bottom:2rem" class="warn-box rv d2">
+          <strong>Clinic connection required.</strong> Sign in and connect your clinic to access Bookings.
+        </div>
+
+        <!-- Numbered benefit rows -->
+        <div style="border-top:1px solid var(--border)">
+          <div class="stagger-item" style="display:grid;grid-template-columns:4rem 1fr;align-items:start;padding:1.375rem 0;border-bottom:1px solid var(--border)">
+            <span style="font-family:'Cormorant Garamond',serif;font-size:.7rem;letter-spacing:.2em;color:var(--mute);padding-top:.2rem;font-style:italic">01</span>
+            <div>
+              <div style="font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--text);margin-bottom:.28rem;font-weight:400">AI Health Translation</div>
+              <div style="font-size:.77rem;color:var(--mute);font-weight:300;line-height:1.75">Medical reports explained in plain language</div>
+            </div>
           </div>
-          <h1 class="rv d1" style="font-size:clamp(2.75rem,6vw,4.5rem);font-weight:200;color:var(--text);margin-bottom:1.5rem;line-height:1.04">Your Health,<br/><em style="color:var(--ac);font-style:italic">Organised.</em></h1>
-          <p class="rv d2" style="font-size:.875rem;line-height:1.95;color:var(--sub);margin-bottom:2.5rem;max-width:38ch;font-weight:300">A secure, private space to manage your health records, prepare for appointments, shop clinic-approved products, and book procedures.</p>
-
-          <div id="from-bookings-notice" style="display:none;margin-bottom:1.75rem" class="warn-box rv d2">
-            <strong>Clinic connection required.</strong> Sign in and connect to your clinic to access the Bookings page.
+          <div class="stagger-item" style="display:grid;grid-template-columns:4rem 1fr;align-items:start;padding:1.375rem 0;border-bottom:1px solid var(--border)">
+            <span style="font-family:'Cormorant Garamond',serif;font-size:.7rem;letter-spacing:.2em;color:var(--mute);padding-top:.2rem;font-style:italic">02</span>
+            <div>
+              <div style="font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--text);margin-bottom:.28rem;font-weight:400">Appointment Preparation</div>
+              <div style="font-size:.77rem;color:var(--mute);font-weight:300;line-height:1.75">Pre-visit briefs and guided question sets</div>
+            </div>
           </div>
-
-          <div style="display:flex;flex-direction:column;gap:.875rem">
-            <div class="stagger-item" style="display:flex;align-items:baseline;gap:.875rem">
-              <span style="display:inline-block;width:1px;height:.875rem;background:var(--ac);flex-shrink:0;margin-top:1px"></span>
-              <span style="font-size:.82rem;color:var(--sub);font-weight:300">AI-powered medical report translation</span>
+          <div class="stagger-item" style="display:grid;grid-template-columns:4rem 1fr;align-items:start;padding:1.375rem 0;border-bottom:1px solid var(--border)">
+            <span style="font-family:'Cormorant Garamond',serif;font-size:.7rem;letter-spacing:.2em;color:var(--mute);padding-top:.2rem;font-style:italic">03</span>
+            <div>
+              <div style="font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--text);margin-bottom:.28rem;font-weight:400">Clinic Shop &amp; Booking</div>
+              <div style="font-size:.77rem;color:var(--mute);font-weight:300;line-height:1.75">Curated products and procedure scheduling</div>
             </div>
-            <div class="stagger-item" style="display:flex;align-items:baseline;gap:.875rem">
-              <span style="display:inline-block;width:1px;height:.875rem;background:var(--ac);flex-shrink:0;margin-top:1px"></span>
-              <span style="font-size:.82rem;color:var(--sub);font-weight:300">Appointment preparation briefs</span>
-            </div>
-            <div class="stagger-item" style="display:flex;align-items:baseline;gap:.875rem">
-              <span style="display:inline-block;width:1px;height:.875rem;background:var(--ac);flex-shrink:0;margin-top:1px"></span>
-              <span style="font-size:.82rem;color:var(--sub);font-weight:300">OTC product shop &amp; procedure bookings</span>
-            </div>
-            <div class="stagger-item" style="display:flex;align-items:baseline;gap:.875rem">
-              <span style="display:inline-block;width:1px;height:.875rem;background:var(--ac);flex-shrink:0;margin-top:1px"></span>
-              <span style="font-size:.82rem;color:var(--sub);font-weight:300">PIPEDA-compliant encrypted storage</span>
+          </div>
+          <div class="stagger-item" style="display:grid;grid-template-columns:4rem 1fr;align-items:start;padding:1.375rem 0">
+            <span style="font-family:'Cormorant Garamond',serif;font-size:.7rem;letter-spacing:.2em;color:var(--mute);padding-top:.2rem;font-style:italic">04</span>
+            <div>
+              <div style="font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--text);margin-bottom:.28rem;font-weight:400">PIPEDA Encrypted Storage</div>
+              <div style="font-size:.77rem;color:var(--mute);font-weight:300;line-height:1.75">Canadian privacy law compliant data handling</div>
             </div>
           </div>
         </div>
-
-        <!-- Auth card -->
-        <div class="auth-card">
-          <div class="lbl" style="color:var(--ac);margin-bottom:1rem;display:flex;align-items:center;gap:.75rem">
-            <span style="display:inline-block;width:16px;height:1px;background:var(--ac)"></span>
-            Secure Access
-          </div>
-          <h2 style="font-size:1.65rem;font-weight:300;color:var(--text);margin-bottom:.35rem;letter-spacing:-.02em" id="pt-title">Sign In to Your Portal</h2>
-          <p style="font-size:.8rem;color:var(--sub);margin-bottom:1.75rem;font-weight:300" id="pt-sub">Access your health records and tools</p>
-          <div id="pt-err" style="display:none;margin-bottom:1rem"></div>
-          <div id="pt-ok"  style="display:none;margin-bottom:1rem"></div>
-
-          <button onclick="ptGoogleAuth()" class="btn-google" style="margin-bottom:1.25rem">
-            <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-            Continue with Google
-          </button>
-
-          <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem">
-            <div class="hr" style="flex:1"></div>
-            <span style="font-size:.68rem;color:var(--mute);letter-spacing:.1em">OR</span>
-            <div class="hr" style="flex:1"></div>
-          </div>
-
-          <form id="pt-login" onsubmit="ptLogin(event)" style="display:flex;flex-direction:column;gap:.875rem">
-            <div>
-              <label class="lbl" style="display:block;margin-bottom:.4rem">Email Address</label>
-              <input type="email" id="pt-email" class="inp" placeholder="name@email.com" required/>
-            </div>
-            <div>
-              <label class="lbl" style="display:block;margin-bottom:.4rem">Password</label>
-              <input type="password" id="pt-pass" class="inp" placeholder="••••••••" required/>
-            </div>
-            <button type="submit" class="btn btn-solid mag" style="width:100%;justify-content:center;margin-top:.25rem" id="pt-li-btn">Sign In</button>
-          </form>
-
-          <form id="pt-register" onsubmit="ptRegister(event)" style="display:none;flex-direction:column;gap:.875rem">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:.875rem">
-              <div>
-                <label class="lbl" style="display:block;margin-bottom:.4rem">First Name</label>
-                <input type="text" id="pt-first" class="inp" placeholder="Jane" required/>
-              </div>
-              <div>
-                <label class="lbl" style="display:block;margin-bottom:.4rem">Last Name</label>
-                <input type="text" id="pt-last" class="inp" placeholder="Doe" required/>
-              </div>
-            </div>
-            <div>
-              <label class="lbl" style="display:block;margin-bottom:.4rem">Patient Code <span style="color:var(--mute);text-transform:none;letter-spacing:0;font-size:.68rem">(from clinic — optional)</span></label>
-              <input type="text" id="pt-code" class="inp" placeholder="AH-XXXX"/>
-            </div>
-            <div>
-              <label class="lbl" style="display:block;margin-bottom:.4rem">Email Address</label>
-              <input type="email" id="pt-remail" class="inp" placeholder="name@email.com" required/>
-            </div>
-            <div>
-              <label class="lbl" style="display:block;margin-bottom:.4rem">Password</label>
-              <input type="password" id="pt-rpass" class="inp" placeholder="Min. 8 characters" minlength="8" required/>
-            </div>
-            <button type="submit" class="btn btn-solid mag" style="width:100%;justify-content:center;margin-top:.25rem" id="pt-r-btn">Create Account</button>
-          </form>
-
-          <div style="margin-top:1.25rem;text-align:center">
-            <button onclick="ptToggle()" id="pt-toggle" style="font-size:.76rem;color:var(--mute);background:none;border:none;cursor:pointer;transition:color .2s;letter-spacing:.02em" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--mute)'">Don't have an account? Create one</button>
-          </div>
-        </div>
-
       </div>
-    </section>
+    </div>
+
+    <!-- RIGHT PANEL: Auth form -->
+    <div class="gate-right">
+      <div style="max-width:400px;width:100%;margin:0 auto">
+
+        <!-- Label -->
+        <div class="lbl" style="color:var(--ac);margin-bottom:1.75rem;display:flex;align-items:center;gap:.875rem">
+          <span style="display:inline-block;width:18px;height:1px;background:var(--ac)"></span>
+          Secure Access
+        </div>
+
+        <!-- Title + sub -->
+        <h2 style="font-size:2rem;font-weight:300;color:var(--text);margin-bottom:.4rem;letter-spacing:-.03em" id="pt-title">Sign in to your portal</h2>
+        <p style="font-size:.8rem;color:var(--sub);margin-bottom:2.25rem;font-weight:300" id="pt-sub">Access your health records and tools</p>
+
+        <div id="pt-err" style="display:none;margin-bottom:1.25rem"></div>
+        <div id="pt-ok"  style="display:none;margin-bottom:1.25rem"></div>
+
+        <!-- Google OAuth -->
+        <button onclick="ptGoogleAuth()" class="btn-google" style="margin-bottom:0">
+          <svg width="17" height="17" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+          Continue with Google
+        </button>
+
+        <div class="auth-divider">
+          <div class="auth-hr"></div>
+          <span>or</span>
+          <div class="auth-hr"></div>
+        </div>
+
+        <!-- Login form -->
+        <form id="pt-login" onsubmit="ptLogin(event)" style="display:flex;flex-direction:column;gap:1.25rem">
+          <div>
+            <label class="lbl" style="display:block;margin-bottom:.5rem">Email address</label>
+            <input type="email" id="pt-email" class="inp" placeholder="name@email.com" required/>
+          </div>
+          <div>
+            <label class="lbl" style="display:block;margin-bottom:.5rem">Password</label>
+            <input type="password" id="pt-pass" class="inp" placeholder="••••••••" required/>
+          </div>
+          <button type="submit" class="btn btn-solid mag" style="width:100%;justify-content:center;margin-top:.5rem;padding:.875rem" id="pt-li-btn">Sign In</button>
+        </form>
+
+        <!-- Register form -->
+        <form id="pt-register" onsubmit="ptRegister(event)" style="display:none;flex-direction:column;gap:1.25rem">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem">
+            <div>
+              <label class="lbl" style="display:block;margin-bottom:.5rem">First name</label>
+              <input type="text" id="pt-first" class="inp" placeholder="Jane" required/>
+            </div>
+            <div>
+              <label class="lbl" style="display:block;margin-bottom:.5rem">Last name</label>
+              <input type="text" id="pt-last" class="inp" placeholder="Doe" required/>
+            </div>
+          </div>
+          <div>
+            <label class="lbl" style="display:block;margin-bottom:.5rem">Patient code <span style="color:var(--mute);text-transform:none;letter-spacing:0;font-size:.7rem">(from clinic, optional)</span></label>
+            <input type="text" id="pt-code" class="inp" placeholder="AH-XXXX"/>
+          </div>
+          <div>
+            <label class="lbl" style="display:block;margin-bottom:.5rem">Email address</label>
+            <input type="email" id="pt-remail" class="inp" placeholder="name@email.com" required/>
+          </div>
+          <div>
+            <label class="lbl" style="display:block;margin-bottom:.5rem">Password</label>
+            <input type="password" id="pt-rpass" class="inp" placeholder="Min. 8 characters" minlength="8" required/>
+          </div>
+          <button type="submit" class="btn btn-solid mag" style="width:100%;justify-content:center;margin-top:.5rem;padding:.875rem" id="pt-r-btn">Create Account</button>
+        </form>
+
+        <!-- Toggle -->
+        <div style="margin-top:1.75rem;padding-top:1.75rem;border-top:1px solid var(--border);text-align:center">
+          <button onclick="ptToggle()" id="pt-toggle" style="font-size:.75rem;color:var(--mute);background:none;border:none;cursor:pointer;transition:color .2s;letter-spacing:.01em;font-family:'DM Sans',sans-serif" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--mute)'">Don't have an account? Create one</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /portal-gate -->
+
+
+<!-- ══════════════════════════════════
+     DASHBOARD
+════════════════════════════════════ -->
+<div id="portal-dash" style="display:none">
+
+  <!-- Org top banner — thin strip, not a card -->
+  <div id="org-banner" style="display:none;background:rgba(201,169,110,.04);border-bottom:1px solid rgba(201,169,110,.14)">
+    <div style="max-width:1440px;margin:0 auto;padding:.875rem 3rem;display:flex;align-items:center;gap:2rem;flex-wrap:wrap">
+      <div style="flex:1;min-width:200px">
+        <span style="font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ac)">No clinic connected</span>
+        <span style="font-size:.75rem;color:var(--mute);margin-left:.875rem;font-weight:300">Enter your patient code to unlock full portal access</span>
+      </div>
+      <button onclick="showOrgPrompt()" style="font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--text);background:none;border:1px solid var(--border);padding:.35rem .875rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:border-color .2s,color .2s;flex-shrink:0" onmouseover="this.style.borderColor='var(--ac)';this.style.color='var(--ac)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text)'">Connect</button>
+      <button onclick="dismissOrgBanner()" style="font-size:.62rem;color:var(--mute);background:none;border:none;cursor:pointer;flex-shrink:0;font-family:'DM Sans',sans-serif;transition:color .2s;letter-spacing:.06em" onmouseover="this.style.color='var(--sub)'" onmouseout="this.style.color='var(--mute)'">Dismiss</button>
+    </div>
   </div>
 
-  <!-- ── DASHBOARD ── -->
-  <div id="portal-dash" style="display:none">
+  <!-- Org join modal (unchanged structure, updated visual) -->
+  <div id="org-modal" style="display:none;position:fixed;inset:0;z-index:400;align-items:center;justify-content:center;background:rgba(0,0,0,.78);backdrop-filter:blur(16px)">
+    <div style="background:var(--bg2);border:1px solid var(--border);width:100%;max-width:460px;padding:3.25rem;position:relative;margin:1.5rem">
+      <button onclick="hideOrgPrompt()" style="position:absolute;top:1.25rem;right:1.25rem;background:none;border:none;cursor:pointer;color:var(--mute);transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--mute)'">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+      <div class="lbl" style="color:var(--ac);margin-bottom:1rem;display:flex;align-items:center;gap:.875rem">
+        <span style="display:inline-block;width:18px;height:1px;background:var(--ac)"></span>
+        Connect Organization
+      </div>
+      <h3 style="font-size:2rem;font-weight:300;color:var(--text);margin-bottom:.75rem;letter-spacing:-.03em">Join your clinic's<br/><em style="color:var(--ac);font-style:italic">network.</em></h3>
+      <p style="font-size:.8rem;color:var(--sub);line-height:1.85;margin-bottom:2rem;font-weight:300">Enter the unique code from your clinic to connect your account and unlock your full patient portal.</p>
+      <div id="org-err" style="display:none;margin-bottom:1rem"></div>
+      <div id="org-ok"  style="display:none;margin-bottom:1rem"></div>
+      <form onsubmit="joinOrg(event)" style="display:flex;flex-direction:column;gap:1.5rem">
+        <div>
+          <label class="lbl" style="display:block;margin-bottom:.5rem">Patient code</label>
+          <input type="text" id="org-code-inp" class="inp" placeholder="AH-XXXX" required autocomplete="off" style="text-transform:uppercase;letter-spacing:.08em"/>
+        </div>
+        <button type="submit" class="btn btn-solid mag" style="width:100%;justify-content:center;padding:.875rem" id="org-join-btn">Connect</button>
+      </form>
+      <p style="font-size:.7rem;color:var(--mute);margin-top:1.25rem;line-height:1.75">Don't have a code? Ask your healthcare provider for your Acuros patient code.</p>
+    </div>
+  </div>
 
-    <!-- Org join banner -->
-    <div id="org-banner" style="display:none">
-      <div style="max-width:1280px;margin:0 auto;padding:1rem 2.5rem">
-        <div class="org-banner">
-          <div style="flex:1;min-width:200px">
-            <div class="lbl" style="color:var(--ac);margin-bottom:.35rem">No Clinic Connected</div>
-            <p style="font-size:.8rem;color:var(--sub);line-height:1.7;font-weight:300">Enter the code from your clinic to unlock your full portal and start earning loyalty rewards.</p>
-          </div>
-          <button onclick="showOrgPrompt()" class="btn btn-solid mag" style="padding:.5rem 1.25rem;flex-shrink:0">Connect Organization</button>
-          <button onclick="dismissOrgBanner()" style="background:none;border:none;cursor:pointer;color:var(--mute);font-size:.72rem;flex-shrink:0;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--mute)'">Remind me later</button>
+  <!-- ── WELCOME HEADER ── -->
+  <section style="border-bottom:1px solid var(--border);padding-top:68px">
+    <div style="max-width:1440px;margin:0 auto;padding:5rem 3rem 0">
+
+      <!-- Eyebrow -->
+      <div class="lbl rv" style="color:var(--ac);margin-bottom:1.75rem;display:flex;align-items:center;gap:.875rem">
+        <span style="display:inline-block;width:22px;height:1px;background:var(--ac)"></span>
+        Patient Portal
+      </div>
+
+      <!-- Giant italic name — the centrepiece -->
+      <h1 class="rv d1" style="font-size:clamp(4.5rem,11vw,9.5rem);font-weight:200;font-style:italic;color:var(--text);letter-spacing:-.04em;line-height:.88;margin-bottom:3.5rem">
+        <em id="dash-name">Patient</em>
+      </h1>
+
+      <!-- Stat strip + actions -->
+      <div class="dash-stat-strip" style="display:flex;align-items:center;border-top:1px solid var(--border);padding:2rem 0;gap:0;flex-wrap:wrap">
+        <div style="padding-right:3rem">
+          <div class="lbl" style="margin-bottom:.4rem">Status</div>
+          <div style="font-size:.8rem;color:var(--sub);font-weight:300">Active</div>
+        </div>
+        <div class="stat-div" style="width:1px;height:2.25rem;background:var(--border)"></div>
+        <div style="padding:0 3rem">
+          <div class="lbl" style="margin-bottom:.4rem">Connected clinic</div>
+          <div style="font-size:.8rem;color:var(--sub);font-weight:300" id="stat-org-name">Not connected</div>
+        </div>
+        <div class="stat-div" style="width:1px;height:2.25rem;background:var(--border)"></div>
+        <div style="padding:0 3rem">
+          <div class="lbl" style="margin-bottom:.4rem">Privacy</div>
+          <div style="font-size:.8rem;color:var(--sub);font-weight:300">PIPEDA compliant</div>
+        </div>
+        <!-- Spacer -->
+        <div style="flex:1"></div>
+        <!-- Right side actions -->
+        <div class="dash-actions" style="display:flex;gap:.75rem;align-items:center">
+          <div id="dash-code-lbl" style="display:none;font-size:.65rem;color:var(--mute);letter-spacing:.08em;padding-right:.5rem"></div>
+          <a href="/ai-assistant" class="btn btn-outline" style="padding:.4rem 1.1rem;font-size:.63rem">AI</a>
+          <a href="/shop" class="btn btn-outline" style="padding:.4rem 1.1rem;font-size:.63rem">Shop</a>
+          <button id="book-btn" onclick="handleBookClick()" class="btn btn-outline" style="padding:.4rem 1.1rem;font-size:.63rem">Book</button>
+          <button onclick="ptLogout()" style="font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--mute);background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:color .2s;padding:.4rem .5rem" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--mute)'">Sign out</button>
         </div>
       </div>
     </div>
+  </section>
 
-    <!-- Org join modal -->
-    <div id="org-modal" style="display:none;position:fixed;inset:0;z-index:400;align-items:center;justify-content:center;background:rgba(0,0,0,.72);backdrop-filter:blur(12px)">
-      <div style="background:var(--bg2);border:1px solid var(--border);width:100%;max-width:440px;padding:2.75rem;position:relative;margin:1.5rem;animation:pgIn .35s cubic-bezier(.22,1,.36,1)">
-        <button onclick="hideOrgPrompt()" style="position:absolute;top:1.125rem;right:1.125rem;background:none;border:none;cursor:pointer;color:var(--mute);transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--mute)'">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
-        </button>
-        <div class="lbl" style="color:var(--ac);margin-bottom:.875rem;display:flex;align-items:center;gap:.75rem">
-          <span style="display:inline-block;width:16px;height:1px;background:var(--ac)"></span>
-          Connect Organization
+  <!-- ── DASHBOARD CONTENT ── -->
+  <section style="max-width:1440px;margin:0 auto;padding:4.5rem 3rem 6rem">
+
+    <!-- Org connect prompt — editorial style, not a card -->
+    <div id="dash-org-prompt" style="display:none;margin-bottom:4.5rem">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:2.25rem 0;border-top:1.5px solid var(--ac);border-bottom:1px solid var(--border);gap:2rem;flex-wrap:wrap">
+        <div>
+          <div class="lbl" style="color:var(--ac);margin-bottom:.75rem">Complete your setup</div>
+          <h3 style="font-family:'Cormorant Garamond',serif;font-size:clamp(1.5rem,3vw,2rem);font-weight:300;color:var(--text);letter-spacing:-.025em;line-height:1.1">Connect your clinic to unlock<br/>your full health portal.</h3>
         </div>
-        <h3 style="font-size:1.65rem;font-weight:300;color:var(--text);margin-bottom:.75rem;letter-spacing:-.02em">Join your clinic's<br/><em style="color:var(--ac);font-style:italic">network.</em></h3>
-        <p style="font-size:.8rem;color:var(--sub);line-height:1.75;margin-bottom:1.5rem;font-weight:300">Enter the unique code provided by your clinic to connect your account and unlock your full patient portal.</p>
-        <div id="org-err" style="display:none;margin-bottom:1rem"></div>
-        <div id="org-ok"  style="display:none;margin-bottom:1rem"></div>
-        <form onsubmit="joinOrg(event)" style="display:flex;flex-direction:column;gap:.875rem">
-          <div>
-            <label class="lbl" style="display:block;margin-bottom:.4rem">Patient Code</label>
-            <input type="text" id="org-code-inp" class="inp" placeholder="AH-XXXX" required autocomplete="off" style="text-transform:uppercase;letter-spacing:.08em"/>
-          </div>
-          <button type="submit" class="btn btn-solid mag" style="width:100%;justify-content:center" id="org-join-btn">Connect</button>
-        </form>
-        <p style="font-size:.7rem;color:var(--mute);margin-top:1rem;line-height:1.65">Don't have a code? Ask your healthcare provider for your Acuros patient code.</p>
+        <button onclick="showOrgPrompt()" class="btn btn-solid mag" style="flex-shrink:0;padding:.75rem 2rem">Enter Patient Code</button>
       </div>
     </div>
 
-    <!-- Dashboard header -->
-    <section style="border-bottom:1px solid var(--border);background:var(--bg2)">
-      <div style="max-width:1280px;margin:0 auto;padding:2.5rem 2.5rem 0">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1.25rem;margin-bottom:2.5rem">
-          <div>
-            <div class="lbl" style="color:var(--ac);margin-bottom:.75rem;display:flex;align-items:center;gap:.75rem">
-              <span style="display:inline-block;width:20px;height:1px;background:var(--ac)"></span>
-              Patient Portal
-            </div>
-            <h2 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:200;color:var(--text);letter-spacing:-.025em">Welcome back, <em id="dash-name" style="color:var(--ac);font-style:italic">Patient</em></h2>
-            <p style="font-size:.78rem;color:var(--mute);margin-top:.35rem;font-weight:300" id="dash-email-lbl"></p>
-          </div>
-          <div style="display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;padding-top:.25rem">
-            <div id="dash-code-lbl" style="display:none;padding:.4rem 1rem;background:var(--bg);border:1px solid var(--border);font-size:.7rem;color:var(--sub);letter-spacing:.06em"></div>
-            <a href="/ai-assistant" class="btn btn-outline" style="padding:.45rem 1.1rem;font-size:.67rem">AI Assistant</a>
-            <a href="/shop" class="btn btn-outline" style="padding:.45rem 1.1rem;font-size:.67rem">Shop</a>
-            <button id="book-btn" onclick="handleBookClick()" class="btn btn-outline" style="padding:.45rem 1.1rem;font-size:.67rem">Book Procedure</button>
-            <button onclick="ptLogout()" class="btn btn-outline" style="padding:.45rem 1.1rem;font-size:.67rem">Sign Out</button>
-          </div>
-        </div>
-        <!-- Stat bar -->
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--border)" class="g1m">
-          <div class="dash-stat">
-            <div class="lbl" style="margin-bottom:.25rem">Status</div>
-            <div style="font-family:'Cormorant Garamond',serif;font-size:1.75rem;font-weight:300;color:var(--text);line-height:1;letter-spacing:-.02em">Active</div>
-          </div>
-          <div class="dash-stat">
-            <div class="lbl" style="margin-bottom:.25rem">Connected Clinic</div>
-            <div style="font-size:.82rem;color:var(--sub);font-weight:300;margin-top:.2rem" id="stat-org-name">Not connected</div>
-          </div>
-          <div class="dash-stat">
-            <div class="lbl" style="margin-bottom:.25rem">Data Protection</div>
-            <div style="font-size:.82rem;color:var(--sub);font-weight:300;margin-top:.2rem">PIPEDA Compliant</div>
-          </div>
-        </div>
+    <!-- Section header -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding-bottom:1.5rem;border-bottom:1px solid var(--border);margin-bottom:0">
+      <div class="lbl">Your tools</div>
+      <div class="lbl" style="color:var(--mute)">03 active</div>
+    </div>
+
+    <!-- EDITORIAL TOOL ROWS -->
+    <a href="/ai-assistant" class="tool-card" style="transition-delay:.05s">
+      <div class="tool-num">01</div>
+      <div>
+        <div class="tool-cat">AI Assistant</div>
+        <h4 class="tool-name">Health Dialogue</h4>
+        <p class="tool-desc">Ask questions, translate lab reports, and prepare for appointments with your AI health companion.</p>
       </div>
-    </section>
+      <div class="tool-arrow">↗</div>
+    </a>
 
-    <!-- Dashboard content -->
-    <section style="max-width:1280px;margin:0 auto;padding:3rem 2.5rem">
+    <a href="/shop" class="tool-card" style="transition-delay:.12s">
+      <div class="tool-num">02</div>
+      <div>
+        <div class="tool-cat">Clinic Shop</div>
+        <h4 class="tool-name">Product Shop</h4>
+        <p class="tool-desc">Browse clinic-curated products and skincare treatments recommended for your care plan.</p>
+      </div>
+      <div class="tool-arrow">↗</div>
+    </a>
 
-      <!-- Org join prompt -->
-      <div id="dash-org-prompt" style="display:none;margin-bottom:2.5rem">
-        <div style="background:var(--bg2);border:1px solid var(--border);border-left:2px solid var(--ac);padding:2rem;display:flex;gap:2rem;align-items:center;flex-wrap:wrap">
-          <div style="flex:1;min-width:220px">
-            <div class="lbl" style="color:var(--ac);margin-bottom:.5rem">Complete Your Setup</div>
-            <h3 style="font-size:1.5rem;font-weight:300;color:var(--text);margin-bottom:.5rem;letter-spacing:-.02em">Connect to an organization<br/>for full access.</h3>
-            <p style="font-size:.8rem;color:var(--sub);line-height:1.75;font-weight:300">Connecting to a clinic unlocks your complete health timeline, unlimited AI, and shared records with your care team.</p>
-          </div>
-          <button onclick="showOrgPrompt()" class="btn btn-solid mag">Enter Patient Code</button>
-        </div>
+    <div class="tool-card" style="transition-delay:.19s" onclick="handleBookClick()">
+      <div class="tool-num">03</div>
+      <div>
+        <div class="tool-cat">Bookings</div>
+        <h4 class="tool-name">Book a Procedure</h4>
+        <p class="tool-desc">Schedule consultations and procedures directly with your clinic. Clinic connection required.</p>
+      </div>
+      <div class="tool-arrow">↗</div>
+    </div>
+
+    <!-- Coming soon -->
+    <div style="margin-top:4.5rem">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding-bottom:1.5rem;border-bottom:1px solid var(--border);margin-bottom:0">
+        <div class="lbl">Upcoming</div>
+        <div class="lbl" style="color:var(--mute)">02 in development</div>
       </div>
 
-      <!-- Section label -->
-      <div style="display:flex;align-items:center;gap:1.5rem;margin-bottom:1.75rem">
-        <div class="lbl">Your Tools</div>
-        <div style="flex:1;height:1px;background:var(--border)"></div>
+      <div style="display:grid;grid-template-columns:5rem 1fr auto;align-items:start;padding:2.5rem 0;border-bottom:1px solid var(--border);opacity:.32;cursor:not-allowed">
+        <div class="tool-num">04</div>
+        <div>
+          <div class="tool-cat" style="color:var(--mute)">Medications</div>
+          <h4 class="tool-name">Medication Tracker</h4>
+          <p class="tool-desc">Review prescriptions and check drug interactions with your care team.</p>
+        </div>
+        <div style="font-size:.52rem;letter-spacing:.22em;text-transform:uppercase;color:var(--mute);padding-top:.4rem;border:1px solid var(--border);padding:.28rem .625rem;white-space:nowrap">Soon</div>
       </div>
 
-      <!-- Tool cards -->
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);margin-bottom:1px" class="g1m">
-        <a href="/ai-assistant" class="tool-card" style="transition-delay:.05s">
-          <div class="tool-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-          </div>
-          <div class="lbl" style="color:var(--ac);margin-bottom:.625rem">AI Assistant</div>
-          <h4 style="font-family:'Cormorant Garamond',serif;font-size:1.45rem;font-weight:300;color:var(--text);margin-bottom:.5rem;line-height:1.12;letter-spacing:-.02em">Health Dialogue</h4>
-          <p style="font-size:.78rem;line-height:1.88;color:var(--sub);font-weight:300;max-width:26ch">Ask questions, translate lab reports, and prepare for appointments.</p>
-        </a>
-        <a href="/shop" class="tool-card" style="transition-delay:.12s">
-          <div class="tool-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4zM3 6h18M16 10a4 4 0 01-8 0"/></svg>
-          </div>
-          <div class="lbl" style="color:var(--ac);margin-bottom:.625rem">Clinic Shop</div>
-          <h4 style="font-family:'Cormorant Garamond',serif;font-size:1.45rem;font-weight:300;color:var(--text);margin-bottom:.5rem;line-height:1.12;letter-spacing:-.02em">Product Shop</h4>
-          <p style="font-size:.78rem;line-height:1.88;color:var(--sub);font-weight:300;max-width:26ch">Browse products curated specifically for your clinic and treatments.</p>
-        </a>
-        <div class="tool-card" style="transition-delay:.19s;cursor:pointer" onclick="handleBookClick()">
-          <div class="tool-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-          </div>
-          <div class="lbl" style="color:var(--ac);margin-bottom:.625rem">Bookings</div>
-          <h4 style="font-family:'Cormorant Garamond',serif;font-size:1.45rem;font-weight:300;color:var(--text);margin-bottom:.5rem;line-height:1.12;letter-spacing:-.02em">Book a Procedure</h4>
-          <p style="font-size:.78rem;line-height:1.88;color:var(--sub);font-weight:300;max-width:26ch">Schedule consultations and procedures. Clinic connection required.</p>
+      <div style="display:grid;grid-template-columns:5rem 1fr auto;align-items:start;padding:2.5rem 0;border-bottom:1px solid var(--border);opacity:.32;cursor:not-allowed">
+        <div class="tool-num">05</div>
+        <div>
+          <div class="tool-cat" style="color:var(--mute)">Journals</div>
+          <h4 class="tool-name">Symptom Journal</h4>
+          <p class="tool-desc">Log symptoms with timestamps and severity ratings for your care team to review.</p>
         </div>
+        <div style="font-size:.52rem;letter-spacing:.22em;text-transform:uppercase;color:var(--mute);padding-top:.4rem;border:1px solid var(--border);padding:.28rem .625rem;white-space:nowrap">Soon</div>
       </div>
+    </div>
 
-      <!-- Coming soon -->
-      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--border);margin-bottom:3rem" class="g1m">
-        <div style="background:var(--bg2);padding:2rem;opacity:.4;cursor:not-allowed;position:relative">
-          <div style="position:absolute;top:1.25rem;right:1.25rem;font-family:'DM Sans',sans-serif;font-size:.5rem;letter-spacing:.22em;text-transform:uppercase;color:var(--mute);border:1px solid var(--border);padding:.2rem .55rem">Soon</div>
-          <div style="width:34px;height:34px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--mute);margin-bottom:1.25rem">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-          </div>
-          <h4 style="font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:300;color:var(--text);margin-bottom:.5rem;letter-spacing:-.02em">Medication Tracker</h4>
-          <p style="font-size:.78rem;line-height:1.85;color:var(--sub);font-weight:300">Review prescriptions and check drug interactions.</p>
+    <!-- Account section -->
+    <div style="margin-top:5rem;padding-top:2.5rem;border-top:1px solid var(--border)">
+      <div class="lbl" style="margin-bottom:2rem">Account</div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1.5rem">
+        <div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:2.25rem;font-weight:300;color:var(--text);letter-spacing:-.03em;line-height:1.04;margin-bottom:.5rem" id="dash-full-name">—</div>
+          <div style="font-size:.78rem;color:var(--mute);font-weight:300;letter-spacing:.02em" id="dash-email-display">—</div>
+          <div style="font-size:.72rem;color:var(--mute);font-weight:300;margin-top:.25rem" id="dash-email-lbl"></div>
         </div>
-        <div style="background:var(--bg2);padding:2rem;opacity:.4;cursor:not-allowed;position:relative">
-          <div style="position:absolute;top:1.25rem;right:1.25rem;font-family:'DM Sans',sans-serif;font-size:.5rem;letter-spacing:.22em;text-transform:uppercase;color:var(--mute);border:1px solid var(--border);padding:.2rem .55rem">Soon</div>
-          <div style="width:34px;height:34px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--mute);margin-bottom:1.25rem">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-          </div>
-          <h4 style="font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:300;color:var(--text);margin-bottom:.5rem;letter-spacing:-.02em">Symptom Journal</h4>
-          <p style="font-size:.78rem;line-height:1.85;color:var(--sub);font-weight:300">Log symptoms with timestamps for your care team.</p>
-        </div>
+        <button onclick="ptLogout()" class="btn btn-outline" style="padding:.45rem 1.1rem;font-size:.63rem">Sign Out</button>
       </div>
+    </div>
 
-      <!-- Account section -->
-      <div style="display:flex;align-items:center;gap:1.5rem;margin-bottom:1.75rem">
-        <div class="lbl">Account</div>
-        <div style="flex:1;height:1px;background:var(--border)"></div>
-      </div>
-      <div style="background:var(--bg2);border:1px solid var(--border);padding:1.75rem">
-        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
-          <div>
-            <div style="font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:300;color:var(--text);margin-bottom:.25rem;letter-spacing:-.02em" id="dash-full-name">—</div>
-            <div style="font-size:.78rem;color:var(--mute);font-family:'DM Sans',sans-serif;font-weight:300" id="dash-email-display">—</div>
-          </div>
-          <button onclick="ptLogout()" class="btn btn-outline" style="padding:.45rem 1.1rem;font-size:.67rem">Sign Out</button>
-        </div>
-      </div>
-    </section>
+  </section>
 
-    <footer style="border-top:1px solid var(--border);background:var(--bg2)">
-      <div style="max-width:1280px;margin:0 auto;padding:2rem 2.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
-        <p style="font-size:.7rem;color:var(--mute);font-weight:300">© 2025 Acuros Health Inc.</p>
-        <div style="display:flex;gap:1.75rem">
-          <a href="/privacy" class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Privacy</a>
-          <a href="/terms"   class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Terms</a>
-        </div>
+  <footer style="border-top:1px solid var(--border)">
+    <div style="max-width:1440px;margin:0 auto;padding:2rem 3rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
+      <p style="font-size:.68rem;color:var(--mute);font-weight:300;letter-spacing:.04em">© 2025 Acuros Health Inc.</p>
+      <div style="display:flex;gap:2rem">
+        <a href="/privacy" class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Privacy</a>
+        <a href="/terms"   class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Terms</a>
       </div>
-    </footer>
-  </div><!-- /portal-dash -->
+    </div>
+  </footer>
 
-</div><!-- /padding-top -->
+</div><!-- /portal-dash -->
+
 
 <script>
 /* ── Always dark ── */
@@ -600,7 +683,7 @@ function ptToggle() {
   ptMode=ptMode==='login'?'register':'login'; const reg=ptMode==='register';
   document.getElementById('pt-login').style.display=reg?'none':'flex';
   document.getElementById('pt-register').style.display=reg?'flex':'none';
-  document.getElementById('pt-title').textContent=reg?'Create Your Account':'Sign In to Your Portal';
+  document.getElementById('pt-title').textContent=reg?'Create your account':'Sign in to your portal';
   document.getElementById('pt-sub').textContent=reg?'Enter your details to get started':'Access your health records and tools';
   document.getElementById('pt-toggle').textContent=reg?'Already have an account? Sign in':"Don't have an account? Create one";
   hideMsg('pt-err','pt-ok');
@@ -644,6 +727,8 @@ function syncPortal() {
     const portalUrl=getClinicPortalUrl(effectiveCode);
     if(portalUrl){window.location.replace(portalUrl);return;}
     gate.style.display='none'; dash.style.display='block';
+    /* nav solid when dashboard is visible */
+    if(mainNav) mainNav.classList.add('solid');
     document.getElementById('dash-name').textContent=currentUser.first||currentUser.name||'Patient';
     document.getElementById('dash-email-lbl').textContent=currentUser.email||'';
     document.getElementById('dash-full-name').textContent=(currentUser.first&&currentUser.last)?currentUser.first+' '+currentUser.last:currentUser.name||'—';
@@ -662,8 +747,10 @@ function syncPortal() {
     }, 150);
   } else {
     gate.style.display='block'; dash.style.display='none'; ptMode='login';
+    /* nav transparent on gate */
+    if(mainNav) { mainNav.classList.remove('solid'); mainNav.classList.remove('scrolled'); }
     document.getElementById('pt-login').style.display='flex'; document.getElementById('pt-register').style.display='none';
-    document.getElementById('pt-title').textContent='Sign In to Your Portal'; document.getElementById('pt-sub').textContent='Access your health records and tools';
+    document.getElementById('pt-title').textContent='Sign in to your portal'; document.getElementById('pt-sub').textContent='Access your health records and tools';
     document.getElementById('pt-toggle').textContent="Don't have an account? Create one"; hideMsg('pt-err','pt-ok');
   }
   setTimeout(()=>{document.querySelectorAll('.stagger-item').forEach((el,i)=>setTimeout(()=>el.classList.add('in'),i*110));},200);
