@@ -210,24 +210,23 @@
       transition:transform .48s cubic-bezier(.22,1,.36,1),box-shadow .48s cubic-bezier(.22,1,.36,1),background .32s
     }
     .g-card:hover{
-      transform:translateY(-8px);
       background:rgba(255,255,255,.07);
       box-shadow:0 28px 80px rgba(0,0,0,.52),inset 0 1px 0 rgba(255,255,255,.13),0 0 0 1px rgba(201,169,110,.14)
     }
-    .g-card:not(:hover){transform:none}
 
     /* Float animations — decorative only */
     @keyframes float-a{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
     @keyframes float-b{0%,100%{transform:translateY(-6px) rotate(-.4deg)}50%{transform:translateY(8px) rotate(.4deg)}}
     @keyframes float-c{0%,100%{transform:translateY(0) rotate(.3deg)}50%{transform:translateY(-10px) rotate(-.3deg)}}
 
-    /* Hero split */
-    .hero-split{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center}
-    @media(max-width:900px){
-      .hero-split{grid-template-columns:1fr;gap:0}
-      .hero-right-cluster{display:none}
-    }
-    .hero-title{font-family:'Cormorant Garamond',serif;font-weight:200;font-size:clamp(4.5rem,11vw,10.5rem);line-height:.9;letter-spacing:-.04em;text-align:left}
+    /* Hero — full-width, no split */
+    .hero-title{font-family:'Cormorant Garamond',serif;font-weight:200;font-size:clamp(5.5rem,13vw,14rem);line-height:.88;letter-spacing:-.05em;text-align:left}
+
+    /* Tilt card — 3D hover physics */
+    .tilt-card{transform-style:preserve-3d;will-change:transform}
+
+    /* Layered section depth */
+    .layer-over{position:relative;z-index:5}
 
     /* Ambient orbs */
     .orb{position:absolute;border-radius:50%;pointer-events:none;will-change:opacity}
@@ -307,66 +306,18 @@
   <div class="orb" style="bottom:-12%;left:-8%;width:38vw;height:38vw;background:radial-gradient(circle,rgba(201,169,110,.04) 0%,transparent 65%)"></div>
 
   <div style="position:relative;z-index:10;max-width:1440px;margin:0 auto;padding:0 3rem;width:100%">
-    <div class="hero-split">
+    <h1 class="hero-title" style="margin-bottom:2.75rem">
+      <span class="hl" style="color:#fff"><span class="hl-inner" id="hl1">Power Your</span></span>
+      <span class="hl"><span class="hl-inner" id="hl2" style="color:rgba(255,255,255,.22);font-style:italic">Practice.</span></span>
+    </h1>
 
-      <!-- LEFT: text -->
-      <div>
-        <h1 class="hero-title" style="margin-bottom:2.75rem">
-          <span class="hl" style="color:#fff"><span class="hl-inner" id="hl1">Power Your</span></span>
-          <span class="hl"><span class="hl-inner" id="hl2" style="color:rgba(255,255,255,.22);font-style:italic">Practice.</span></span>
-        </h1>
+    <p class="hero-desc hero-sub" style="font-size:.92rem;color:rgba(255,255,255,.46);line-height:2.05;font-weight:300;max-width:38ch;margin:0 0 3rem">
+      Give your clinic a branded patient portal — AI health guidance, loyalty rewards, and appointment tools that keep patients engaged between every visit.
+    </p>
 
-        <p class="hero-desc hero-sub" style="font-size:.92rem;color:rgba(255,255,255,.46);line-height:2.05;font-weight:300;max-width:38ch;margin:0 0 3rem">
-          Give your clinic a branded patient portal — AI health guidance, loyalty rewards, and appointment tools that keep patients engaged between every visit.
-        </p>
-
-        <div class="hero-ctas" style="display:flex;gap:1rem;flex-wrap:wrap">
-          <a href="#contact" class="btn btn-solid btn-pill mag" style="padding:.875rem 2.25rem">Request a Demo</a>
-          <a href="/patient-portal" class="btn btn-outline btn-pill mag" style="padding:.875rem 2.25rem;backdrop-filter:blur(10px)" onmouseover="this.style.background='rgba(255,255,255,.08)'" onmouseout="this.style.background=''">Patient Login</a>
-        </div>
-      </div>
-
-      <!-- RIGHT: floating glass card cluster -->
-      <div class="hero-right-cluster" style="position:relative;height:520px">
-
-        <!-- Card 1: AI chat preview -->
-        <div class="g-card" style="position:absolute;top:0;left:5%;right:0;padding:1.75rem;border-radius:1.25rem;animation:float-a 7s ease-in-out infinite">
-          <div style="display:flex;align-items:center;gap:.625rem;margin-bottom:1.25rem">
-            <div style="width:8px;height:8px;border-radius:50%;background:var(--ac);animation:pulse 2s ease-in-out infinite"></div>
-            <span style="font-size:.52rem;letter-spacing:.22em;text-transform:uppercase;color:rgba(240,237,232,.38);font-family:'DM Sans',sans-serif">Acuros AI · Live</span>
-          </div>
-          <div style="font-family:'DM Sans',sans-serif;font-size:.78rem;color:rgba(240,237,232,.55);background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);padding:.875rem 1rem;border-radius:.5rem;margin-bottom:.625rem;line-height:1.72">
-            "What does my ferritin level of 12 ng/mL mean?"
-          </div>
-          <div style="font-family:'DM Sans',sans-serif;font-size:.8rem;color:rgba(240,237,232,.78);line-height:1.78;background:rgba(201,169,110,.05);border:1px solid rgba(201,169,110,.14);padding:.875rem 1rem;border-radius:.5rem">
-            A ferritin of 12 ng/mL is at the low end of normal and may indicate early iron depletion. Dietary adjustments or supplementation may be recommended.
-          </div>
-        </div>
-
-        <!-- Card 2: Stats -->
-        <div class="g-card" style="position:absolute;bottom:10%;left:0;width:52%;padding:1.5rem;border-radius:1.25rem;animation:float-b 8.5s ease-in-out infinite">
-          <div style="font-size:.48rem;letter-spacing:.26em;text-transform:uppercase;color:rgba(201,169,110,.6);font-family:'DM Sans',sans-serif;margin-bottom:.875rem">Platform stats</div>
-          <div style="display:flex;flex-direction:column;gap:.75rem">
-            <div style="display:flex;justify-content:space-between;align-items:baseline">
-              <span style="font-size:.72rem;color:rgba(240,237,232,.5)">Clinics</span>
-              <span style="font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:200;color:var(--text)">120+</span>
-            </div>
-            <div style="height:1px;background:rgba(255,255,255,.06)"></div>
-            <div style="display:flex;justify-content:space-between;align-items:baseline">
-              <span style="font-size:.72rem;color:rgba(240,237,232,.5)">Satisfaction</span>
-              <span style="font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:200;color:var(--ac)">96.3%</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Card 3: Setup badge -->
-        <div class="g-card" style="position:absolute;bottom:10%;right:0;width:42%;padding:1.25rem;border-radius:1.25rem;animation:float-c 6.5s ease-in-out infinite;text-align:center">
-          <div style="font-family:'Cormorant Garamond',serif;font-size:2.25rem;font-weight:200;color:var(--text);line-height:1;margin-bottom:.35rem">1</div>
-          <div style="font-size:.48rem;letter-spacing:.26em;text-transform:uppercase;color:rgba(240,237,232,.36);font-family:'DM Sans',sans-serif">Day setup</div>
-          <div style="margin-top:.875rem;font-size:.68rem;color:rgba(240,237,232,.42);font-family:'DM Sans',sans-serif">Portal live same day</div>
-        </div>
-
-      </div>
+    <div class="hero-ctas" style="display:flex;gap:1rem;flex-wrap:wrap">
+      <a href="#contact" class="btn btn-solid btn-pill mag" style="padding:.875rem 2.25rem">Request a Demo</a>
+      <a href="/patient-portal" class="btn btn-outline btn-pill mag" style="padding:.875rem 2.25rem;backdrop-filter:blur(10px)" onmouseover="this.style.background='rgba(255,255,255,.08)'" onmouseout="this.style.background=''">Patient Login</a>
     </div>
   </div>
 
@@ -398,36 +349,41 @@
 
 
 <!-- ══════════════════════════════════
-     STATS — glass strip
+     STATS — floating glass cards, staggered depth
 ════════════════════════════════════ -->
-<section style="background:var(--bg);position:relative;overflow:hidden">
-  <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 120%,rgba(201,169,110,.05) 0%,transparent 65%);pointer-events:none"></div>
+<section style="background:var(--bg);position:relative;z-index:5;padding:6rem 3rem 9rem;overflow:visible">
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 80%,rgba(201,169,110,.06) 0%,transparent 65%);pointer-events:none"></div>
   <div style="max-width:1440px;margin:0 auto;position:relative;z-index:1">
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--border)" class="g1m">
-      <div class="g-card rv" style="padding:4rem 3.5rem;border-radius:0;border-left:none;border-top:none;border-bottom:none;border-right:1px solid rgba(255,255,255,.06)">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1.75rem;align-items:start" class="g1m">
+
+      <div class="g-card tilt-card rv" style="padding:3rem 2.5rem;border-radius:1.75rem;animation:float-a 7s ease-in-out infinite;animation-delay:0s">
         <div class="stat-num" data-target="120" data-suffix="+">0+</div>
         <div style="height:1px;background:rgba(255,255,255,.06);margin:1.5rem 0"></div>
         <div class="lbl" style="margin-bottom:.35rem">Clinics onboarded</div>
         <p style="font-size:.72rem;color:var(--mute);line-height:1.78;max-width:16ch">Across Ontario and growing</p>
       </div>
-      <div class="g-card rv d1" style="padding:4rem 3.5rem;border-radius:0;border-left:none;border-top:none;border-bottom:none;border-right:1px solid rgba(255,255,255,.06)">
+
+      <div class="g-card tilt-card rv d1" style="padding:3rem 2.5rem;border-radius:1.75rem;animation:float-b 8.5s ease-in-out infinite;animation-delay:.6s;margin-top:2.5rem">
         <div class="stat-num" data-target="8400" data-suffix="+">0+</div>
         <div style="height:1px;background:rgba(255,255,255,.06);margin:1.5rem 0"></div>
         <div class="lbl" style="margin-bottom:.35rem">Patients engaged</div>
         <p style="font-size:.72rem;color:var(--mute);line-height:1.78;max-width:16ch">Active monthly portal users</p>
       </div>
-      <div class="g-card rv d2" style="padding:4rem 3.5rem;border-radius:0;border-left:none;border-top:none;border-bottom:none;border-right:1px solid rgba(255,255,255,.06)">
+
+      <div class="g-card tilt-card rv d2" style="padding:3rem 2.5rem;border-radius:1.75rem;animation:float-c 7.5s ease-in-out infinite;animation-delay:1.2s">
         <div class="stat-num">96.3%</div>
         <div style="height:1px;background:rgba(255,255,255,.06);margin:1.5rem 0"></div>
         <div class="lbl" style="margin-bottom:.35rem">Satisfaction rate</div>
         <p style="font-size:.72rem;color:var(--mute);line-height:1.78;max-width:16ch">Based on post-visit surveys</p>
       </div>
-      <div class="g-card rv d3" style="padding:4rem 3.5rem;border-radius:0;border-left:none;border-top:none;border-bottom:none;border-right:none">
+
+      <div class="g-card tilt-card rv d3" style="padding:3rem 2.5rem;border-radius:1.75rem;animation:float-a 9s ease-in-out infinite;animation-delay:1.8s;margin-top:2.5rem">
         <div class="stat-num" data-target="1" data-suffix=" Day">0</div>
         <div style="height:1px;background:rgba(255,255,255,.06);margin:1.5rem 0"></div>
         <div class="lbl" style="margin-bottom:.35rem">Average setup time</div>
         <p style="font-size:.72rem;color:var(--mute);line-height:1.78;max-width:16ch">Portal live same day</p>
       </div>
+
     </div>
   </div>
 </section>
@@ -461,10 +417,59 @@
 
 
 <!-- ══════════════════════════════════
+     FEATURE CARDS — floating glass, 3D tilt
+════════════════════════════════════ -->
+<section style="background:var(--bg);position:relative;z-index:4;padding:5rem 3rem 8rem;overflow:visible">
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 70% 40%,rgba(201,169,110,.04) 0%,transparent 65%);pointer-events:none"></div>
+  <div style="max-width:1440px;margin:0 auto;position:relative;z-index:1">
+
+    <div style="margin-bottom:5rem">
+      <div class="lbl rv" style="margin-bottom:1.25rem">What's included</div>
+      <h2 class="rv d1" style="font-family:'Cormorant Garamond',serif;font-size:clamp(2.25rem,5vw,4.5rem);font-weight:200;letter-spacing:-.035em;line-height:.96">Three tools.<br/><em style="color:var(--sub);font-style:italic">One platform.</em></h2>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;align-items:start" class="g1m">
+
+      <div class="g-card tilt-card rv" style="border-radius:2rem;padding:3rem;animation:float-a 8s ease-in-out infinite;animation-delay:0s">
+        <div style="width:44px;height:44px;border-radius:50%;background:rgba(201,169,110,.08);border:1px solid rgba(201,169,110,.16);display:flex;align-items:center;justify-content:center;margin-bottom:2rem">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(201,169,110,.8)" stroke-width="1.5"><path d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+        </div>
+        <div class="lbl" style="margin-bottom:1rem;color:var(--ac)">AI Health Assistant</div>
+        <h3 style="font-family:'Cormorant Garamond',serif;font-size:1.9rem;font-weight:200;letter-spacing:-.02em;line-height:1.1;margin-bottom:1.25rem">Evidence-based answers, around the clock.</h3>
+        <p style="font-size:.8rem;color:var(--sub);line-height:1.9;max-width:30ch;margin-bottom:2rem">Lab interpretation, diagnosis clarity, and appointment prep — available 24/7, powered by Gemini.</p>
+        <a href="/ai-assistant" style="font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ac);text-decoration:none;display:inline-flex;align-items:center;gap:.5rem;border-bottom:1px solid rgba(201,169,110,.22);padding-bottom:.3rem">Try it free <span>→</span></a>
+      </div>
+
+      <div class="g-card tilt-card rv d1" style="border-radius:2rem;padding:3rem;animation:float-b 9.5s ease-in-out infinite;animation-delay:.8s;margin-top:3.5rem">
+        <div style="width:44px;height:44px;border-radius:50%;background:rgba(201,169,110,.08);border:1px solid rgba(201,169,110,.16);display:flex;align-items:center;justify-content:center;margin-bottom:2rem">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(201,169,110,.8)" stroke-width="1.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </div>
+        <div class="lbl" style="margin-bottom:1rem;color:var(--ac)">Loyalty &amp; Rewards</div>
+        <h3 style="font-family:'Cormorant Garamond',serif;font-size:1.9rem;font-weight:200;letter-spacing:-.02em;line-height:1.1;margin-bottom:1.25rem">Retention built into every visit.</h3>
+        <p style="font-size:.8rem;color:var(--sub);line-height:1.9;max-width:30ch;margin-bottom:2rem">Patients earn points for activity, check-ins, and referrals — redeemable for clinic credits. Engagement that compounds.</p>
+        <a href="#contact" style="font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ac);text-decoration:none;display:inline-flex;align-items:center;gap:.5rem;border-bottom:1px solid rgba(201,169,110,.22);padding-bottom:.3rem">See how it works <span>→</span></a>
+      </div>
+
+      <div class="g-card tilt-card rv d2" style="border-radius:2rem;padding:3rem;animation:float-c 7.5s ease-in-out infinite;animation-delay:1.4s;margin-top:1.75rem">
+        <div style="width:44px;height:44px;border-radius:50%;background:rgba(201,169,110,.08);border:1px solid rgba(201,169,110,.16);display:flex;align-items:center;justify-content:center;margin-bottom:2rem">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(201,169,110,.8)" stroke-width="1.5"><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+        </div>
+        <div class="lbl" style="margin-bottom:1rem;color:var(--ac)">Patient Portal</div>
+        <h3 style="font-family:'Cormorant Garamond',serif;font-size:1.9rem;font-weight:200;letter-spacing:-.02em;line-height:1.1;margin-bottom:1.25rem">Your clinic, branded and live today.</h3>
+        <p style="font-size:.8rem;color:var(--sub);line-height:1.9;max-width:30ch;margin-bottom:2rem">Records, bookings, shop, and AI in one white-labelled portal — deployed same day, no EMR migration.</p>
+        <a href="/patient-portal" style="font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ac);text-decoration:none;display:inline-flex;align-items:center;gap:.5rem;border-bottom:1px solid rgba(201,169,110,.22);padding-bottom:.3rem">Patient login <span>→</span></a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════
      BENEFITS — tabbed, FoundersCard-style
 ════════════════════════════════════ -->
 <section style="background:var(--bg2);border-top:1px solid var(--border)">
-  <div style="max-width:1440px;margin:0 auto;padding:7rem 3rem">
+  <div style="max-width:1440px;margin:0 auto;padding:5rem 3rem">
 
     <!-- Section header -->
     <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:4rem;flex-wrap:wrap;gap:2rem">
@@ -560,8 +565,8 @@
 <!-- ══════════════════════════════════
      HOW IT WORKS — editorial numbered rows
 ════════════════════════════════════ -->
-<section style="background:var(--bg);border-top:1px solid var(--border)">
-  <div style="max-width:1440px;margin:0 auto;padding:7rem 3rem">
+<section style="background:var(--bg);border-top:1px solid var(--border);position:relative;z-index:3">
+  <div style="max-width:1440px;margin:0 auto;padding:5rem 3rem">
 
     <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:4rem;flex-wrap:wrap;gap:2rem">
       <div>
@@ -610,7 +615,7 @@
   <!-- Ambient orb -->
   <div style="position:absolute;top:-12%;right:-8%;width:55vw;height:55vw;background:radial-gradient(circle,rgba(201,169,110,.05) 0%,transparent 68%);pointer-events:none;border-radius:50%"></div>
 
-  <div style="max-width:1440px;margin:0 auto;padding:8rem 3rem;display:grid;grid-template-columns:1fr 1fr;gap:7rem;align-items:center" class="g1m">
+  <div style="max-width:1440px;margin:0 auto;padding:6rem 3rem;display:grid;grid-template-columns:1fr 1fr;gap:7rem;align-items:center" class="g1m">
     <div>
       <div class="lbl rv" style="color:var(--mute);margin-bottom:1.5rem">AI Health Assistant</div>
       <h2 class="ai-headline rv d1">Ask anything<br/><em>about your health.</em></h2>
@@ -661,20 +666,23 @@
 
 
 <!-- ══════════════════════════════════
-     TESTIMONIALS — editorial, not 3-column cards
+     TESTIMONIALS — floating glass cards
 ════════════════════════════════════ -->
-<section style="background:var(--bg);border-bottom:1px solid var(--border)">
-  <div style="max-width:1440px;margin:0 auto;padding:7rem 3rem">
+<section style="background:var(--bg);border-bottom:1px solid var(--border);position:relative;z-index:3;overflow:visible">
+  <div style="position:absolute;top:-8%;left:-4%;width:36vw;height:36vw;background:radial-gradient(circle,rgba(201,169,110,.04) 0%,transparent 65%);border-radius:50%;pointer-events:none"></div>
+  <div style="max-width:1440px;margin:0 auto;padding:5rem 3rem 8rem">
 
-    <div style="margin-bottom:5rem">
+    <div style="margin-bottom:4rem">
       <div class="lbl rv" style="margin-bottom:1.25rem">Clinic voices</div>
     </div>
 
-    <!-- Feature quote — large, centered editorial -->
-    <div class="rv" style="padding:4.5rem 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-bottom:4rem;display:grid;grid-template-columns:2.5rem 1fr;gap:3rem;align-items:start">
-      <div style="width:1.5px;height:100%;background:var(--ac);min-height:3rem;margin-top:.5rem"></div>
-      <div>
+    <div style="display:grid;grid-template-columns:5fr 4fr;gap:2rem;align-items:start" class="g1m">
+
+      <!-- Main quote — large glass card -->
+      <div class="g-card tilt-card rv" style="border-radius:2rem;padding:3.5rem;animation:float-a 9s ease-in-out infinite;animation-delay:0s">
+        <div style="width:1.5px;height:2.5rem;background:var(--ac);margin-bottom:2rem"></div>
         <p class="testi-main-quote" style="margin-bottom:2.5rem">"Setup took less than a morning. By afternoon, our patients were already logging in and using the AI assistant. It's become a genuine extension of our care — not a tool, a part of the practice."</p>
+        <div style="height:1px;background:rgba(255,255,255,.06);margin-bottom:2rem"></div>
         <div style="display:flex;align-items:center;gap:1.25rem">
           <img class="testi-avatar" src="https://picsum.photos/seed/dr-elara/80/80" alt="Dr. Elara Mossbridge" style="border-radius:50%"/>
           <div>
@@ -683,32 +691,32 @@
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Two smaller quotes side by side -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border)" class="g1m">
-      <div style="background:var(--bg);padding:3rem 0 0" class="rv">
-        <p class="testi-sm-quote" style="margin-bottom:2rem">"The clinic-specific shop was the feature that surprised me most. Our patients are buying what we actually recommend — not random wellness products from a generic catalogue."</p>
-        <div style="display:flex;align-items:center;gap:1rem">
-          <img class="testi-avatar" src="https://picsum.photos/seed/nadia-voss/80/80" alt="Nadia Voss" style="border-radius:50%"/>
-          <div>
-            <div style="font-size:.74rem;color:var(--text);letter-spacing:.04em">Nadia Voss, NP</div>
-            <div style="font-size:.63rem;color:var(--mute);margin-top:.18rem">Lead NP · Lakeshore Integrative Health</div>
+      <!-- Two stacked smaller cards -->
+      <div style="display:flex;flex-direction:column;gap:2rem">
+        <div class="g-card tilt-card rv d1" style="border-radius:2rem;padding:2.5rem;animation:float-b 8s ease-in-out infinite;animation-delay:.7s;margin-top:3rem">
+          <p class="testi-sm-quote" style="margin-bottom:2rem">"The clinic-specific shop was the feature that surprised me most. Our patients are buying what we actually recommend — not random wellness products from a generic catalogue."</p>
+          <div style="display:flex;align-items:center;gap:1rem">
+            <img class="testi-avatar" src="https://picsum.photos/seed/nadia-voss/80/80" alt="Nadia Voss" style="border-radius:50%"/>
+            <div>
+              <div style="font-size:.74rem;color:var(--text);letter-spacing:.04em">Nadia Voss, NP</div>
+              <div style="font-size:.63rem;color:var(--mute);margin-top:.18rem">Lead NP · Lakeshore Integrative Health</div>
+            </div>
+          </div>
+        </div>
+        <div class="g-card tilt-card rv d2" style="border-radius:2rem;padding:2.5rem;animation:float-c 10s ease-in-out infinite;animation-delay:1.4s">
+          <p class="testi-sm-quote" style="margin-bottom:2rem">"Our patients arrive better prepared. They've reviewed their labs, drafted their questions. Consultations have become measurably more focused."</p>
+          <div style="display:flex;align-items:center;gap:1rem">
+            <img class="testi-avatar" src="https://picsum.photos/seed/theo-amara/80/80" alt="Dr. Theo Amara" style="border-radius:50%"/>
+            <div>
+              <div style="font-size:.74rem;color:var(--text);letter-spacing:.04em">Dr. Theo Amara</div>
+              <div style="font-size:.63rem;color:var(--mute);margin-top:.18rem">Internal Medicine · Harbourside Medical Group</div>
+            </div>
           </div>
         </div>
       </div>
-      <div style="background:var(--bg);padding:3rem 0 0 4rem" class="rv d1">
-        <p class="testi-sm-quote" style="margin-bottom:2rem">"Our patients arrive better prepared. They've reviewed their labs, drafted their questions, and understand what to expect. Consultations have become measurably more focused."</p>
-        <div style="display:flex;align-items:center;gap:1rem">
-          <img class="testi-avatar" src="https://picsum.photos/seed/theo-amara/80/80" alt="Dr. Theo Amara" style="border-radius:50%"/>
-          <div>
-            <div style="font-size:.74rem;color:var(--text);letter-spacing:.04em">Dr. Theo Amara</div>
-            <div style="font-size:.63rem;color:var(--mute);margin-top:.18rem">Internal Medicine · Harbourside Medical Group</div>
-          </div>
-        </div>
-      </div>
-    </div>
 
+    </div>
   </div>
 </section>
 
@@ -1012,6 +1020,25 @@ function animateStat(el) {
     });
   }, { threshold:.3 });
   document.querySelectorAll('.stat-num[data-target]').forEach(el => io.observe(el));
+})();
+
+/* ── 3D card tilt ── */
+(function initTilt() {
+  if (window.matchMedia('(pointer:coarse),(hover:none)').matches) return;
+  document.querySelectorAll('.tilt-card').forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const r  = card.getBoundingClientRect();
+      const rx = ((e.clientY - r.top)  / r.height - .5) * -12;
+      const ry = ((e.clientX - r.left) / r.width  - .5) *  12;
+      card.style.transition = 'transform .12s cubic-bezier(.22,1,.36,1),box-shadow .12s';
+      card.style.transform  = `perspective(700px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-8px)`;
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.transition = 'transform .65s cubic-bezier(.22,1,.36,1),box-shadow .65s';
+      card.style.transform  = '';
+      setTimeout(() => { card.style.transition = ''; }, 650);
+    });
+  });
 })();
 
 /* ── Contact form ── */
