@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-80K00SEBQK"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-80K00SEBQK');</script>
@@ -24,6 +24,11 @@
   <script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{display:['Cormorant Garamond','Georgia','serif'],sans:['DM Sans','sans-serif']}}}}</script>
   <style>
     :root{
+      --bg:#f0ebe1;--bg2:#f8f4ec;--bg3:#e6e0d4;
+      --border:#d4cdb8;--text:#1c1a14;--sub:#5c5346;--mute:#a09480;
+      --ac:#c9922a;--nav:rgba(240,235,225,.97);
+    }
+    html.dark{
       --bg:#0c0c0a;--bg2:#111110;--bg3:#161614;
       --border:#1e1e1b;--text:#f0ede8;--sub:#8c8880;--mute:#4e4c48;
       --ac:#c9a96e;--nav:rgba(12,12,10,.97);
@@ -55,7 +60,8 @@
       transition:background .42s cubic-bezier(.22,1,.36,1),border-color .42s,backdrop-filter .42s}
     nav.scrolled,nav.solid{
       background:var(--nav);backdrop-filter:blur(32px) saturate(180%);-webkit-backdrop-filter:blur(32px) saturate(180%);
-      border-bottom:1px solid var(--border);box-shadow:0 1px 40px rgba(0,0,0,.4)}
+      border-bottom:1px solid var(--border);box-shadow:0 1px 40px rgba(0,0,0,.08)}
+    html.dark nav.scrolled,html.dark nav.solid{box-shadow:0 1px 40px rgba(0,0,0,.4)}
     .nav-inner{height:68px;max-width:1440px;margin:0 auto;padding:0 3rem;display:flex;align-items:center;justify-content:space-between;transition:height .38s cubic-bezier(.22,1,.36,1)}
     nav.scrolled .nav-inner,nav.solid .nav-inner{height:56px}
     .nav-link{position:relative;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--sub);background:none;border:none;cursor:pointer;padding:0;font-family:'DM Sans',sans-serif;font-weight:400;transition:color .2s;text-decoration:none;display:inline-block}
@@ -156,17 +162,80 @@
       .dash-actions{width:100%;flex-wrap:wrap}
     }
 
+    /* ═══════════════════════════════════════════════
+       GATE-LEFT — always atmospheric-dark regardless
+       of global theme (bg image is always near-black)
+    ═══════════════════════════════════════════════ */
+    .gate-left{
+      --text:#f0ede8;--sub:#8c8880;--mute:#4e4c48;
+      --border:#1e1e1b;--ac:#c9a96e;
+    }
+
+    /* ═══════════════════════════════════════════════
+       LIGHT-MODE REFINEMENTS
+    ═══════════════════════════════════════════════ */
+    /* Warm layered body gradient — no flat white */
+    html:not(.dark) body{
+      background:linear-gradient(170deg,#f8f4ec 0%,#f0ebe1 38%,#e9e2d5 100%);
+      min-height:100vh;
+    }
+    /* Nav: warm tinted shadow instead of harsh black */
+    html:not(.dark) nav.scrolled,html:not(.dark) nav.solid{
+      box-shadow:0 1px 32px rgba(100,85,55,.08),0 0 0 1px rgba(212,205,184,.18);
+    }
+    /* Grain: lighter, multiply-blended for paper texture */
+    html:not(.dark) #grain{opacity:.018;mix-blend-mode:multiply}
+    /* Cursor: dark ring on light bg */
+    html:not(.dark) #cursor-ring{border-color:rgba(28,26,20,.1)}
+    html:not(.dark) body.c-hover #cursor-ring{border-color:rgba(201,146,42,.3)}
+    /* Logo: dark only when nav has a solid warm bg (dashboard state) */
+    html:not(.dark) nav.solid #nav-logo,
+    html:not(.dark) nav.scrolled #nav-logo{filter:brightness(0)}
+    /* Nav links: stay readable on the dark gate-left image when transparent */
+    html:not(.dark) nav:not(.solid):not(.scrolled) .nav-link{color:rgba(240,237,232,.62)}
+    html:not(.dark) nav:not(.solid):not(.scrolled) .nav-link:hover,
+    html:not(.dark) nav:not(.solid):not(.scrolled) .nav-link.active{color:#f0ede8}
+    /* ACUROS wordmark on transparent nav */
+    html:not(.dark) nav:not(.solid):not(.scrolled) [style*="color:var(--text)"]{color:#f0ede8!important}
+    /* Org-banner: warm tint */
+    html:not(.dark) #org-banner{background:rgba(201,146,42,.035);border-color:rgba(201,146,42,.16)}
+    /* Benefit rows — left panel already scoped dark, right side normal */
+    html:not(.dark) .stagger-item{border-color:var(--border)}
+    /* Dashboard sections: subtle warm surface differentiation */
+    html:not(.dark) #portal-dash section:first-of-type{
+      background:linear-gradient(180deg,rgba(248,244,236,.6) 0%,transparent 100%);
+    }
+    /* Stat strip dividers */
+    html:not(.dark) .stat-div{background:rgba(28,26,20,.12)!important}
+    /* Tool cards: warm glass in light mode */
+    html:not(.dark) .tool-card::before{background:var(--ac)}
+    /* Coming-soon badge */
+    html:not(.dark) [style*="cursor:not-allowed"]{opacity:.25}
+    /* Footer */
+    html:not(.dark) footer{background:rgba(240,235,225,.6);border-color:var(--border)}
+    /* Scroll progress */
+    html:not(.dark) #scroll-prog{background:var(--ac)}
+
     /* ── Glassmorphism ── */
     .g-card{
-      background:rgba(255,255,255,.042);
+      background:rgba(0,0,0,.02);
       backdrop-filter:blur(22px) saturate(160%);
       -webkit-backdrop-filter:blur(22px) saturate(160%);
-      border:1px solid rgba(255,255,255,.09);
-      box-shadow:0 8px 40px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.09);
+      border:1px solid rgba(0,0,0,.07);
+      box-shadow:0 8px 40px rgba(0,0,0,.06),inset 0 1px 0 rgba(255,255,255,.6);
       transition:transform .48s cubic-bezier(.22,1,.36,1),box-shadow .48s,background .32s
     }
     .g-card:hover{
       transform:translateY(-7px);
+      background:rgba(0,0,0,.04);
+      box-shadow:0 28px 80px rgba(0,0,0,.12),inset 0 1px 0 rgba(255,255,255,.8),0 0 0 1px rgba(201,146,42,.13)
+    }
+    html.dark .g-card{
+      background:rgba(255,255,255,.042);
+      border:1px solid rgba(255,255,255,.09);
+      box-shadow:0 8px 40px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.09);
+    }
+    html.dark .g-card:hover{
       background:rgba(255,255,255,.068);
       box-shadow:0 28px 80px rgba(0,0,0,.52),inset 0 1px 0 rgba(255,255,255,.13),0 0 0 1px rgba(201,169,110,.13)
     }
@@ -175,18 +244,29 @@
 
     /* Gate right glass panel */
     .gate-right{
+      background:linear-gradient(160deg,rgba(255,252,245,.92) 0%,rgba(242,236,222,.9) 100%)!important;
+      backdrop-filter:blur(36px) saturate(200%);
+      -webkit-backdrop-filter:blur(36px) saturate(200%);
+      border-left:1px solid rgba(212,200,172,.25)!important;
+      box-shadow:-30px 0 80px rgba(110,90,55,.07),inset 1px 0 0 rgba(255,255,255,.45)
+    }
+    html.dark .gate-right{
       background:rgba(17,17,16,.72)!important;
-      backdrop-filter:blur(28px) saturate(160%);
-      -webkit-backdrop-filter:blur(28px) saturate(160%);
       border-left:1px solid rgba(255,255,255,.07)!important;
-      box-shadow:-20px 0 60px rgba(0,0,0,.4)
+      box-shadow:-20px 0 60px rgba(0,0,0,.4);
+      inset 1px 0 0 rgba(255,255,255,.04)
     }
 
     /* Org modal glass */
     #org-modal .modal-glass{
+      background:linear-gradient(160deg,rgba(255,252,245,.96) 0%,rgba(242,236,222,.94) 100%);
+      backdrop-filter:blur(36px) saturate(200%);
+      -webkit-backdrop-filter:blur(36px) saturate(200%);
+      border:1px solid rgba(212,200,172,.28);
+      box-shadow:0 40px 100px rgba(100,80,40,.1),inset 0 1px 0 rgba(255,255,255,.7),inset 1px 0 0 rgba(255,255,255,.4)
+    }
+    html.dark #org-modal .modal-glass{
       background:rgba(17,17,16,.88);
-      backdrop-filter:blur(28px) saturate(160%);
-      -webkit-backdrop-filter:blur(28px) saturate(160%);
       border:1px solid rgba(255,255,255,.08);
       box-shadow:0 40px 100px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.08)
     }
@@ -196,13 +276,24 @@
 
     /* Tool card glass hover */
     .tool-card{
-      background:rgba(255,255,255,.018)!important;
+      background:rgba(0,0,0,.012)!important;
       backdrop-filter:blur(12px) saturate(140%);
       -webkit-backdrop-filter:blur(12px) saturate(140%)
     }
     .tool-card:hover{
+      background:rgba(0,0,0,.028)!important;
+      box-shadow:0 12px 48px rgba(0,0,0,.07),inset 0 1px 0 rgba(255,255,255,.7)
+    }
+    html.dark .tool-card{background:rgba(255,255,255,.018)!important}
+    html.dark .tool-card:hover{
       background:rgba(255,255,255,.04)!important;
       box-shadow:0 12px 48px rgba(0,0,0,.32),inset 0 1px 0 rgba(255,255,255,.07)
+    }
+    /* Gate vignette — blends atmospheric image into gate-right */
+    .gate-vignette{position:absolute;inset:0;z-index:1;pointer-events:none;
+      background:linear-gradient(to right,rgba(20,16,10,0) 45%,rgba(255,252,245,.94) 100%)}
+    html.dark .gate-vignette{
+      background:linear-gradient(to right,rgba(12,12,10,0) 55%,rgba(12,12,10,.97) 100%)
     }
   </style>
 </head>
@@ -217,7 +308,7 @@
 <nav id="main-nav">
   <div class="nav-inner">
     <a href="/" style="display:flex;align-items:center;gap:.875rem;text-decoration:none">
-      <img src="logo.png" alt="Acuros" width="32" height="32" style="flex-shrink:0;object-fit:contain;filter:brightness(0) invert(1)"/>
+      <img id="nav-logo" src="logo.png" alt="Acuros" width="32" height="32" style="flex-shrink:0;object-fit:contain;filter:brightness(0) invert(1)"/>
       <div>
         <div style="font-family:'Cormorant Garamond',serif;font-weight:300;font-size:.88rem;letter-spacing:.22em;color:var(--text);line-height:1">ACUROS</div>
         <div class="lbl" style="font-size:.42rem;letter-spacing:.38em">HEALTH</div>
@@ -270,15 +361,9 @@
       <div class="orb" style="top:-10%;right:-15%;width:50vw;height:50vw;background:radial-gradient(circle,rgba(201,169,110,.06) 0%,transparent 65%);z-index:1"></div>
       <div class="orb" style="bottom:-5%;left:-5%;width:30vw;height:30vw;background:radial-gradient(circle,rgba(201,169,110,.04) 0%,transparent 65%);z-index:1"></div>
       <!-- Vignette -->
-      <div style="position:absolute;inset:0;background:linear-gradient(to right,rgba(12,12,10,0) 60%,rgba(12,12,10,.95));z-index:1;pointer-events:none"></div>
+      <div class="gate-vignette"></div>
 
       <div style="position:relative;z-index:2;max-width:520px">
-        <!-- Eyebrow -->
-        <div class="lbl rv" style="color:var(--ac);margin-bottom:2.5rem;display:flex;align-items:center;gap:1rem">
-          <span style="display:inline-block;width:28px;height:1px;background:var(--ac);flex-shrink:0"></span>
-          Patient Portal
-        </div>
-
         <!-- Display headline -->
         <h1 class="rv d1" style="font-size:clamp(3.25rem,5.5vw,5.25rem);font-weight:200;color:var(--text);line-height:1;letter-spacing:-.035em;margin-bottom:2rem">
           Your Health,<br/><em style="color:var(--ac);font-style:italic;font-weight:200">Organised.</em>
@@ -331,11 +416,7 @@
     <div class="gate-right">
       <div style="max-width:400px;width:100%;margin:0 auto">
 
-        <!-- Label -->
-        <div class="lbl" style="color:var(--ac);margin-bottom:1.75rem;display:flex;align-items:center;gap:.875rem">
-          <span style="display:inline-block;width:18px;height:1px;background:var(--ac)"></span>
-          Secure Access
-        </div>
+
 
         <!-- Title + sub -->
         <h2 style="font-size:2rem;font-weight:300;color:var(--text);margin-bottom:.4rem;letter-spacing:-.03em" id="pt-title">Sign in to your portal</h2>
@@ -430,10 +511,6 @@
       <button onclick="hideOrgPrompt()" style="position:absolute;top:1.25rem;right:1.25rem;background:none;border:none;cursor:pointer;color:var(--mute);transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--mute)'">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
       </button>
-      <div class="lbl" style="color:var(--ac);margin-bottom:1rem;display:flex;align-items:center;gap:.875rem">
-        <span style="display:inline-block;width:18px;height:1px;background:var(--ac)"></span>
-        Connect Organization
-      </div>
       <h3 style="font-size:2rem;font-weight:300;color:var(--text);margin-bottom:.75rem;letter-spacing:-.03em">Join your clinic's<br/><em style="color:var(--ac);font-style:italic">network.</em></h3>
       <p style="font-size:.8rem;color:var(--sub);line-height:1.85;margin-bottom:2rem;font-weight:300">Enter the unique code from your clinic to connect your account and unlock your full patient portal.</p>
       <div id="org-err" style="display:none;margin-bottom:1rem"></div>
@@ -453,11 +530,7 @@
   <section style="border-bottom:1px solid var(--border);padding-top:68px">
     <div style="max-width:1440px;margin:0 auto;padding:5rem 3rem 0">
 
-      <!-- Eyebrow -->
-      <div class="lbl rv" style="color:var(--ac);margin-bottom:1.75rem;display:flex;align-items:center;gap:.875rem">
-        <span style="display:inline-block;width:22px;height:1px;background:var(--ac)"></span>
-        Patient Portal
-      </div>
+
 
       <!-- Giant italic name — the centrepiece -->
       <h1 class="rv d1" style="font-size:clamp(4.5rem,11vw,9.5rem);font-weight:200;font-style:italic;color:var(--text);letter-spacing:-.04em;line-height:.88;margin-bottom:3.5rem">
@@ -573,16 +646,36 @@
       </div>
     </div>
 
-    <!-- Account section -->
+    <!-- Account & Settings section -->
     <div style="margin-top:5rem;padding-top:2.5rem;border-top:1px solid var(--border)">
-      <div class="lbl" style="margin-bottom:2rem">Account</div>
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1.5rem">
-        <div>
-          <div style="font-family:'Cormorant Garamond',serif;font-size:2.25rem;font-weight:300;color:var(--text);letter-spacing:-.03em;line-height:1.04;margin-bottom:.5rem" id="dash-full-name">—</div>
-          <div style="font-size:.78rem;color:var(--mute);font-weight:300;letter-spacing:.02em" id="dash-email-display">—</div>
-          <div style="font-size:.72rem;color:var(--mute);font-weight:300;margin-top:.25rem" id="dash-email-lbl"></div>
+      <div class="lbl" style="margin-bottom:2rem">Account &amp; Settings</div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:2rem">
+
+        <!-- Left: avatar + identity + org pill -->
+        <div style="display:flex;align-items:flex-start;gap:1rem">
+          <div id="dash-avatar" style="width:38px;height:38px;border-radius:50%;background:var(--ac);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:.3rem">
+            <span id="dash-initial" style="font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:500;color:#fff;line-height:1">?</span>
+          </div>
+          <div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:2.25rem;font-weight:300;color:var(--text);letter-spacing:-.03em;line-height:1.04;margin-bottom:.4rem" id="dash-full-name">—</div>
+            <div style="font-size:.78rem;color:var(--mute);font-weight:300;letter-spacing:.02em" id="dash-email-display">—</div>
+            <div style="font-size:.72rem;color:var(--mute);font-weight:300;margin-top:.25rem" id="dash-email-lbl"></div>
+            <!-- Org connection pill -->
+            <div id="dash-org-pill" style="display:none;margin-top:.75rem">
+              <span id="dash-org-pill-label" style="font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ac);background:rgba(201,146,42,.07);border:1px solid rgba(201,146,42,.22);padding:.25rem .7rem;border-radius:999px"></span>
+            </div>
+          </div>
         </div>
-        <button onclick="ptLogout()" class="btn btn-outline" style="padding:.45rem 1.1rem;font-size:.63rem">Sign Out</button>
+
+        <!-- Right: settings actions -->
+        <div style="display:flex;flex-direction:column;gap:.625rem;align-items:flex-end">
+          <button onclick="toggleTheme()" id="theme-toggle-btn" style="display:flex;align-items:center;gap:.5rem;font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--mute);background:none;border:1px solid var(--border);padding:.38rem .9rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:border-color .2s,color .2s;white-space:nowrap" onmouseover="this.style.borderColor='var(--ac)';this.style.color='var(--ac)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--mute)'">
+            <span id="theme-toggle-icon" style="display:flex;align-items:center"></span>
+            <span id="theme-toggle-label">Dark Mode</span>
+          </button>
+          <button onclick="ptLogout()" class="btn btn-outline" style="padding:.45rem 1.1rem;font-size:.63rem">Sign Out</button>
+        </div>
+
       </div>
     </div>
 
@@ -602,11 +695,28 @@
 
 
 <script>
-/* ── Always dark ── */
+/* ── Theme — light by default, dark if saved ── */
 (function initTheme() {
-  document.documentElement.classList.add('dark');
-  localStorage.setItem('ah-theme', 'dark');
+  if (localStorage.getItem('ah-theme') === 'dark') {
+    document.documentElement.classList.add('dark');
+  }
 })();
+
+function toggleTheme() {
+  const isDark = document.documentElement.classList.toggle('dark');
+  localStorage.setItem('ah-theme', isDark ? 'dark' : 'light');
+  renderThemeToggle();
+}
+
+function renderThemeToggle() {
+  const isDark = document.documentElement.classList.contains('dark');
+  const icon  = document.getElementById('theme-toggle-icon');
+  const label = document.getElementById('theme-toggle-label');
+  if (icon) icon.innerHTML = isDark
+    ? '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>'
+    : '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+  if (label) label.textContent = isDark ? 'Light Mode' : 'Dark Mode';
+}
 
 const CONFIG = {
   supabaseUrl: 'https://pyexkdoupqzbnrybiubo.supabase.co',
@@ -785,6 +895,13 @@ function syncPortal() {
     document.getElementById('dash-email-lbl').textContent=currentUser.email||'';
     document.getElementById('dash-full-name').textContent=(currentUser.first&&currentUser.last)?currentUser.first+' '+currentUser.last:currentUser.name||'—';
     document.getElementById('dash-email-display').textContent=currentUser.email||'—';
+    /* ── avatar initial ── */
+    const di=document.getElementById('dash-initial');if(di)di.textContent=(currentUser.first||currentUser.name||'?').charAt(0).toUpperCase();
+    /* ── org pill ── */
+    const op=document.getElementById('dash-org-pill'),opl=document.getElementById('dash-org-pill-label');
+    if(op&&opl){if(currentUser.org_name){opl.textContent=currentUser.org_name;op.style.display='block';}else if(currentUser.code){opl.textContent='Code: '+currentUser.code;op.style.display='block';}else{op.style.display='none';}}
+    /* ── theme toggle ── */
+    renderThemeToggle();
     const cl=document.getElementById('dash-code-lbl');
     const statOrg=document.getElementById('stat-org-name');
     if(currentUser.org_name){cl.textContent=currentUser.org_name;cl.style.display='block';if(statOrg)statOrg.textContent=currentUser.org_name;}
