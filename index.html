@@ -194,6 +194,28 @@
 
     @keyframes pulse{0%,100%{opacity:.12}50%{opacity:.5}}
 
+    /* ── Contact panel ── */
+    @keyframes lineGrow{from{width:0}to{width:100%}}
+    @keyframes tagIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+    @keyframes ctaOrb{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.18)}}
+    @keyframes bulletLine{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+    .ct-line{display:block;height:1px;background:var(--ac);transform-origin:left;transform:scaleX(0);transition:transform .7s cubic-bezier(.22,1,.36,1)}
+    .ct-line.in{transform:scaleX(1)}
+    .ct-tag{opacity:0;transform:translateY(6px);transition:opacity .5s cubic-bezier(.22,1,.36,1),transform .5s cubic-bezier(.22,1,.36,1)}
+    .ct-tag.in{opacity:1;transform:none}
+    .ct-tag:nth-child(1).in{transition-delay:.05s}
+    .ct-tag:nth-child(2).in{transition-delay:.12s}
+    .ct-tag:nth-child(3).in{transition-delay:.19s}
+    .inp-wrap{opacity:0;transform:translateY(10px);transition:opacity .6s cubic-bezier(.22,1,.36,1),transform .6s cubic-bezier(.22,1,.36,1)}
+    .inp-wrap.in{opacity:1;transform:none}
+    .inp-wrap.d1{transition-delay:.06s}.inp-wrap.d2{transition-delay:.12s}.inp-wrap.d3{transition-delay:.18s}.inp-wrap.d4{transition-delay:.24s}.inp-wrap.d5{transition-delay:.30s}
+    #ct-submit-btn{transition:background .22s,transform .22s,box-shadow .22s}
+    #ct-submit-btn:hover{box-shadow:0 8px 32px rgba(201,169,110,.28)}
+    #ct-submit-btn:active{transform:scale(0.97)}
+    .ct-stat{display:flex;flex-direction:column;gap:.2rem;position:relative}
+    .ct-stat-num{font-family:'Cormorant Garamond',serif;font-size:2.75rem;font-weight:200;color:rgba(240,237,232,.9);line-height:1;letter-spacing:-.04em}
+    .ct-stat-lbl{font-size:.52rem;letter-spacing:.28em;text-transform:uppercase;color:rgba(240,237,232,.36);font-family:'DM Sans',sans-serif}
+
     /* ── Responsive ── */
     @media(max-width:900px){
       .g1m{grid-template-columns:1fr!important}
@@ -711,7 +733,7 @@
       <!-- Main quote — large glass card -->
       <div class="g-card tilt-card rv" style="border-radius:2rem;padding:3.5rem;animation:float-a 9s ease-in-out infinite;animation-delay:0s">
         <div style="width:1.5px;height:2.5rem;background:var(--ac);margin-bottom:2rem"></div>
-        <p class="testi-main-quote" style="margin-bottom:2.5rem">"Setup took less than a morning. By afternoon, our patients were already logging in and using the AI assistant. It's become a genuine extension of our care — not a tool, a part of the practice."</p>
+        <p class="testi-main-quote" style="margin-bottom:2.5rem">Setup took less than a morning. By afternoon, our patients were already logging in and using the AI assistant. It's become a genuine extension of our care — not a tool, a part of the practice.</p>
         <div style="height:1px;background:rgba(255,255,255,.06);margin-bottom:2rem"></div>
         <div style="display:flex;align-items:center;gap:1.25rem">
           <img class="testi-avatar" src="https://picsum.photos/seed/dr-elara/80/80" alt="Dr. Elara Mossbridge" style="border-radius:50%"/>
@@ -725,7 +747,7 @@
       <!-- Two stacked smaller cards -->
       <div style="display:flex;flex-direction:column;gap:2rem">
         <div class="g-card tilt-card rv d1" style="border-radius:2rem;padding:2.5rem;animation:float-b 8s ease-in-out infinite;animation-delay:.7s;margin-top:3rem">
-          <p class="testi-sm-quote" style="margin-bottom:2rem">"The clinic-specific shop was the feature that surprised me most. Our patients are buying what we actually recommend — not random wellness products from a generic catalogue."</p>
+          <p class="testi-sm-quote" style="margin-bottom:2rem">The clinic-specific shop was the feature that surprised me most. Our patients are buying what we actually recommend — not random wellness products from a generic catalogue.</p>
           <div style="display:flex;align-items:center;gap:1rem">
             <img class="testi-avatar" src="https://picsum.photos/seed/nadia-voss/80/80" alt="Nadia Voss" style="border-radius:50%"/>
             <div>
@@ -735,7 +757,7 @@
           </div>
         </div>
         <div class="g-card tilt-card rv d2" style="border-radius:2rem;padding:2.5rem;animation:float-c 10s ease-in-out infinite;animation-delay:1.4s">
-          <p class="testi-sm-quote" style="margin-bottom:2rem">"Our patients arrive better prepared. They've reviewed their labs, drafted their questions. Consultations have become measurably more focused."</p>
+          <p class="testi-sm-quote" style="margin-bottom:2rem">Our patients arrive better prepared. They've reviewed their labs, drafted their questions. Consultations have become measurably more focused.</p>
           <div style="display:flex;align-items:center;gap:1rem">
             <img class="testi-avatar" src="https://picsum.photos/seed/theo-amara/80/80" alt="Dr. Theo Amara" style="border-radius:50%"/>
             <div>
@@ -773,41 +795,73 @@
      CONTACT FORM
 ════════════════════════════════════ -->
 <section id="contact" style="display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--border)" class="g1m">
-  <!-- Left: white panel -->
-  <div style="background:var(--text);padding:7rem 5rem;display:flex;flex-direction:column;justify-content:center">
-    <div class="lbl rv" style="color:rgba(12,12,10,.32);margin-bottom:1.25rem">Contact &amp; Demo</div>
-    <h3 class="rv d1" style="font-family:'Cormorant Garamond',serif;font-size:clamp(2.25rem,4vw,3.75rem);font-weight:200;line-height:1.04;margin-bottom:1.5rem;letter-spacing:-.03em;color:var(--bg)">Let's set up<br/>your clinic.</h3>
-    <p class="rv d2" style="font-size:.83rem;line-height:1.95;color:rgba(12,12,10,.48);max-width:32ch;margin-bottom:2.5rem">Our team will walk you through the platform and get your clinic configured from day one — no commitment required.</p>
-    <div class="rv d3" style="display:flex;flex-direction:column;gap:.875rem;margin-bottom:3rem">
-      <div style="display:flex;align-items:flex-start;gap:1.125rem">
-        <div style="width:20px;height:1px;background:var(--ac);flex-shrink:0;margin-top:.65rem"></div>
-        <span style="font-size:.8rem;color:rgba(12,12,10,.5);line-height:1.8">20-minute guided demo — no commitment required</span>
+
+  <!-- Left: always-dark accent panel -->
+  <div style="background:#0c0b09;padding:7rem 5rem;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden">
+    <!-- Ambient orb -->
+    <div style="position:absolute;top:50%;left:50%;width:70%;height:70%;background:radial-gradient(circle,rgba(201,169,110,.06) 0%,transparent 65%);border-radius:50%;transform:translate(-50%,-50%);pointer-events:none;animation:ctaOrb 8s ease-in-out infinite"></div>
+
+    <!-- Label + animated gold bar -->
+    <div class="rv" style="margin-bottom:1.75rem">
+      <div style="font-size:.52rem;letter-spacing:.3em;text-transform:uppercase;color:var(--ac);font-family:'DM Sans',sans-serif;margin-bottom:.875rem">Contact &amp; Demo</div>
+      <span class="ct-line"></span>
+    </div>
+
+    <!-- Headline -->
+    <h3 class="rv d1" style="font-family:'Cormorant Garamond',serif;font-size:clamp(2.25rem,4vw,3.75rem);font-weight:200;line-height:1.04;margin-bottom:1.25rem;letter-spacing:-.03em;color:rgba(240,237,232,.95)">Let's set up<br/>your clinic.</h3>
+    <p class="rv d2" style="font-size:.83rem;line-height:1.95;color:rgba(240,237,232,.48);max-width:32ch;margin-bottom:2.5rem">Our team will walk you through the platform and configure your clinic from day one — no commitment required.</p>
+
+    <!-- Bullet list with animated lines -->
+    <div class="rv d3" style="display:flex;flex-direction:column;gap:1.125rem;margin-bottom:3rem">
+      <div style="display:flex;align-items:flex-start;gap:1rem">
+        <div style="width:18px;flex-shrink:0;padding-top:.7rem"><span class="ct-line" style="display:block;height:1px;background:var(--ac);transform-origin:left;transform:scaleX(0);transition:transform .6s .55s cubic-bezier(.22,1,.36,1)"></span></div>
+        <span style="font-size:.8rem;color:rgba(240,237,232,.55);line-height:1.85">20-minute guided demo — no commitment required</span>
       </div>
-      <div style="display:flex;align-items:flex-start;gap:1.125rem">
-        <div style="width:20px;height:1px;background:var(--ac);flex-shrink:0;margin-top:.65rem"></div>
-        <span style="font-size:.8rem;color:rgba(12,12,10,.5);line-height:1.8">Same-day clinic code &amp; portal setup after onboarding</span>
+      <div style="display:flex;align-items:flex-start;gap:1rem">
+        <div style="width:18px;flex-shrink:0;padding-top:.7rem"><span class="ct-line" style="display:block;height:1px;background:var(--ac);transform-origin:left;transform:scaleX(0);transition:transform .6s .7s cubic-bezier(.22,1,.36,1)"></span></div>
+        <span style="font-size:.8rem;color:rgba(240,237,232,.55);line-height:1.85">Same-day portal setup after your onboarding call</span>
       </div>
-      <div style="display:flex;align-items:flex-start;gap:1.125rem">
-        <div style="width:20px;height:1px;background:var(--ac);flex-shrink:0;margin-top:.65rem"></div>
-        <span style="font-size:.8rem;color:rgba(12,12,10,.5);line-height:1.8">Dedicated support through your launch week</span>
+      <div style="display:flex;align-items:flex-start;gap:1rem">
+        <div style="width:18px;flex-shrink:0;padding-top:.7rem"><span class="ct-line" style="display:block;height:1px;background:var(--ac);transform-origin:left;transform:scaleX(0);transition:transform .6s .85s cubic-bezier(.22,1,.36,1)"></span></div>
+        <span style="font-size:.8rem;color:rgba(240,237,232,.55);line-height:1.85">Dedicated support through your first launch week</span>
       </div>
     </div>
-    <div class="rv d4" style="padding-top:2rem;border-top:1px solid rgba(12,12,10,.1)">
-      <div class="lbl" style="color:rgba(12,12,10,.28);margin-bottom:.875rem">Compliance standards</div>
+
+    <!-- Stats row -->
+    <div class="rv d3" style="display:flex;gap:2.5rem;margin-bottom:2.5rem">
+      <div class="ct-stat">
+        <span class="ct-stat-num" data-target="120" data-suffix="+">0+</span>
+        <span class="ct-stat-lbl">Clinics onboarded</span>
+      </div>
+      <div style="width:1px;background:rgba(240,237,232,.08)"></div>
+      <div class="ct-stat">
+        <span class="ct-stat-num">1 Day</span>
+        <span class="ct-stat-lbl">Average setup time</span>
+      </div>
+      <div style="width:1px;background:rgba(240,237,232,.08)"></div>
+      <div class="ct-stat">
+        <span class="ct-stat-num">96%</span>
+        <span class="ct-stat-lbl">Satisfaction rate</span>
+      </div>
+    </div>
+
+    <!-- Compliance tags -->
+    <div class="rv d4" style="padding-top:1.75rem;border-top:1px solid rgba(240,237,232,.08)">
+      <div style="font-size:.5rem;letter-spacing:.28em;text-transform:uppercase;color:rgba(240,237,232,.28);font-family:'DM Sans',sans-serif;margin-bottom:.875rem">Compliance standards</div>
       <div style="display:flex;gap:.625rem;flex-wrap:wrap">
-        <span style="font-family:'Cormorant Garamond',serif;font-size:.9rem;color:rgba(12,12,10,.42);border:1px solid rgba(12,12,10,.14);padding:.45rem 1rem">PIPEDA</span>
-        <span style="font-family:'Cormorant Garamond',serif;font-size:.9rem;color:rgba(12,12,10,.42);border:1px solid rgba(12,12,10,.14);padding:.45rem 1rem">PHIPA</span>
-        <span style="font-family:'Cormorant Garamond',serif;font-size:.9rem;color:rgba(12,12,10,.42);border:1px solid rgba(12,12,10,.14);padding:.45rem 1rem">HL7/FHIR</span>
+        <span class="ct-tag" style="font-family:'Cormorant Garamond',serif;font-size:.88rem;color:rgba(240,237,232,.55);border:1px solid rgba(240,237,232,.12);padding:.45rem 1rem;transition:border-color .22s,color .22s" onmouseover="this.style.borderColor='rgba(201,169,110,.4)';this.style.color='rgba(201,169,110,.85)'" onmouseout="this.style.borderColor='rgba(240,237,232,.12)';this.style.color='rgba(240,237,232,.55)'">PIPEDA</span>
+        <span class="ct-tag" style="font-family:'Cormorant Garamond',serif;font-size:.88rem;color:rgba(240,237,232,.55);border:1px solid rgba(240,237,232,.12);padding:.45rem 1rem;transition:border-color .22s,color .22s" onmouseover="this.style.borderColor='rgba(201,169,110,.4)';this.style.color='rgba(201,169,110,.85)'" onmouseout="this.style.borderColor='rgba(240,237,232,.12)';this.style.color='rgba(240,237,232,.55)'">PHIPA</span>
+        <span class="ct-tag" style="font-family:'Cormorant Garamond',serif;font-size:.88rem;color:rgba(240,237,232,.55);border:1px solid rgba(240,237,232,.12);padding:.45rem 1rem;transition:border-color .22s,color .22s" onmouseover="this.style.borderColor='rgba(201,169,110,.4)';this.style.color='rgba(201,169,110,.85)'" onmouseout="this.style.borderColor='rgba(240,237,232,.12)';this.style.color='rgba(240,237,232,.55)'">HL7/FHIR</span>
       </div>
     </div>
   </div>
 
-  <!-- Right: form on dark -->
+  <!-- Right: form -->
   <div style="background:var(--bg2);padding:7rem 5rem;display:flex;flex-direction:column;justify-content:center">
     <div id="ct-err" style="display:none;margin-bottom:1.25rem"></div>
     <div id="ct-ok"  style="display:none;margin-bottom:1.25rem"></div>
     <form onsubmit="submitContact(event)" style="display:flex;flex-direction:column;gap:1.25rem">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem" class="g1m">
+      <div class="inp-wrap" style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem" class="g1m">
         <div>
           <label class="lbl" style="display:block;margin-bottom:.5rem">Your name</label>
           <input id="ct-name" type="text" class="inp" placeholder="Jane Mossbridge" required maxlength="100"/>
@@ -817,11 +871,11 @@
           <input id="ct-clinic" type="text" class="inp" placeholder="Your Clinic Name" maxlength="120"/>
         </div>
       </div>
-      <div>
+      <div class="inp-wrap d1">
         <label class="lbl" style="display:block;margin-bottom:.5rem">Email address</label>
         <input id="ct-email" type="email" class="inp" placeholder="name@clinic.com" required maxlength="160"/>
       </div>
-      <div>
+      <div class="inp-wrap d2">
         <label class="lbl" style="display:block;margin-bottom:.5rem">Inquiry type</label>
         <select id="ct-type" class="inp">
           <option value="Book a Demo">Book a Demo</option>
@@ -831,7 +885,7 @@
           <option value="">General Inquiry</option>
         </select>
       </div>
-      <div>
+      <div class="inp-wrap d3">
         <label class="lbl" style="display:block;margin-bottom:.5rem">Message</label>
         <textarea id="ct-msg" class="inp" placeholder="Tell us about your practice and what you're looking to achieve…" rows="4" required maxlength="4000" style="resize:vertical"></textarea>
       </div>
@@ -841,7 +895,9 @@
         <input id="ct-company" name="company" type="text" tabindex="-1" autocomplete="off"/>
       </div>
       <input id="ct-ts" type="hidden"/>
-      <button id="ct-btn" type="submit" class="btn btn-solid btn-pill mag" style="justify-content:center;padding:.875rem 2rem;margin-top:.375rem">Send Message</button>
+      <div class="inp-wrap d4">
+        <button id="ct-submit-btn" type="submit" class="btn btn-solid btn-pill mag" style="justify-content:center;padding:.875rem 2rem;width:100%">Send Message</button>
+      </div>
     </form>
   </div>
 </section>
@@ -1070,6 +1126,55 @@ function animateStat(el) {
     });
   }, { threshold:.3 });
   document.querySelectorAll('.stat-num[data-target]').forEach(el => io.observe(el));
+})();
+
+/* ── Contact section animations ── */
+(function initContact() {
+  if (!('IntersectionObserver' in window)) {
+    document.querySelectorAll('.ct-line,.ct-tag,.inp-wrap').forEach(el => el.classList.add('in'));
+    return;
+  }
+  // Gold lines
+  const lineIO = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('in');
+        // Also trigger all ct-line spans inside the same section
+        document.querySelectorAll('#contact .ct-line').forEach((l,i) => {
+          setTimeout(() => { l.style.transform = 'scaleX(1)'; }, i * 140);
+        });
+        lineIO.unobserve(e.target);
+      }
+    });
+  }, { threshold:.15 });
+  const ctSection = document.getElementById('contact');
+  if (ctSection) lineIO.observe(ctSection);
+
+  // Compliance tags
+  const tagIO = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        document.querySelectorAll('.ct-tag').forEach((t,i) => {
+          setTimeout(() => t.classList.add('in'), i * 80);
+        });
+        tagIO.unobserve(e.target);
+      }
+    });
+  }, { threshold:.2 });
+  if (ctSection) tagIO.observe(ctSection);
+
+  // Form field reveals
+  const formIO = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        document.querySelectorAll('.inp-wrap').forEach((el,i) => {
+          setTimeout(() => el.classList.add('in'), i * 80);
+        });
+        formIO.unobserve(e.target);
+      }
+    });
+  }, { threshold:.1 });
+  if (ctSection) formIO.observe(ctSection);
 })();
 
 /* ── 3D card tilt ── */
