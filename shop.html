@@ -45,6 +45,7 @@
     /* ── Cursor ── */
     #cursor-dot{position:fixed;top:0;left:0;width:6px;height:6px;background:var(--text);border-radius:50%;pointer-events:none;z-index:8999;transform:translate(-50%,-50%);transition:background .2s,transform .18s cubic-bezier(.22,1,.36,1);will-change:left,top}
     #cursor-ring{position:fixed;top:0;left:0;width:32px;height:32px;border:1px solid rgba(240,237,232,.25);border-radius:50%;pointer-events:none;z-index:8998;transform:translate(-50%,-50%);transition:width .32s cubic-bezier(.22,1,.36,1),height .32s,border-color .3s;will-change:left,top}
+    html:not(.dark) #cursor-ring{border-color:rgba(28,26,20,.15)}
     body.c-expand #cursor-dot{transform:translate(-50%,-50%) scale(2);background:var(--ac)}
     body.c-expand #cursor-ring{width:50px;height:50px;border-color:rgba(201,169,110,.3)}
     @media(hover:none),(pointer:coarse){#cursor-dot,#cursor-ring{display:none!important}}
@@ -68,6 +69,7 @@
     .btn-solid{background:var(--text);color:var(--bg)}
     .btn-solid:hover{background:var(--ac);color:var(--bg)}
     .btn-outline{background:transparent;color:var(--text);border:1px solid rgba(240,237,232,.18)}
+    html:not(.dark) .btn-outline{border-color:var(--border)}
     .btn-outline:hover{border-color:var(--ac);color:var(--ac)}
     .btn-ac{background:var(--ac);color:var(--bg)}
     .btn-ac:hover{filter:brightness(1.1)}
@@ -97,6 +99,7 @@
     .filter-btn:last-child{border-right:none}
     .filter-btn.active{background:var(--text);color:var(--bg)}
     .filter-btn:hover:not(.active){color:var(--text);background:rgba(240,237,232,.04)}
+    html:not(.dark) .filter-btn:hover:not(.active){background:var(--bg3)}
 
     /* ── Product grid transition ── */
     #product-grid{transition:opacity .25s cubic-bezier(.22,1,.36,1);min-height:200px}
@@ -161,6 +164,14 @@
       background:rgba(255,255,255,.065)!important;
       box-shadow:0 28px 72px rgba(0,0,0,.48),inset 0 1px 0 rgba(255,255,255,.12),0 0 0 1px rgba(201,169,110,.12)!important
     }
+    html:not(.dark) .product-card{
+      background:var(--bg2)!important;border-color:var(--border)!important;
+      box-shadow:0 4px 24px rgba(0,0,0,.06)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important
+    }
+    html:not(.dark) .product-card:hover{
+      background:var(--bg2)!important;
+      box-shadow:0 8px 40px rgba(0,0,0,.1),0 0 0 1px rgba(201,169,110,.22)!important
+    }
 
     /* Glass cart drawer */
     #cart-drawer{
@@ -169,6 +180,10 @@
       -webkit-backdrop-filter:blur(32px) saturate(160%);
       border-left:1px solid rgba(255,255,255,.07)!important;
       box-shadow:-20px 0 80px rgba(0,0,0,.55)!important
+    }
+    html:not(.dark) #cart-drawer{
+      background:var(--bg2)!important;border-left-color:var(--border)!important;
+      box-shadow:-8px 0 40px rgba(0,0,0,.12)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important
     }
 
     /* Glass checkout modal inner */
@@ -179,6 +194,10 @@
       border:1px solid rgba(255,255,255,.08);
       box-shadow:0 40px 100px rgba(0,0,0,.65),inset 0 1px 0 rgba(255,255,255,.08)
     }
+    html:not(.dark) .checkout-glass{
+      background:var(--bg2);border-color:var(--border);
+      box-shadow:0 16px 60px rgba(0,0,0,.12);backdrop-filter:none;-webkit-backdrop-filter:none
+    }
 
     /* Glass filter bar */
     .filter-bar-glass{
@@ -187,6 +206,10 @@
       -webkit-backdrop-filter:blur(18px) saturate(150%);
       border:1px solid rgba(255,255,255,.07);
       box-shadow:0 4px 20px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.06)
+    }
+    html:not(.dark) .filter-bar-glass{
+      background:var(--bg2);border-color:var(--border);
+      box-shadow:0 2px 12px rgba(0,0,0,.06);backdrop-filter:none;-webkit-backdrop-filter:none
     }
   </style>
 </head>
