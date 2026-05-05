@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-80K00SEBQK"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-80K00SEBQK');</script>
@@ -18,6 +18,12 @@
   <script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{display:['Cormorant Garamond','Georgia','serif'],sans:['DM Sans','sans-serif']}}}}</script>
   <style>
     :root{
+      --bg:#f0ebe1;--bg2:#f8f4ec;--bg3:#e6e0d4;
+      --border:#d4cdb8;--text:#1c1a14;--sub:#5c5346;--mute:#a09480;
+      --ac:#c9922a;--nav:rgba(240,235,225,.97);
+      --shadow:0 4px 60px rgba(0,0,0,.15)
+    }
+    html.dark{
       --bg:#0c0c0a;--bg2:#111110;--bg3:#161614;
       --border:#1e1e1b;--text:#f0ede8;--sub:#8c8880;--mute:#4e4c48;
       --ac:#c9a96e;--nav:rgba(12,12,10,.97);
@@ -100,61 +106,82 @@
 
     /* Glass treatment cards */
     .treatment-card{
-      background:rgba(255,255,255,.038)!important;
-      backdrop-filter:blur(20px) saturate(155%);
-      -webkit-backdrop-filter:blur(20px) saturate(155%);
-      border:1px solid rgba(255,255,255,.08)!important;
+      background:var(--bg2)!important;
+      border:1px solid var(--border)!important;
       border-top:2px solid transparent!important;
-      box-shadow:0 8px 32px rgba(0,0,0,.32),inset 0 1px 0 rgba(255,255,255,.08);
+      box-shadow:0 4px 20px rgba(0,0,0,.08);
       transition:border-color .32s,border-top-color .32s,transform .42s cubic-bezier(.22,1,.36,1),box-shadow .42s,background .3s!important
     }
     .treatment-card:hover{
-      border-color:rgba(201,169,110,.25)!important;
+      border-color:rgba(201,169,110,.35)!important;
       border-top-color:var(--ac)!important;
-      transform:translateY(-8px)!important;
+      transform:translateY(-6px)!important;
+      box-shadow:0 20px 48px rgba(0,0,0,.12),0 0 0 1px rgba(201,169,110,.08)!important
+    }
+    html.dark .treatment-card{
+      background:rgba(255,255,255,.038)!important;
+      border-color:rgba(255,255,255,.08)!important;
+      box-shadow:0 8px 32px rgba(0,0,0,.32),inset 0 1px 0 rgba(255,255,255,.08)
+    }
+    html.dark .treatment-card:hover{
       background:rgba(255,255,255,.065)!important;
       box-shadow:0 28px 72px rgba(0,0,0,.48),inset 0 1px 0 rgba(255,255,255,.12),0 0 0 1px rgba(201,169,110,.1)!important
     }
 
     /* Glass product cards (portal) */
     .product-card{
-      background:rgba(255,255,255,.035)!important;
-      backdrop-filter:blur(18px) saturate(150%);
-      -webkit-backdrop-filter:blur(18px) saturate(150%);
-      border:1px solid rgba(255,255,255,.08)!important;
-      box-shadow:0 6px 28px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.07);
+      background:var(--bg2)!important;
+      border:1px solid var(--border)!important;
+      box-shadow:0 3px 16px rgba(0,0,0,.07);
       transition:border-color .28s,transform .4s cubic-bezier(.22,1,.36,1),box-shadow .4s,background .28s!important
     }
     .product-card:hover{
-      border-color:rgba(201,169,110,.28)!important;
-      transform:translateY(-6px)!important;
+      border-color:rgba(201,169,110,.35)!important;
+      transform:translateY(-5px)!important;
+      box-shadow:0 18px 48px rgba(0,0,0,.11),0 0 0 1px rgba(201,169,110,.08)!important
+    }
+    html.dark .product-card{
+      background:rgba(255,255,255,.035)!important;
+      border-color:rgba(255,255,255,.08)!important;
+      box-shadow:0 6px 28px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.07)
+    }
+    html.dark .product-card:hover{
       background:rgba(255,255,255,.062)!important;
       box-shadow:0 24px 64px rgba(0,0,0,.44),inset 0 1px 0 rgba(255,255,255,.11),0 0 0 1px rgba(201,169,110,.1)!important
     }
 
     /* Glass generic cards */
     .card{
-      background:rgba(255,255,255,.032)!important;
-      backdrop-filter:blur(18px) saturate(150%);
-      -webkit-backdrop-filter:blur(18px) saturate(150%);
-      border:1px solid rgba(255,255,255,.07)!important;
-      box-shadow:0 6px 24px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.07);
+      background:var(--bg2)!important;
+      border:1px solid var(--border)!important;
+      box-shadow:0 2px 12px rgba(0,0,0,.06);
       transition:border-color .25s,transform .38s cubic-bezier(.22,1,.36,1),box-shadow .38s!important
     }
     .card:hover{
-      border-color:rgba(201,169,110,.3)!important;
-      transform:translateY(-4px)!important;
+      border-color:rgba(201,169,110,.35)!important;
+      transform:translateY(-3px)!important;
+      box-shadow:0 14px 40px rgba(0,0,0,.1)!important
+    }
+    html.dark .card{
+      background:rgba(255,255,255,.032)!important;
+      border-color:rgba(255,255,255,.07)!important;
+      box-shadow:0 6px 24px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.07)
+    }
+    html.dark .card:hover{
       box-shadow:0 20px 60px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.1)!important
     }
 
-    /* Glass AI widget panel */
+    /* AI widget panel */
     #ai-panel{
-      background:rgba(17,17,16,.88)!important;
-      backdrop-filter:blur(28px) saturate(160%)!important;
-      -webkit-backdrop-filter:blur(28px) saturate(160%)!important;
-      border:1px solid rgba(255,255,255,.08)!important;
-      box-shadow:0 20px 80px rgba(0,0,0,.65),inset 0 1px 0 rgba(255,255,255,.08)!important;
+      background:var(--bg2)!important;
+      border:1px solid var(--border)!important;
+      box-shadow:0 16px 60px rgba(0,0,0,.15),inset 0 1px 0 rgba(255,255,255,.4)!important;
       border-radius:.75rem!important
+    }
+    html.dark #ai-panel{
+      background:rgba(17,17,16,.92)!important;
+      border-color:rgba(255,255,255,.08)!important;
+      box-shadow:0 20px 80px rgba(0,0,0,.65),inset 0 1px 0 rgba(255,255,255,.08)!important
     }
   </style>
 </head>
@@ -181,6 +208,14 @@
       <a class="nav-link" href="https://aaaclinics.com" target="_blank" rel="noopener noreferrer">aaaclinics.com</a>
     </div>
     <div style="display:flex;align-items:center;gap:.875rem" id="nav-cta-area">
+      <!-- Profile pill -->
+      <div id="nav-profile" style="display:none;width:32px;height:32px;border-radius:50%;background:var(--ac);align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:opacity .2s,transform .2s" title="My Portal">
+        <span id="nav-profile-initial" style="font-size:.72rem;font-weight:500;color:#fff;font-family:'DM Sans',sans-serif;line-height:1"></span>
+      </div>
+      <!-- Theme toggle -->
+      <button id="nav-theme-toggle" onclick="toggleTheme()" style="width:34px;height:34px;border:1px solid var(--border);background:none;color:var(--sub);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .22s,color .22s" title="Toggle theme" aria-label="Toggle theme">
+        <span id="th-icon" style="display:flex;align-items:center"></span>
+      </button>
       <button id="nav-logout-btn" onclick="ptLogout()" class="btn btn-outline" style="display:none;padding:.45rem 1rem;font-size:.67rem">Sign Out</button>
     </div>
     <button onclick="openMob()" style="display:none;background:none;border:none;cursor:pointer;color:var(--text);padding:.25rem" id="mob-btn" aria-label="Menu">
@@ -505,10 +540,32 @@
 </div>
 
 <script>
-/* ── Always dark ── */
+// ── Theme ──
 (function initTheme() {
-  document.documentElement.classList.add('dark');
-  localStorage.setItem('ah-theme', 'dark');
+  if (localStorage.getItem('ah-theme') === 'dark') document.documentElement.classList.add('dark');
+  document.addEventListener('DOMContentLoaded', renderThemeToggle);
+})();
+function toggleTheme() {
+  const isDark = document.documentElement.classList.toggle('dark');
+  localStorage.setItem('ah-theme', isDark ? 'dark' : 'light');
+  renderThemeToggle();
+}
+function renderThemeToggle() {
+  const isDark = document.documentElement.classList.contains('dark');
+  const icon = document.getElementById('th-icon');
+  if (!icon) return;
+  icon.innerHTML = isDark
+    ? '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>'
+    : '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+}
+(function initNavProfile() {
+  document.addEventListener('DOMContentLoaded', function() {
+    const initial = localStorage.getItem('ah-user-initial');
+    if (!initial) return;
+    const pill   = document.getElementById('nav-profile');
+    const initEl = document.getElementById('nav-profile-initial');
+    if (pill && initEl) { initEl.textContent = initial; pill.style.display = 'flex'; }
+  });
 })();
 
 const CONFIG = {

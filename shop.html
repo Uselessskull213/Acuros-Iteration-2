@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-80K00SEBQK"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-80K00SEBQK');</script>
@@ -22,10 +22,14 @@
   <script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{display:['Cormorant Garamond','Georgia','serif'],sans:['DM Sans','sans-serif']}}}}</script>
   <style>
     :root{
+      --bg:#f0ebe1;--bg2:#f8f4ec;--bg3:#e6e0d4;
+      --border:#d4cdb8;--text:#1c1a14;--sub:#5c5346;--mute:#a09480;
+      --ac:#c9922a;--nav:rgba(240,235,225,.97);--shadow:0 4px 60px rgba(0,0,0,.15)
+    }
+    html.dark{
       --bg:#0c0c0a;--bg2:#111110;--bg3:#161614;
       --border:#1e1e1b;--text:#f0ede8;--sub:#8c8880;--mute:#4e4c48;
-      --ac:#c9a96e;--nav:rgba(12,12,10,.97);
-      --shadow:0 4px 60px rgba(0,0,0,.6)
+      --ac:#c9a96e;--nav:rgba(12,12,10,.97);--shadow:0 4px 60px rgba(0,0,0,.6)
     }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     html{scroll-behavior:smooth}
@@ -269,6 +273,14 @@
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4zM3 6h18M16 10a4 4 0 01-8 0"/></svg>
         <span id="cart-count" style="display:none;position:absolute;top:-5px;right:-5px;background:var(--ac);color:var(--bg);font-size:.5rem;font-weight:700;width:16px;height:16px;border-radius:50%;align-items:center;justify-content:center;font-family:'DM Sans',sans-serif">0</span>
       </button>
+      <!-- Profile pill -->
+      <div id="nav-profile" style="display:none;width:32px;height:32px;border-radius:50%;background:var(--ac);align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:opacity .2s,transform .2s" onclick="window.location.href='/patient-portal'" title="My Portal">
+        <span id="nav-profile-initial" style="font-size:.72rem;font-weight:500;color:#fff;font-family:'DM Sans',sans-serif;line-height:1"></span>
+      </div>
+      <!-- Theme toggle -->
+      <button id="nav-theme-toggle" onclick="toggleTheme()" style="width:34px;height:34px;border:1px solid var(--border);background:none;color:var(--sub);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .22s,color .22s" title="Toggle theme" aria-label="Toggle theme">
+        <span id="th-icon" style="display:flex;align-items:center"></span>
+      </button>
       <a href="/patient-portal" class="btn btn-solid mag" style="padding:.5rem 1.25rem" id="nav-cta">Patient Login</a>
       <button onclick="openMob()" style="display:none;background:none;border:none;cursor:pointer;color:var(--text);padding:.25rem" id="mob-btn" aria-label="Menu">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16M4 12h12M4 18h8"/></svg>
@@ -399,10 +411,35 @@
 </div>
 
 <script>
-/* ── Always dark ── */
+/* ── Theme (light default) ── */
 (function initTheme() {
-  document.documentElement.classList.add('dark');
-  localStorage.setItem('ah-theme', 'dark');
+  if (localStorage.getItem('ah-theme') === 'dark') document.documentElement.classList.add('dark');
+  document.addEventListener('DOMContentLoaded', renderThemeToggle);
+})();
+function toggleTheme() {
+  const isDark = document.documentElement.classList.toggle('dark');
+  localStorage.setItem('ah-theme', isDark ? 'dark' : 'light');
+  renderThemeToggle();
+}
+function renderThemeToggle() {
+  const isDark = document.documentElement.classList.contains('dark');
+  const icon = document.getElementById('th-icon');
+  if (!icon) return;
+  icon.innerHTML = isDark
+    ? '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>'
+    : '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+}
+/* ── Nav profile pill (reads localStorage set by patient portal) ── */
+(function initNavProfile() {
+  document.addEventListener('DOMContentLoaded', function() {
+    const initial = localStorage.getItem('ah-user-initial');
+    if (!initial) return;
+    const pill  = document.getElementById('nav-profile');
+    const initEl = document.getElementById('nav-profile-initial');
+    const cta   = document.getElementById('nav-cta');
+    if (pill && initEl) { initEl.textContent = initial; pill.style.display = 'flex'; }
+    if (cta) cta.style.display = 'none';
+  });
 })();
 
 /* ─────────────────────────────────────────

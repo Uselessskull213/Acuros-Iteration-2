@@ -879,7 +879,7 @@ async function ptRegister(e) {
 }
 
 async function ptLogout() {
-  if(sb){try{await sb.auth.signOut();}catch(e){}} currentUser=null; syncPortal();
+  if(sb){try{await sb.auth.signOut();}catch(e){}} currentUser=null; localStorage.removeItem('ah-user-initial'); syncPortal();
 }
 
 function syncPortal() {
@@ -897,6 +897,7 @@ function syncPortal() {
     document.getElementById('dash-email-display').textContent=currentUser.email||'—';
     /* ── avatar initial ── */
     const di=document.getElementById('dash-initial');if(di)di.textContent=(currentUser.first||currentUser.name||'?').charAt(0).toUpperCase();
+    localStorage.setItem('ah-user-initial', (currentUser.first||currentUser.name||'?').charAt(0).toUpperCase());
     /* ── org pill ── */
     const op=document.getElementById('dash-org-pill'),opl=document.getElementById('dash-org-pill-label');
     if(op&&opl){if(currentUser.org_name){opl.textContent=currentUser.org_name;op.style.display='block';}else if(currentUser.code){opl.textContent='Code: '+currentUser.code;op.style.display='block';}else{op.style.display='none';}}
