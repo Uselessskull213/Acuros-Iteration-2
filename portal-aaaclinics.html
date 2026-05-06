@@ -210,6 +210,22 @@
     #star-canvas{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}
     .star{position:absolute;width:2px;height:2px;border-radius:1px;background:var(--ac);opacity:0;transform:rotate(45deg) scale(.3);animation:starPulse var(--dur,5s) var(--del,0s) ease-in-out infinite}
     @keyframes starPulse{0%,100%{opacity:0;transform:rotate(45deg) scale(.2)}40%,60%{opacity:var(--peak,.18);transform:rotate(45deg) scale(1)}}
+  
+    /* ── Canonical NAV (uniform across site) ── */
+    nav#main-nav{position:fixed;top:0;left:0;right:0;z-index:200;background:transparent;transition:background .45s cubic-bezier(.22,1,.36,1),border-color .45s,backdrop-filter .45s}
+    nav#main-nav.scrolled,nav#main-nav.solid{background:var(--nav);backdrop-filter:blur(28px) saturate(180%);-webkit-backdrop-filter:blur(28px) saturate(180%);border-bottom:1px solid var(--border)}
+    .nav-inner{height:72px;max-width:1440px;margin:0 auto;padding:0 3rem;display:flex;align-items:center;justify-content:space-between;transition:height .4s cubic-bezier(.22,1,.36,1)}
+    nav#main-nav.scrolled .nav-inner,nav#main-nav.solid .nav-inner{height:60px}
+    .nav-logo{display:flex;align-items:center;gap:.875rem;text-decoration:none}
+    #nav-logo-img{width:32px;height:32px;object-fit:contain;display:block}
+    .nav-logo-text{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:.9rem;letter-spacing:.22em;color:var(--text);line-height:1}
+    .nav-logo-sub{font-size:.42rem;letter-spacing:.42em;text-transform:uppercase;color:var(--mute);font-family:'DM Sans',sans-serif;font-weight:400}
+    .nav-link{position:relative;font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--sub);background:none;border:none;cursor:pointer;padding:0;font-family:inherit;transition:color .22s;text-decoration:none;display:inline-block}
+    .nav-link::after{content:'';position:absolute;left:0;bottom:-2px;width:0;height:1px;background:var(--ac);transition:width .3s cubic-bezier(.22,1,.36,1)}
+    .nav-link:hover::after,.nav-link.active::after{width:100%}
+    .nav-link:hover,.nav-link.active{color:var(--text)}
+    @media(max-width:900px){.hnm{display:none!important}#mob-btn{display:flex!important}#nav-cta{display:none!important}.nav-inner{padding:0 1.5rem}}
+
   </style>
 </head>
 <body>
@@ -217,57 +233,53 @@
 <div id="grain" aria-hidden="true"></div>
 
 <!-- ── NAV ── -->
-<nav id="main-nav">
-  <div style="max-width:1400px;margin:0 auto;padding:0 2.5rem;height:64px;display:flex;align-items:center;justify-content:space-between">
-    <a href="https://aaaclinics.com" target="_blank" rel="noopener noreferrer" style="display:flex;align-items:center;gap:.875rem;text-decoration:none">
-      <div style="width:30px;height:30px;background:var(--ac);display:flex;align-items:center;justify-content:center;flex-shrink:0">
-        <span style="font-family:'Cormorant Garamond',serif;font-size:.78rem;font-weight:400;color:var(--bg);letter-spacing:.05em">AAA</span>
-      </div>
-      <div>
-        <div style="font-family:'Cormorant Garamond',serif;font-weight:300;font-size:.9rem;letter-spacing:.14em;color:var(--text);line-height:1">ANTI-AGING ACADEMIC</div>
-        <div class="lbl" style="font-size:.44rem;letter-spacing:.3em">Clinic</div>
+<nav id="main-nav" class="solid">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">
+      <img id="nav-logo-img" src="/logo.png" alt="Acuros"/>
+      <div style="display:flex;flex-direction:column;gap:2px">
+        <span class="nav-logo-text">ACUROS</span>
+        <span class="nav-logo-sub">HEALTH</span>
       </div>
     </a>
-    <div id="nav-org-badge" style="display:none;padding:.3rem .875rem;background:rgba(201,169,110,.08);border:1px solid rgba(201,169,110,.2);font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ac)"></div>
-    <div style="display:flex;align-items:center;gap:2.5rem" class="hnm">
-      <a class="nav-link active" href="/aaaclinics-portal">My Portal</a>
+
+    <div style="display:flex;align-items:center;gap:3rem" class="hnm">
+      <a class="nav-link" href="/">Home</a>
       <a class="nav-link" href="/ai-assistant">AI Assistant</a>
-      <a class="nav-link" href="https://aaaclinics.com" target="_blank" rel="noopener noreferrer">aaaclinics.com</a>
+      <a class="nav-link active" href="/patient-portal">Patient Login</a>
     </div>
-    <div style="display:flex;align-items:center;gap:.875rem" id="nav-cta-area">
-      <!-- Profile pill -->
-      <div id="nav-profile" style="display:none;width:32px;height:32px;border-radius:50%;background:var(--ac);align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:opacity .2s,transform .2s" title="My Portal">
+
+    <div style="display:flex;align-items:center;gap:.875rem">
+      <div id="nav-profile" style="display:none;width:32px;height:32px;border-radius:50%;background:var(--ac);align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:opacity .2s,transform .2s" onclick="window.location.href='/patient-portal'" title="My Portal">
         <span id="nav-profile-initial" style="font-size:.72rem;font-weight:500;color:#fff;font-family:'DM Sans',sans-serif;line-height:1"></span>
       </div>
-      <!-- Account icon -->
-      <a href="/settings" id="nav-account" style="width:34px;height:34px;border:1px solid var(--border);background:none;color:var(--sub);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .22s,color .22s;text-decoration:none;flex-shrink:0" title="Account" aria-label="Account settings" onmouseover="this.style.borderColor='var(--ac)';this.style.color='var(--ac)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--sub)'">
+      <a href="/settings" id="nav-account" style="width:34px;height:34px;border:1px solid var(--border);background:none;color:var(--sub);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .22s,color .22s;text-decoration:none;flex-shrink:0" title="Account" aria-label="Account settings">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 10-16 0"/></svg>
       </a>
-      <!-- Theme toggle -->
       <button id="nav-theme-toggle" onclick="toggleTheme()" style="width:34px;height:34px;border:1px solid var(--border);background:none;color:var(--sub);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .22s,color .22s" title="Toggle theme" aria-label="Toggle theme">
         <span id="th-icon" style="display:flex;align-items:center"></span>
       </button>
-      <button id="nav-logout-btn" onclick="ptLogout()" class="btn btn-outline" style="display:none;padding:.45rem 1rem;font-size:.67rem">Sign Out</button>
+      <a href="/patient-portal" class="btn btn-solid btn-pill mag" style="padding:.55rem 1.5rem;font-size:.62rem" id="nav-cta">Patient Login</a>
+      <button onclick="openMob()" style="display:none;background:none;border:none;cursor:pointer;color:var(--text);padding:.25rem" id="mob-btn" aria-label="Open menu">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16M4 12h12M4 18h8"/></svg>
+      </button>
     </div>
-    <button onclick="openMob()" style="display:none;background:none;border:none;cursor:pointer;color:var(--text);padding:.25rem" id="mob-btn" aria-label="Menu">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16M4 12h12M4 18h8"/></svg>
-    </button>
   </div>
 </nav>
 
-<!-- ── Mobile menu ── -->
+<!-- ── Mobile menu (uniform with homepage) ── -->
 <div id="mob-menu">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3rem">
-    <span style="font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:300;letter-spacing:.14em;color:var(--text)">AAA CLINICS PORTAL</span>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3.5rem">
+    <span style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:300;color:var(--text);letter-spacing:.16em">ACUROS</span>
     <button onclick="closeMob()" style="background:none;border:none;cursor:pointer;color:var(--text)">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
     </button>
   </div>
-  <div style="display:flex;flex-direction:column;gap:0">
-    <a href="/aaaclinics-portal" style="font-family:'Cormorant Garamond',serif;font-size:2.25rem;font-weight:200;color:var(--ac);text-decoration:none;border-bottom:1px solid var(--border);padding:.875rem 0">My Portal</a>
-    <a href="/ai-assistant" style="font-family:'Cormorant Garamond',serif;font-size:2.25rem;font-weight:200;color:var(--sub);text-decoration:none;border-bottom:1px solid var(--border);padding:.875rem 0">AI Assistant</a>
-    <a href="https://aaaclinics.com" target="_blank" rel="noopener noreferrer" style="font-family:'Cormorant Garamond',serif;font-size:2.25rem;font-weight:200;color:var(--sub);text-decoration:none;border-bottom:1px solid var(--border);padding:.875rem 0">aaaclinics.com</a>
-    <button onclick="ptLogout();closeMob()" style="font-family:'Cormorant Garamond',serif;font-size:1.75rem;font-weight:200;color:var(--mute);background:none;border:none;cursor:pointer;text-align:left;padding:.875rem 0">Sign Out</button>
+  <div style="display:flex;flex-direction:column">
+    <a href="/" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:200;color:var(--sub);text-decoration:none;border-bottom:1px solid var(--border);padding:.875rem 0">Home</a>
+    <a href="/ai-assistant" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:200;color:var(--sub);text-decoration:none;border-bottom:1px solid var(--border);padding:.875rem 0">AI Assistant</a>
+    <a href="/patient-portal" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:200;color:var(--ac);text-decoration:none;border-bottom:1px solid var(--border);padding:.875rem 0">Patient Login</a>
+    <button onclick="ptLogout();closeMob()" style="font-family:'Cormorant Garamond',serif;font-size:1.85rem;font-weight:200;color:var(--mute);background:none;border:none;cursor:pointer;text-align:left;padding:.875rem 0">Sign Out</button>
   </div>
 </div>
 

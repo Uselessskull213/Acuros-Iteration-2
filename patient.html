@@ -14,64 +14,68 @@
   <link rel="icon" type="image/png" sizes="512x512" href="/favicon-512.png"/>
   <link rel="manifest" href="/site.webmanifest"/>
   <meta name="theme-color" content="#c9a96e"/>
-  <meta name="description" content="Secure patient portal. Manage your health records, prepare for appointments, and understand your care journey."/>
+  <meta name="description" content="Patient workspace. Manage your health records, prepare for appointments, and access your care tools."/>
   <link rel="canonical" href="https://acuros.ca/patient-portal"/>
   <meta name="robots" content="noindex"/>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,200;0,300;0,400;0,500;1,200;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
   <style>
     /* ═══════════════════════════════════════════════════════════════════
-       PATIENT PORTAL — editorial, members-only feel.
-       Same theme tokens + nav as homepage. FoundersCard-inspired.
+       PATIENT PORTAL — Workspace app-shell. Different language from
+       marketing pages: sidebar layout, bento canvas, mono numerics,
+       sans-only typography (Cormorant only as small accent).
     ═══════════════════════════════════════════════════════════════════ */
     :root{
-      --bg:#f0ebe1;--bg2:#f8f4ec;--bg3:#e6e0d4;
-      --border:#d4cdb8;--text:#1c1a14;--sub:#5c5346;--mute:#a09480;
-      --ac:#c9922a;--nav:rgba(240,235,225,.97)
+      --bg:#f5f1e8;--bg2:#ffffff;--bg3:#ebe5d6;
+      --border:#d8d1bc;--border2:#e6e0d2;
+      --text:#1a1815;--sub:#5e564a;--mute:#9e9583;
+      --ac:#b88a2a;--ac2:#d4a849;
+      --nav:rgba(245,241,232,.97);
+      --good:#1f7a3a;--warn:#b88a2a;--bad:#a83838
     }
     html.dark{
-      --bg:#0a0a09;--bg2:#111110;--bg3:#161614;
-      --border:#1e1e1b;--text:#f0ede8;--sub:#8c8880;--mute:#4e4c48;
-      --ac:#c9a96e;--nav:rgba(10,10,9,.96)
+      --bg:#0c0c0a;--bg2:#141412;--bg3:#1c1c19;
+      --border:#26241f;--border2:#1d1c18;
+      --text:#f0ede8;--sub:#a8a298;--mute:#5a564f;
+      --ac:#d4a849;--ac2:#e6c068;
+      --nav:rgba(12,12,10,.96);
+      --good:#4ade80;--warn:#d4a849;--bad:#f87171
     }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     html{scroll-behavior:smooth}
-    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;cursor:none;min-height:100dvh}
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;cursor:none;min-height:100dvh;-webkit-font-smoothing:antialiased}
     @media(hover:none),(pointer:coarse){body{cursor:auto}}
-    h1,h2,h3,h4{font-family:'Cormorant Garamond',serif;line-height:1.04;letter-spacing:-.025em;font-weight:300}
-    em{font-style:italic;font-weight:300}
+    .mono{font-family:'JetBrains Mono',monospace;font-feature-settings:'tnum';letter-spacing:-.01em}
+    .serif{font-family:'Cormorant Garamond',serif}
 
     /* ── Grain ── */
-    #grain{position:fixed;inset:0;z-index:9992;pointer-events:none;opacity:.045;
+    #grain{position:fixed;inset:0;z-index:9992;pointer-events:none;opacity:.04;
       background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
       background-repeat:repeat;background-size:180px 180px}
-    html:not(.dark) #grain{opacity:.022;mix-blend-mode:multiply}
+    html:not(.dark) #grain{opacity:.02;mix-blend-mode:multiply}
 
     /* ── Cursor ── */
     #cursor-dot{position:fixed;top:0;left:0;width:5px;height:5px;background:var(--text);border-radius:50%;pointer-events:none;z-index:8999;transform:translate(-50%,-50%);transition:background .2s,transform .2s cubic-bezier(.22,1,.36,1);will-change:left,top}
-    #cursor-ring{position:fixed;top:0;left:0;width:30px;height:30px;border:1px solid rgba(240,237,232,.22);border-radius:50%;pointer-events:none;z-index:8998;transform:translate(-50%,-50%);transition:width .32s cubic-bezier(.22,1,.36,1),height .32s,border-color .3s;will-change:left,top}
-    html:not(.dark) #cursor-ring{border-color:rgba(28,26,20,.15)}
+    #cursor-ring{position:fixed;top:0;left:0;width:30px;height:30px;border:1px solid rgba(28,26,20,.18);border-radius:50%;pointer-events:none;z-index:8998;transform:translate(-50%,-50%);transition:width .32s cubic-bezier(.22,1,.36,1),height .32s,border-color .3s;will-change:left,top}
+    html.dark #cursor-ring{border-color:rgba(240,237,232,.22)}
     body.c-hover #cursor-dot{transform:translate(-50%,-50%) scale(2.4);background:var(--ac)}
-    body.c-hover #cursor-ring{width:50px;height:50px;border-color:rgba(201,169,110,.4)}
+    body.c-hover #cursor-ring{width:50px;height:50px;border-color:rgba(184,138,42,.4)}
     @media(hover:none),(pointer:coarse){#cursor-dot,#cursor-ring{display:none}}
 
     /* ── Scroll progress ── */
     #scroll-prog{position:fixed;top:0;left:0;z-index:9001;height:1px;background:var(--ac);width:0%;will-change:width;pointer-events:none}
 
-    /* ── NAV — IDENTICAL to homepage ── */
-    nav{position:fixed;top:0;left:0;right:0;z-index:200;
-      background:transparent;
-      transition:background .45s cubic-bezier(.22,1,.36,1),border-color .45s,backdrop-filter .45s}
-    nav.scrolled,nav.solid{background:var(--nav);backdrop-filter:blur(28px) saturate(180%);-webkit-backdrop-filter:blur(28px) saturate(180%);border-bottom:1px solid var(--border)}
+    /* ── NAV (canonical, identical to homepage) ── */
+    nav#main-nav{position:fixed;top:0;left:0;right:0;z-index:200;background:transparent;transition:background .45s cubic-bezier(.22,1,.36,1),border-color .45s,backdrop-filter .45s}
+    nav#main-nav.scrolled,nav#main-nav.solid{background:var(--nav);backdrop-filter:blur(28px) saturate(180%);-webkit-backdrop-filter:blur(28px) saturate(180%);border-bottom:1px solid var(--border)}
     .nav-inner{height:72px;max-width:1440px;margin:0 auto;padding:0 3rem;display:flex;align-items:center;justify-content:space-between;transition:height .4s cubic-bezier(.22,1,.36,1)}
-    nav.scrolled .nav-inner,nav.solid .nav-inner{height:60px}
+    nav#main-nav.scrolled .nav-inner,nav#main-nav.solid .nav-inner{height:60px}
     .nav-logo{display:flex;align-items:center;gap:.875rem;text-decoration:none}
     #nav-logo-img{width:32px;height:32px;object-fit:contain;display:block}
     .nav-logo-text{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:.9rem;letter-spacing:.22em;color:var(--text);line-height:1}
     .nav-logo-sub{font-size:.42rem;letter-spacing:.42em;text-transform:uppercase;color:var(--mute);font-family:'DM Sans',sans-serif;font-weight:400}
-    /* Over the dark gate hero, the wordmark and links should read white */
     nav:not(.scrolled):not(.solid) .nav-logo-text{color:rgba(255,255,255,.92)}
     nav:not(.scrolled):not(.solid) .nav-logo-sub{color:rgba(255,255,255,.4)}
     .nav-link{position:relative;font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--sub);background:none;border:none;cursor:pointer;padding:0;font-family:inherit;transition:color .22s;text-decoration:none;display:inline-block}
@@ -81,246 +85,281 @@
     .nav-link:hover,.nav-link.active{color:var(--text)}
     nav:not(.scrolled):not(.solid) .nav-link:hover,
     nav:not(.scrolled):not(.solid) .nav-link.active{color:#fff}
-
-    /* Nav icon buttons */
     nav:not(.scrolled):not(.solid) #nav-account,
     nav:not(.scrolled):not(.solid) #nav-theme-toggle{
       border-color:rgba(255,255,255,.22);color:rgba(255,255,255,.7)
     }
     nav:not(.scrolled):not(.solid) #nav-account:hover,
-    nav:not(.scrolled):not(.solid) #nav-theme-toggle:hover{
-      border-color:var(--ac);color:var(--ac)
-    }
-    @media(max-width:900px){
-      .hnm{display:none!important}
-      #mob-btn{display:flex!important}
-      #nav-cta{display:none!important}
-      .nav-inner{padding:0 1.5rem}
-    }
+    nav:not(.scrolled):not(.solid) #nav-theme-toggle:hover{border-color:var(--ac);color:var(--ac)}
+    @media(max-width:900px){.hnm{display:none!important}#mob-btn{display:flex!important}#nav-cta{display:none!important}.nav-inner{padding:0 1.5rem}}
 
-    /* ── Buttons (same as homepage) ── */
-    .btn{
-      display:inline-flex;align-items:center;justify-content:center;gap:.5rem;
-      padding:.78rem 1.875rem;font-size:.64rem;letter-spacing:.18em;text-transform:uppercase;
-      font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;border:1px solid transparent;
-      text-decoration:none;position:relative;overflow:hidden;isolation:isolate;
-      transition:background .32s cubic-bezier(.22,1,.36,1),color .32s,transform .32s,border-color .32s,box-shadow .32s;
-      will-change:transform
-    }
-    .btn::before{
-      content:'';position:absolute;inset:0;z-index:-1;
-      background:linear-gradient(110deg,transparent 0%,transparent 38%,rgba(255,255,255,.18) 50%,transparent 62%,transparent 100%);
-      transform:translateX(-110%);transition:transform .9s cubic-bezier(.22,1,.36,1);pointer-events:none
-    }
+    /* ── Buttons ── */
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.78rem 1.875rem;font-size:.64rem;letter-spacing:.18em;text-transform:uppercase;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;border:1px solid transparent;text-decoration:none;position:relative;overflow:hidden;isolation:isolate;transition:background .32s cubic-bezier(.22,1,.36,1),color .32s,transform .32s,border-color .32s,box-shadow .32s;will-change:transform}
+    .btn::before{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(110deg,transparent 0%,transparent 38%,rgba(255,255,255,.18) 50%,transparent 62%,transparent 100%);transform:translateX(-110%);transition:transform .9s cubic-bezier(.22,1,.36,1);pointer-events:none}
     .btn:hover::before{transform:translateX(110%)}
     .btn:not([disabled]):active{transform:scale(.97);transition-duration:80ms}
     .btn-pill{border-radius:100px}
     .btn-solid{background:var(--text);color:var(--bg);border-color:var(--text)}
-    .btn-solid:hover{background:var(--ac);color:#fff;border-color:var(--ac);box-shadow:0 10px 28px -10px rgba(201,169,110,.55)}
+    .btn-solid:hover{background:var(--ac);color:#fff;border-color:var(--ac);box-shadow:0 10px 28px -10px rgba(184,138,42,.55)}
     .btn-outline{background:transparent;color:var(--text);border-color:var(--border)}
-    .btn-outline:hover{border-color:var(--ac);color:var(--ac);background:rgba(201,146,42,.06)}
-    html.dark .btn-outline:hover{background:rgba(201,169,110,.06)}
-    html:not(.dark) .btn-solid{background:#1c1a14;color:#fff;border-color:#1c1a14}
+    .btn-outline:hover{border-color:var(--ac);color:var(--ac);background:rgba(184,138,42,.06)}
+    html:not(.dark) .btn-solid{background:#1a1815;color:#fff;border-color:#1a1815}
     html:not(.dark) .btn-solid:hover{background:var(--ac);color:#fff;border-color:var(--ac)}
-    .btn-outline.on-dark{color:rgba(255,255,255,.92);border-color:rgba(255,255,255,.28);background:rgba(255,255,255,.04);backdrop-filter:blur(8px)}
-    .btn-outline.on-dark:hover{background:rgba(255,255,255,.1);border-color:#fff;color:#fff}
     .mag{display:inline-flex;transition:transform .38s cubic-bezier(.22,1,.36,1)}
 
-    .lbl{font-family:'DM Sans',sans-serif;font-size:.56rem;letter-spacing:.26em;text-transform:uppercase;color:var(--mute);font-weight:400}
-    .rule{height:1px;background:var(--border);width:100%}
-    .gold-rule{height:1px;background:var(--ac);width:48px}
+    .lbl{font-family:'DM Sans',sans-serif;font-size:.55rem;letter-spacing:.28em;text-transform:uppercase;color:var(--mute);font-weight:500}
 
-    /* ── Reveal / stagger ── */
-    .rv{opacity:0;transform:translateY(18px);transition:opacity .9s cubic-bezier(.22,1,.36,1),transform .9s cubic-bezier(.22,1,.36,1)}
-    .rv.in{opacity:1;transform:none}
-    .rv.d1{transition-delay:.08s}.rv.d2{transition-delay:.16s}.rv.d3{transition-delay:.24s}.rv.d4{transition-delay:.32s}.rv.d5{transition-delay:.4s}
-    .clip-wipe{clip-path:inset(0 100% 0 0);transition:clip-path 1.05s cubic-bezier(.22,1,.36,1)}
-    .clip-wipe.in{clip-path:inset(0 0% 0 0)}
-    .stagger > *{opacity:0;transform:translateY(12px);transition:opacity .65s cubic-bezier(.22,1,.36,1),transform .65s cubic-bezier(.22,1,.36,1)}
-    .stagger.in > *{opacity:1;transform:none}
-    .stagger.in > *:nth-child(1){transition-delay:.05s}
-    .stagger.in > *:nth-child(2){transition-delay:.12s}
-    .stagger.in > *:nth-child(3){transition-delay:.19s}
-    .stagger.in > *:nth-child(4){transition-delay:.26s}
-    .stagger.in > *:nth-child(5){transition-delay:.33s}
-    .stagger.in > *:nth-child(6){transition-delay:.4s}
-
+    /* ── Form bits ── */
     @keyframes spin{to{transform:rotate(360deg)}}
     .spin{width:14px;height:14px;border:1.5px solid transparent;border-top-color:currentColor;border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
-    .inp{width:100%;background:transparent;border:none;border-bottom:1px solid var(--border);padding:.95rem 0;font-size:.92rem;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;transition:border-color .22s;border-radius:0}
-    .inp:focus{border-bottom-color:var(--ac)}
-    .inp::placeholder{color:var(--mute)}
-    .err-box{background:rgba(220,38,38,.08);border-left:2px solid rgba(220,38,38,.5);color:#dc2626;padding:.75rem 1rem;font-size:.78rem}
-    html.dark .err-box{color:#f87171}
-    .ok-box{background:rgba(21,128,61,.08);border-left:2px solid rgba(21,128,61,.5);color:#15803d;padding:.75rem 1rem;font-size:.78rem}
-    html.dark .ok-box{color:#4ade80}
-    .warn-box{background:rgba(201,146,42,.08);border-left:2px solid rgba(201,146,42,.5);color:var(--ac);padding:.75rem 1rem;font-size:.78rem}
+    .err-box{background:rgba(168,56,56,.08);border-left:2px solid rgba(168,56,56,.5);color:var(--bad);padding:.75rem 1rem;font-size:.78rem}
+    .ok-box{background:rgba(31,122,58,.08);border-left:2px solid rgba(31,122,58,.5);color:var(--good);padding:.75rem 1rem;font-size:.78rem}
+    .warn-box{background:rgba(184,138,42,.08);border-left:2px solid rgba(184,138,42,.5);color:var(--warn);padding:.75rem 1rem;font-size:.78rem}
 
-    /* ───────────────────────────────────────────────────────────────────
-       GATE — full-bleed image hero with offset auth panel.
-    ─────────────────────────────────────────────────────────────────── */
-    #portal-gate{position:relative;min-height:100dvh;background:#0a0908}
-    .gate-img{position:absolute;inset:0;z-index:0;overflow:hidden}
-    .gate-img img{width:100%;height:100%;object-fit:cover;filter:saturate(.42) brightness(.55) contrast(1.05)}
-    .gate-img::after{content:'';position:absolute;inset:0;background:linear-gradient(110deg,rgba(8,7,6,.92) 0%,rgba(8,7,6,.6) 38%,rgba(8,7,6,.25) 65%,rgba(8,7,6,.78) 100%)}
-    @media(max-width:900px){.gate-img::after{background:linear-gradient(180deg,rgba(8,7,6,.55) 0%,rgba(8,7,6,.92) 70%,#0a0908 100%)}}
+    /* ── Reveal ── */
+    .rv{opacity:0;transform:translateY(14px);transition:opacity .75s cubic-bezier(.22,1,.36,1),transform .75s cubic-bezier(.22,1,.36,1)}
+    .rv.in{opacity:1;transform:none}
+    .rv.d1{transition-delay:.06s}.rv.d2{transition-delay:.13s}.rv.d3{transition-delay:.2s}.rv.d4{transition-delay:.27s}
+    .stag > *{opacity:0;transform:translateY(10px);transition:opacity .55s cubic-bezier(.22,1,.36,1),transform .55s cubic-bezier(.22,1,.36,1)}
+    .stag.in > *{opacity:1;transform:none}
+    .stag.in > *:nth-child(1){transition-delay:.04s}
+    .stag.in > *:nth-child(2){transition-delay:.1s}
+    .stag.in > *:nth-child(3){transition-delay:.16s}
+    .stag.in > *:nth-child(4){transition-delay:.22s}
+    .stag.in > *:nth-child(5){transition-delay:.28s}
+    .stag.in > *:nth-child(6){transition-delay:.34s}
+    .stag.in > *:nth-child(7){transition-delay:.4s}
+    .stag.in > *:nth-child(8){transition-delay:.46s}
 
-    .gate-shell{position:relative;z-index:2;min-height:100dvh;display:grid;grid-template-columns:1.15fr .85fr;gap:0;align-items:stretch}
-    @media(max-width:900px){.gate-shell{grid-template-columns:1fr}}
-
-    .gate-copy{padding:9rem 5rem 5rem;display:flex;flex-direction:column;justify-content:center;color:#f4efe7;max-width:780px}
-    @media(max-width:900px){.gate-copy{padding:7rem 1.75rem 2.5rem;max-width:none}}
-    .gate-eyebrow{display:flex;align-items:center;gap:1rem;margin-bottom:2.5rem}
-    .gate-eyebrow span:first-child{display:block;width:32px;height:1px;background:var(--ac)}
-    .gate-eyebrow span:last-child{font-size:.56rem;letter-spacing:.32em;text-transform:uppercase;color:rgba(255,255,255,.55)}
-    .gate-h1{font-size:clamp(3.25rem,7vw,6.75rem);font-weight:200;line-height:.92;letter-spacing:-.04em;color:#f4efe7;margin-bottom:2rem}
-    .gate-h1 em{color:var(--ac);font-style:italic;font-weight:200}
-    .gate-lede{font-size:1rem;line-height:1.85;color:rgba(244,239,231,.62);font-weight:300;max-width:46ch;margin-bottom:3.5rem}
-
-    .benefit-list{display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:1px solid rgba(255,255,255,.1)}
-    @media(max-width:640px){.benefit-list{grid-template-columns:1fr}}
-    .benefit-cell{padding:1.5rem 0;border-bottom:1px solid rgba(255,255,255,.08);display:grid;grid-template-columns:3rem 1fr;align-items:start;gap:.5rem}
-    .benefit-cell:nth-child(odd){padding-right:1.5rem}
-    .benefit-cell:nth-child(even){padding-left:1.5rem;border-left:1px solid rgba(255,255,255,.08)}
-    @media(max-width:640px){
-      .benefit-cell:nth-child(odd){padding-right:0}
-      .benefit-cell:nth-child(even){padding-left:0;border-left:none}
+    /* ═══════════════════════════════════════════════════════════════════
+       GATE — single centered application-style sign-in (radical deviation
+       from the previous full-bleed editorial)
+    ═══════════════════════════════════════════════════════════════════ */
+    #portal-gate{
+      position:relative;min-height:100dvh;
+      background:
+        radial-gradient(circle at 22% 18%,rgba(184,138,42,.04) 0%,transparent 38%),
+        radial-gradient(circle at 80% 84%,rgba(184,138,42,.03) 0%,transparent 42%),
+        var(--bg);
+      display:flex;align-items:center;justify-content:center;padding:7rem 1.5rem 4rem;
+      overflow:hidden
     }
-    .benefit-num{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.78rem;letter-spacing:.15em;color:rgba(255,255,255,.34);padding-top:.18rem}
-    .benefit-h{font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:#f4efe7;margin-bottom:.32rem}
-    .benefit-p{font-size:.78rem;color:rgba(244,239,231,.5);line-height:1.7;font-weight:300}
+    /* Subtle grid background */
+    #portal-gate::before{
+      content:'';position:absolute;inset:0;z-index:0;pointer-events:none;
+      background-image:
+        linear-gradient(var(--border2) 1px,transparent 1px),
+        linear-gradient(90deg,var(--border2) 1px,transparent 1px);
+      background-size:64px 64px;
+      mask-image:radial-gradient(ellipse 70% 60% at 50% 50%,black 30%,transparent 100%);
+      -webkit-mask-image:radial-gradient(ellipse 70% 60% at 50% 50%,black 30%,transparent 100%);
+      opacity:.45
+    }
 
-    .gate-card-wrap{display:flex;align-items:center;justify-content:center;padding:8rem 4rem 4rem}
-    @media(max-width:900px){.gate-card-wrap{padding:1rem 1.25rem 4rem}}
+    .gate{position:relative;z-index:1;width:100%;max-width:1100px;display:grid;grid-template-columns:1fr 480px;gap:5rem;align-items:center}
+    @media(max-width:900px){.gate{grid-template-columns:1fr;gap:2.5rem;max-width:480px}}
+
+    .gate-left{display:flex;flex-direction:column;gap:2rem}
+    .gate-tag{display:inline-flex;align-items:center;gap:.625rem;font-size:.55rem;letter-spacing:.32em;text-transform:uppercase;color:var(--ac);font-weight:500;align-self:flex-start;padding:.4rem .8rem .4rem .55rem;background:rgba(184,138,42,.07);border:1px solid rgba(184,138,42,.22);border-radius:99px}
+    .gate-tag::before{content:'';display:block;width:5px;height:5px;border-radius:50%;background:var(--ac);box-shadow:0 0 8px var(--ac)}
+    .gate-h1{font-family:'DM Sans',sans-serif;font-size:clamp(2.6rem,5vw,4.25rem);font-weight:500;letter-spacing:-.04em;line-height:.96;color:var(--text)}
+    .gate-h1 .accent{color:var(--ac);font-weight:500}
+    .gate-lede{font-size:.95rem;line-height:1.75;color:var(--sub);font-weight:400;max-width:42ch}
+    .gate-feature-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);margin-top:1.5rem}
+    .gate-feature{background:var(--bg);padding:1.25rem 1.25rem;display:flex;flex-direction:column;gap:.4rem}
+    .gate-feature-num{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--ac);letter-spacing:.05em}
+    .gate-feature-h{font-size:.75rem;color:var(--text);font-weight:500;letter-spacing:.01em}
+    .gate-feature-p{font-size:.7rem;color:var(--sub);line-height:1.55;font-weight:400}
+
+    /* Auth panel — utility/app card, not magazine */
     .gate-card{
-      width:100%;max-width:440px;
-      background:linear-gradient(160deg,rgba(255,253,247,.97) 0%,rgba(245,239,225,.95) 100%);
-      backdrop-filter:blur(28px) saturate(180%);
-      -webkit-backdrop-filter:blur(28px) saturate(180%);
-      border:1px solid rgba(255,255,255,.12);
-      box-shadow:0 50px 120px -20px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.7);
-      padding:3rem 2.75rem;color:#1c1a14
+      background:var(--bg2);
+      border:1px solid var(--border);
+      padding:2.25rem 2rem;
+      box-shadow:0 30px 80px -30px rgba(60,42,12,.18),0 8px 28px -10px rgba(60,42,12,.06);
+      border-radius:6px
     }
-    html.dark .gate-card{
-      background:linear-gradient(160deg,rgba(20,20,18,.95) 0%,rgba(14,14,12,.93) 100%);
-      border:1px solid rgba(255,255,255,.07);
-      box-shadow:0 50px 120px -20px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.05);
-      color:#f0ede8
-    }
-    .gate-card-tag{display:flex;align-items:center;gap:.625rem;margin-bottom:1.5rem;font-size:.52rem;letter-spacing:.32em;text-transform:uppercase;color:var(--ac);font-weight:500}
-    .gate-card-tag::before{content:'';display:block;width:18px;height:1px;background:var(--ac)}
-    .gate-card-h{font-family:'Cormorant Garamond',serif;font-size:1.95rem;font-weight:300;letter-spacing:-.025em;line-height:1.05;margin-bottom:.55rem}
-    .gate-card-h em{color:var(--ac);font-style:italic;font-weight:300}
-    .gate-card-sub{font-size:.78rem;color:#5c5346;line-height:1.7;margin-bottom:1.75rem;font-weight:300}
-    html.dark .gate-card-sub{color:#a09480}
-    .gate-card .inp{color:#1c1a14;border-bottom-color:rgba(28,26,20,.18)}
-    .gate-card .inp::placeholder{color:#a09480}
-    .gate-card .inp:focus{border-bottom-color:var(--ac)}
-    html.dark .gate-card .inp{color:#f0ede8;border-bottom-color:rgba(255,255,255,.12)}
-    html.dark .gate-card .inp::placeholder{color:#4e4c48}
+    html.dark .gate-card{box-shadow:0 30px 80px -30px rgba(0,0,0,.7),0 8px 28px -10px rgba(0,0,0,.4)}
+    .gate-card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem}
+    .gate-card-h{font-size:1.35rem;font-weight:500;letter-spacing:-.02em}
+    .gate-card-meta{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--mute);letter-spacing:.04em}
+    .gate-tabs{display:flex;background:var(--bg3);border-radius:5px;padding:3px;margin-bottom:1.5rem}
+    .gate-tab{flex:1;padding:.55rem;font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--mute);background:none;border:none;cursor:pointer;border-radius:3px;font-family:'DM Sans',sans-serif;font-weight:500;transition:background .22s,color .22s}
+    .gate-tab.active{background:var(--bg2);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.07)}
+    html.dark .gate-tab.active{box-shadow:0 1px 3px rgba(0,0,0,.4)}
 
-    .btn-google{display:flex;align-items:center;justify-content:center;gap:.875rem;width:100%;padding:.875rem;background:transparent;border:1px solid rgba(28,26,20,.14);font-size:.78rem;color:#1c1a14;cursor:pointer;transition:border-color .22s,background .22s;font-family:'DM Sans',sans-serif;letter-spacing:.01em}
-    .btn-google:hover{border-color:var(--ac);background:rgba(201,146,42,.05)}
-    html.dark .btn-google{color:#f0ede8;border-color:rgba(255,255,255,.12)}
-    html.dark .btn-google:hover{background:rgba(255,255,255,.04);border-color:var(--ac)}
-    .auth-divider{display:flex;align-items:center;gap:1.25rem;margin:1.25rem 0}
-    .auth-divider span{font-size:.55rem;letter-spacing:.22em;text-transform:uppercase;color:var(--mute)}
-    .auth-hr{flex:1;height:1px;background:rgba(28,26,20,.1)}
-    html.dark .auth-hr{background:rgba(255,255,255,.08)}
+    /* Inputs — boxed, not underline (different from before) */
+    .field{display:flex;flex-direction:column;gap:.4rem}
+    .field-lbl{font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);font-weight:500}
+    .inp{width:100%;background:var(--bg);border:1px solid var(--border);padding:.75rem .85rem;font-size:.85rem;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s,box-shadow .2s;border-radius:5px}
+    .inp:focus{border-color:var(--ac);box-shadow:0 0 0 3px rgba(184,138,42,.12)}
+    .inp::placeholder{color:var(--mute)}
 
-    .gate-toggle{margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid rgba(28,26,20,.08);text-align:center}
-    html.dark .gate-toggle{border-top-color:rgba(255,255,255,.08)}
-    .gate-toggle button{font-size:.74rem;color:var(--mute);background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:color .2s}
-    .gate-toggle button:hover{color:var(--text)}
+    .auth-divider{display:flex;align-items:center;gap:1rem;margin:1.25rem 0}
+    .auth-divider span{font-size:.55rem;letter-spacing:.22em;text-transform:uppercase;color:var(--mute);font-weight:500}
+    .auth-hr{flex:1;height:1px;background:var(--border)}
+    .btn-google{display:flex;align-items:center;justify-content:center;gap:.875rem;width:100%;padding:.75rem;background:transparent;border:1px solid var(--border);font-size:.78rem;color:var(--text);cursor:pointer;transition:border-color .22s,background .22s;font-family:'DM Sans',sans-serif;font-weight:500;border-radius:5px}
+    .btn-google:hover{border-color:var(--ac);background:rgba(184,138,42,.04)}
 
-    /* ───────────────────────────────────────────────────────────────────
-       DASHBOARD — editorial, image-led tool cards.
-    ─────────────────────────────────────────────────────────────────── */
+    /* ═══════════════════════════════════════════════════════════════════
+       DASHBOARD — Workspace shell with sidebar nav + bento canvas.
+    ═══════════════════════════════════════════════════════════════════ */
     #portal-dash{display:none;background:var(--bg);min-height:100dvh}
-    .dash-wrap{max-width:1440px;margin:0 auto;padding:0 3rem}
-    @media(max-width:700px){.dash-wrap{padding:0 1.5rem}}
 
-    #org-banner{display:none;background:linear-gradient(90deg,rgba(201,146,42,.08) 0%,rgba(201,146,42,.02) 100%);border-bottom:1px solid rgba(201,146,42,.18)}
-    #org-banner .ob-inner{max-width:1440px;margin:0 auto;padding:.9rem 3rem;display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap}
-    @media(max-width:700px){#org-banner .ob-inner{padding:.85rem 1.5rem}}
+    /* Org banner (top of dashboard) */
+    #org-banner{display:none;background:rgba(184,138,42,.05);border-bottom:1px solid rgba(184,138,42,.15)}
+    #org-banner .ob-inner{max-width:1440px;margin:0 auto;padding:.75rem 3rem;display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap;font-size:.75rem}
+    @media(max-width:900px){#org-banner .ob-inner{padding:.7rem 1.25rem}}
 
-    .dash-hero{padding:9rem 0 5rem;position:relative;overflow:hidden}
-    .dash-hero-img{position:absolute;top:0;right:-8%;width:55%;height:100%;z-index:0;opacity:.18;pointer-events:none}
-    .dash-hero-img img{width:100%;height:100%;object-fit:cover;filter:saturate(.5) contrast(1.05)}
-    .dash-hero-img::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 0% 50%,var(--bg) 0%,transparent 70%)}
-    .dash-hero-inner{position:relative;z-index:1}
-    .dash-eyebrow{display:flex;align-items:center;gap:1rem;margin-bottom:2.5rem}
-    .dash-eyebrow span:first-child{display:block;width:32px;height:1px;background:var(--ac)}
-    .dash-eyebrow span:last-child{font-size:.56rem;letter-spacing:.32em;text-transform:uppercase;color:var(--mute)}
-    .dash-greeting{font-size:.84rem;color:var(--mute);margin-bottom:.75rem;letter-spacing:.04em;font-weight:300}
-    .dash-name{font-family:'Cormorant Garamond',serif;font-size:clamp(4.5rem,11vw,9.5rem);font-weight:200;letter-spacing:-.04em;line-height:.86;color:var(--text);margin-bottom:2.5rem}
-    .dash-name em{font-style:italic;font-weight:200;color:var(--ac)}
-    .dash-lede{font-size:.95rem;color:var(--sub);line-height:1.85;font-weight:300;max-width:48ch;margin-bottom:3.5rem}
-
-    .dash-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:0;margin-bottom:0}
-    @media(max-width:900px){.dash-stats{grid-template-columns:1fr 1fr}}
-    @media(max-width:640px){.dash-stats{grid-template-columns:1fr}}
-    .dash-stat{padding:2rem 1.75rem;border-right:1px solid var(--border);position:relative}
-    .dash-stat:last-child{border-right:none}
-    @media(max-width:900px){
-      .dash-stat:nth-child(2){border-right:none}
-      .dash-stat:nth-child(1),.dash-stat:nth-child(2){border-bottom:1px solid var(--border)}
+    /* Workspace shell */
+    .ws{
+      max-width:1440px;margin:0 auto;
+      padding:8.5rem 3rem 4rem;
+      display:grid;grid-template-columns:240px 1fr;gap:2.5rem;align-items:start
     }
-    @media(max-width:640px){.dash-stat{border-right:none;border-bottom:1px solid var(--border)}.dash-stat:last-child{border-bottom:none}}
-    .dash-stat-lbl{font-size:.5rem;letter-spacing:.3em;text-transform:uppercase;color:var(--mute);margin-bottom:.7rem}
-    .dash-stat-val{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:300;letter-spacing:-.02em;color:var(--text)}
-    .dash-stat-val em{font-style:italic;color:var(--ac)}
-    .dash-stat-sub{font-size:.7rem;color:var(--sub);margin-top:.35rem;font-weight:300}
+    @media(max-width:900px){.ws{grid-template-columns:1fr;padding:6rem 1.25rem 3rem;gap:1.5rem}}
 
-    .sec-head{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1.5rem;padding:5rem 0 2.5rem}
-    .sec-h{font-family:'Cormorant Garamond',serif;font-size:clamp(2.2rem,4.5vw,3.75rem);font-weight:200;letter-spacing:-.035em;line-height:.96;max-width:18ch}
-    .sec-h em{font-style:italic;color:var(--ac);font-weight:200}
-    .sec-meta{font-size:.55rem;letter-spacing:.32em;text-transform:uppercase;color:var(--mute);padding-bottom:.5rem}
+    /* SIDEBAR */
+    .ws-side{position:sticky;top:6rem;display:flex;flex-direction:column;gap:1.5rem}
+    @media(max-width:900px){.ws-side{position:static;top:auto}}
 
-    .bcard-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-bottom:5rem}
-    @media(max-width:900px){.bcard-grid{grid-template-columns:1fr 1fr}}
-    @media(max-width:640px){.bcard-grid{grid-template-columns:1fr}}
-    .bcard{position:relative;display:flex;flex-direction:column;justify-content:flex-end;min-height:420px;padding:2rem;text-decoration:none;color:inherit;overflow:hidden;cursor:pointer;transform-style:preserve-3d;will-change:transform;background:var(--bg2);border:1px solid var(--border)}
-    .bcard.disabled{cursor:not-allowed;opacity:.42}
-    .bcard-img{position:absolute;inset:0;z-index:0;overflow:hidden}
-    .bcard-img img{width:100%;height:100%;object-fit:cover;transition:transform 1.1s cubic-bezier(.22,1,.36,1),filter .8s;filter:saturate(.55) brightness(.7) contrast(1.05);will-change:transform}
-    .bcard:hover .bcard-img img{transform:scale(1.07);filter:saturate(.85) brightness(.78)}
-    .bcard.disabled:hover .bcard-img img{transform:none}
-    .bcard-veil{position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(0,0,0,.05) 0%,rgba(0,0,0,.55) 55%,rgba(0,0,0,.92) 100%);transition:background .5s}
-    .bcard:hover .bcard-veil{background:linear-gradient(180deg,rgba(0,0,0,.08) 0%,rgba(0,0,0,.6) 55%,rgba(0,0,0,.95) 100%)}
-    .bcard-body{position:relative;z-index:2;color:#fff}
-    .bcard-tag{display:flex;align-items:center;gap:.5rem;font-size:.5rem;letter-spacing:.32em;text-transform:uppercase;color:var(--ac);margin-bottom:1rem;font-weight:500}
-    .bcard-tag::before{content:'';display:block;width:14px;height:1px;background:var(--ac)}
-    .bcard-h{font-family:'Cormorant Garamond',serif;font-size:1.95rem;font-weight:300;letter-spacing:-.025em;line-height:1.04;margin-bottom:.625rem;color:#fff}
-    .bcard-h em{font-style:italic;color:var(--ac);font-weight:300}
-    .bcard-p{font-size:.78rem;color:rgba(255,255,255,.6);line-height:1.7;font-weight:300;max-width:32ch;margin-bottom:1.25rem}
-    .bcard-cta{display:inline-flex;align-items:center;gap:.5rem;font-size:.55rem;letter-spacing:.28em;text-transform:uppercase;color:rgba(255,255,255,.74);transition:gap .35s cubic-bezier(.22,1,.36,1),color .3s;border-bottom:1px solid rgba(255,255,255,.18);padding-bottom:.4rem;align-self:flex-start}
-    .bcard:hover .bcard-cta{gap:1.1rem;color:#fff;border-bottom-color:var(--ac)}
-    .bcard-soon{position:absolute;top:1.25rem;right:1.25rem;z-index:3;font-size:.5rem;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.78);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);padding:.32rem .75rem;backdrop-filter:blur(8px)}
+    .me-card{
+      padding:1.25rem;border:1px solid var(--border);background:var(--bg2);border-radius:6px;
+      display:flex;flex-direction:column;gap:1rem
+    }
+    .me-row{display:flex;align-items:center;gap:.875rem}
+    .me-avatar{
+      width:40px;height:40px;border-radius:50%;
+      background:linear-gradient(135deg,var(--ac) 0%,#8a6818 100%);
+      display:flex;align-items:center;justify-content:center;flex-shrink:0;
+      font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.05rem;font-weight:400;color:#fff;
+      box-shadow:0 4px 14px -4px rgba(184,138,42,.4)
+    }
+    .me-name{font-size:.88rem;color:var(--text);font-weight:500;letter-spacing:-.01em;line-height:1.1;margin-bottom:.15rem}
+    .me-email{font-size:.7rem;color:var(--mute);font-weight:400;letter-spacing:.01em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:14ch}
+    .me-status{display:flex;align-items:center;gap:.45rem;padding-top:.875rem;border-top:1px solid var(--border);font-size:.62rem;color:var(--sub);letter-spacing:.02em}
+    .me-status-dot{width:6px;height:6px;border-radius:50%;background:var(--good);box-shadow:0 0 6px var(--good)}
 
-    .setup-prompt{display:none;background:var(--bg2);border-top:1.5px solid var(--ac);border-bottom:1px solid var(--border);padding:2.5rem 0;margin-bottom:3rem}
-    .setup-prompt-inner{display:flex;align-items:center;gap:2rem;flex-wrap:wrap;justify-content:space-between}
-    .setup-prompt h3{font-family:'Cormorant Garamond',serif;font-size:clamp(1.6rem,3vw,2.2rem);font-weight:300;letter-spacing:-.03em;line-height:1.06}
-    .setup-prompt h3 em{font-style:italic;color:var(--ac);font-weight:300}
+    /* Side menu */
+    .side-menu{display:flex;flex-direction:column;gap:1px;background:var(--border);border:1px solid var(--border);border-radius:6px;overflow:hidden}
+    .side-link{
+      display:flex;align-items:center;gap:.75rem;padding:.75rem .85rem;
+      background:var(--bg2);font-family:'DM Sans',sans-serif;font-size:.74rem;color:var(--sub);
+      text-decoration:none;letter-spacing:.01em;font-weight:500;transition:background .22s,color .22s;cursor:pointer;border:none;width:100%;text-align:left
+    }
+    .side-link:hover{background:var(--bg3);color:var(--text)}
+    .side-link.active{color:var(--text);background:var(--bg2)}
+    .side-link.active::before{content:'';display:block;width:3px;height:14px;background:var(--ac);margin-right:.45rem;flex-shrink:0;border-radius:1px}
+    .side-icn{width:14px;height:14px;flex-shrink:0;color:var(--mute)}
+    .side-link.active .side-icn,.side-link:hover .side-icn{color:var(--ac)}
+    .side-badge{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:.55rem;color:var(--mute);letter-spacing:.02em}
+    .side-link.disabled{cursor:not-allowed;color:var(--mute);opacity:.6}
+    .side-link.disabled:hover{background:var(--bg2);color:var(--mute)}
 
-    .acct-block{padding:5rem 0;border-top:1px solid var(--border)}
-    .acct-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start}
-    @media(max-width:900px){.acct-grid{grid-template-columns:1fr;gap:3rem}}
-    .acct-id{display:flex;align-items:flex-start;gap:1.5rem}
-    .acct-avatar{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--ac) 0%,#a87a1a 100%);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:#fff;letter-spacing:.04em;font-style:italic;font-weight:400;box-shadow:0 6px 20px -8px rgba(201,146,42,.4)}
-    .acct-name{font-family:'Cormorant Garamond',serif;font-size:2.4rem;font-weight:300;letter-spacing:-.03em;line-height:1.04;margin-bottom:.4rem}
-    .acct-email{font-size:.8rem;color:var(--sub);font-weight:300;letter-spacing:.02em;margin-bottom:.75rem}
-    .acct-pill{display:inline-flex;align-items:center;gap:.45rem;font-size:.55rem;letter-spacing:.22em;text-transform:uppercase;color:var(--ac);background:rgba(201,146,42,.07);border:1px solid rgba(201,146,42,.22);padding:.32rem .75rem;border-radius:999px}
-    .acct-pill::before{content:'';display:block;width:5px;height:5px;border-radius:50%;background:var(--ac)}
-    .acct-actions{display:flex;flex-direction:column;gap:.875rem}
-    .acct-row{display:flex;align-items:center;justify-content:space-between;padding:1.05rem 0;border-bottom:1px solid var(--border)}
-    .acct-row:last-child{border-bottom:none}
-    .acct-row-label{font-size:.7rem;color:var(--sub);letter-spacing:.04em}
-    .acct-row a,.acct-row button{font-size:.55rem;letter-spacing:.22em;text-transform:uppercase;color:var(--mute);background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none;display:inline-flex;align-items:center;gap:.45rem;padding:.3rem 0;transition:color .22s}
-    .acct-row a:hover,.acct-row button:hover{color:var(--ac)}
+    .side-foot{padding:0 .25rem;display:flex;flex-direction:column;gap:.4rem;font-size:.62rem;color:var(--mute);letter-spacing:.04em}
+    .side-foot button{background:none;border:none;cursor:pointer;color:var(--mute);font-family:'DM Sans',sans-serif;font-size:.62rem;letter-spacing:.04em;text-align:left;padding:.4rem .25rem;transition:color .22s;display:flex;align-items:center;gap:.45rem}
+    .side-foot button:hover{color:var(--ac)}
 
-    .dash-footer{padding:2.5rem 0 3rem;border-top:1px solid var(--border);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:1rem}
-    .dash-footer p{font-size:.66rem;color:var(--mute);font-weight:300;letter-spacing:.04em}
+    /* CANVAS */
+    .ws-main{display:flex;flex-direction:column;gap:1.25rem;min-width:0}
+
+    /* Greeting strip */
+    .ws-head{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+    .ws-greet{display:flex;flex-direction:column;gap:.4rem}
+    .ws-greet-meta{display:flex;align-items:center;gap:.6rem;font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--mute);letter-spacing:.04em}
+    .ws-greet-meta span:first-child{padding:.18rem .5rem;background:var(--bg3);border:1px solid var(--border);border-radius:99px}
+    .ws-h1{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(2.4rem,4vw,3.4rem);font-weight:300;color:var(--text);letter-spacing:-.025em;line-height:1.05}
+    .ws-h1 em{color:var(--ac)}
+    .ws-actions{display:flex;align-items:center;gap:.625rem}
+    .ws-action{
+      display:inline-flex;align-items:center;gap:.5rem;
+      padding:.55rem .9rem;border:1px solid var(--border);background:var(--bg2);
+      font-family:'DM Sans',sans-serif;font-size:.63rem;letter-spacing:.14em;text-transform:uppercase;color:var(--sub);
+      cursor:pointer;text-decoration:none;font-weight:500;border-radius:99px;transition:border-color .22s,color .22s
+    }
+    .ws-action:hover{border-color:var(--ac);color:var(--ac)}
+    .ws-action svg{width:11px;height:11px}
+
+    /* Bento grid */
+    .bento{display:grid;grid-template-columns:repeat(12,1fr);gap:1rem}
+    @media(max-width:900px){.bento{grid-template-columns:1fr 1fr;gap:.75rem}}
+    @media(max-width:520px){.bento{grid-template-columns:1fr}}
+
+    .bx{
+      background:var(--bg2);border:1px solid var(--border);border-radius:6px;
+      padding:1.25rem;position:relative;overflow:hidden;
+      transition:border-color .28s,transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s
+    }
+    .bx:hover{border-color:var(--ac);transform:translateY(-2px);box-shadow:0 12px 36px -16px rgba(60,42,12,.18)}
+    html.dark .bx:hover{box-shadow:0 12px 36px -16px rgba(0,0,0,.6)}
+    .bx-link{cursor:pointer;display:block;text-decoration:none;color:inherit}
+    .bx-link.disabled{cursor:not-allowed;opacity:.45}
+    .bx-link.disabled:hover{transform:none;border-color:var(--border);box-shadow:none}
+
+    /* Bento spans */
+    .bx-12{grid-column:span 12}.bx-8{grid-column:span 8}.bx-6{grid-column:span 6}.bx-5{grid-column:span 5}.bx-4{grid-column:span 4}.bx-3{grid-column:span 3}
+    @media(max-width:900px){.bx-12,.bx-8,.bx-6,.bx-5,.bx-4,.bx-3{grid-column:span 2}}
+    @media(max-width:520px){.bx-12,.bx-8,.bx-6,.bx-5,.bx-4,.bx-3{grid-column:span 1}}
+
+    /* Stat tile pattern */
+    .bx-stat .lbl{font-size:.5rem;letter-spacing:.3em;margin-bottom:.6rem}
+    .bx-stat-val{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:2.1rem;font-weight:300;letter-spacing:-.025em;color:var(--text);line-height:1;margin-bottom:.45rem}
+    .bx-stat-val .mono{font-style:normal}
+    .bx-stat-trend{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--mute);letter-spacing:.02em}
+    .bx-stat-trend.good{color:var(--good)}
+    .bx-stat-trend.warn{color:var(--warn)}
+
+    /* Tool tile */
+    .bx-tool{display:flex;flex-direction:column;justify-content:space-between;min-height:170px}
+    .bx-tool-icn{
+      width:36px;height:36px;border-radius:8px;
+      background:rgba(184,138,42,.07);
+      border:1px solid rgba(184,138,42,.18);
+      display:flex;align-items:center;justify-content:center;color:var(--ac);
+      margin-bottom:1rem;transition:background .25s,border-color .25s
+    }
+    .bx-link:hover .bx-tool-icn{background:rgba(184,138,42,.13);border-color:rgba(184,138,42,.32)}
+    .bx-tool-cat{font-size:.5rem;letter-spacing:.3em;text-transform:uppercase;color:var(--mute);margin-bottom:.4rem;font-weight:500}
+    .bx-tool-h{font-family:'DM Sans',sans-serif;font-size:1.05rem;font-weight:500;color:var(--text);letter-spacing:-.015em;margin-bottom:.55rem;line-height:1.18}
+    .bx-tool-p{font-size:.74rem;color:var(--sub);line-height:1.55;font-weight:400;margin-bottom:1rem;flex:1}
+    .bx-tool-cta{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--ac);letter-spacing:.04em;display:inline-flex;align-items:center;gap:.45rem;margin-top:auto}
+    .bx-tool-cta span{transition:transform .3s cubic-bezier(.22,1,.36,1)}
+    .bx-link:hover .bx-tool-cta span{transform:translateX(4px)}
+    .bx-soon{position:absolute;top:.875rem;right:.875rem;font-family:'JetBrains Mono',monospace;font-size:.55rem;color:var(--mute);letter-spacing:.05em;background:var(--bg);border:1px solid var(--border);padding:.18rem .45rem;border-radius:99px}
+
+    /* Activity feed */
+    .bx-feed{display:flex;flex-direction:column;gap:0}
+    .bx-feed-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+    .bx-feed-h-label{font-size:.55rem;letter-spacing:.28em;text-transform:uppercase;color:var(--mute);font-weight:500}
+    .bx-feed-h-meta{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--mute);letter-spacing:.02em}
+    .feed-item{display:grid;grid-template-columns:.85rem 1fr auto;gap:.85rem;align-items:start;padding:.8rem 0;border-top:1px solid var(--border);font-size:.74rem;color:var(--sub)}
+    .feed-item:first-of-type{border-top:none}
+    .feed-dot{width:6px;height:6px;border-radius:50%;background:var(--mute);margin-top:.42rem}
+    .feed-dot.good{background:var(--good);box-shadow:0 0 5px var(--good)}
+    .feed-dot.warn{background:var(--warn)}
+    .feed-text{line-height:1.55}
+    .feed-text strong{color:var(--text);font-weight:500}
+    .feed-time{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--mute);letter-spacing:.02em;margin-top:.18rem}
+
+    /* Setup prompt — gold accent strip */
+    .bx-setup{
+      grid-column:span 12;
+      background:linear-gradient(90deg,rgba(184,138,42,.06) 0%,rgba(184,138,42,.02) 100%);
+      border:1px solid rgba(184,138,42,.22);
+      border-left:3px solid var(--ac);
+      display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;
+      padding:1.25rem 1.5rem
+    }
+    .bx-setup-h{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.5rem;font-weight:300;color:var(--text);letter-spacing:-.02em}
+    .bx-setup-h em{color:var(--ac)}
+    .bx-setup-p{font-size:.72rem;color:var(--sub);margin-top:.25rem;font-weight:400;letter-spacing:.01em}
+
+    /* Footer */
+    .ws-footer{margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+    .ws-footer p{font-size:.66rem;color:var(--mute);font-weight:400;letter-spacing:.03em}
+    .ws-footer-links{display:flex;gap:1.75rem}
+    .ws-footer-links a{font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--mute);text-decoration:none;font-weight:500;transition:color .22s}
+    .ws-footer-links a:hover{color:var(--text)}
 
     /* ── Mobile menu ── */
     #mob-menu{display:none;position:fixed;inset:0;z-index:300;background:var(--bg);flex-direction:column;padding:3rem}
@@ -334,32 +373,26 @@
     #org-modal.open{display:flex;animation:modalIn .32s cubic-bezier(.22,1,.36,1)}
     @keyframes modalIn{from{opacity:0}to{opacity:1}}
     .modal-card{
-      width:100%;max-width:480px;padding:3rem 2.75rem;position:relative;
-      background:linear-gradient(160deg,rgba(255,253,247,.97) 0%,rgba(245,239,225,.95) 100%);
-      border:1px solid rgba(255,255,255,.12);
-      box-shadow:0 50px 120px -20px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.7);
-      color:#1c1a14;
+      width:100%;max-width:460px;padding:2.25rem 2rem;position:relative;
+      background:var(--bg2);border:1px solid var(--border);border-radius:6px;
+      box-shadow:0 50px 120px -20px rgba(0,0,0,.55);
       transform:translateY(20px) scale(.98);
       animation:modalCardIn .42s .04s cubic-bezier(.22,1,.36,1) forwards
     }
     @keyframes modalCardIn{to{transform:translateY(0) scale(1)}}
-    html.dark .modal-card{
-      background:linear-gradient(160deg,rgba(20,20,18,.95) 0%,rgba(14,14,12,.93) 100%);
-      border:1px solid rgba(255,255,255,.07);color:#f0ede8;
-      box-shadow:0 50px 120px -20px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.05)
-    }
-    .modal-card .inp{color:#1c1a14;border-bottom-color:rgba(28,26,20,.18)}
-    html.dark .modal-card .inp{color:#f0ede8;border-bottom-color:rgba(255,255,255,.12)}
-    .modal-x{position:absolute;top:1.25rem;right:1.25rem;background:none;border:none;cursor:pointer;color:var(--mute);transition:color .2s}
+    .modal-x{position:absolute;top:1rem;right:1rem;background:none;border:none;cursor:pointer;color:var(--mute);transition:color .2s}
     .modal-x:hover{color:var(--text)}
 
-    /* ── Hover physics: lift + spring ── */
-    .lift{transition:transform .42s cubic-bezier(.34,1.56,.64,1),box-shadow .42s}
-    .lift:hover{transform:translateY(-5px)}
-
-    /* ── Mouse-parallax targets ── */
-    .px{will-change:transform;transition:transform .8s cubic-bezier(.22,1,.36,1)}
-    @media(hover:none),(pointer:coarse){.px{transition:none}}
+    /* Sidebar mobile becomes a horizontal scroll strip */
+    @media(max-width:900px){
+      .me-card{flex-direction:row;align-items:center;justify-content:space-between;padding:1rem 1.25rem}
+      .me-status{padding-top:0;border-top:none;border-left:1px solid var(--border);padding-left:1rem;margin-left:auto}
+      .side-menu{flex-direction:row;overflow-x:auto;background:transparent;border:none;border-radius:0;gap:.5rem;padding:.25rem 0}
+      .side-link{flex:0 0 auto;border:1px solid var(--border);border-radius:99px;padding:.5rem .85rem;font-size:.66rem}
+      .side-link.active::before{display:none}
+      .side-link.active{border-color:var(--ac);color:var(--ac)}
+      .side-foot{flex-direction:row;flex-wrap:wrap;gap:1rem}
+    }
   </style>
 </head>
 <body>
@@ -371,7 +404,7 @@
 
 
 <!-- ══════════════════════════════════════════════════════════════════════
-     NAV — IDENTICAL to homepage (logo + same links + same icons + CTA)
+     CANONICAL NAV (matches every other page)
 ══════════════════════════════════════════════════════════════════════ -->
 <nav id="main-nav">
   <div class="nav-inner">
@@ -407,7 +440,7 @@
   </div>
 </nav>
 
-<!-- ── Mobile menu ── -->
+<!-- ── Mobile menu (uniform) ── -->
 <div id="mob-menu">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3.5rem">
     <span style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:300;color:var(--text);letter-spacing:.16em">ACUROS</span>
@@ -425,113 +458,88 @@
 
 
 <!-- ══════════════════════════════════════════════════════════════════════
-     GATE — full-bleed editorial hero with offset auth card.
+     GATE — single application sign-in card
 ══════════════════════════════════════════════════════════════════════ -->
 <div id="portal-gate">
-  <div class="gate-img" aria-hidden="true">
-    <img class="px" data-px=".035" src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=2000&q=80&auto=format&fit=crop" alt=""/>
-  </div>
+  <div class="gate">
 
-  <div class="gate-shell">
-    <div class="gate-copy">
-      <div class="gate-eyebrow rv"><span></span><span>Patient Membership · Acuros Health</span></div>
-      <h1 class="gate-h1 rv d1">Your health,<br/><em>quietly organised.</em></h1>
-      <p class="gate-lede rv d2">A private portal for the people behind the appointments — records, prep notes, and clinic-curated tools, all in one place.</p>
+    <div class="gate-left">
+      <span class="gate-tag rv">Patient · Acuros Health</span>
+      <h1 class="gate-h1 rv d1">Your health workspace.<br/><span class="accent">Sign in to continue.</span></h1>
+      <p class="gate-lede rv d2">A focused space for your records, prep, and care tools — connected to your clinic, encrypted by default.</p>
 
-      <div id="from-bookings-notice" style="display:none;margin-bottom:2rem" class="warn-box rv d2">
+      <div id="from-bookings-notice" style="display:none" class="warn-box rv d2">
         <strong>Clinic connection required.</strong> Sign in and connect your clinic to access Bookings.
       </div>
 
-      <div class="benefit-list stagger rv d3">
-        <div class="benefit-cell">
-          <span class="benefit-num">01</span>
-          <div>
-            <div class="benefit-h">AI Health Translation</div>
-            <p class="benefit-p">Reports translated into plain language</p>
-          </div>
+      <div class="gate-feature-grid stag rv d3">
+        <div class="gate-feature">
+          <span class="gate-feature-num">01</span>
+          <span class="gate-feature-h">AI Translation</span>
+          <span class="gate-feature-p">Reports in plain language</span>
         </div>
-        <div class="benefit-cell">
-          <span class="benefit-num">02</span>
-          <div>
-            <div class="benefit-h">Visit Preparation</div>
-            <p class="benefit-p">Briefs and tailored question sets</p>
-          </div>
+        <div class="gate-feature">
+          <span class="gate-feature-num">02</span>
+          <span class="gate-feature-h">Visit Prep</span>
+          <span class="gate-feature-p">Briefs and tailored questions</span>
         </div>
-        <div class="benefit-cell">
-          <span class="benefit-num">03</span>
-          <div>
-            <div class="benefit-h">Clinic Shop &amp; Bookings</div>
-            <p class="benefit-p">Curated products, direct procedure scheduling</p>
-          </div>
+        <div class="gate-feature">
+          <span class="gate-feature-num">03</span>
+          <span class="gate-feature-h">Bookings &amp; Shop</span>
+          <span class="gate-feature-p">Direct procedure scheduling</span>
         </div>
-        <div class="benefit-cell">
-          <span class="benefit-num">04</span>
-          <div>
-            <div class="benefit-h">PIPEDA Encrypted</div>
-            <p class="benefit-p">Canadian privacy law, end-to-end</p>
-          </div>
+        <div class="gate-feature">
+          <span class="gate-feature-num">04</span>
+          <span class="gate-feature-h">PIPEDA</span>
+          <span class="gate-feature-p">Canadian-compliant storage</span>
         </div>
       </div>
     </div>
 
-    <div class="gate-card-wrap">
-      <div class="gate-card rv d2 lift">
-        <div class="gate-card-tag">MEMBER ACCESS</div>
-        <h2 class="gate-card-h" id="pt-title">Sign in to your <em>portal.</em></h2>
-        <p class="gate-card-sub" id="pt-sub">Welcome back. Pick up where you left off.</p>
-
-        <div id="pt-err" style="display:none;margin-bottom:1.25rem"></div>
-        <div id="pt-ok"  style="display:none;margin-bottom:1.25rem"></div>
-
-        <button onclick="ptGoogleAuth()" class="btn-google" style="margin-bottom:0">
-          <svg width="17" height="17" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-          Continue with Google
-        </button>
-
-        <div class="auth-divider"><div class="auth-hr"></div><span>or</span><div class="auth-hr"></div></div>
-
-        <form id="pt-login" onsubmit="ptLogin(event)" style="display:flex;flex-direction:column;gap:.4rem">
-          <div>
-            <label class="lbl" style="display:block;margin-bottom:.4rem">Email address</label>
-            <input type="email" id="pt-email" class="inp" placeholder="name@email.com" required/>
-          </div>
-          <div style="margin-top:.4rem">
-            <label class="lbl" style="display:block;margin-bottom:.4rem">Password</label>
-            <input type="password" id="pt-pass" class="inp" placeholder="••••••••" required/>
-          </div>
-          <button type="submit" class="btn btn-solid mag" style="width:100%;margin-top:1.5rem;padding:.95rem" id="pt-li-btn">Sign In</button>
-        </form>
-
-        <form id="pt-register" onsubmit="ptRegister(event)" style="display:none;flex-direction:column;gap:.4rem">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem">
-            <div>
-              <label class="lbl" style="display:block;margin-bottom:.4rem">First name</label>
-              <input type="text" id="pt-first" class="inp" placeholder="Jane" required/>
-            </div>
-            <div>
-              <label class="lbl" style="display:block;margin-bottom:.4rem">Last name</label>
-              <input type="text" id="pt-last" class="inp" placeholder="Doe" required/>
-            </div>
-          </div>
-          <div style="margin-top:.4rem">
-            <label class="lbl" style="display:block;margin-bottom:.4rem">Patient code <span style="color:var(--mute);text-transform:none;letter-spacing:0;font-size:.72rem">(optional)</span></label>
-            <input type="text" id="pt-code" class="inp" placeholder="AH-XXXX"/>
-          </div>
-          <div style="margin-top:.4rem">
-            <label class="lbl" style="display:block;margin-bottom:.4rem">Email address</label>
-            <input type="email" id="pt-remail" class="inp" placeholder="name@email.com" required/>
-          </div>
-          <div style="margin-top:.4rem">
-            <label class="lbl" style="display:block;margin-bottom:.4rem">Password</label>
-            <input type="password" id="pt-rpass" class="inp" placeholder="Min. 8 characters" minlength="8" required/>
-          </div>
-          <button type="submit" class="btn btn-solid mag" style="width:100%;margin-top:1.5rem;padding:.95rem" id="pt-r-btn">Create Account</button>
-        </form>
-
-        <div class="gate-toggle">
-          <button onclick="ptToggle()" id="pt-toggle">Don't have an account? Create one</button>
-        </div>
+    <div class="gate-card rv d2">
+      <div class="gate-card-head">
+        <h2 class="gate-card-h" id="pt-title">Sign in</h2>
+        <span class="gate-card-meta">v1 · secure</span>
       </div>
+
+      <div class="gate-tabs">
+        <button class="gate-tab active" id="pt-tab-login"  onclick="ptSetMode('login')">Sign In</button>
+        <button class="gate-tab"        id="pt-tab-register" onclick="ptSetMode('register')">Create Account</button>
+      </div>
+
+      <div id="pt-err" style="display:none;margin-bottom:1rem"></div>
+      <div id="pt-ok"  style="display:none;margin-bottom:1rem"></div>
+
+      <button onclick="ptGoogleAuth()" class="btn-google" style="margin-bottom:0">
+        <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        Continue with Google
+      </button>
+
+      <div class="auth-divider"><div class="auth-hr"></div><span>or</span><div class="auth-hr"></div></div>
+
+      <form id="pt-login" onsubmit="ptLogin(event)" style="display:flex;flex-direction:column;gap:1rem">
+        <div class="field">
+          <label class="field-lbl" for="pt-email">Email</label>
+          <input type="email" id="pt-email" class="inp" placeholder="name@email.com" required/>
+        </div>
+        <div class="field">
+          <label class="field-lbl" for="pt-pass">Password</label>
+          <input type="password" id="pt-pass" class="inp" placeholder="••••••••" required/>
+        </div>
+        <button type="submit" class="btn btn-solid mag" style="width:100%;padding:.85rem;border-radius:5px;margin-top:.5rem" id="pt-li-btn">Sign In</button>
+      </form>
+
+      <form id="pt-register" onsubmit="ptRegister(event)" style="display:none;flex-direction:column;gap:1rem">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+          <div class="field"><label class="field-lbl" for="pt-first">First name</label><input type="text" id="pt-first" class="inp" placeholder="Jane" required/></div>
+          <div class="field"><label class="field-lbl" for="pt-last">Last name</label><input type="text" id="pt-last" class="inp" placeholder="Doe" required/></div>
+        </div>
+        <div class="field"><label class="field-lbl" for="pt-code">Patient code <span style="color:var(--mute);text-transform:none;letter-spacing:0;font-size:.7rem;font-weight:400">(optional)</span></label><input type="text" id="pt-code" class="inp" placeholder="AH-XXXX"/></div>
+        <div class="field"><label class="field-lbl" for="pt-remail">Email</label><input type="email" id="pt-remail" class="inp" placeholder="name@email.com" required/></div>
+        <div class="field"><label class="field-lbl" for="pt-rpass">Password</label><input type="password" id="pt-rpass" class="inp" placeholder="Min. 8 characters" minlength="8" required/></div>
+        <button type="submit" class="btn btn-solid mag" style="width:100%;padding:.85rem;border-radius:5px;margin-top:.5rem" id="pt-r-btn">Create Account</button>
+      </form>
+
     </div>
 
   </div>
@@ -539,200 +547,253 @@
 
 
 <!-- ══════════════════════════════════════════════════════════════════════
-     DASHBOARD — image-led FoundersCard tools.
+     DASHBOARD — Workspace shell with sidebar + bento canvas
 ══════════════════════════════════════════════════════════════════════ -->
 <div id="portal-dash">
 
   <div id="org-banner">
     <div class="ob-inner">
       <div style="flex:1;min-width:240px">
-        <span style="font-size:.58rem;letter-spacing:.28em;text-transform:uppercase;color:var(--ac);font-weight:500">No clinic connected</span>
-        <span style="font-size:.78rem;color:var(--sub);margin-left:.875rem;font-weight:300">Enter your patient code to unlock full portal access</span>
+        <span style="font-size:.58rem;letter-spacing:.28em;text-transform:uppercase;color:var(--ac);font-weight:500;margin-right:.625rem">No clinic connected</span>
+        <span style="color:var(--sub);font-weight:400">Enter your patient code to unlock full portal access</span>
       </div>
-      <button onclick="showOrgPrompt()" class="btn btn-outline" style="padding:.42rem 1.05rem;font-size:.6rem;flex-shrink:0">Connect Clinic</button>
+      <button onclick="showOrgPrompt()" class="btn btn-outline" style="padding:.42rem 1.05rem;font-size:.6rem;flex-shrink:0;border-radius:99px">Connect Clinic</button>
       <button onclick="dismissOrgBanner()" style="font-size:.6rem;color:var(--mute);background:none;border:none;cursor:pointer;flex-shrink:0;font-family:'DM Sans',sans-serif;letter-spacing:.06em" onmouseover="this.style.color='var(--sub)'" onmouseout="this.style.color='var(--mute)'">Dismiss</button>
     </div>
   </div>
 
-  <section class="dash-hero">
-    <div class="dash-hero-img" aria-hidden="true">
-      <img class="px" data-px=".05" src="https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=1600&q=80&auto=format&fit=crop" alt=""/>
-    </div>
-    <div class="dash-wrap dash-hero-inner">
-      <div class="dash-eyebrow rv"><span></span><span>Welcome to your portal</span></div>
-      <p class="dash-greeting rv d1">Good to see you again, signed in as <span id="dash-email-lbl"></span></p>
-      <h1 class="dash-name rv d1"><em id="dash-name">Patient</em></h1>
-      <p class="dash-lede rv d2">Your health record, your translations, your tools — everything you need between visits, in one quiet place.</p>
+  <div class="ws">
 
-      <div class="dash-stats stagger rv d3">
-        <div class="dash-stat">
-          <div class="dash-stat-lbl">Status</div>
-          <div class="dash-stat-val">Active</div>
-          <div class="dash-stat-sub">Membership in good standing</div>
-        </div>
-        <div class="dash-stat">
-          <div class="dash-stat-lbl">Connected clinic</div>
-          <div class="dash-stat-val" id="stat-org-name"><em>Not connected</em></div>
-          <div class="dash-stat-sub">Patient code unlocks bookings</div>
-        </div>
-        <div class="dash-stat">
-          <div class="dash-stat-lbl">Privacy</div>
-          <div class="dash-stat-val">PIPEDA</div>
-          <div class="dash-stat-sub">Canadian-compliant storage</div>
-        </div>
-        <div class="dash-stat">
-          <div class="dash-stat-lbl">Member ID</div>
-          <div class="dash-stat-val" id="stat-member-id">—</div>
-          <div class="dash-stat-sub">Quote on clinic correspondence</div>
-        </div>
-      </div>
-    </div>
-  </section>
+    <!-- ── SIDEBAR ── -->
+    <aside class="ws-side rv">
 
-  <div class="dash-wrap">
-    <div class="setup-prompt" id="dash-org-prompt">
-      <div class="setup-prompt-inner">
-        <div>
-          <div class="lbl" style="color:var(--ac);margin-bottom:.75rem">Complete your setup</div>
-          <h3>Connect your clinic to unlock<br/>your full <em>portal.</em></h3>
+      <!-- Member card -->
+      <div class="me-card">
+        <div class="me-row">
+          <div class="me-avatar"><span id="me-initial">?</span></div>
+          <div style="min-width:0">
+            <div class="me-name" id="me-name">—</div>
+            <div class="me-email" id="me-email">—</div>
+          </div>
         </div>
-        <button onclick="showOrgPrompt()" class="btn btn-solid mag" style="flex-shrink:0;padding:.85rem 2rem">Enter Patient Code</button>
-      </div>
-    </div>
-  </div>
-
-  <section class="dash-wrap">
-    <div class="sec-head">
-      <h2 class="sec-h rv">Your <em>tools.</em></h2>
-      <span class="sec-meta rv d1">03 active · 02 in development</span>
-    </div>
-
-    <div class="bcard-grid stagger rv">
-      <a href="/ai-assistant" class="bcard lift">
-        <div class="bcard-img"><img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=1100&q=80&auto=format&fit=crop" alt=""/></div>
-        <div class="bcard-veil"></div>
-        <div class="bcard-body">
-          <div class="bcard-tag">AI Assistant</div>
-          <h3 class="bcard-h">Health <em>dialogue.</em></h3>
-          <p class="bcard-p">Ask questions, translate labs, prepare for appointments — your private health companion.</p>
-          <span class="bcard-cta">Open <span>→</span></span>
-        </div>
-      </a>
-
-      <a href="/shop" class="bcard lift">
-        <div class="bcard-img"><img src="https://images.unsplash.com/photo-1556228720-195a672e8a03?w=1100&q=80&auto=format&fit=crop" alt=""/></div>
-        <div class="bcard-veil"></div>
-        <div class="bcard-body">
-          <div class="bcard-tag">Clinic Shop</div>
-          <h3 class="bcard-h">Curated <em>care.</em></h3>
-          <p class="bcard-p">Treatments and products mapped to your care plan — by the people treating you, not a generic catalogue.</p>
-          <span class="bcard-cta">Browse <span>→</span></span>
-        </div>
-      </a>
-
-      <div class="bcard lift" onclick="handleBookClick()" role="button" tabindex="0" onkeydown="if(event.key==='Enter')handleBookClick()">
-        <div class="bcard-img"><img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=1100&q=80&auto=format&fit=crop" alt=""/></div>
-        <div class="bcard-veil"></div>
-        <div class="bcard-body">
-          <div class="bcard-tag">Bookings</div>
-          <h3 class="bcard-h">Procedure <em>scheduling.</em></h3>
-          <p class="bcard-p">Book consultations and procedures directly with your clinic. Confirmed within one business day.</p>
-          <span class="bcard-cta">Book <span>→</span></span>
+        <div class="me-status">
+          <span class="me-status-dot"></span>
+          <span style="flex:1">Active member</span>
+          <span class="mono" style="font-size:.6rem;color:var(--mute)" id="me-tier-badge">FREE</span>
         </div>
       </div>
 
-      <div class="bcard disabled lift" aria-disabled="true">
-        <div class="bcard-img"><img src="https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=1100&q=80&auto=format&fit=crop" alt=""/></div>
-        <div class="bcard-veil"></div>
-        <span class="bcard-soon">Soon</span>
-        <div class="bcard-body">
-          <div class="bcard-tag">Medications</div>
-          <h3 class="bcard-h">Medication <em>tracker.</em></h3>
-          <p class="bcard-p">Review prescriptions and check drug interactions with your care team.</p>
-          <span class="bcard-cta">Coming soon</span>
+      <!-- Side menu -->
+      <nav class="side-menu" aria-label="Workspace sections">
+        <a href="#overview" class="side-link active" data-section="overview">
+          <svg class="side-icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          Overview
+        </a>
+        <a href="/ai-assistant" class="side-link">
+          <svg class="side-icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+          AI Assistant
+        </a>
+        <a href="/shop" class="side-link">
+          <svg class="side-icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18M16 10a4 4 0 0 1-8 0"/></svg>
+          Clinic Shop
+        </a>
+        <button class="side-link" onclick="handleBookClick()" id="side-book">
+          <svg class="side-icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          Bookings
+        </button>
+        <a href="/settings" class="side-link">
+          <svg class="side-icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Settings
+        </a>
+        <span class="side-link disabled" aria-disabled="true">
+          <svg class="side-icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="9" y="2" width="6" height="4" rx="1"/><path d="M9 4H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2"/></svg>
+          Records
+          <span class="side-badge">soon</span>
+        </span>
+      </nav>
+
+      <div class="side-foot">
+        <button onclick="showOrgPrompt()" id="side-clinic-btn">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18l6-6-6-6"/></svg>
+          Connect clinic
+        </button>
+        <button onclick="toggleTheme()">
+          <span id="theme-icon-side"></span>
+          <span id="theme-label-side">Toggle theme</span>
+        </button>
+        <button onclick="ptLogout()">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+          Sign out
+        </button>
+      </div>
+
+    </aside>
+
+    <!-- ── CANVAS ── -->
+    <main class="ws-main">
+
+      <!-- Greeting strip -->
+      <div class="ws-head rv">
+        <div class="ws-greet">
+          <div class="ws-greet-meta">
+            <span id="ws-date">—</span>
+            <span>·</span>
+            <span class="mono" id="ws-time">—</span>
+          </div>
+          <h1 class="ws-h1">Hello, <em id="dash-name">friend</em>.</h1>
+        </div>
+        <div class="ws-actions">
+          <a href="/ai-assistant" class="ws-action">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            Quick ask
+          </a>
+          <button class="ws-action" onclick="handleBookClick()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            Book
+          </button>
         </div>
       </div>
 
-      <div class="bcard disabled lift" aria-disabled="true">
-        <div class="bcard-img"><img src="https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=1100&q=80&auto=format&fit=crop" alt=""/></div>
-        <div class="bcard-veil"></div>
-        <span class="bcard-soon">Soon</span>
-        <div class="bcard-body">
-          <div class="bcard-tag">Symptom Journal</div>
-          <h3 class="bcard-h">Daily <em>journal.</em></h3>
-          <p class="bcard-p">Log symptoms with timestamps and severity for your care team to review.</p>
-          <span class="bcard-cta">Coming soon</span>
-        </div>
-      </div>
+      <!-- Bento grid -->
+      <div class="bento stag rv">
 
-      <a href="/settings" class="bcard lift">
-        <div class="bcard-img"><img src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=1100&q=80&auto=format&fit=crop" alt=""/></div>
-        <div class="bcard-veil"></div>
-        <div class="bcard-body">
-          <div class="bcard-tag">Account</div>
-          <h3 class="bcard-h">Settings &amp; <em>privacy.</em></h3>
-          <p class="bcard-p">Manage your profile, security, two-factor authentication, and clinic connections.</p>
-          <span class="bcard-cta">Settings <span>→</span></span>
-        </div>
-      </a>
-    </div>
-  </section>
-
-  <section class="dash-wrap">
-    <div class="acct-block">
-      <div class="lbl rv" style="margin-bottom:2rem">Account &amp; preferences</div>
-      <div class="acct-grid stagger rv">
-
-        <div class="acct-id">
-          <div class="acct-avatar" id="dash-avatar"><span id="dash-initial">?</span></div>
+        <!-- Setup prompt (full-width, gold, conditional) -->
+        <div class="bx-setup" id="dash-setup-prompt" style="display:none">
           <div>
-            <div class="acct-name" id="dash-full-name">—</div>
-            <div class="acct-email" id="dash-email-display">—</div>
-            <div id="dash-org-pill" style="display:none">
-              <span id="dash-org-pill-label" class="acct-pill"></span>
+            <span class="lbl" style="color:var(--ac);margin-bottom:.45rem;display:block">Complete your setup</span>
+            <h3 class="bx-setup-h">Connect your clinic to unlock <em>bookings.</em></h3>
+            <p class="bx-setup-p">Enter the patient code from your clinic to gain full access to procedure scheduling and your records.</p>
+          </div>
+          <button onclick="showOrgPrompt()" class="btn btn-solid mag" style="flex-shrink:0;padding:.78rem 1.5rem">Enter Patient Code</button>
+        </div>
+
+        <!-- Stat: status -->
+        <div class="bx bx-3 bx-stat">
+          <div class="lbl">Status</div>
+          <div class="bx-stat-val">Active</div>
+          <div class="bx-stat-trend good">● in good standing</div>
+        </div>
+
+        <!-- Stat: clinic -->
+        <div class="bx bx-5 bx-stat">
+          <div class="lbl">Connected clinic</div>
+          <div class="bx-stat-val" id="stat-org-name">Not connected</div>
+          <div class="bx-stat-trend warn" id="stat-org-trend">○ patient code unlocks bookings</div>
+        </div>
+
+        <!-- Stat: privacy -->
+        <div class="bx bx-2" style="grid-column:span 2">
+          <div class="lbl">Privacy</div>
+          <div class="bx-stat-val mono" style="font-size:1.7rem">PIPEDA</div>
+          <div class="bx-stat-trend">CA-encrypted</div>
+        </div>
+
+        <!-- Stat: member ID -->
+        <div class="bx bx-2" style="grid-column:span 2">
+          <div class="lbl">Member ID</div>
+          <div class="bx-stat-val mono" style="font-size:1.4rem;letter-spacing:.02em" id="stat-member-id">—</div>
+          <div class="bx-stat-trend">Quote on correspondence</div>
+        </div>
+
+        <!-- Tool: AI assistant (large) -->
+        <a href="/ai-assistant" class="bx bx-link bx-tool bx-6">
+          <div>
+            <div class="bx-tool-icn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            </div>
+            <div class="bx-tool-cat">AI Assistant</div>
+            <h3 class="bx-tool-h">Translate labs &amp; prepare for visits</h3>
+            <p class="bx-tool-p">Ask anything about your health. Plain-language answers, evidence-backed, available 24/7. Powered by Gemini.</p>
+          </div>
+          <span class="bx-tool-cta">Open assistant <span>→</span></span>
+        </a>
+
+        <!-- Tool: shop -->
+        <a href="/shop" class="bx bx-link bx-tool bx-3">
+          <div>
+            <div class="bx-tool-icn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18M16 10a4 4 0 0 1-8 0"/></svg>
+            </div>
+            <div class="bx-tool-cat">Clinic Shop</div>
+            <h3 class="bx-tool-h">Curated treatments</h3>
+            <p class="bx-tool-p">Mapped to your care plan.</p>
+          </div>
+          <span class="bx-tool-cta">Browse <span>→</span></span>
+        </a>
+
+        <!-- Tool: bookings -->
+        <div class="bx bx-link bx-tool bx-3" onclick="handleBookClick()" role="button" tabindex="0" onkeydown="if(event.key==='Enter')handleBookClick()">
+          <div>
+            <div class="bx-tool-icn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            </div>
+            <div class="bx-tool-cat">Bookings</div>
+            <h3 class="bx-tool-h">Schedule procedures</h3>
+            <p class="bx-tool-p">Direct to your clinic. Confirmed in 1 day.</p>
+          </div>
+          <span class="bx-tool-cta">Book <span>→</span></span>
+        </div>
+
+        <!-- Activity feed -->
+        <div class="bx bx-feed bx-8">
+          <div class="bx-feed-h">
+            <span class="bx-feed-h-label">Recent activity</span>
+            <span class="bx-feed-h-meta">last 30d</span>
+          </div>
+          <div id="feed-list">
+            <div class="feed-item">
+              <div class="feed-dot good"></div>
+              <div class="feed-text"><strong>Account created.</strong><br/>Welcome to Acuros. Set up your profile and connect your clinic to unlock everything.</div>
+              <div class="feed-time" id="feed-created">just now</div>
+            </div>
+            <div class="feed-item">
+              <div class="feed-dot"></div>
+              <div class="feed-text"><strong>PIPEDA encryption active.</strong><br/>Your records are stored in Canadian-compliant infrastructure.</div>
+              <div class="feed-time">on signup</div>
+            </div>
+            <div class="feed-item">
+              <div class="feed-dot warn"></div>
+              <div class="feed-text"><strong>No clinic connected.</strong><br/><a onclick="showOrgPrompt()" style="color:var(--ac);cursor:pointer;text-decoration:underline">Enter your patient code</a> to unlock bookings.</div>
+              <div class="feed-time">pending</div>
             </div>
           </div>
         </div>
 
-        <div class="acct-actions">
-          <div class="acct-row">
-            <span class="acct-row-label">Theme</span>
-            <button onclick="toggleTheme()" id="theme-toggle-btn">
-              <span id="theme-toggle-icon"></span>
-              <span id="theme-toggle-label">Dark Mode</span>
-            </button>
+        <!-- Soon: medications -->
+        <div class="bx bx-link disabled bx-tool bx-2" style="grid-column:span 2">
+          <span class="bx-soon">SOON</span>
+          <div>
+            <div class="bx-tool-icn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7zM8.5 8.5l7 7"/></svg></div>
+            <div class="bx-tool-cat">Medications</div>
+            <h3 class="bx-tool-h">Tracker</h3>
           </div>
-          <div class="acct-row">
-            <span class="acct-row-label">Account settings</span>
-            <a href="/settings">Manage <span>→</span></a>
-          </div>
-          <div class="acct-row">
-            <span class="acct-row-label">AI Assistant</span>
-            <a href="/ai-assistant">Open <span>→</span></a>
-          </div>
-          <div class="acct-row">
-            <span class="acct-row-label">Clinic connection</span>
-            <button onclick="showOrgPrompt()" id="acct-clinic-btn">Connect <span>→</span></button>
-          </div>
-          <div class="acct-row">
-            <span class="acct-row-label">Sign out</span>
-            <button onclick="ptLogout()">End session <span>→</span></button>
-          </div>
+          <span class="bx-tool-cta" style="color:var(--mute)">In development</span>
         </div>
-      </div>
-    </div>
-  </section>
 
-  <footer class="dash-wrap">
-    <div class="dash-footer">
-      <p>© 2025 Acuros Health Inc. — patient portal · <em>private &amp; encrypted</em></p>
-      <div style="display:flex;gap:2rem">
-        <a href="/privacy" class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Privacy</a>
-        <a href="/terms"   class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Terms</a>
-      </div>
-    </div>
-  </footer>
+        <!-- Soon: journal -->
+        <div class="bx bx-link disabled bx-tool bx-2" style="grid-column:span 2">
+          <span class="bx-soon">SOON</span>
+          <div>
+            <div class="bx-tool-icn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg></div>
+            <div class="bx-tool-cat">Journal</div>
+            <h3 class="bx-tool-h">Symptom log</h3>
+          </div>
+          <span class="bx-tool-cta" style="color:var(--mute)">In development</span>
+        </div>
 
+      </div>
+
+      <footer class="ws-footer">
+        <p>© 2025 Acuros Health Inc. — patient workspace · encrypted</p>
+        <div class="ws-footer-links">
+          <a href="/privacy">Privacy</a>
+          <a href="/terms">Terms</a>
+          <a href="/settings">Account</a>
+        </div>
+      </footer>
+
+    </main>
+  </div>
 </div>
 
 
@@ -741,35 +802,33 @@
     <button class="modal-x" onclick="hideOrgPrompt()" aria-label="Close">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
     </button>
-    <div style="display:flex;align-items:center;gap:.625rem;margin-bottom:1.5rem;font-size:.52rem;letter-spacing:.32em;text-transform:uppercase;color:var(--ac);font-weight:500">
-      <span style="display:block;width:18px;height:1px;background:var(--ac)"></span>CLINIC ACCESS
-    </div>
-    <h3 style="font-family:'Cormorant Garamond',serif;font-size:1.95rem;font-weight:300;letter-spacing:-.025em;line-height:1.05;margin-bottom:.75rem">Join your clinic's <em style="color:var(--ac);font-style:italic">network.</em></h3>
-    <p style="font-size:.78rem;color:var(--sub);line-height:1.7;margin-bottom:2rem;font-weight:300">Enter the unique code from your clinic to connect your account and unlock your full portal.</p>
+    <div class="lbl" style="color:var(--ac);margin-bottom:.875rem">Clinic access</div>
+    <h3 style="font-size:1.4rem;font-weight:500;letter-spacing:-.025em;margin-bottom:.5rem">Join your clinic's network</h3>
+    <p style="font-size:.78rem;color:var(--sub);line-height:1.6;margin-bottom:1.75rem;font-weight:400">Enter the unique code from your clinic to connect your account.</p>
     <div id="org-err" style="display:none;margin-bottom:1rem"></div>
     <div id="org-ok"  style="display:none;margin-bottom:1rem"></div>
-    <form onsubmit="joinOrg(event)" style="display:flex;flex-direction:column;gap:1.5rem">
-      <div>
-        <label class="lbl" style="display:block;margin-bottom:.5rem">Patient code</label>
-        <input type="text" id="org-code-inp" class="inp" placeholder="AH-XXXX" required autocomplete="off" style="text-transform:uppercase;letter-spacing:.08em"/>
+    <form onsubmit="joinOrg(event)" style="display:flex;flex-direction:column;gap:1rem">
+      <div class="field">
+        <label class="field-lbl" for="org-code-inp">Patient code</label>
+        <input type="text" id="org-code-inp" class="inp" placeholder="AH-XXXX" required autocomplete="off" style="text-transform:uppercase;letter-spacing:.06em;font-family:'JetBrains Mono',monospace"/>
       </div>
-      <button type="submit" class="btn btn-solid mag" style="width:100%;padding:.95rem" id="org-join-btn">Connect</button>
+      <button type="submit" class="btn btn-solid mag" style="width:100%;padding:.85rem;border-radius:5px" id="org-join-btn">Connect</button>
     </form>
-    <p style="font-size:.7rem;color:var(--mute);margin-top:1.25rem;line-height:1.7">Don't have a code? Ask your healthcare provider for your Acuros patient code.</p>
+    <p style="font-size:.7rem;color:var(--mute);margin-top:1.25rem;line-height:1.6">Don't have a code? Ask your healthcare provider.</p>
   </div>
 </div>
 
 
 <script>
 /* ═══════════════════════════════════════════════════════════════════════
-   THEME — light by default, dark if saved
+   THEME
 ═══════════════════════════════════════════════════════════════════════ */
-(function initTheme() {
-  if (localStorage.getItem('ah-theme') === 'dark') document.documentElement.classList.add('dark');
-})();
+(function initTheme(){ if(localStorage.getItem('ah-theme')==='dark') document.documentElement.classList.add('dark'); })();
 
 const SUN  = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>';
 const MOON = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+const SUN_S  = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>';
+const MOON_S = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
 
 function toggleTheme(){
   const isDark = document.documentElement.classList.toggle('dark');
@@ -778,18 +837,15 @@ function toggleTheme(){
 }
 function renderThemeToggle(){
   const isDark = document.documentElement.classList.contains('dark');
-  const navIcon = document.getElementById('th-icon');
-  if (navIcon) navIcon.innerHTML = isDark ? SUN : MOON;
-  const dashIcon  = document.getElementById('theme-toggle-icon');
-  const dashLabel = document.getElementById('theme-toggle-label');
-  if (dashIcon)  dashIcon.innerHTML  = isDark ? SUN : MOON;
-  if (dashLabel) dashLabel.textContent = isDark ? 'Light mode' : 'Dark mode';
+  const navIcon = document.getElementById('th-icon');  if (navIcon) navIcon.innerHTML = isDark ? SUN : MOON;
+  const sIcon = document.getElementById('theme-icon-side'); if (sIcon) sIcon.innerHTML = isDark ? SUN_S : MOON_S;
+  const sLbl  = document.getElementById('theme-label-side'); if (sLbl) sLbl.textContent = isDark ? 'Light theme' : 'Dark theme';
 }
 renderThemeToggle();
 
 
 /* ═══════════════════════════════════════════════════════════════════════
-   SUPABASE CONFIG  (auth + profile fetch — preserved)
+   SUPABASE (preserved)
 ═══════════════════════════════════════════════════════════════════════ */
 const CONFIG = {
   supabaseUrl: 'https://pyexkdoupqzbnrybiubo.supabase.co',
@@ -809,11 +865,8 @@ function getClinicPortalUrl(code){
 function userHasOrg(){ return !!(currentUser?.org_id || currentUser?.code); }
 
 function handleBookClick(){
-  if (userHasOrg()) {
-    window.location.href = '/bookings';
-  } else {
-    showOrgPrompt();
-  }
+  if (userHasOrg()) window.location.href = '/bookings';
+  else showOrgPrompt();
 }
 
 async function fetchProfile(userId){
@@ -841,7 +894,7 @@ window.addEventListener('scroll', () => {
   const sy    = window.scrollY;
   const total = document.documentElement.scrollHeight - window.innerHeight;
   if (prog)    prog.style.width = (total > 0 ? (sy/total*100) : 0) + '%';
-  if (mainNav) mainNav.classList.toggle('scrolled', sy > 40);
+  if (mainNav && !mainNav.classList.contains('solid')) mainNav.classList.toggle('scrolled', sy > 40);
 }, { passive: true });
 
 (function initCursor(){
@@ -851,17 +904,14 @@ window.addEventListener('scroll', () => {
   let mx=-100,my=-100,rx=-100,ry=-100;
   document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px';},{passive:true});
   (function ar(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(ar);})();
-  document.addEventListener('mouseover',e=>{if(e.target.closest('a,button,.btn,.bcard,.acct-row'))document.body.classList.add('c-hover');});
-  document.addEventListener('mouseout', e=>{if(e.target.closest('a,button,.btn,.bcard,.acct-row'))document.body.classList.remove('c-hover');});
+  document.addEventListener('mouseover',e=>{if(e.target.closest('a,button,.btn,.bx,.side-link,.ws-action'))document.body.classList.add('c-hover');});
+  document.addEventListener('mouseout', e=>{if(e.target.closest('a,button,.btn,.bx,.side-link,.ws-action'))document.body.classList.remove('c-hover');});
 })();
 
 
 /* ═══════════════════════════════════════════════════════════════════════
-   FRAMER-MOTION-LIKE INTERACTIVITY
-   • Magnetic   • Mouse parallax   • Scroll reveal + stagger
-   • Card 3D tilt   • Spring lift
+   INTERACTIONS — magnetic + reveal + tile spring
 ═══════════════════════════════════════════════════════════════════════ */
-
 document.querySelectorAll('.mag').forEach(el => {
   el.addEventListener('mousemove', e => {
     const r = el.getBoundingClientRect();
@@ -870,55 +920,33 @@ document.querySelectorAll('.mag').forEach(el => {
   el.addEventListener('mouseleave', () => { el.style.transform=''; });
 });
 
-(function initParallax(){
-  if (window.matchMedia('(pointer:coarse),(hover:none)').matches) return;
-  const els = Array.from(document.querySelectorAll('.px'));
-  if (!els.length) return;
-  let tx=0,ty=0,rafQ=null;
-  document.addEventListener('mousemove', e => {
-    tx = (e.clientX/window.innerWidth - .5) * 2;
-    ty = (e.clientY/window.innerHeight - .5) * 2;
-    if (!rafQ) rafQ = requestAnimationFrame(() => {
-      els.forEach(el => {
-        const k = parseFloat(el.dataset.px || .03);
-        el.style.transform = `translate3d(${(-tx*k*60).toFixed(1)}px,${(-ty*k*60).toFixed(1)}px,0)`;
-      });
-      rafQ = null;
-    });
-  }, { passive: true });
-})();
-
-(function initTilt(){
-  if (window.matchMedia('(pointer:coarse),(hover:none)').matches) return;
-  document.querySelectorAll('.bcard:not(.disabled)').forEach(card => {
-    card.addEventListener('mousemove', e => {
-      const r  = card.getBoundingClientRect();
-      const rx = ((e.clientY - r.top)  / r.height - .5) * -8;
-      const ry = ((e.clientX - r.left) / r.width  - .5) *  8;
-      card.style.transition = 'transform .14s cubic-bezier(.22,1,.36,1)';
-      card.style.transform  = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-4px)`;
-    });
-    card.addEventListener('mouseleave', () => {
-      card.style.transition = 'transform .68s cubic-bezier(.34,1.56,.64,1)';
-      card.style.transform  = '';
-      setTimeout(() => { card.style.transition = ''; }, 700);
-    });
-  });
-})();
-
 function setupReveal(){
-  const sel = '.rv:not(.in),.stagger:not(.in),.clip-wipe:not(.in)';
+  const sel = '.rv:not(.in),.stag:not(.in)';
   if (!('IntersectionObserver' in window)) {
     document.querySelectorAll(sel).forEach(el => el.classList.add('in')); return;
   }
   const io = new IntersectionObserver(entries => {
     entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
-  }, { threshold: 0, rootMargin: '0px 0px -60px 0px' });
+  }, { threshold: 0, rootMargin: '0px 0px -40px 0px' });
   document.querySelectorAll(sel).forEach(el => io.observe(el));
 }
 document.addEventListener('DOMContentLoaded', setupReveal);
 setTimeout(setupReveal, 200);
-setTimeout(() => document.querySelectorAll('.rv,.stagger,.clip-wipe').forEach(el => el.classList.add('in')), 4000);
+setTimeout(() => document.querySelectorAll('.rv,.stag').forEach(el => el.classList.add('in')), 4000);
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   GREETING — date + time
+═══════════════════════════════════════════════════════════════════════ */
+function renderGreeting(){
+  const date = new Date();
+  const dStr = date.toLocaleDateString('en-CA',{weekday:'long',month:'short',day:'numeric'});
+  const tStr = date.toLocaleTimeString('en-CA',{hour:'2-digit',minute:'2-digit',hour12:false});
+  const dEl = document.getElementById('ws-date'); if(dEl) dEl.textContent = dStr;
+  const tEl = document.getElementById('ws-time'); if(tEl) tEl.textContent = tStr;
+}
+renderGreeting();
+setInterval(renderGreeting, 30_000);
 
 
 /* ═══════════════════════════════════════════════════════════════════════
@@ -971,11 +999,11 @@ async function joinOrg(e){
     const portalUrl=getClinicPortalUrl(code);
     setBtn('org-join-btn',false,'Connect');
     if(portalUrl){
-      showMsg('org-ok',`Connected to ${org.name}. Redirecting to your portal…`,'ok');
+      showMsg('org-ok',`Connected to ${org.name}. Redirecting…`,'ok');
       setTimeout(()=>window.location.replace(portalUrl),1200);
     } else {
       currentUser.code=code; currentUser.org_id=org.id||''; currentUser.org_name=org.name;
-      showMsg('org-ok',`Connected to ${org.name}. Welcome.`,'ok');
+      showMsg('org-ok',`Connected to ${org.name}.`,'ok');
       setTimeout(()=>{hideOrgPrompt();syncPortal();},1600);
     }
   } catch(err) {
@@ -984,24 +1012,21 @@ async function joinOrg(e){
   }
 }
 
-function ptToggle(){
-  ptMode=ptMode==='login'?'register':'login';
-  const reg=ptMode==='register';
+function ptSetMode(mode){
+  ptMode = mode;
+  const reg = mode === 'register';
   document.getElementById('pt-login').style.display    = reg ? 'none' : 'flex';
   document.getElementById('pt-register').style.display = reg ? 'flex' : 'none';
-  document.getElementById('pt-title').innerHTML = reg ? 'Create your <em>account.</em>' : 'Sign in to your <em>portal.</em>';
-  document.getElementById('pt-sub').textContent = reg ? 'Enter your details to get started.' : 'Welcome back. Pick up where you left off.';
-  document.getElementById('pt-toggle').textContent = reg ? 'Already have an account? Sign in' : "Don't have an account? Create one";
+  document.getElementById('pt-title').textContent = reg ? 'Create account' : 'Sign in';
+  document.getElementById('pt-tab-login').classList.toggle('active', !reg);
+  document.getElementById('pt-tab-register').classList.toggle('active', reg);
   hideMsg('pt-err','pt-ok');
 }
 
 async function ptGoogleAuth(){
   if(!sb){showMsg('pt-err','Auth not configured.','err');return;}
   try{
-    const{error}=await sb.auth.signInWithOAuth({
-      provider:'google',
-      options:{redirectTo:window.location.origin+'/patient-portal?portal=1'}
-    });
+    const{error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin+'/patient-portal?portal=1'}});
     if(error)throw error;
   } catch(err){ showMsg('pt-err',err.message||'Google sign-in failed.','err'); }
 }
@@ -1021,11 +1046,13 @@ async function ptLogin(e){
         name: p?.name || data.user.user_metadata?.full_name || data.user.email.split('@')[0],
         first: p?.first_name||'', last: p?.last_name||'',
         code: p?.patient_code||'', org_id: p?.org_id||'',
-        org_name: p?.org?.name||''
+        org_name: p?.org?.name||'',
+        tier: p?.tier || 'free',
+        created_at: p?.created_at || data.user.created_at
       };
     } else {
       const email=document.getElementById('pt-email').value;
-      currentUser={id:'demo',email,name:email.split('@')[0],first:'',last:'',code:'',org_id:'',org_name:''};
+      currentUser={id:'demo',email,name:email.split('@')[0],first:'',last:'',code:'',org_id:'',org_name:'',tier:'free',created_at:new Date().toISOString()};
     }
     syncPortal();
   } catch(err){ showMsg('pt-err',err.message||'Sign in failed.','err'); }
@@ -1060,9 +1087,9 @@ async function ptRegister(e){
           tier:'free', usage_count:0
         });
       }catch(_){}
-      currentUser={id:data.user.id,email,name,first,last,code:safeCode,org_id:regOrgId,org_name:regOrgName};
+      currentUser={id:data.user.id,email,name,first,last,code:safeCode,org_id:regOrgId,org_name:regOrgName,tier:'free',created_at:new Date().toISOString()};
     } else {
-      currentUser={id:'demo',email,name,first,last,code:'',org_id:'',org_name:''};
+      currentUser={id:'demo',email,name,first,last,code:'',org_id:'',org_name:'',tier:'free',created_at:new Date().toISOString()};
     }
     syncPortal();
   } catch(err){ showMsg('pt-err',err.message||'Registration failed.','err'); }
@@ -1078,7 +1105,7 @@ async function ptLogout(){
 
 
 /* ═══════════════════════════════════════════════════════════════════════
-   SYNC PORTAL — switches between gate and dashboard
+   SYNC PORTAL
 ═══════════════════════════════════════════════════════════════════════ */
 function syncPortal(){
   const gate = document.getElementById('portal-gate');
@@ -1093,67 +1120,78 @@ function syncPortal(){
     dash.style.display = 'block';
     if(mainNav) mainNav.classList.add('solid');
 
-    document.getElementById('dash-name').textContent = currentUser.first || currentUser.name || 'Patient';
-    document.getElementById('dash-email-lbl').textContent = currentUser.email || '';
-    document.getElementById('dash-full-name').textContent =
-      (currentUser.first && currentUser.last) ? currentUser.first+' '+currentUser.last : (currentUser.name||'—');
-    document.getElementById('dash-email-display').textContent = currentUser.email || '—';
+    /* Greeting + sidebar identity */
+    const firstName = currentUser.first || currentUser.name || 'friend';
+    document.getElementById('dash-name').textContent = firstName;
 
-    const di = document.getElementById('dash-initial');
-    if(di) di.textContent = (currentUser.first||currentUser.name||'?').charAt(0).toUpperCase();
-    localStorage.setItem('ah-user-initial', (currentUser.first||currentUser.name||'?').charAt(0).toUpperCase());
+    const initial = (currentUser.first||currentUser.name||'?').charAt(0).toUpperCase();
+    const meInit = document.getElementById('me-initial'); if(meInit) meInit.textContent = initial;
+    localStorage.setItem('ah-user-initial', initial);
 
-    const mid = document.getElementById('stat-member-id');
-    if(mid) mid.innerHTML = currentUser.code ? `<em>${currentUser.code}</em>` : '<em>—</em>';
-    const statOrg = document.getElementById('stat-org-name');
+    const meName = document.getElementById('me-name');
+    if(meName) meName.textContent = (currentUser.first && currentUser.last) ? currentUser.first+' '+currentUser.last : (currentUser.name||'—');
+    const meEmail = document.getElementById('me-email');
+    if(meEmail) meEmail.textContent = currentUser.email || '—';
+    const meTier = document.getElementById('me-tier-badge');
+    if(meTier) meTier.textContent = (currentUser.tier||'free').toUpperCase();
+
+    /* Stats */
+    const sid = document.getElementById('stat-member-id');
+    if(sid) sid.textContent = currentUser.code || '—';
+
+    const statOrg  = document.getElementById('stat-org-name');
+    const statOrgT = document.getElementById('stat-org-trend');
     if(statOrg){
-      if(currentUser.org_name) statOrg.textContent = currentUser.org_name;
-      else if(currentUser.code) statOrg.textContent = currentUser.code;
-      else statOrg.innerHTML = '<em>Not connected</em>';
+      if(currentUser.org_name){ statOrg.textContent = currentUser.org_name; }
+      else if(currentUser.code){ statOrg.textContent = currentUser.code; }
+      else { statOrg.textContent = 'Not connected'; }
+    }
+    if(statOrgT){
+      if(userHasOrg()){ statOrgT.className = 'bx-stat-trend good'; statOrgT.textContent = '● connected · bookings unlocked'; }
+      else            { statOrgT.className = 'bx-stat-trend warn'; statOrgT.textContent = '○ patient code unlocks bookings'; }
     }
 
-    const op  = document.getElementById('dash-org-pill');
-    const opl = document.getElementById('dash-org-pill-label');
-    if(op && opl){
-      if(currentUser.org_name)      { opl.textContent = currentUser.org_name; op.style.display = 'block'; }
-      else if(currentUser.code)     { opl.textContent = 'Code: '+currentUser.code; op.style.display = 'block'; }
-      else                          { op.style.display = 'none'; }
-    }
+    /* Sidebar / setup prompt */
+    const sideClinic = document.getElementById('side-clinic-btn');
+    if(sideClinic) sideClinic.querySelector ? sideClinic.lastChild.textContent = userHasOrg() ? ' Clinic connected' : ' Connect clinic' : null;
 
-    const acctClinic = document.getElementById('acct-clinic-btn');
-    if(acctClinic){
-      acctClinic.innerHTML = userHasOrg() ? 'Manage <span>→</span>' : 'Connect <span>→</span>';
-    }
-
-    renderThemeToggle();
-
-    const hasOrg = userHasOrg(), bannerDismissed = localStorage.getItem(ORG_BANNER_DISMISSED_KEY) === '1';
-    const topBanner = document.getElementById('org-banner');
-    const dashPrompt = document.getElementById('dash-org-prompt');
-    if(!hasOrg){
-      if(topBanner)  topBanner.style.display  = bannerDismissed ? 'none' : 'block';
-      if(dashPrompt) dashPrompt.style.display = 'block';
+    const setupBox = document.getElementById('dash-setup-prompt');
+    const banner = document.getElementById('org-banner');
+    const dismissed = localStorage.getItem(ORG_BANNER_DISMISSED_KEY) === '1';
+    if(userHasOrg()){
+      if(setupBox) setupBox.style.display = 'none';
+      if(banner)   banner.style.display   = 'none';
     } else {
-      if(topBanner)  topBanner.style.display  = 'none';
-      if(dashPrompt) dashPrompt.style.display = 'none';
+      if(setupBox) setupBox.style.display = 'flex';
+      if(banner)   banner.style.display   = dismissed ? 'none' : 'block';
     }
 
+    /* Activity feed timestamp */
+    const fc = document.getElementById('feed-created');
+    if(fc && currentUser.created_at){
+      try{
+        const d = new Date(currentUser.created_at);
+        const days = Math.max(0, Math.floor((Date.now() - d.getTime())/86400000));
+        fc.textContent = days === 0 ? 'today' : `${days}d ago`;
+      } catch(_){}
+    }
+
+    /* Nav profile */
     const np = document.getElementById('nav-profile');
     const npi = document.getElementById('nav-profile-initial');
-    if(np && npi){
-      npi.textContent = (currentUser.first||currentUser.name||'?').charAt(0).toUpperCase();
-      np.style.display = 'flex';
-    }
+    if(np && npi){ npi.textContent = initial; np.style.display = 'flex'; }
+
+    renderThemeToggle();
   } else {
     gate.style.display = 'block';
     dash.style.display = 'none';
     ptMode = 'login';
-    if(mainNav) { mainNav.classList.remove('solid'); mainNav.classList.remove('scrolled'); }
-    document.getElementById('pt-login').style.display = 'flex';
+    if(mainNav){ mainNav.classList.remove('solid'); mainNav.classList.remove('scrolled'); }
+    document.getElementById('pt-login').style.display    = 'flex';
     document.getElementById('pt-register').style.display = 'none';
-    document.getElementById('pt-title').innerHTML = 'Sign in to your <em>portal.</em>';
-    document.getElementById('pt-sub').textContent = 'Welcome back. Pick up where you left off.';
-    document.getElementById('pt-toggle').textContent = "Don't have an account? Create one";
+    document.getElementById('pt-title').textContent = 'Sign in';
+    document.getElementById('pt-tab-login').classList.add('active');
+    document.getElementById('pt-tab-register').classList.remove('active');
     hideMsg('pt-err','pt-ok');
     const np = document.getElementById('nav-profile');
     if(np) np.style.display = 'none';
@@ -1167,7 +1205,8 @@ if(sb?.auth?.onAuthStateChange){
       currentUser = {
         id:session.user.id, email:session.user.email,
         name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'User',
-        first:'', last:'', code:'', org_id:'', org_name:''
+        first:'', last:'', code:'', org_id:'', org_name:'',
+        tier:'free', created_at:session.user.created_at
       };
       syncPortal();
       try{
@@ -1179,6 +1218,8 @@ if(sb?.auth?.onAuthStateChange){
           currentUser.code = p.patient_code || '';
           currentUser.org_id = p.org_id || '';
           currentUser.org_name = p.org?.name || '';
+          currentUser.tier = p.tier || 'free';
+          if(p.created_at) currentUser.created_at = p.created_at;
           syncPortal();
         }
       } catch(_e){}
@@ -1191,26 +1232,6 @@ if(sb?.auth?.onAuthStateChange){
     }
   });
 } else { syncPortal(); }
-
-
-/* ═══════════════════════════════════════════════════════════════════════
-   AMBIENT STAR FIELD
-═══════════════════════════════════════════════════════════════════════ */
-(function(){
-  const sf=document.createElement('div');sf.id='star-canvas';sf.setAttribute('aria-hidden','true');
-  sf.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden';
-  document.body.appendChild(sf);
-  for(let i=0;i<32;i++){
-    const s=document.createElement('div');
-    s.style.cssText=`position:absolute;width:${Math.random()<.65?2:3}px;height:${Math.random()<.65?2:3}px;border-radius:50%;background:var(--ac);left:${(Math.random()*100).toFixed(1)}%;top:${(Math.random()*100).toFixed(1)}%;opacity:0;transform:scale(.3);animation:starPulse ${(3.5+Math.random()*6).toFixed(1)}s ${(Math.random()*12).toFixed(1)}s ease-in-out infinite;--peak:${(.08+Math.random()*.14).toFixed(2)}`;
-    sf.appendChild(s);
-  }
-  if(!document.querySelector('style[data-star]')){
-    const st=document.createElement('style');st.setAttribute('data-star','');
-    st.textContent='@keyframes starPulse{0%,100%{opacity:0;transform:scale(.2)}40%,60%{opacity:var(--peak,.18);transform:scale(1)}}';
-    document.head.appendChild(st);
-  }
-})();
 </script>
 </body>
 </html>

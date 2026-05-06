@@ -175,33 +175,32 @@
 <!-- ── NAV ── -->
 <nav id="main-nav">
   <div class="nav-inner">
-    <a href="/" style="display:flex;align-items:center;gap:.875rem;text-decoration:none">
-      <img src="logo.png" alt="Acuros" width="36" height="36" style="flex-shrink:0;object-fit:contain"/>
-      <div>
-        <div style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:.95rem;letter-spacing:.12em;color:var(--text);line-height:1">ACUROS</div>
-        <div class="lbl" style="font-size:.46rem;letter-spacing:.34em">HEALTH</div>
+    <a href="/" class="nav-logo">
+      <img id="nav-logo-img" src="/logo.png" alt="Acuros"/>
+      <div style="display:flex;flex-direction:column;gap:2px">
+        <span class="nav-logo-text">ACUROS</span>
+        <span class="nav-logo-sub">HEALTH</span>
       </div>
     </a>
-    <div style="display:flex;align-items:center;gap:2rem" class="hnm">
+
+    <div style="display:flex;align-items:center;gap:3rem" class="hnm">
       <a class="nav-link" href="/">Home</a>
       <a class="nav-link" href="/ai-assistant">AI Assistant</a>
       <a class="nav-link" href="/patient-portal">Patient Login</a>
     </div>
+
     <div style="display:flex;align-items:center;gap:.875rem">
-      <!-- Profile pill -->
       <div id="nav-profile" style="display:none;width:32px;height:32px;border-radius:50%;background:var(--ac);align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:opacity .2s,transform .2s" onclick="window.location.href='/patient-portal'" title="My Portal">
         <span id="nav-profile-initial" style="font-size:.72rem;font-weight:500;color:#fff;font-family:'DM Sans',sans-serif;line-height:1"></span>
       </div>
-      <!-- Account icon -->
-      <a href="/settings" id="nav-account" style="width:34px;height:34px;border:1px solid var(--border);background:none;color:var(--sub);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .22s,color .22s;text-decoration:none;flex-shrink:0" title="Account" aria-label="Account settings" onmouseover="this.style.borderColor='var(--ac)';this.style.color='var(--ac)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--sub)'">
+      <a href="/settings" id="nav-account" style="width:34px;height:34px;border:1px solid var(--border);background:none;color:var(--sub);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .22s,color .22s;text-decoration:none;flex-shrink:0" title="Account" aria-label="Account settings">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 10-16 0"/></svg>
       </a>
-      <!-- Theme toggle -->
       <button id="nav-theme-toggle" onclick="toggleTheme()" style="width:34px;height:34px;border:1px solid var(--border);background:none;color:var(--sub);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .22s,color .22s" title="Toggle theme" aria-label="Toggle theme">
         <span id="th-icon" style="display:flex;align-items:center"></span>
       </button>
-      <a href="/patient-portal" class="btn btn-solid mag" style="padding:.55rem 1.25rem" id="nav-cta">Patient Login</a>
-      <button onclick="openMob()" style="display:none;background:none;border:none;cursor:pointer;color:var(--text);padding:.25rem" id="mob-btn" aria-label="Menu">
+      <a href="/patient-portal" class="btn btn-solid btn-pill mag" style="padding:.55rem 1.5rem;font-size:.62rem" id="nav-cta">Patient Login</a>
+      <button onclick="openMob()" style="display:none;background:none;border:none;cursor:pointer;color:var(--text);padding:.25rem" id="mob-btn" aria-label="Open menu">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16M4 12h12M4 18h8"/></svg>
       </button>
     </div>
