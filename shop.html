@@ -818,16 +818,17 @@ async function submitCheckout() {
     // Clear cart on success.
     cart = []; saveCart(); updateCartUI();
 
-    // Show success state.
+    // Show success state, then redirect to portal.
     const formView    = document.getElementById('checkout-view-form');
     const successView = document.getElementById('checkout-view-success');
     const msg         = document.getElementById('co-success-msg');
     const pts         = Number(data.pointsEarned || 0);
     if (msg) {
-      msg.innerHTML = `Thanks, ${name.split(' ')[0]}. We've sent confirmation to <strong>${email}</strong>. Your clinic will be in touch shortly.${pts > 0 ? `<br/><br/><span style="color:var(--ac)">+${pts} loyalty point${pts !== 1 ? 's' : ''} pending.</span>` : ''}`;
+      msg.innerHTML = `Thanks, ${name.split(' ')[0]}. We've sent confirmation to <strong>${email}</strong>.${pts > 0 ? `<br/><br/><span style="color:var(--ac)">+${pts} loyalty point${pts !== 1 ? 's' : ''} pending.</span>` : ''}<br/><br/><span style="opacity:.7">Redirecting to your portal…</span>`;
     }
     if (formView)    formView.style.display    = 'none';
     if (successView) successView.style.display = '';
+    setTimeout(() => { window.location.href = '/patient-portal?from=order'; }, 1500);
   } catch (err) {
     errEl.textContent = (err && err.message) ? err.message : 'Could not place order. Please try again.';
     errEl.style.display = 'block';

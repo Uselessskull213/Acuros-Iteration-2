@@ -781,12 +781,13 @@ async function submitBooking() {
     if (!resp.ok) throw new Error(data.error || `Request failed (${resp.status})`);
 
     okEl.style.display = 'block'; okEl.className = 'ok-box';
-    okEl.innerHTML = `<strong>Booking request received!</strong><br/>Thank you, ${payload.firstName}. We'll confirm your <strong>${payload.procedure}</strong> appointment by email within one business day.`;
+    okEl.innerHTML = `<strong>Booking request received!</strong><br/>Thank you, ${payload.firstName}. Redirecting to your portal…`;
     document.getElementById('review-card').style.opacity = '.5';
     document.getElementById('review-card').style.pointerEvents = 'none';
     btn.style.display = 'none';
     document.getElementById('back-3').style.display = 'none';
     window.scrollTo({ top: okEl.getBoundingClientRect().top + window.scrollY - 120, behavior: 'smooth' });
+    setTimeout(() => { window.location.href = '/patient-portal?from=booking'; }, 1500);
   } catch (err) {
     okEl.style.display = 'block'; okEl.className = 'err-box';
     okEl.textContent = (err && err.message) ? err.message : 'Unable to submit right now. Please try again or call your clinic directly.';
