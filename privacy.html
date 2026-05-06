@@ -47,6 +47,10 @@
     #mob-menu{display:none;position:fixed;inset:0;z-index:300;background:var(--bg);flex-direction:column;padding:2.5rem}
     #mob-menu.open{display:flex;animation:pgIn .3s ease}
     @media(max-width:900px){.hnm{display:none!important}#mob-btn{display:flex!important}#nav-cta{display:none!important}}
+    /* ── Ambient star field ── */
+    #star-canvas{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}
+    .star{position:absolute;width:2px;height:2px;border-radius:1px;background:var(--ac);opacity:0;transform:rotate(45deg) scale(.3);animation:starPulse var(--dur,5s) var(--del,0s) ease-in-out infinite}
+    @keyframes starPulse{0%,100%{opacity:0;transform:rotate(45deg) scale(.2)}40%,60%{opacity:var(--peak,.18);transform:rotate(45deg) scale(1)}}
   </style>
 </head>
 <body>
@@ -72,6 +76,9 @@
       <div id="nav-profile" style="display:none;width:32px;height:32px;border-radius:50%;background:var(--ac);align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:opacity .2s,transform .2s" onclick="window.location.href='/patient-portal'" title="My Portal">
         <span id="nav-profile-initial" style="font-size:.72rem;font-weight:500;color:#fff;font-family:'DM Sans',sans-serif;line-height:1"></span>
       </div>
+      <a href="/settings" id="nav-account" style="width:34px;height:34px;border:1px solid var(--border);background:none;color:var(--sub);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .22s,color .22s;text-decoration:none;flex-shrink:0" title="Account" aria-label="Account settings" onmouseover="this.style.borderColor='var(--ac)';this.style.color='var(--ac)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--sub)'">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 10-16 0"/></svg>
+      </a>
       <button id="nav-theme-toggle" onclick="toggleTheme()" style="width:34px;height:34px;border:1px solid var(--border);background:none;color:var(--sub);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .22s,color .22s" title="Toggle theme" aria-label="Toggle theme">
         <span id="th-icon" style="display:flex;align-items:center"></span>
       </button>
@@ -172,6 +179,14 @@ function renderThemeToggle() {
 function openMob()  { document.getElementById('mob-menu').classList.add('open'); }
 function closeMob() { document.getElementById('mob-menu').classList.remove('open'); }
 window.addEventListener('scroll', () => { document.getElementById('main-nav').style.boxShadow = window.scrollY > 10 ? '0 1px 24px rgba(0,0,0,.08)' : ''; });
+
+// ── Ambient star field ────────────────────────────────────────────────────────
+(function(){
+  const sf=document.createElement('div');sf.id='star-canvas';sf.setAttribute('aria-hidden','true');
+  document.body.appendChild(sf);
+  for(let i=0;i<30;i++){const s=document.createElement('div');s.className='star';const sz=Math.random()<.65?2:3;
+  s.style.cssText=`width:${sz}px;height:${sz}px;left:${(Math.random()*100).toFixed(1)}%;top:${(Math.random()*100).toFixed(1)}%;--dur:${(3.5+Math.random()*6).toFixed(1)}s;--del:${(Math.random()*12).toFixed(1)}s;--peak:${(.08+Math.random()*.14).toFixed(2)}`;sf.appendChild(s);}
+})();
 </script>
 </body>
 </html>

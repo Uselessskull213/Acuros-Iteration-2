@@ -295,6 +295,10 @@
     html.dark .gate-vignette{
       background:linear-gradient(to right,rgba(12,12,10,0) 55%,rgba(12,12,10,.97) 100%)
     }
+    /* ── Ambient star field ── */
+    #star-canvas{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}
+    .star{position:absolute;width:2px;height:2px;border-radius:1px;background:var(--ac);opacity:0;transform:rotate(45deg) scale(.3);animation:starPulse var(--dur,5s) var(--del,0s) ease-in-out infinite}
+    @keyframes starPulse{0%,100%{opacity:0;transform:rotate(45deg) scale(.2)}40%,60%{opacity:var(--peak,.18);transform:rotate(45deg) scale(1)}}
   </style>
 </head>
 <body>
@@ -321,6 +325,9 @@
       <a class="nav-link" href="/shop">Shop</a>
     </div>
     <div style="display:flex;align-items:center;gap:.875rem">
+      <a href="/settings" id="nav-account" style="width:34px;height:34px;border:1px solid var(--border);background:none;color:var(--sub);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .22s,color .22s;text-decoration:none;flex-shrink:0" title="Account" aria-label="Account settings" onmouseover="this.style.borderColor='var(--ac)';this.style.color='var(--ac)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--sub)'">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 10-16 0"/></svg>
+      </a>
       <a href="/patient-portal" class="btn btn-solid mag" style="padding:.45rem 1.2rem;font-size:.62rem" id="nav-cta">Portal</a>
       <button onclick="openMob()" style="display:none;background:none;border:none;cursor:pointer;color:var(--text);padding:.25rem" id="mob-btn" aria-label="Menu">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16M4 12h12M4 18h8"/></svg>
@@ -937,6 +944,14 @@ if(sb?.auth?.onAuthStateChange){
     if(window.location.hash?.includes('access_token'))window.history.replaceState(null,'',window.location.pathname+window.location.search);
   });
 }else{syncPortal();}
+
+// ── Ambient star field ────────────────────────────────────────────────────────
+(function(){
+  const sf=document.createElement('div');sf.id='star-canvas';sf.setAttribute('aria-hidden','true');
+  document.body.appendChild(sf);
+  for(let i=0;i<40;i++){const s=document.createElement('div');s.className='star';const sz=Math.random()<.65?2:3;
+  s.style.cssText=`width:${sz}px;height:${sz}px;left:${(Math.random()*100).toFixed(1)}%;top:${(Math.random()*100).toFixed(1)}%;--dur:${(3.5+Math.random()*6).toFixed(1)}s;--del:${(Math.random()*12).toFixed(1)}s;--peak:${(.08+Math.random()*.14).toFixed(2)}`;sf.appendChild(s);}
+})();
 </script>
 </body>
 </html>

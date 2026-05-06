@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Account — Acuros Health</title>
+  <link rel="icon" type="image/png" href="favicon.png"/>
+  <link rel="apple-touch-icon" href="favicon.png"/>
+  <meta name="robots" content="noindex"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,200;0,300;0,400;0,500;1,200;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
+  <script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{display:['Cormorant Garamond','Georgia','serif'],sans:['DM Sans','sans-serif']}}}}</script>
+  <style>
+    :root{
+      --bg:#f0ebe1;--bg2:#f8f4ec;--bg3:#e6e0d4;
+      --border:#d4cdb8;--text:#1c1a14;--sub:#5c5346;--mute:#a09480;
+      --ac:#c9922a;--nav:rgba(240,235,225,.97)
+    }
+    html.dark{
+      --bg:#0a0a09;--bg2:#111110;--bg3:#161614;
+      --border:#1e1e1b;--text:#f0ede8;--sub:#8c8880;--mute:#4e4c48;
+      --ac:#c9a96e;--nav:rgba(10,10,9,.96)
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;cursor:none;min-height:100dvh}
+    @media(hover:none),(pointer:coarse){body{cursor:auto}}
+
+    /* ── Grain ── */
+    #grain{position:fixed;inset:0;z-index:9992;pointer-events:none;opacity:.055;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-repeat:repeat;background-size:180px 180px}
+
+    /* ── Cursor ── */
+    #cursor-dot{position:fixed;top:0;left:0;width:5px;height:5px;background:var(--text);border-radius:50%;pointer-events:none;z-index:8999;transform:translate(-50%,-50%);transition:background .2s,transform .2s cubic-bezier(.22,1,.36,1);will-change:left,top}
+    #cursor-ring{position:fixed;top:0;left:0;width:30px;height:30px;border:1px solid rgba(201,169,110,.25);border-radius:50%;pointer-events:none;z-index:8998;transform:translate(-50%,-50%);transition:width .32s cubic-bezier(.22,1,.36,1),height .32s,border-color .3s;will-change:left,top}
+    html:not(.dark) #cursor-ring{border-color:rgba(28,26,20,.15)}
+    body.c-hover #cursor-dot{transform:translate(-50%,-50%) scale(2.4);background:var(--ac)}
+    body.c-hover #cursor-ring{width:50px;height:50px;border-color:rgba(201,169,110,.4)}
+    @media(hover:none),(pointer:coarse){#cursor-dot,#cursor-ring{display:none}}
+
+    /* ── Scroll progress ── */
+    #scroll-prog{position:fixed;top:0;left:0;z-index:9001;height:1px;background:var(--ac);width:0%;will-change:width;pointer-events:none}
+
+    /* ── NAV ── */
+    nav{position:fixed;top:0;left:0;right:0;z-index:200;
+      background:var(--nav);backdrop-filter:blur(28px) saturate(180%);-webkit-backdrop-filter:blur(28px) saturate(180%);border-bottom:1px solid var(--border);
+      transition:background .45s,border-color .45s}
+    .nav-inner{height:68px;max-width:1440px;margin:0 auto;padding:0 3rem;display:flex;align-items:center;justify-content:space-between}
+    .nav-logo{display:flex;align-items:center;gap:.875rem;text-decoration:none}
+    #nav-logo-img{width:32px;height:32px;object-fit:contain;display:block}
+    .nav-logo-text{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:.9rem;letter-spacing:.22em;color:var(--text);line-height:1}
+    .nav-logo-sub{font-size:.42rem;letter-spacing:.42em;text-transform:uppercase;color:var(--mute);font-family:'DM Sans',sans-serif;font-weight:400}
+    .nav-link{position:relative;font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--sub);background:none;border:none;cursor:pointer;padding:0;font-family:inherit;transition:color .22s;text-decoration:none;display:inline-block}
+    .nav-link::after{content:'';position:absolute;left:0;bottom:-2px;width:0;height:1px;background:var(--ac);transition:width .3s cubic-bezier(.22,1,.36,1)}
+    .nav-link:hover::after,.nav-link.active::after{width:100%}
+    .nav-link:hover,.nav-link.active{color:var(--text)}
+    .nav-icon-btn{width:34px;height:34px;border:1px solid var(--border);background:none;color:var(--sub);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .22s,color .22s;text-decoration:none;flex-shrink:0}
+    .nav-icon-btn:hover{border-color:var(--ac);color:var(--ac)}
+    .nav-icon-btn.active{border-color:var(--ac);color:var(--ac)}
+    @media(max-width:900px){.hnm{display:none!important}.nav-inner{padding:0 1.5rem}#mob-btn{display:flex!important}#nav-cta{display:none!important}}
+
+    /* ── Mobile menu ── */
+    #mob-menu{position:fixed;inset:0;z-index:500;background:var(--bg);padding:4rem 2.5rem;display:none;flex-direction:column;opacity:0;transition:opacity .3s cubic-bezier(.22,1,.36,1)}
+    #mob-menu.open{display:flex;opacity:1}
+
+    /* ── Atoms ── */
+    .lbl{font-family:'DM Sans',sans-serif;font-size:.56rem;letter-spacing:.26em;text-transform:uppercase;color:var(--mute);font-weight:400}
+    .rv{opacity:0;transform:translateY(14px);transition:opacity .82s cubic-bezier(.22,1,.36,1),transform .82s}
+    .rv.in{opacity:1;transform:none}
+    .rv.d1{transition-delay:.08s}.rv.d2{transition-delay:.16s}.rv.d3{transition-delay:.24s}.rv.d4{transition-delay:.32s}.rv.d5{transition-delay:.4s}
+
+    /* ── G-card (glass card) ── */
+    .g-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);box-shadow:0 1px 0 rgba(255,255,255,.06) inset}
+    html:not(.dark) .g-card{background:var(--bg2);border-color:var(--border);backdrop-filter:none;box-shadow:none}
+
+    /* ── Settings layout ── */
+    .settings-wrap{max-width:1100px;margin:0 auto;padding:7.5rem 3rem 6rem}
+    @media(max-width:700px){.settings-wrap{padding:6rem 1.5rem 4rem}}
+
+    /* ── Profile hero ── */
+    .profile-hero{display:grid;grid-template-columns:auto 1fr;gap:2.5rem;align-items:center;padding:3.5rem;border-bottom:1px solid var(--border)}
+    @media(max-width:640px){.profile-hero{grid-template-columns:1fr;gap:1.75rem}}
+    .profile-avatar{width:80px;height:80px;border-radius:50%;background:var(--ac);display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative}
+    .profile-avatar-initial{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:300;color:#fff;line-height:1}
+    .profile-avatar::after{content:'';position:absolute;inset:-3px;border-radius:50%;border:1px solid var(--ac);opacity:.3}
+    .profile-name{font-family:'Cormorant Garamond',serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:200;letter-spacing:-.02em;line-height:1;color:var(--text);margin-bottom:.4rem}
+    .profile-email{font-size:.78rem;color:var(--sub);letter-spacing:.04em}
+    .profile-tag{display:inline-flex;align-items:center;gap:.4rem;padding:.25rem .875rem;border-radius:999px;border:1px solid rgba(201,169,110,.2);background:rgba(201,169,110,.06);font-size:.52rem;letter-spacing:.22em;text-transform:uppercase;color:var(--ac);font-family:'DM Sans',sans-serif;margin-top:.75rem}
+
+    /* ── Settings sections ── */
+    .settings-section{border-bottom:1px solid var(--border);padding:2.75rem 0}
+    .settings-section:last-child{border-bottom:none}
+    .section-label{font-size:.52rem;letter-spacing:.28em;text-transform:uppercase;color:var(--mute);font-family:'DM Sans',sans-serif;margin-bottom:1.5rem}
+
+    /* ── Nav rows ── */
+    .settings-row{display:flex;align-items:center;justify-content:space-between;padding:1rem 0;border-bottom:1px solid var(--border);cursor:pointer;transition:color .2s;text-decoration:none;color:var(--text)}
+    .settings-row:last-child{border-bottom:none}
+    .settings-row:hover{color:var(--ac)}
+    .settings-row:hover .row-arrow{transform:translateX(4px);color:var(--ac)}
+    .row-left{display:flex;align-items:center;gap:.875rem}
+    .row-icon{width:32px;height:32px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--sub);flex-shrink:0;transition:border-color .2s,color .2s}
+    .settings-row:hover .row-icon{border-color:var(--ac);color:var(--ac)}
+    .row-label{font-size:.8rem;letter-spacing:.04em;color:inherit}
+    .row-arrow{font-size:.9rem;color:var(--mute);transition:transform .25s cubic-bezier(.22,1,.36,1),color .2s}
+
+    /* ── Preference toggle ── */
+    .pref-row{display:flex;align-items:center;justify-content:space-between;padding:1rem 0;border-bottom:1px solid var(--border)}
+    .pref-row:last-child{border-bottom:none}
+    .pref-label{font-size:.8rem;color:var(--sub);letter-spacing:.04em}
+    .toggle-track{width:42px;height:22px;border-radius:999px;background:var(--border);position:relative;cursor:pointer;transition:background .25s;flex-shrink:0;border:none;padding:0}
+    .toggle-track.on{background:var(--ac)}
+    .toggle-thumb{position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .25s cubic-bezier(.22,1,.36,1);box-shadow:0 1px 3px rgba(0,0,0,.2)}
+    .toggle-track.on .toggle-thumb{transform:translateX(20px)}
+
+    /* ── Legal links ── */
+    .legal-row{display:flex;gap:2rem;flex-wrap:wrap}
+    .legal-link{font-size:.72rem;color:var(--mute);text-decoration:none;letter-spacing:.06em;transition:color .2s;border-bottom:1px solid transparent;padding-bottom:.15rem}
+    .legal-link:hover{color:var(--text);border-bottom-color:var(--ac)}
+
+    /* ── Sign out ── */
+    .signout-btn{display:inline-flex;align-items:center;gap:.625rem;font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--mute);background:none;border:1px solid var(--border);cursor:pointer;padding:.7rem 1.5rem;font-family:'DM Sans',sans-serif;transition:color .22s,border-color .22s}
+    .signout-btn:hover{color:#c0392b;border-color:#c0392b}
+    html:not(.dark) .signout-btn:hover{color:#b02020;border-color:#b02020}
+
+    /* ── Recent sessions ── */
+    .session-item{display:flex;align-items:center;gap:.875rem;padding:.875rem 0;border-bottom:1px solid var(--border);cursor:pointer;transition:color .2s;text-decoration:none}
+    .session-item:last-child{border-bottom:none}
+    .session-item:hover{color:var(--ac)}
+    .session-dot{width:5px;height:5px;border-radius:50%;background:var(--mute);flex-shrink:0;transition:background .2s}
+    .session-item:hover .session-dot{background:var(--ac)}
+    .session-title{flex:1;font-size:.76rem;color:var(--sub);letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .session-date{font-size:.62rem;color:var(--mute);letter-spacing:.04em;flex-shrink:0}
+
+    /* ── Ambient stars ── */
+    #star-canvas{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}
+    .star{position:absolute;width:2px;height:2px;border-radius:1px;background:var(--ac);opacity:0;transform:rotate(45deg) scale(.3);animation:starPulse var(--dur,5s) var(--del,0s) ease-in-out infinite}
+    @keyframes starPulse{0%,100%{opacity:0;transform:rotate(45deg) scale(.2)}40%,60%{opacity:var(--peak,.18);transform:rotate(45deg) scale(1)}}
+
+    /* ── Footer ── */
+    footer{border-top:1px solid var(--border);padding:2.5rem 3rem;max-width:1440px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+    .footer-copy{font-size:.62rem;color:var(--mute);letter-spacing:.04em}
+    @media(max-width:700px){footer{padding:2rem 1.5rem;flex-direction:column;align-items:flex-start}}
+  </style>
+</head>
+<body>
+<div id="grain" aria-hidden="true"></div>
+<div id="cursor-dot" aria-hidden="true"></div>
+<div id="cursor-ring" aria-hidden="true"></div>
+<div id="scroll-prog" aria-hidden="true"></div>
+
+
+<!-- ── Nav ── -->
+<nav id="main-nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">
+      <img id="nav-logo-img" src="/assets/logo-gold.jpg" alt="Acuros"/>
+      <div style="display:flex;flex-direction:column;gap:2px">
+        <span class="nav-logo-text">ACUROS</span>
+        <span class="nav-logo-sub">HEALTH</span>
+      </div>
+    </a>
+
+    <div style="display:flex;align-items:center;gap:3rem" class="hnm">
+      <a class="nav-link" href="/">Home</a>
+      <a class="nav-link" href="/ai-assistant">AI Assistant</a>
+      <a class="nav-link" href="/patient-portal">Patient Login</a>
+    </div>
+
+    <div style="display:flex;align-items:center;gap:.875rem">
+      <a href="/settings" id="nav-account" class="nav-icon-btn active" title="Account" aria-label="Account settings" style="border-radius:0">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 10-16 0"/></svg>
+      </a>
+      <button id="nav-theme-toggle" onclick="toggleTheme()" style="width:34px;height:34px;border:1px solid var(--border);background:none;color:var(--sub);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .22s,color .22s" title="Toggle theme" aria-label="Toggle theme">
+        <span id="th-icon" style="display:flex;align-items:center"></span>
+      </button>
+      <a href="#contact" class="nav-icon-btn" id="nav-cta" style="width:auto;padding:0 1.25rem;font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;font-family:'DM Sans',sans-serif;text-decoration:none;color:var(--text);background:var(--text);color:var(--bg);" onclick="window.location.href='/#contact';return false">Request Demo</a>
+      <button onclick="openMob()" style="display:none;background:none;border:none;cursor:pointer;color:var(--text);padding:.25rem" id="mob-btn" aria-label="Open menu">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16M4 12h12M4 18h8"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ── Mobile Menu ── -->
+<div id="mob-menu">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3.5rem">
+    <span style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:300;color:var(--text);letter-spacing:.16em">ACUROS</span>
+    <button onclick="closeMob()" style="background:none;border:none;cursor:pointer;color:var(--text)">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <div style="display:flex;flex-direction:column">
+    <a href="/"             style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:200;color:var(--sub);text-decoration:none;border-bottom:1px solid var(--border);padding:.875rem 0">Home</a>
+    <a href="/ai-assistant" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:200;color:var(--sub);text-decoration:none;border-bottom:1px solid var(--border);padding:.875rem 0">AI Assistant</a>
+    <a href="/patient-portal" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:200;color:var(--sub);text-decoration:none;border-bottom:1px solid var(--border);padding:.875rem 0">Patient Login</a>
+    <a href="/settings" style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:200;color:var(--ac);text-decoration:none;padding:.875rem 0">Account</a>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════
+     SETTINGS CONTENT
+════════════════════════════════════ -->
+<main style="position:relative;z-index:2">
+  <div class="settings-wrap">
+
+    <!-- ── Section header ── -->
+    <div class="rv" style="margin-bottom:3rem">
+      <div class="lbl" style="margin-bottom:.875rem">Account &amp; Settings</div>
+      <h1 style="font-family:'Cormorant Garamond',serif;font-size:clamp(2.5rem,5vw,4rem);font-weight:200;letter-spacing:-.03em;line-height:.98;color:var(--text)">Your Profile</h1>
+    </div>
+
+    <!-- ── Profile card ── -->
+    <div class="g-card rv d1" style="margin-bottom:3rem;overflow:hidden">
+      <div class="profile-hero">
+        <div class="profile-avatar">
+          <span class="profile-avatar-initial" id="profile-initial">A</span>
+        </div>
+        <div>
+          <div class="profile-name" id="profile-name">Acuros User</div>
+          <div class="profile-email" id="profile-email">Loading…</div>
+          <div class="profile-tag" id="profile-tag">
+            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7H4a2 2 0 00-2 2v6a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+            Patient Account
+          </div>
+        </div>
+      </div>
+      <!-- Accent rule -->
+      <div style="height:1px;background:linear-gradient(90deg,var(--ac) 0%,transparent 60%)"></div>
+    </div>
+
+    <!-- ── Main settings grid ── -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start" class="settings-grid">
+
+      <!-- Left column -->
+      <div style="display:flex;flex-direction:column;gap:0">
+
+        <!-- Navigate -->
+        <div class="settings-section rv d2">
+          <div class="section-label">Navigate</div>
+          <a href="/" class="settings-row">
+            <div class="row-left">
+              <div class="row-icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+              </div>
+              <span class="row-label">Home</span>
+            </div>
+            <span class="row-arrow">→</span>
+          </a>
+          <a href="/ai-assistant" class="settings-row">
+            <div class="row-left">
+              <div class="row-icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+              </div>
+              <span class="row-label">AI Assistant</span>
+            </div>
+            <span class="row-arrow">→</span>
+          </a>
+          <a href="/patient-portal" class="settings-row">
+            <div class="row-left">
+              <div class="row-icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 13h4"/></svg>
+              </div>
+              <span class="row-label">Patient Portal</span>
+            </div>
+            <span class="row-arrow">→</span>
+          </a>
+          <a href="/shop" class="settings-row">
+            <div class="row-left">
+              <div class="row-icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+              </div>
+              <span class="row-label">Shop</span>
+            </div>
+            <span class="row-arrow">→</span>
+          </a>
+          <a href="/bookings" class="settings-row">
+            <div class="row-left">
+              <div class="row-icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              </div>
+              <span class="row-label">Bookings</span>
+            </div>
+            <span class="row-arrow">→</span>
+          </a>
+        </div>
+
+        <!-- Preferences -->
+        <div class="settings-section rv d3">
+          <div class="section-label">Preferences</div>
+          <div class="pref-row">
+            <span class="pref-label">Dark Mode</span>
+            <button class="toggle-track" id="theme-toggle-btn" onclick="toggleThemeBtn()" aria-label="Toggle dark mode">
+              <div class="toggle-thumb"></div>
+            </button>
+          </div>
+          <div class="pref-row">
+            <span class="pref-label">Language</span>
+            <span style="font-size:.72rem;color:var(--mute);letter-spacing:.06em">English</span>
+          </div>
+          <div class="pref-row" style="border-bottom:none">
+            <span class="pref-label">Region</span>
+            <span style="font-size:.72rem;color:var(--mute);letter-spacing:.06em">Canada</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right column -->
+      <div style="display:flex;flex-direction:column;gap:0">
+
+        <!-- Recent Sessions -->
+        <div class="settings-section rv d2">
+          <div class="section-label">Recent Sessions</div>
+          <div id="recent-sessions">
+            <!-- Populated by JS -->
+            <div class="session-item">
+              <div class="session-dot"></div>
+              <span class="session-title" style="color:var(--mute);font-style:italic">No recent sessions</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- About Acuros -->
+        <div class="settings-section rv d3">
+          <div class="section-label">About</div>
+          <a href="/" class="settings-row">
+            <div class="row-left">
+              <div class="row-icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+              </div>
+              <span class="row-label">About Acuros</span>
+            </div>
+            <span class="row-arrow">→</span>
+          </a>
+          <a href="/#contact" class="settings-row">
+            <div class="row-left">
+              <div class="row-icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+              </div>
+              <span class="row-label">Contact &amp; Support</span>
+            </div>
+            <span class="row-arrow">→</span>
+          </a>
+        </div>
+
+        <!-- Legal -->
+        <div class="settings-section rv d4">
+          <div class="section-label">Legal</div>
+          <div class="legal-row" style="margin-bottom:1rem">
+            <a href="/privacy" class="legal-link">Privacy Policy</a>
+            <a href="/terms" class="legal-link">Terms of Service</a>
+          </div>
+          <p style="font-size:.66rem;color:var(--mute);line-height:1.7;max-width:30ch">Acuros Health Inc. · Registered in Canada · PIPEDA Compliant</p>
+        </div>
+
+        <!-- Account actions -->
+        <div class="settings-section rv d5" style="border-bottom:none">
+          <div class="section-label">Account</div>
+          <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
+            <a href="/patient-portal" style="display:inline-flex;align-items:center;gap:.5rem;font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ac);text-decoration:none;border-bottom:1px solid rgba(201,169,110,.3);padding-bottom:.2rem;transition:border-color .22s" onmouseover="this.style.borderColor='var(--ac)'" onmouseout="this.style.borderColor='rgba(201,169,110,.3)'">
+              Patient Portal
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M7 7h10v10"/></svg>
+            </a>
+            <button class="signout-btn" id="signout-btn" onclick="handleSignOut()">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+              Sign Out
+            </button>
+          </div>
+          <p style="font-size:.62rem;color:var(--mute);margin-top:1.25rem;line-height:1.7">Version 2.0 · Built by Acuros Health</p>
+        </div>
+
+      </div>
+    </div><!-- /settings-grid -->
+
+  </div><!-- /settings-wrap -->
+</main>
+
+
+<!-- ── Footer ── -->
+<footer style="position:relative;z-index:2">
+  <span class="footer-copy">© 2025 Acuros Health Inc. All rights reserved.</span>
+  <div style="display:flex;gap:1.5rem">
+    <a href="/privacy" style="font-size:.6rem;color:var(--mute);text-decoration:none;letter-spacing:.06em;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--mute)'">Privacy</a>
+    <a href="/terms" style="font-size:.6rem;color:var(--mute);text-decoration:none;letter-spacing:.06em;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--mute)'">Terms</a>
+  </div>
+</footer>
+
+<style>
+  @media(max-width:700px){
+    .settings-grid{grid-template-columns:1fr!important}
+    .profile-hero{padding:2rem!important}
+  }
+</style>
+
+<script>
+// ── Theme ────────────────────────────────────────────────────────────────────
+const SUN='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>';
+const MOON='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+
+function applyTheme(dark){
+  document.documentElement.classList.toggle('dark',dark);
+  const ic=document.getElementById('th-icon');
+  if(ic) ic.innerHTML = dark ? SUN : MOON;
+  const tt=document.getElementById('theme-toggle-btn');
+  if(tt) tt.classList.toggle('on',dark);
+  localStorage.setItem('ah-theme', dark ? 'dark' : 'light');
+}
+function toggleTheme(){applyTheme(!document.documentElement.classList.contains('dark'))}
+function toggleThemeBtn(){toggleTheme()}
+
+(function(){
+  const stored=localStorage.getItem('ah-theme');
+  applyTheme(stored==='dark');
+})();
+
+// ── Cursor ───────────────────────────────────────────────────────────────────
+(function(){
+  const dot=document.getElementById('cursor-dot');
+  const ring=document.getElementById('cursor-ring');
+  if(!dot||!ring)return;
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove',e=>{
+    mx=e.clientX;my=e.clientY;
+    dot.style.left=mx+'px';dot.style.top=my+'px';
+  });
+  (function loop(){
+    rx+=(mx-rx)*.11;ry+=(my-ry)*.11;
+    ring.style.left=rx+'px';ring.style.top=ry+'px';
+    requestAnimationFrame(loop);
+  })();
+  document.querySelectorAll('a,button,[role=button]').forEach(el=>{
+    el.addEventListener('mouseenter',()=>document.body.classList.add('c-hover'));
+    el.addEventListener('mouseleave',()=>document.body.classList.remove('c-hover'));
+  });
+})();
+
+// ── Scroll progress ───────────────────────────────────────────────────────────
+window.addEventListener('scroll',()=>{
+  const prog=document.getElementById('scroll-prog');
+  if(!prog)return;
+  const max=document.documentElement.scrollHeight-window.innerHeight;
+  prog.style.width=(max>0?window.scrollY/max*100:0)+'%';
+},{passive:true});
+
+// ── Mobile menu ───────────────────────────────────────────────────────────────
+function openMob(){document.getElementById('mob-menu').classList.add('open');document.body.style.overflow='hidden'}
+function closeMob(){document.getElementById('mob-menu').classList.remove('open');document.body.style.overflow=''}
+
+// ── Reveal (IntersectionObserver) ────────────────────────────────────────────
+(function(){
+  const io=new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')});
+  },{threshold:.12});
+  document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+})();
+
+// ── Ambient star field ────────────────────────────────────────────────────────
+(function(){
+  const sf=document.createElement('div');
+  sf.id='star-canvas';sf.setAttribute('aria-hidden','true');
+  document.body.appendChild(sf);
+  const count=40;
+  for(let i=0;i<count;i++){
+    const s=document.createElement('div');
+    s.className='star';
+    const size=Math.random()<.65?2:3;
+    s.style.cssText=`width:${size}px;height:${size}px;left:${(Math.random()*100).toFixed(1)}%;top:${(Math.random()*100).toFixed(1)}%;--dur:${(3.5+Math.random()*6).toFixed(1)}s;--del:${(Math.random()*10).toFixed(1)}s;--peak:${(.1+Math.random()*.15).toFixed(2)}`;
+    sf.appendChild(s);
+  }
+})();
+
+// ── Profile data (from localStorage / auth) ───────────────────────────────────
+(function(){
+  try{
+    const user=JSON.parse(localStorage.getItem('ah-user')||'{}');
+    const nameEl=document.getElementById('profile-name');
+    const emailEl=document.getElementById('profile-email');
+    const initEl=document.getElementById('profile-initial');
+    if(user.name){nameEl.textContent=user.name;initEl.textContent=(user.name.charAt(0)||'A').toUpperCase()}
+    if(user.email){emailEl.textContent=user.email}else{emailEl.textContent='Not signed in — Patient Login to continue'}
+    const tagEl=document.getElementById('profile-tag');
+    if(user.accountTag==='org'&&tagEl){tagEl.innerHTML=tagEl.innerHTML.replace('Patient Account','Organisation Account')}
+    // Recent sessions
+    const sessionsEl=document.getElementById('recent-sessions');
+    const history=JSON.parse(localStorage.getItem('ah-sessions')||'[]');
+    if(history.length&&sessionsEl){
+      sessionsEl.innerHTML='';
+      history.slice(0,5).forEach(s=>{
+        const dateStr=new Date(s.timestamp||Date.now()).toLocaleDateString(undefined,{month:'short',day:'numeric'});
+        const item=document.createElement('a');
+        item.href='/ai-assistant'+(s.id?'?session='+s.id:'');
+        item.className='session-item';
+        item.innerHTML=`<div class="session-dot"></div><span class="session-title">${s.title||'Untitled session'}</span><span class="session-date">${dateStr}</span>`;
+        sessionsEl.appendChild(item);
+      });
+    }
+  }catch(e){}
+})();
+
+// ── Sign out ──────────────────────────────────────────────────────────────────
+function handleSignOut(){
+  if(!confirm('Sign out of your Acuros account?'))return;
+  localStorage.removeItem('ah-user');
+  localStorage.removeItem('ah-token');
+  window.location.href='/patient-portal';
+}
+</script>
+</body>
+</html>
