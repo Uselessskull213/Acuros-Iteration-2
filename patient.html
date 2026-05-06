@@ -16,66 +16,89 @@
   <meta name="theme-color" content="#c9a96e"/>
   <meta name="description" content="Secure patient portal. Manage your health records, prepare for appointments, and understand your care journey."/>
   <link rel="canonical" href="https://acuros.ca/patient-portal"/>
-  <meta property="og:type" content="website"/>
-  <meta property="og:url" content="https://acuros.ca/patient-portal"/>
-  <meta property="og:title" content="Patient Portal — Acuros Health"/>
-  <meta property="og:description" content="Secure patient portal. Manage your health records, prepare for appointments, and understand your care journey."/>
-  <meta property="og:site_name" content="Acuros Health"/>
   <meta name="robots" content="noindex"/>
-  <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,200;0,300;0,400;0,500;1,200;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
-  <script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{display:['Cormorant Garamond','Georgia','serif'],sans:['DM Sans','sans-serif']}}}}</script>
   <style>
+    /* ═══════════════════════════════════════════════════════════════════
+       PATIENT PORTAL — editorial, members-only feel.
+       Same theme tokens + nav as homepage. FoundersCard-inspired.
+    ═══════════════════════════════════════════════════════════════════ */
     :root{
       --bg:#f0ebe1;--bg2:#f8f4ec;--bg3:#e6e0d4;
       --border:#d4cdb8;--text:#1c1a14;--sub:#5c5346;--mute:#a09480;
-      --ac:#c9922a;--nav:rgba(240,235,225,.97);
+      --ac:#c9922a;--nav:rgba(240,235,225,.97)
     }
     html.dark{
-      --bg:#0c0c0a;--bg2:#111110;--bg3:#161614;
+      --bg:#0a0a09;--bg2:#111110;--bg3:#161614;
       --border:#1e1e1b;--text:#f0ede8;--sub:#8c8880;--mute:#4e4c48;
-      --ac:#c9a96e;--nav:rgba(12,12,10,.97);
+      --ac:#c9a96e;--nav:rgba(10,10,9,.96)
     }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     html{scroll-behavior:smooth}
-    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;cursor:none}
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;cursor:none;min-height:100dvh}
     @media(hover:none),(pointer:coarse){body{cursor:auto}}
-    h1,h2,h3,h4{font-family:'Cormorant Garamond',serif;line-height:1.04;letter-spacing:-.025em}
+    h1,h2,h3,h4{font-family:'Cormorant Garamond',serif;line-height:1.04;letter-spacing:-.025em;font-weight:300}
+    em{font-style:italic;font-weight:300}
 
     /* ── Grain ── */
-    #grain{position:fixed;inset:0;z-index:9992;pointer-events:none;opacity:.055;
+    #grain{position:fixed;inset:0;z-index:9992;pointer-events:none;opacity:.045;
       background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
       background-repeat:repeat;background-size:180px 180px}
+    html:not(.dark) #grain{opacity:.022;mix-blend-mode:multiply}
 
     /* ── Cursor ── */
     #cursor-dot{position:fixed;top:0;left:0;width:5px;height:5px;background:var(--text);border-radius:50%;pointer-events:none;z-index:8999;transform:translate(-50%,-50%);transition:background .2s,transform .2s cubic-bezier(.22,1,.36,1);will-change:left,top}
     #cursor-ring{position:fixed;top:0;left:0;width:30px;height:30px;border:1px solid rgba(240,237,232,.22);border-radius:50%;pointer-events:none;z-index:8998;transform:translate(-50%,-50%);transition:width .32s cubic-bezier(.22,1,.36,1),height .32s,border-color .3s;will-change:left,top}
-    body.c-hover #cursor-dot{transform:translate(-50%,-50%) scale(2.2);background:var(--ac)}
-    body.c-hover #cursor-ring{width:48px;height:48px;border-color:rgba(201,169,110,.3)}
+    html:not(.dark) #cursor-ring{border-color:rgba(28,26,20,.15)}
+    body.c-hover #cursor-dot{transform:translate(-50%,-50%) scale(2.4);background:var(--ac)}
+    body.c-hover #cursor-ring{width:50px;height:50px;border-color:rgba(201,169,110,.4)}
     @media(hover:none),(pointer:coarse){#cursor-dot,#cursor-ring{display:none}}
 
     /* ── Scroll progress ── */
-    #scroll-prog{position:fixed;top:0;left:0;z-index:9001;height:1px;background:var(--ac);width:0%;transform-origin:left;pointer-events:none}
+    #scroll-prog{position:fixed;top:0;left:0;z-index:9001;height:1px;background:var(--ac);width:0%;will-change:width;pointer-events:none}
 
-    /* ── Nav — transparent initial, solid on scroll / solid class ── */
+    /* ── NAV — IDENTICAL to homepage ── */
     nav{position:fixed;top:0;left:0;right:0;z-index:200;
       background:transparent;
-      transition:background .42s cubic-bezier(.22,1,.36,1),border-color .42s,backdrop-filter .42s}
-    nav.scrolled,nav.solid{
-      background:var(--nav);backdrop-filter:blur(32px) saturate(180%);-webkit-backdrop-filter:blur(32px) saturate(180%);
-      border-bottom:1px solid var(--border);box-shadow:0 1px 40px rgba(0,0,0,.08)}
-    html.dark nav.scrolled,html.dark nav.solid{box-shadow:0 1px 40px rgba(0,0,0,.4)}
-    .nav-inner{height:68px;max-width:1440px;margin:0 auto;padding:0 3rem;display:flex;align-items:center;justify-content:space-between;transition:height .38s cubic-bezier(.22,1,.36,1)}
-    nav.scrolled .nav-inner,nav.solid .nav-inner{height:56px}
-    .nav-link{position:relative;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--sub);background:none;border:none;cursor:pointer;padding:0;font-family:'DM Sans',sans-serif;font-weight:400;transition:color .2s;text-decoration:none;display:inline-block}
-    .nav-link::after{content:'';position:absolute;left:0;bottom:-2px;width:0;height:1px;background:var(--ac);transition:width .28s cubic-bezier(.22,1,.36,1)}
+      transition:background .45s cubic-bezier(.22,1,.36,1),border-color .45s,backdrop-filter .45s}
+    nav.scrolled,nav.solid{background:var(--nav);backdrop-filter:blur(28px) saturate(180%);-webkit-backdrop-filter:blur(28px) saturate(180%);border-bottom:1px solid var(--border)}
+    .nav-inner{height:72px;max-width:1440px;margin:0 auto;padding:0 3rem;display:flex;align-items:center;justify-content:space-between;transition:height .4s cubic-bezier(.22,1,.36,1)}
+    nav.scrolled .nav-inner,nav.solid .nav-inner{height:60px}
+    .nav-logo{display:flex;align-items:center;gap:.875rem;text-decoration:none}
+    #nav-logo-img{width:32px;height:32px;object-fit:contain;display:block}
+    .nav-logo-text{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:.9rem;letter-spacing:.22em;color:var(--text);line-height:1}
+    .nav-logo-sub{font-size:.42rem;letter-spacing:.42em;text-transform:uppercase;color:var(--mute);font-family:'DM Sans',sans-serif;font-weight:400}
+    /* Over the dark gate hero, the wordmark and links should read white */
+    nav:not(.scrolled):not(.solid) .nav-logo-text{color:rgba(255,255,255,.92)}
+    nav:not(.scrolled):not(.solid) .nav-logo-sub{color:rgba(255,255,255,.4)}
+    .nav-link{position:relative;font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--sub);background:none;border:none;cursor:pointer;padding:0;font-family:inherit;transition:color .22s;text-decoration:none;display:inline-block}
+    nav:not(.scrolled):not(.solid) .nav-link{color:rgba(255,255,255,.6)}
+    .nav-link::after{content:'';position:absolute;left:0;bottom:-2px;width:0;height:1px;background:var(--ac);transition:width .3s cubic-bezier(.22,1,.36,1)}
     .nav-link:hover::after,.nav-link.active::after{width:100%}
     .nav-link:hover,.nav-link.active{color:var(--text)}
+    nav:not(.scrolled):not(.solid) .nav-link:hover,
+    nav:not(.scrolled):not(.solid) .nav-link.active{color:#fff}
 
-    /* ── Buttons — premium, theme-aware, with shimmer sweep ── */
+    /* Nav icon buttons */
+    nav:not(.scrolled):not(.solid) #nav-account,
+    nav:not(.scrolled):not(.solid) #nav-theme-toggle{
+      border-color:rgba(255,255,255,.22);color:rgba(255,255,255,.7)
+    }
+    nav:not(.scrolled):not(.solid) #nav-account:hover,
+    nav:not(.scrolled):not(.solid) #nav-theme-toggle:hover{
+      border-color:var(--ac);color:var(--ac)
+    }
+    @media(max-width:900px){
+      .hnm{display:none!important}
+      #mob-btn{display:flex!important}
+      #nav-cta{display:none!important}
+      .nav-inner{padding:0 1.5rem}
+    }
+
+    /* ── Buttons (same as homepage) ── */
     .btn{
       display:inline-flex;align-items:center;justify-content:center;gap:.5rem;
       padding:.78rem 1.875rem;font-size:.64rem;letter-spacing:.18em;text-transform:uppercase;
@@ -99,70 +122,205 @@
     html.dark .btn-outline:hover{background:rgba(201,169,110,.06)}
     html:not(.dark) .btn-solid{background:#1c1a14;color:#fff;border-color:#1c1a14}
     html:not(.dark) .btn-solid:hover{background:var(--ac);color:#fff;border-color:var(--ac)}
-    .btn-ac{background:var(--ac);color:#fff;border-color:var(--ac)}
-    .btn-ac:hover{filter:brightness(1.08);box-shadow:0 10px 28px -10px rgba(201,169,110,.5)}
+    .btn-outline.on-dark{color:rgba(255,255,255,.92);border-color:rgba(255,255,255,.28);background:rgba(255,255,255,.04);backdrop-filter:blur(8px)}
+    .btn-outline.on-dark:hover{background:rgba(255,255,255,.1);border-color:#fff;color:#fff}
     .mag{display:inline-flex;transition:transform .38s cubic-bezier(.22,1,.36,1)}
-    /* ── Atoms ── */
-    .lbl{font-family:'DM Sans',sans-serif;font-size:.57rem;letter-spacing:.24em;text-transform:uppercase;color:var(--mute);font-weight:400}
 
-    /* ── Underline inputs (no box borders) ── */
-    .inp{width:100%;background:transparent;border:none;border-bottom:1px solid var(--border);
-      padding:.9rem 0;font-size:.875rem;color:var(--text);font-family:'DM Sans',sans-serif;
-      outline:none;transition:border-color .22s;border-radius:0}
-    .inp:focus{border-bottom-color:var(--ac)}
-    .inp::placeholder{color:var(--mute)}
+    .lbl{font-family:'DM Sans',sans-serif;font-size:.56rem;letter-spacing:.26em;text-transform:uppercase;color:var(--mute);font-weight:400}
+    .rule{height:1px;background:var(--border);width:100%}
+    .gold-rule{height:1px;background:var(--ac);width:48px}
 
-    /* ── Status messages ── */
-    .err-box{background:rgba(220,38,38,.07);border-left:2px solid rgba(220,38,38,.5);color:#f87171;padding:.75rem 1rem;font-size:.8rem}
-    .ok-box{background:rgba(21,128,61,.07);border-left:2px solid rgba(21,128,61,.4);color:#4ade80;padding:.75rem 1rem;font-size:.8rem}
-    .warn-box{background:rgba(201,169,110,.06);border-left:2px solid rgba(201,169,110,.4);color:var(--ac);padding:.75rem 1rem;font-size:.8rem}
+    /* ── Reveal / stagger ── */
+    .rv{opacity:0;transform:translateY(18px);transition:opacity .9s cubic-bezier(.22,1,.36,1),transform .9s cubic-bezier(.22,1,.36,1)}
+    .rv.in{opacity:1;transform:none}
+    .rv.d1{transition-delay:.08s}.rv.d2{transition-delay:.16s}.rv.d3{transition-delay:.24s}.rv.d4{transition-delay:.32s}.rv.d5{transition-delay:.4s}
+    .clip-wipe{clip-path:inset(0 100% 0 0);transition:clip-path 1.05s cubic-bezier(.22,1,.36,1)}
+    .clip-wipe.in{clip-path:inset(0 0% 0 0)}
+    .stagger > *{opacity:0;transform:translateY(12px);transition:opacity .65s cubic-bezier(.22,1,.36,1),transform .65s cubic-bezier(.22,1,.36,1)}
+    .stagger.in > *{opacity:1;transform:none}
+    .stagger.in > *:nth-child(1){transition-delay:.05s}
+    .stagger.in > *:nth-child(2){transition-delay:.12s}
+    .stagger.in > *:nth-child(3){transition-delay:.19s}
+    .stagger.in > *:nth-child(4){transition-delay:.26s}
+    .stagger.in > *:nth-child(5){transition-delay:.33s}
+    .stagger.in > *:nth-child(6){transition-delay:.4s}
 
-    /* ── Spinner ── */
     @keyframes spin{to{transform:rotate(360deg)}}
     .spin{width:14px;height:14px;border:1.5px solid transparent;border-top-color:currentColor;border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
+    .inp{width:100%;background:transparent;border:none;border-bottom:1px solid var(--border);padding:.95rem 0;font-size:.92rem;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;transition:border-color .22s;border-radius:0}
+    .inp:focus{border-bottom-color:var(--ac)}
+    .inp::placeholder{color:var(--mute)}
+    .err-box{background:rgba(220,38,38,.08);border-left:2px solid rgba(220,38,38,.5);color:#dc2626;padding:.75rem 1rem;font-size:.78rem}
+    html.dark .err-box{color:#f87171}
+    .ok-box{background:rgba(21,128,61,.08);border-left:2px solid rgba(21,128,61,.5);color:#15803d;padding:.75rem 1rem;font-size:.78rem}
+    html.dark .ok-box{color:#4ade80}
+    .warn-box{background:rgba(201,146,42,.08);border-left:2px solid rgba(201,146,42,.5);color:var(--ac);padding:.75rem 1rem;font-size:.78rem}
 
-    /* ── Reveal ── */
-    .rv{opacity:0;transform:translateY(14px);transition:opacity .82s cubic-bezier(.22,1,.36,1),transform .82s cubic-bezier(.22,1,.36,1)}
-    .rv.in{opacity:1;transform:none}
-    .d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}.d4{transition-delay:.4s}
-    .stagger-item{opacity:0;transform:translateX(-10px);transition:opacity .6s cubic-bezier(.22,1,.36,1),transform .6s cubic-bezier(.22,1,.36,1)}
-    .stagger-item.in{opacity:1;transform:none}
+    /* ───────────────────────────────────────────────────────────────────
+       GATE — full-bleed image hero with offset auth panel.
+    ─────────────────────────────────────────────────────────────────── */
+    #portal-gate{position:relative;min-height:100dvh;background:#0a0908}
+    .gate-img{position:absolute;inset:0;z-index:0;overflow:hidden}
+    .gate-img img{width:100%;height:100%;object-fit:cover;filter:saturate(.42) brightness(.55) contrast(1.05)}
+    .gate-img::after{content:'';position:absolute;inset:0;background:linear-gradient(110deg,rgba(8,7,6,.92) 0%,rgba(8,7,6,.6) 38%,rgba(8,7,6,.25) 65%,rgba(8,7,6,.78) 100%)}
+    @media(max-width:900px){.gate-img::after{background:linear-gradient(180deg,rgba(8,7,6,.55) 0%,rgba(8,7,6,.92) 70%,#0a0908 100%)}}
 
-    /* ── GATE LAYOUT ── */
-    .gate-grid{display:grid;grid-template-columns:1.15fr .85fr;min-height:100dvh}
-    .gate-left{position:relative;overflow:hidden;padding:8rem 5rem 5rem;display:flex;flex-direction:column;justify-content:center;background:var(--bg)}
-    .gate-right{background:var(--bg2);border-left:1px solid var(--border);display:flex;flex-direction:column;justify-content:center;padding:8rem 4.5rem;overflow-y:auto}
+    .gate-shell{position:relative;z-index:2;min-height:100dvh;display:grid;grid-template-columns:1.15fr .85fr;gap:0;align-items:stretch}
+    @media(max-width:900px){.gate-shell{grid-template-columns:1fr}}
 
-    /* ── Auth elements ── */
-    .auth-divider{display:flex;align-items:center;gap:1.25rem;margin:1.5rem 0}
-    .auth-divider span{font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--mute)}
-    .auth-hr{flex:1;height:1px;background:var(--border)}
-    .btn-google{display:flex;align-items:center;justify-content:center;gap:.875rem;width:100%;padding:.875rem;background:transparent;border:1px solid var(--border);font-size:.82rem;color:var(--text);cursor:pointer;transition:border-color .22s,background .22s;font-family:'DM Sans',sans-serif;letter-spacing:.01em}
-    .btn-google:hover{border-color:rgba(240,237,232,.3);background:rgba(255,255,255,.03)}
+    .gate-copy{padding:9rem 5rem 5rem;display:flex;flex-direction:column;justify-content:center;color:#f4efe7;max-width:780px}
+    @media(max-width:900px){.gate-copy{padding:7rem 1.75rem 2.5rem;max-width:none}}
+    .gate-eyebrow{display:flex;align-items:center;gap:1rem;margin-bottom:2.5rem}
+    .gate-eyebrow span:first-child{display:block;width:32px;height:1px;background:var(--ac)}
+    .gate-eyebrow span:last-child{font-size:.56rem;letter-spacing:.32em;text-transform:uppercase;color:rgba(255,255,255,.55)}
+    .gate-h1{font-size:clamp(3.25rem,7vw,6.75rem);font-weight:200;line-height:.92;letter-spacing:-.04em;color:#f4efe7;margin-bottom:2rem}
+    .gate-h1 em{color:var(--ac);font-style:italic;font-weight:200}
+    .gate-lede{font-size:1rem;line-height:1.85;color:rgba(244,239,231,.62);font-weight:300;max-width:46ch;margin-bottom:3.5rem}
 
-    /* ── EDITORIAL TOOL ROWS ── */
-    .tool-card{
-      display:grid;grid-template-columns:5rem 1fr auto;
-      align-items:start;padding:2.5rem 0;
-      border-bottom:1px solid var(--border);
-      text-decoration:none;color:inherit;position:relative;
-      opacity:0;transform:translateY(12px);
-      transition:opacity .6s cubic-bezier(.22,1,.36,1),transform .6s cubic-bezier(.22,1,.36,1);
-      cursor:pointer
+    .benefit-list{display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:1px solid rgba(255,255,255,.1)}
+    @media(max-width:640px){.benefit-list{grid-template-columns:1fr}}
+    .benefit-cell{padding:1.5rem 0;border-bottom:1px solid rgba(255,255,255,.08);display:grid;grid-template-columns:3rem 1fr;align-items:start;gap:.5rem}
+    .benefit-cell:nth-child(odd){padding-right:1.5rem}
+    .benefit-cell:nth-child(even){padding-left:1.5rem;border-left:1px solid rgba(255,255,255,.08)}
+    @media(max-width:640px){
+      .benefit-cell:nth-child(odd){padding-right:0}
+      .benefit-cell:nth-child(even){padding-left:0;border-left:none}
     }
-    .tool-card::before{
-      content:'';position:absolute;left:0;top:0;bottom:0;width:1.5px;
-      background:var(--ac);transform:scaleY(0);transform-origin:top;
-      transition:transform .45s cubic-bezier(.22,1,.36,1)
+    .benefit-num{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.78rem;letter-spacing:.15em;color:rgba(255,255,255,.34);padding-top:.18rem}
+    .benefit-h{font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:#f4efe7;margin-bottom:.32rem}
+    .benefit-p{font-size:.78rem;color:rgba(244,239,231,.5);line-height:1.7;font-weight:300}
+
+    .gate-card-wrap{display:flex;align-items:center;justify-content:center;padding:8rem 4rem 4rem}
+    @media(max-width:900px){.gate-card-wrap{padding:1rem 1.25rem 4rem}}
+    .gate-card{
+      width:100%;max-width:440px;
+      background:linear-gradient(160deg,rgba(255,253,247,.97) 0%,rgba(245,239,225,.95) 100%);
+      backdrop-filter:blur(28px) saturate(180%);
+      -webkit-backdrop-filter:blur(28px) saturate(180%);
+      border:1px solid rgba(255,255,255,.12);
+      box-shadow:0 50px 120px -20px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.7);
+      padding:3rem 2.75rem;color:#1c1a14
     }
-    .tool-card:hover::before{transform:scaleY(1)}
-    .tool-card.in{opacity:1;transform:none}
-    .tool-num{font-family:'Cormorant Garamond',serif;font-size:.7rem;letter-spacing:.22em;color:var(--mute);padding-top:.45rem;font-weight:300;font-style:italic}
-    .tool-cat{font-size:.56rem;letter-spacing:.24em;text-transform:uppercase;color:var(--ac);font-weight:400;margin-bottom:.75rem}
-    .tool-name{font-family:'Cormorant Garamond',serif;font-size:1.75rem;font-weight:300;color:var(--text);letter-spacing:-.025em;line-height:1.04;margin-bottom:.625rem}
-    .tool-desc{font-size:.8rem;line-height:1.92;color:var(--sub);font-weight:300;max-width:44ch}
-    .tool-arrow{font-size:1.1rem;color:var(--mute);padding-top:.4rem;transition:color .28s,transform .32s cubic-bezier(.22,1,.36,1)}
-    .tool-card:hover .tool-arrow{color:var(--ac);transform:translate(5px,-4px)}
+    html.dark .gate-card{
+      background:linear-gradient(160deg,rgba(20,20,18,.95) 0%,rgba(14,14,12,.93) 100%);
+      border:1px solid rgba(255,255,255,.07);
+      box-shadow:0 50px 120px -20px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.05);
+      color:#f0ede8
+    }
+    .gate-card-tag{display:flex;align-items:center;gap:.625rem;margin-bottom:1.5rem;font-size:.52rem;letter-spacing:.32em;text-transform:uppercase;color:var(--ac);font-weight:500}
+    .gate-card-tag::before{content:'';display:block;width:18px;height:1px;background:var(--ac)}
+    .gate-card-h{font-family:'Cormorant Garamond',serif;font-size:1.95rem;font-weight:300;letter-spacing:-.025em;line-height:1.05;margin-bottom:.55rem}
+    .gate-card-h em{color:var(--ac);font-style:italic;font-weight:300}
+    .gate-card-sub{font-size:.78rem;color:#5c5346;line-height:1.7;margin-bottom:1.75rem;font-weight:300}
+    html.dark .gate-card-sub{color:#a09480}
+    .gate-card .inp{color:#1c1a14;border-bottom-color:rgba(28,26,20,.18)}
+    .gate-card .inp::placeholder{color:#a09480}
+    .gate-card .inp:focus{border-bottom-color:var(--ac)}
+    html.dark .gate-card .inp{color:#f0ede8;border-bottom-color:rgba(255,255,255,.12)}
+    html.dark .gate-card .inp::placeholder{color:#4e4c48}
+
+    .btn-google{display:flex;align-items:center;justify-content:center;gap:.875rem;width:100%;padding:.875rem;background:transparent;border:1px solid rgba(28,26,20,.14);font-size:.78rem;color:#1c1a14;cursor:pointer;transition:border-color .22s,background .22s;font-family:'DM Sans',sans-serif;letter-spacing:.01em}
+    .btn-google:hover{border-color:var(--ac);background:rgba(201,146,42,.05)}
+    html.dark .btn-google{color:#f0ede8;border-color:rgba(255,255,255,.12)}
+    html.dark .btn-google:hover{background:rgba(255,255,255,.04);border-color:var(--ac)}
+    .auth-divider{display:flex;align-items:center;gap:1.25rem;margin:1.25rem 0}
+    .auth-divider span{font-size:.55rem;letter-spacing:.22em;text-transform:uppercase;color:var(--mute)}
+    .auth-hr{flex:1;height:1px;background:rgba(28,26,20,.1)}
+    html.dark .auth-hr{background:rgba(255,255,255,.08)}
+
+    .gate-toggle{margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid rgba(28,26,20,.08);text-align:center}
+    html.dark .gate-toggle{border-top-color:rgba(255,255,255,.08)}
+    .gate-toggle button{font-size:.74rem;color:var(--mute);background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:color .2s}
+    .gate-toggle button:hover{color:var(--text)}
+
+    /* ───────────────────────────────────────────────────────────────────
+       DASHBOARD — editorial, image-led tool cards.
+    ─────────────────────────────────────────────────────────────────── */
+    #portal-dash{display:none;background:var(--bg);min-height:100dvh}
+    .dash-wrap{max-width:1440px;margin:0 auto;padding:0 3rem}
+    @media(max-width:700px){.dash-wrap{padding:0 1.5rem}}
+
+    #org-banner{display:none;background:linear-gradient(90deg,rgba(201,146,42,.08) 0%,rgba(201,146,42,.02) 100%);border-bottom:1px solid rgba(201,146,42,.18)}
+    #org-banner .ob-inner{max-width:1440px;margin:0 auto;padding:.9rem 3rem;display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap}
+    @media(max-width:700px){#org-banner .ob-inner{padding:.85rem 1.5rem}}
+
+    .dash-hero{padding:9rem 0 5rem;position:relative;overflow:hidden}
+    .dash-hero-img{position:absolute;top:0;right:-8%;width:55%;height:100%;z-index:0;opacity:.18;pointer-events:none}
+    .dash-hero-img img{width:100%;height:100%;object-fit:cover;filter:saturate(.5) contrast(1.05)}
+    .dash-hero-img::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 0% 50%,var(--bg) 0%,transparent 70%)}
+    .dash-hero-inner{position:relative;z-index:1}
+    .dash-eyebrow{display:flex;align-items:center;gap:1rem;margin-bottom:2.5rem}
+    .dash-eyebrow span:first-child{display:block;width:32px;height:1px;background:var(--ac)}
+    .dash-eyebrow span:last-child{font-size:.56rem;letter-spacing:.32em;text-transform:uppercase;color:var(--mute)}
+    .dash-greeting{font-size:.84rem;color:var(--mute);margin-bottom:.75rem;letter-spacing:.04em;font-weight:300}
+    .dash-name{font-family:'Cormorant Garamond',serif;font-size:clamp(4.5rem,11vw,9.5rem);font-weight:200;letter-spacing:-.04em;line-height:.86;color:var(--text);margin-bottom:2.5rem}
+    .dash-name em{font-style:italic;font-weight:200;color:var(--ac)}
+    .dash-lede{font-size:.95rem;color:var(--sub);line-height:1.85;font-weight:300;max-width:48ch;margin-bottom:3.5rem}
+
+    .dash-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:0;margin-bottom:0}
+    @media(max-width:900px){.dash-stats{grid-template-columns:1fr 1fr}}
+    @media(max-width:640px){.dash-stats{grid-template-columns:1fr}}
+    .dash-stat{padding:2rem 1.75rem;border-right:1px solid var(--border);position:relative}
+    .dash-stat:last-child{border-right:none}
+    @media(max-width:900px){
+      .dash-stat:nth-child(2){border-right:none}
+      .dash-stat:nth-child(1),.dash-stat:nth-child(2){border-bottom:1px solid var(--border)}
+    }
+    @media(max-width:640px){.dash-stat{border-right:none;border-bottom:1px solid var(--border)}.dash-stat:last-child{border-bottom:none}}
+    .dash-stat-lbl{font-size:.5rem;letter-spacing:.3em;text-transform:uppercase;color:var(--mute);margin-bottom:.7rem}
+    .dash-stat-val{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:300;letter-spacing:-.02em;color:var(--text)}
+    .dash-stat-val em{font-style:italic;color:var(--ac)}
+    .dash-stat-sub{font-size:.7rem;color:var(--sub);margin-top:.35rem;font-weight:300}
+
+    .sec-head{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1.5rem;padding:5rem 0 2.5rem}
+    .sec-h{font-family:'Cormorant Garamond',serif;font-size:clamp(2.2rem,4.5vw,3.75rem);font-weight:200;letter-spacing:-.035em;line-height:.96;max-width:18ch}
+    .sec-h em{font-style:italic;color:var(--ac);font-weight:200}
+    .sec-meta{font-size:.55rem;letter-spacing:.32em;text-transform:uppercase;color:var(--mute);padding-bottom:.5rem}
+
+    .bcard-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-bottom:5rem}
+    @media(max-width:900px){.bcard-grid{grid-template-columns:1fr 1fr}}
+    @media(max-width:640px){.bcard-grid{grid-template-columns:1fr}}
+    .bcard{position:relative;display:flex;flex-direction:column;justify-content:flex-end;min-height:420px;padding:2rem;text-decoration:none;color:inherit;overflow:hidden;cursor:pointer;transform-style:preserve-3d;will-change:transform;background:var(--bg2);border:1px solid var(--border)}
+    .bcard.disabled{cursor:not-allowed;opacity:.42}
+    .bcard-img{position:absolute;inset:0;z-index:0;overflow:hidden}
+    .bcard-img img{width:100%;height:100%;object-fit:cover;transition:transform 1.1s cubic-bezier(.22,1,.36,1),filter .8s;filter:saturate(.55) brightness(.7) contrast(1.05);will-change:transform}
+    .bcard:hover .bcard-img img{transform:scale(1.07);filter:saturate(.85) brightness(.78)}
+    .bcard.disabled:hover .bcard-img img{transform:none}
+    .bcard-veil{position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(0,0,0,.05) 0%,rgba(0,0,0,.55) 55%,rgba(0,0,0,.92) 100%);transition:background .5s}
+    .bcard:hover .bcard-veil{background:linear-gradient(180deg,rgba(0,0,0,.08) 0%,rgba(0,0,0,.6) 55%,rgba(0,0,0,.95) 100%)}
+    .bcard-body{position:relative;z-index:2;color:#fff}
+    .bcard-tag{display:flex;align-items:center;gap:.5rem;font-size:.5rem;letter-spacing:.32em;text-transform:uppercase;color:var(--ac);margin-bottom:1rem;font-weight:500}
+    .bcard-tag::before{content:'';display:block;width:14px;height:1px;background:var(--ac)}
+    .bcard-h{font-family:'Cormorant Garamond',serif;font-size:1.95rem;font-weight:300;letter-spacing:-.025em;line-height:1.04;margin-bottom:.625rem;color:#fff}
+    .bcard-h em{font-style:italic;color:var(--ac);font-weight:300}
+    .bcard-p{font-size:.78rem;color:rgba(255,255,255,.6);line-height:1.7;font-weight:300;max-width:32ch;margin-bottom:1.25rem}
+    .bcard-cta{display:inline-flex;align-items:center;gap:.5rem;font-size:.55rem;letter-spacing:.28em;text-transform:uppercase;color:rgba(255,255,255,.74);transition:gap .35s cubic-bezier(.22,1,.36,1),color .3s;border-bottom:1px solid rgba(255,255,255,.18);padding-bottom:.4rem;align-self:flex-start}
+    .bcard:hover .bcard-cta{gap:1.1rem;color:#fff;border-bottom-color:var(--ac)}
+    .bcard-soon{position:absolute;top:1.25rem;right:1.25rem;z-index:3;font-size:.5rem;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.78);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);padding:.32rem .75rem;backdrop-filter:blur(8px)}
+
+    .setup-prompt{display:none;background:var(--bg2);border-top:1.5px solid var(--ac);border-bottom:1px solid var(--border);padding:2.5rem 0;margin-bottom:3rem}
+    .setup-prompt-inner{display:flex;align-items:center;gap:2rem;flex-wrap:wrap;justify-content:space-between}
+    .setup-prompt h3{font-family:'Cormorant Garamond',serif;font-size:clamp(1.6rem,3vw,2.2rem);font-weight:300;letter-spacing:-.03em;line-height:1.06}
+    .setup-prompt h3 em{font-style:italic;color:var(--ac);font-weight:300}
+
+    .acct-block{padding:5rem 0;border-top:1px solid var(--border)}
+    .acct-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start}
+    @media(max-width:900px){.acct-grid{grid-template-columns:1fr;gap:3rem}}
+    .acct-id{display:flex;align-items:flex-start;gap:1.5rem}
+    .acct-avatar{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--ac) 0%,#a87a1a 100%);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:#fff;letter-spacing:.04em;font-style:italic;font-weight:400;box-shadow:0 6px 20px -8px rgba(201,146,42,.4)}
+    .acct-name{font-family:'Cormorant Garamond',serif;font-size:2.4rem;font-weight:300;letter-spacing:-.03em;line-height:1.04;margin-bottom:.4rem}
+    .acct-email{font-size:.8rem;color:var(--sub);font-weight:300;letter-spacing:.02em;margin-bottom:.75rem}
+    .acct-pill{display:inline-flex;align-items:center;gap:.45rem;font-size:.55rem;letter-spacing:.22em;text-transform:uppercase;color:var(--ac);background:rgba(201,146,42,.07);border:1px solid rgba(201,146,42,.22);padding:.32rem .75rem;border-radius:999px}
+    .acct-pill::before{content:'';display:block;width:5px;height:5px;border-radius:50%;background:var(--ac)}
+    .acct-actions{display:flex;flex-direction:column;gap:.875rem}
+    .acct-row{display:flex;align-items:center;justify-content:space-between;padding:1.05rem 0;border-bottom:1px solid var(--border)}
+    .acct-row:last-child{border-bottom:none}
+    .acct-row-label{font-size:.7rem;color:var(--sub);letter-spacing:.04em}
+    .acct-row a,.acct-row button{font-size:.55rem;letter-spacing:.22em;text-transform:uppercase;color:var(--mute);background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none;display:inline-flex;align-items:center;gap:.45rem;padding:.3rem 0;transition:color .22s}
+    .acct-row a:hover,.acct-row button:hover{color:var(--ac)}
+
+    .dash-footer{padding:2.5rem 0 3rem;border-top:1px solid var(--border);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:1rem}
+    .dash-footer p{font-size:.66rem;color:var(--mute);font-weight:300;letter-spacing:.04em}
 
     /* ── Mobile menu ── */
     #mob-menu{display:none;position:fixed;inset:0;z-index:300;background:var(--bg);flex-direction:column;padding:3rem}
@@ -171,167 +329,37 @@
 
     ::-webkit-scrollbar{width:2px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border)}
 
-    @media(max-width:900px){
-      .gate-grid{grid-template-columns:1fr}
-      .gate-left{display:none}
-      .gate-right{min-height:100dvh;padding:7rem 2rem 3rem}
-      .nav-inner{padding:0 1.5rem}
-      .hnm{display:none!important}
-      #mob-btn{display:flex!important}
-      #nav-cta{display:none!important}
+    /* ── Modal (org join) ── */
+    #org-modal{display:none;position:fixed;inset:0;z-index:400;align-items:center;justify-content:center;background:rgba(0,0,0,.78);backdrop-filter:blur(16px);padding:1.5rem}
+    #org-modal.open{display:flex;animation:modalIn .32s cubic-bezier(.22,1,.36,1)}
+    @keyframes modalIn{from{opacity:0}to{opacity:1}}
+    .modal-card{
+      width:100%;max-width:480px;padding:3rem 2.75rem;position:relative;
+      background:linear-gradient(160deg,rgba(255,253,247,.97) 0%,rgba(245,239,225,.95) 100%);
+      border:1px solid rgba(255,255,255,.12);
+      box-shadow:0 50px 120px -20px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.7);
+      color:#1c1a14;
+      transform:translateY(20px) scale(.98);
+      animation:modalCardIn .42s .04s cubic-bezier(.22,1,.36,1) forwards
     }
-    @media(max-width:640px){
-      .dash-stat-strip{flex-direction:column;align-items:flex-start;gap:1.25rem}
-      .dash-stat-strip .stat-div{display:none}
-      .dash-actions{width:100%;flex-wrap:wrap}
+    @keyframes modalCardIn{to{transform:translateY(0) scale(1)}}
+    html.dark .modal-card{
+      background:linear-gradient(160deg,rgba(20,20,18,.95) 0%,rgba(14,14,12,.93) 100%);
+      border:1px solid rgba(255,255,255,.07);color:#f0ede8;
+      box-shadow:0 50px 120px -20px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.05)
     }
+    .modal-card .inp{color:#1c1a14;border-bottom-color:rgba(28,26,20,.18)}
+    html.dark .modal-card .inp{color:#f0ede8;border-bottom-color:rgba(255,255,255,.12)}
+    .modal-x{position:absolute;top:1.25rem;right:1.25rem;background:none;border:none;cursor:pointer;color:var(--mute);transition:color .2s}
+    .modal-x:hover{color:var(--text)}
 
-    /* ═══════════════════════════════════════════════
-       GATE-LEFT — always atmospheric-dark regardless
-       of global theme (bg image is always near-black)
-    ═══════════════════════════════════════════════ */
-    .gate-left{
-      --text:#f0ede8;--sub:#8c8880;--mute:#4e4c48;
-      --border:#1e1e1b;--ac:#c9a96e;
-    }
+    /* ── Hover physics: lift + spring ── */
+    .lift{transition:transform .42s cubic-bezier(.34,1.56,.64,1),box-shadow .42s}
+    .lift:hover{transform:translateY(-5px)}
 
-    /* ═══════════════════════════════════════════════
-       LIGHT-MODE REFINEMENTS
-    ═══════════════════════════════════════════════ */
-    /* Warm layered body gradient — no flat white */
-    html:not(.dark) body{
-      background:linear-gradient(170deg,#f8f4ec 0%,#f0ebe1 38%,#e9e2d5 100%);
-      min-height:100vh;
-    }
-    /* Nav: warm tinted shadow instead of harsh black */
-    html:not(.dark) nav.scrolled,html:not(.dark) nav.solid{
-      box-shadow:0 1px 32px rgba(100,85,55,.08),0 0 0 1px rgba(212,205,184,.18);
-    }
-    /* Grain: lighter, multiply-blended for paper texture */
-    html:not(.dark) #grain{opacity:.018;mix-blend-mode:multiply}
-    /* Cursor: dark ring on light bg */
-    html:not(.dark) #cursor-ring{border-color:rgba(28,26,20,.1)}
-    html:not(.dark) body.c-hover #cursor-ring{border-color:rgba(201,146,42,.3)}
-    /* Logo: dark only when nav has a solid warm bg (dashboard state) */
-    html:not(.dark) nav.solid #nav-logo,
-    html:not(.dark) nav.scrolled #nav-logo{filter:brightness(0)}
-    /* Nav links: stay readable on the dark gate-left image when transparent */
-    html:not(.dark) nav:not(.solid):not(.scrolled) .nav-link{color:rgba(240,237,232,.62)}
-    html:not(.dark) nav:not(.solid):not(.scrolled) .nav-link:hover,
-    html:not(.dark) nav:not(.solid):not(.scrolled) .nav-link.active{color:#f0ede8}
-    /* ACUROS wordmark on transparent nav */
-    html:not(.dark) nav:not(.solid):not(.scrolled) [style*="color:var(--text)"]{color:#f0ede8!important}
-    /* Org-banner: warm tint */
-    html:not(.dark) #org-banner{background:rgba(201,146,42,.035);border-color:rgba(201,146,42,.16)}
-    /* Benefit rows — left panel already scoped dark, right side normal */
-    html:not(.dark) .stagger-item{border-color:var(--border)}
-    /* Dashboard sections: subtle warm surface differentiation */
-    html:not(.dark) #portal-dash section:first-of-type{
-      background:linear-gradient(180deg,rgba(248,244,236,.6) 0%,transparent 100%);
-    }
-    /* Stat strip dividers */
-    html:not(.dark) .stat-div{background:rgba(28,26,20,.12)!important}
-    /* Tool cards: warm glass in light mode */
-    html:not(.dark) .tool-card::before{background:var(--ac)}
-    /* Coming-soon badge */
-    html:not(.dark) [style*="cursor:not-allowed"]{opacity:.25}
-    /* Footer */
-    html:not(.dark) footer{background:rgba(240,235,225,.6);border-color:var(--border)}
-    /* Scroll progress */
-    html:not(.dark) #scroll-prog{background:var(--ac)}
-
-    /* ── Glassmorphism ── */
-    .g-card{
-      background:rgba(0,0,0,.02);
-      backdrop-filter:blur(22px) saturate(160%);
-      -webkit-backdrop-filter:blur(22px) saturate(160%);
-      border:1px solid rgba(0,0,0,.07);
-      box-shadow:0 8px 40px rgba(0,0,0,.06),inset 0 1px 0 rgba(255,255,255,.6);
-      transition:transform .48s cubic-bezier(.22,1,.36,1),box-shadow .48s,background .32s
-    }
-    .g-card:hover{
-      transform:translateY(-7px);
-      background:rgba(0,0,0,.04);
-      box-shadow:0 28px 80px rgba(0,0,0,.12),inset 0 1px 0 rgba(255,255,255,.8),0 0 0 1px rgba(201,146,42,.13)
-    }
-    html.dark .g-card{
-      background:rgba(255,255,255,.042);
-      border:1px solid rgba(255,255,255,.09);
-      box-shadow:0 8px 40px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.09);
-    }
-    html.dark .g-card:hover{
-      background:rgba(255,255,255,.068);
-      box-shadow:0 28px 80px rgba(0,0,0,.52),inset 0 1px 0 rgba(255,255,255,.13),0 0 0 1px rgba(201,169,110,.13)
-    }
-    @keyframes float-a{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
-    @keyframes float-b{0%,100%{transform:translateY(-5px) rotate(-.3deg)}50%{transform:translateY(7px) rotate(.3deg)}}
-
-    /* Gate right glass panel */
-    .gate-right{
-      background:linear-gradient(160deg,rgba(255,252,245,.92) 0%,rgba(242,236,222,.9) 100%)!important;
-      backdrop-filter:blur(36px) saturate(200%);
-      -webkit-backdrop-filter:blur(36px) saturate(200%);
-      border-left:1px solid rgba(212,200,172,.25)!important;
-      box-shadow:-30px 0 80px rgba(110,90,55,.07),inset 1px 0 0 rgba(255,255,255,.45)
-    }
-    html.dark .gate-right{
-      background:rgba(17,17,16,.72)!important;
-      border-left:1px solid rgba(255,255,255,.07)!important;
-      box-shadow:-20px 0 60px rgba(0,0,0,.4);
-      inset 1px 0 0 rgba(255,255,255,.04)
-    }
-
-    /* Org modal glass */
-    #org-modal .modal-glass{
-      background:linear-gradient(160deg,rgba(255,252,245,.96) 0%,rgba(242,236,222,.94) 100%);
-      backdrop-filter:blur(36px) saturate(200%);
-      -webkit-backdrop-filter:blur(36px) saturate(200%);
-      border:1px solid rgba(212,200,172,.28);
-      box-shadow:0 40px 100px rgba(100,80,40,.1),inset 0 1px 0 rgba(255,255,255,.7),inset 1px 0 0 rgba(255,255,255,.4)
-    }
-    html.dark #org-modal .modal-glass{
-      background:rgba(17,17,16,.88);
-      border:1px solid rgba(255,255,255,.08);
-      box-shadow:0 40px 100px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.08)
-    }
-
-    /* Orb */
-    .orb{position:absolute;border-radius:50%;pointer-events:none}
-
-    /* Tool card glass hover */
-    .tool-card{
-      background:rgba(0,0,0,.012)!important;
-      backdrop-filter:blur(12px) saturate(140%);
-      -webkit-backdrop-filter:blur(12px) saturate(140%)
-    }
-    .tool-card:hover{
-      background:rgba(0,0,0,.028)!important;
-      box-shadow:0 12px 48px rgba(0,0,0,.07),inset 0 1px 0 rgba(255,255,255,.7)
-    }
-    html.dark .tool-card{background:rgba(255,255,255,.018)!important}
-    html.dark .tool-card:hover{
-      background:rgba(255,255,255,.04)!important;
-      box-shadow:0 12px 48px rgba(0,0,0,.32),inset 0 1px 0 rgba(255,255,255,.07)
-    }
-    /* Gate vignette — blends atmospheric image into gate-right */
-    .gate-vignette{position:absolute;inset:0;z-index:1;pointer-events:none;
-      background:linear-gradient(to right,rgba(20,16,10,0) 45%,rgba(255,252,245,.94) 100%)}
-    html.dark .gate-vignette{
-      background:linear-gradient(to right,rgba(12,12,10,0) 55%,rgba(12,12,10,.97) 100%)
-    }
-    /* ── Ambient star field ── */
-    #star-canvas{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}
-    .star{position:absolute;width:2px;height:2px;border-radius:1px;background:var(--ac);opacity:0;transform:rotate(45deg) scale(.3);animation:starPulse var(--dur,5s) var(--del,0s) ease-in-out infinite}
-    @keyframes starPulse{0%,100%{opacity:0;transform:rotate(45deg) scale(.2)}40%,60%{opacity:var(--peak,.18);transform:rotate(45deg) scale(1)}}
-      /* ── Flow rail — gold dot tracking the page on scroll ── */
-    #flow-rail{position:fixed;top:0;left:50%;width:1px;height:100vh;background:linear-gradient(180deg,transparent 0%,rgba(201,169,110,0) 8%,rgba(201,169,110,.18) 50%,rgba(201,169,110,0) 92%,transparent 100%);pointer-events:none;z-index:0;transform:translateX(-50%);opacity:0;transition:opacity .8s}
-    #flow-rail.in{opacity:1}
-    #flow-rail::after{content:'';position:absolute;left:50%;top:var(--y,30%);width:6px;height:6px;background:var(--ac);border-radius:50%;transform:translate(-50%,-50%);box-shadow:0 0 24px 4px rgba(201,169,110,.5);transition:top 1.6s cubic-bezier(.22,1,.36,1)}
-    @keyframes flowDrift{0%{transform:translate3d(-15vw,0,0);opacity:0}8%{opacity:.8}92%{opacity:.8}100%{transform:translate3d(115vw,0,0);opacity:0}}
-    #flow-stream{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}
-    .flow-particle{position:absolute;width:2px;height:2px;border-radius:50%;background:var(--ac);box-shadow:0 0 8px rgba(201,169,110,.6);opacity:0;will-change:transform,opacity;animation:flowDrift var(--ds,18s) var(--dl,0s) linear infinite;top:var(--ty,50%)}
-    .sec-link{position:relative}
-    .sec-link::before{content:'';position:absolute;left:50%;top:-1px;width:1px;height:48px;background:linear-gradient(180deg,transparent 0%,var(--ac) 50%,transparent 100%);transform:translate(-50%,-100%);opacity:.5;pointer-events:none}
+    /* ── Mouse-parallax targets ── */
+    .px{will-change:transform;transition:transform .8s cubic-bezier(.22,1,.36,1)}
+    @media(hover:none),(pointer:coarse){.px{transition:none}}
   </style>
 </head>
 <body>
@@ -341,389 +369,363 @@
 <div id="cursor-ring" aria-hidden="true"></div>
 <div id="scroll-prog" aria-hidden="true"></div>
 
-<!-- ── NAV ── -->
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     NAV — IDENTICAL to homepage (logo + same links + same icons + CTA)
+══════════════════════════════════════════════════════════════════════ -->
 <nav id="main-nav">
   <div class="nav-inner">
-    <a href="/" style="display:flex;align-items:center;gap:.875rem;text-decoration:none">
-      <img id="nav-logo" src="logo.png" alt="Acuros" width="32" height="32" style="flex-shrink:0;object-fit:contain;filter:brightness(0) invert(1)"/>
-      <div>
-        <div style="font-family:'Cormorant Garamond',serif;font-weight:300;font-size:.88rem;letter-spacing:.22em;color:var(--text);line-height:1">ACUROS</div>
-        <div class="lbl" style="font-size:.42rem;letter-spacing:.38em">HEALTH</div>
+    <a href="/" class="nav-logo">
+      <img id="nav-logo-img" src="/logo.png" alt="Acuros"/>
+      <div style="display:flex;flex-direction:column;gap:2px">
+        <span class="nav-logo-text">ACUROS</span>
+        <span class="nav-logo-sub">HEALTH</span>
       </div>
     </a>
-    <div style="display:flex;align-items:center;gap:2.75rem" class="hnm">
+
+    <div style="display:flex;align-items:center;gap:3rem" class="hnm">
       <a class="nav-link" href="/">Home</a>
       <a class="nav-link" href="/ai-assistant">AI Assistant</a>
       <a class="nav-link active" href="/patient-portal">Patient Login</a>
-      <a class="nav-link" href="/shop">Shop</a>
     </div>
+
     <div style="display:flex;align-items:center;gap:.875rem">
-      <a href="/settings" id="nav-account" style="width:34px;height:34px;border:1px solid var(--border);background:none;color:var(--sub);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .22s,color .22s;text-decoration:none;flex-shrink:0" title="Account" aria-label="Account settings" onmouseover="this.style.borderColor='var(--ac)';this.style.color='var(--ac)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--sub)'">
+      <div id="nav-profile" style="display:none;width:32px;height:32px;border-radius:50%;background:var(--ac);align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:opacity .2s,transform .2s" onclick="window.location.href='/patient-portal'" title="My Portal">
+        <span id="nav-profile-initial" style="font-size:.72rem;font-weight:500;color:#fff;font-family:'DM Sans',sans-serif;line-height:1"></span>
+      </div>
+      <a href="/settings" id="nav-account" style="width:34px;height:34px;border:1px solid var(--border);background:none;color:var(--sub);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .22s,color .22s;text-decoration:none;flex-shrink:0" title="Account" aria-label="Account settings">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 10-16 0"/></svg>
       </a>
-      <a href="/patient-portal" class="btn btn-solid mag" style="padding:.45rem 1.2rem;font-size:.62rem" id="nav-cta">Portal</a>
-      <button onclick="openMob()" style="display:none;background:none;border:none;cursor:pointer;color:var(--text);padding:.25rem" id="mob-btn" aria-label="Menu">
+      <button id="nav-theme-toggle" onclick="toggleTheme()" style="width:34px;height:34px;border:1px solid var(--border);background:none;color:var(--sub);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .22s,color .22s" title="Toggle theme" aria-label="Toggle theme">
+        <span id="th-icon" style="display:flex;align-items:center"></span>
+      </button>
+      <a href="/" class="btn btn-solid btn-pill mag" style="padding:.55rem 1.5rem;font-size:.62rem" id="nav-cta">Request Demo</a>
+      <button onclick="openMob()" style="display:none;background:none;border:none;cursor:pointer;color:var(--text);padding:.25rem" id="mob-btn" aria-label="Open menu">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16M4 12h12M4 18h8"/></svg>
       </button>
     </div>
   </div>
 </nav>
 
-<!-- ── Mobile Menu ── -->
+<!-- ── Mobile menu ── -->
 <div id="mob-menu">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3.5rem">
-    <span style="font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:300;color:var(--text);letter-spacing:.16em">ACUROS HEALTH</span>
+    <span style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:300;color:var(--text);letter-spacing:.16em">ACUROS</span>
     <button onclick="closeMob()" style="background:none;border:none;cursor:pointer;color:var(--text)">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
     </button>
   </div>
   <div style="display:flex;flex-direction:column">
-    <a href="/" style="font-family:'Cormorant Garamond',serif;font-size:2.25rem;font-weight:200;color:var(--sub);text-decoration:none;border-bottom:1px solid var(--border);padding:.875rem 0;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--sub)'">Home</a>
-    <a href="/ai-assistant" style="font-family:'Cormorant Garamond',serif;font-size:2.25rem;font-weight:200;color:var(--sub);text-decoration:none;border-bottom:1px solid var(--border);padding:.875rem 0;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--sub)'">AI Assistant</a>
-    <a href="/patient-portal" style="font-family:'Cormorant Garamond',serif;font-size:2.25rem;font-weight:200;color:var(--ac);text-decoration:none;border-bottom:1px solid var(--border);padding:.875rem 0">Patient Login</a>
-    <a href="/shop" style="font-family:'Cormorant Garamond',serif;font-size:2.25rem;font-weight:200;color:var(--sub);text-decoration:none;padding:.875rem 0;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--sub)'">Shop</a>
+    <a href="/" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:200;color:var(--text);text-decoration:none;border-bottom:1px solid var(--border);padding:.875rem 0">Home</a>
+    <a href="/ai-assistant" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:200;color:var(--sub);text-decoration:none;border-bottom:1px solid var(--border);padding:.875rem 0">AI Assistant</a>
+    <a href="/patient-portal" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:200;color:var(--ac);text-decoration:none;border-bottom:1px solid var(--border);padding:.875rem 0">Patient Login</a>
+    <a href="/shop" style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:200;color:var(--sub);text-decoration:none;padding:.875rem 0">Shop</a>
   </div>
 </div>
 
-<!-- ══════════════════════════════════
-     LOGIN GATE — split screen layout
-════════════════════════════════════ -->
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     GATE — full-bleed editorial hero with offset auth card.
+══════════════════════════════════════════════════════════════════════ -->
 <div id="portal-gate">
-  <div class="gate-grid">
+  <div class="gate-img" aria-hidden="true">
+    <img class="px" data-px=".035" src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=2000&q=80&auto=format&fit=crop" alt=""/>
+  </div>
 
-    <!-- LEFT PANEL: Editorial copy + numbered benefits -->
-    <div class="gate-left">
-      <!-- Subdued hero image -->
-      <img src="https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=1400&q=80&auto=format&fit=crop"
-           alt="" aria-hidden="true"
-           style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(0) brightness(0.055);pointer-events:none;z-index:0"/>
-      <!-- Ambient orbs -->
-      <div class="orb" style="top:-10%;right:-15%;width:50vw;height:50vw;background:radial-gradient(circle,rgba(201,169,110,.06) 0%,transparent 65%);z-index:1"></div>
-      <div class="orb" style="bottom:-5%;left:-5%;width:30vw;height:30vw;background:radial-gradient(circle,rgba(201,169,110,.04) 0%,transparent 65%);z-index:1"></div>
-      <!-- Vignette -->
-      <div class="gate-vignette"></div>
+  <div class="gate-shell">
+    <div class="gate-copy">
+      <div class="gate-eyebrow rv"><span></span><span>Patient Membership · Acuros Health</span></div>
+      <h1 class="gate-h1 rv d1">Your health,<br/><em>quietly organised.</em></h1>
+      <p class="gate-lede rv d2">A private portal for the people behind the appointments — records, prep notes, and clinic-curated tools, all in one place.</p>
 
-      <div style="position:relative;z-index:2;max-width:520px">
-        <!-- Display headline -->
-        <h1 class="rv d1" style="font-size:clamp(3.25rem,5.5vw,5.25rem);font-weight:200;color:var(--text);line-height:1;letter-spacing:-.035em;margin-bottom:2rem">
-          Your Health,<br/><em style="color:var(--ac);font-style:italic;font-weight:200">Organised.</em>
-        </h1>
+      <div id="from-bookings-notice" style="display:none;margin-bottom:2rem" class="warn-box rv d2">
+        <strong>Clinic connection required.</strong> Sign in and connect your clinic to access Bookings.
+      </div>
 
-        <p class="rv d2" style="font-size:.85rem;line-height:2.1;color:var(--sub);font-weight:300;max-width:36ch;margin-bottom:3.5rem">
-          A private membership portal for managing your care journey — from records to procedures and beyond.
-        </p>
-
-        <!-- From-bookings notice (shown if ?from=bookings) -->
-        <div id="from-bookings-notice" style="display:none;margin-bottom:2rem" class="warn-box rv d2">
-          <strong>Clinic connection required.</strong> Sign in and connect your clinic to access Bookings.
+      <div class="benefit-list stagger rv d3">
+        <div class="benefit-cell">
+          <span class="benefit-num">01</span>
+          <div>
+            <div class="benefit-h">AI Health Translation</div>
+            <p class="benefit-p">Reports translated into plain language</p>
+          </div>
         </div>
-
-        <!-- Numbered benefit rows -->
-        <div style="border-top:1px solid var(--border)">
-          <div class="stagger-item" style="display:grid;grid-template-columns:4rem 1fr;align-items:start;padding:1.375rem 0;border-bottom:1px solid var(--border)">
-            <span style="font-family:'Cormorant Garamond',serif;font-size:.7rem;letter-spacing:.2em;color:var(--mute);padding-top:.2rem;font-style:italic">01</span>
-            <div>
-              <div style="font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--text);margin-bottom:.28rem;font-weight:400">AI Health Translation</div>
-              <div style="font-size:.77rem;color:var(--mute);font-weight:300;line-height:1.75">Medical reports explained in plain language</div>
-            </div>
+        <div class="benefit-cell">
+          <span class="benefit-num">02</span>
+          <div>
+            <div class="benefit-h">Visit Preparation</div>
+            <p class="benefit-p">Briefs and tailored question sets</p>
           </div>
-          <div class="stagger-item" style="display:grid;grid-template-columns:4rem 1fr;align-items:start;padding:1.375rem 0;border-bottom:1px solid var(--border)">
-            <span style="font-family:'Cormorant Garamond',serif;font-size:.7rem;letter-spacing:.2em;color:var(--mute);padding-top:.2rem;font-style:italic">02</span>
-            <div>
-              <div style="font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--text);margin-bottom:.28rem;font-weight:400">Appointment Preparation</div>
-              <div style="font-size:.77rem;color:var(--mute);font-weight:300;line-height:1.75">Pre-visit briefs and guided question sets</div>
-            </div>
+        </div>
+        <div class="benefit-cell">
+          <span class="benefit-num">03</span>
+          <div>
+            <div class="benefit-h">Clinic Shop &amp; Bookings</div>
+            <p class="benefit-p">Curated products, direct procedure scheduling</p>
           </div>
-          <div class="stagger-item" style="display:grid;grid-template-columns:4rem 1fr;align-items:start;padding:1.375rem 0;border-bottom:1px solid var(--border)">
-            <span style="font-family:'Cormorant Garamond',serif;font-size:.7rem;letter-spacing:.2em;color:var(--mute);padding-top:.2rem;font-style:italic">03</span>
-            <div>
-              <div style="font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--text);margin-bottom:.28rem;font-weight:400">Clinic Shop &amp; Booking</div>
-              <div style="font-size:.77rem;color:var(--mute);font-weight:300;line-height:1.75">Curated products and procedure scheduling</div>
-            </div>
-          </div>
-          <div class="stagger-item" style="display:grid;grid-template-columns:4rem 1fr;align-items:start;padding:1.375rem 0">
-            <span style="font-family:'Cormorant Garamond',serif;font-size:.7rem;letter-spacing:.2em;color:var(--mute);padding-top:.2rem;font-style:italic">04</span>
-            <div>
-              <div style="font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--text);margin-bottom:.28rem;font-weight:400">PIPEDA Encrypted Storage</div>
-              <div style="font-size:.77rem;color:var(--mute);font-weight:300;line-height:1.75">Canadian privacy law compliant data handling</div>
-            </div>
+        </div>
+        <div class="benefit-cell">
+          <span class="benefit-num">04</span>
+          <div>
+            <div class="benefit-h">PIPEDA Encrypted</div>
+            <p class="benefit-p">Canadian privacy law, end-to-end</p>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- RIGHT PANEL: Auth form -->
-    <div class="gate-right">
-      <div style="max-width:400px;width:100%;margin:0 auto">
-
-
-
-        <!-- Title + sub -->
-        <h2 style="font-size:2rem;font-weight:300;color:var(--text);margin-bottom:.4rem;letter-spacing:-.03em" id="pt-title">Sign in to your portal</h2>
-        <p style="font-size:.8rem;color:var(--sub);margin-bottom:2.25rem;font-weight:300" id="pt-sub">Access your health records and tools</p>
+    <div class="gate-card-wrap">
+      <div class="gate-card rv d2 lift">
+        <div class="gate-card-tag">MEMBER ACCESS</div>
+        <h2 class="gate-card-h" id="pt-title">Sign in to your <em>portal.</em></h2>
+        <p class="gate-card-sub" id="pt-sub">Welcome back. Pick up where you left off.</p>
 
         <div id="pt-err" style="display:none;margin-bottom:1.25rem"></div>
         <div id="pt-ok"  style="display:none;margin-bottom:1.25rem"></div>
 
-        <!-- Google OAuth -->
         <button onclick="ptGoogleAuth()" class="btn-google" style="margin-bottom:0">
           <svg width="17" height="17" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
           Continue with Google
         </button>
 
-        <div class="auth-divider">
-          <div class="auth-hr"></div>
-          <span>or</span>
-          <div class="auth-hr"></div>
-        </div>
+        <div class="auth-divider"><div class="auth-hr"></div><span>or</span><div class="auth-hr"></div></div>
 
-        <!-- Login form -->
-        <form id="pt-login" onsubmit="ptLogin(event)" style="display:flex;flex-direction:column;gap:1.25rem">
+        <form id="pt-login" onsubmit="ptLogin(event)" style="display:flex;flex-direction:column;gap:.4rem">
           <div>
-            <label class="lbl" style="display:block;margin-bottom:.5rem">Email address</label>
+            <label class="lbl" style="display:block;margin-bottom:.4rem">Email address</label>
             <input type="email" id="pt-email" class="inp" placeholder="name@email.com" required/>
           </div>
-          <div>
-            <label class="lbl" style="display:block;margin-bottom:.5rem">Password</label>
+          <div style="margin-top:.4rem">
+            <label class="lbl" style="display:block;margin-bottom:.4rem">Password</label>
             <input type="password" id="pt-pass" class="inp" placeholder="••••••••" required/>
           </div>
-          <button type="submit" class="btn btn-solid mag" style="width:100%;justify-content:center;margin-top:.5rem;padding:.875rem" id="pt-li-btn">Sign In</button>
+          <button type="submit" class="btn btn-solid mag" style="width:100%;margin-top:1.5rem;padding:.95rem" id="pt-li-btn">Sign In</button>
         </form>
 
-        <!-- Register form -->
-        <form id="pt-register" onsubmit="ptRegister(event)" style="display:none;flex-direction:column;gap:1.25rem">
+        <form id="pt-register" onsubmit="ptRegister(event)" style="display:none;flex-direction:column;gap:.4rem">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem">
             <div>
-              <label class="lbl" style="display:block;margin-bottom:.5rem">First name</label>
+              <label class="lbl" style="display:block;margin-bottom:.4rem">First name</label>
               <input type="text" id="pt-first" class="inp" placeholder="Jane" required/>
             </div>
             <div>
-              <label class="lbl" style="display:block;margin-bottom:.5rem">Last name</label>
+              <label class="lbl" style="display:block;margin-bottom:.4rem">Last name</label>
               <input type="text" id="pt-last" class="inp" placeholder="Doe" required/>
             </div>
           </div>
-          <div>
-            <label class="lbl" style="display:block;margin-bottom:.5rem">Patient code <span style="color:var(--mute);text-transform:none;letter-spacing:0;font-size:.7rem">(from clinic, optional)</span></label>
+          <div style="margin-top:.4rem">
+            <label class="lbl" style="display:block;margin-bottom:.4rem">Patient code <span style="color:var(--mute);text-transform:none;letter-spacing:0;font-size:.72rem">(optional)</span></label>
             <input type="text" id="pt-code" class="inp" placeholder="AH-XXXX"/>
           </div>
-          <div>
-            <label class="lbl" style="display:block;margin-bottom:.5rem">Email address</label>
+          <div style="margin-top:.4rem">
+            <label class="lbl" style="display:block;margin-bottom:.4rem">Email address</label>
             <input type="email" id="pt-remail" class="inp" placeholder="name@email.com" required/>
           </div>
-          <div>
-            <label class="lbl" style="display:block;margin-bottom:.5rem">Password</label>
+          <div style="margin-top:.4rem">
+            <label class="lbl" style="display:block;margin-bottom:.4rem">Password</label>
             <input type="password" id="pt-rpass" class="inp" placeholder="Min. 8 characters" minlength="8" required/>
           </div>
-          <button type="submit" class="btn btn-solid mag" style="width:100%;justify-content:center;margin-top:.5rem;padding:.875rem" id="pt-r-btn">Create Account</button>
+          <button type="submit" class="btn btn-solid mag" style="width:100%;margin-top:1.5rem;padding:.95rem" id="pt-r-btn">Create Account</button>
         </form>
 
-        <!-- Toggle -->
-        <div style="margin-top:1.75rem;padding-top:1.75rem;border-top:1px solid var(--border);text-align:center">
-          <button onclick="ptToggle()" id="pt-toggle" style="font-size:.75rem;color:var(--mute);background:none;border:none;cursor:pointer;transition:color .2s;letter-spacing:.01em;font-family:'DM Sans',sans-serif" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--mute)'">Don't have an account? Create one</button>
+        <div class="gate-toggle">
+          <button onclick="ptToggle()" id="pt-toggle">Don't have an account? Create one</button>
         </div>
       </div>
     </div>
 
   </div>
-</div><!-- /portal-gate -->
+</div>
 
 
-<!-- ══════════════════════════════════
-     DASHBOARD
-════════════════════════════════════ -->
-<div id="portal-dash" style="display:none">
+<!-- ══════════════════════════════════════════════════════════════════════
+     DASHBOARD — image-led FoundersCard tools.
+══════════════════════════════════════════════════════════════════════ -->
+<div id="portal-dash">
 
-  <!-- Org top banner — thin strip, not a card -->
-  <div id="org-banner" style="display:none;background:rgba(201,169,110,.04);border-bottom:1px solid rgba(201,169,110,.14)">
-    <div style="max-width:1440px;margin:0 auto;padding:.875rem 3rem;display:flex;align-items:center;gap:2rem;flex-wrap:wrap">
-      <div style="flex:1;min-width:200px">
-        <span style="font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ac)">No clinic connected</span>
-        <span style="font-size:.75rem;color:var(--mute);margin-left:.875rem;font-weight:300">Enter your patient code to unlock full portal access</span>
+  <div id="org-banner">
+    <div class="ob-inner">
+      <div style="flex:1;min-width:240px">
+        <span style="font-size:.58rem;letter-spacing:.28em;text-transform:uppercase;color:var(--ac);font-weight:500">No clinic connected</span>
+        <span style="font-size:.78rem;color:var(--sub);margin-left:.875rem;font-weight:300">Enter your patient code to unlock full portal access</span>
       </div>
-      <button onclick="showOrgPrompt()" style="font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--text);background:none;border:1px solid var(--border);padding:.35rem .875rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:border-color .2s,color .2s;flex-shrink:0" onmouseover="this.style.borderColor='var(--ac)';this.style.color='var(--ac)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text)'">Connect</button>
-      <button onclick="dismissOrgBanner()" style="font-size:.62rem;color:var(--mute);background:none;border:none;cursor:pointer;flex-shrink:0;font-family:'DM Sans',sans-serif;transition:color .2s;letter-spacing:.06em" onmouseover="this.style.color='var(--sub)'" onmouseout="this.style.color='var(--mute)'">Dismiss</button>
+      <button onclick="showOrgPrompt()" class="btn btn-outline" style="padding:.42rem 1.05rem;font-size:.6rem;flex-shrink:0">Connect Clinic</button>
+      <button onclick="dismissOrgBanner()" style="font-size:.6rem;color:var(--mute);background:none;border:none;cursor:pointer;flex-shrink:0;font-family:'DM Sans',sans-serif;letter-spacing:.06em" onmouseover="this.style.color='var(--sub)'" onmouseout="this.style.color='var(--mute)'">Dismiss</button>
     </div>
   </div>
 
-  <!-- Org join modal (unchanged structure, updated visual) -->
-  <div id="org-modal" style="display:none;position:fixed;inset:0;z-index:400;align-items:center;justify-content:center;background:rgba(0,0,0,.78);backdrop-filter:blur(16px)">
-    <div class="modal-glass" style="width:100%;max-width:460px;padding:3.25rem;position:relative;margin:1.5rem;border-radius:.75rem">
-      <button onclick="hideOrgPrompt()" style="position:absolute;top:1.25rem;right:1.25rem;background:none;border:none;cursor:pointer;color:var(--mute);transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--mute)'">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
-      </button>
-      <h3 style="font-size:2rem;font-weight:300;color:var(--text);margin-bottom:.75rem;letter-spacing:-.03em">Join your clinic's<br/><em style="color:var(--ac);font-style:italic">network.</em></h3>
-      <p style="font-size:.8rem;color:var(--sub);line-height:1.85;margin-bottom:2rem;font-weight:300">Enter the unique code from your clinic to connect your account and unlock your full patient portal.</p>
-      <div id="org-err" style="display:none;margin-bottom:1rem"></div>
-      <div id="org-ok"  style="display:none;margin-bottom:1rem"></div>
-      <form onsubmit="joinOrg(event)" style="display:flex;flex-direction:column;gap:1.5rem">
-        <div>
-          <label class="lbl" style="display:block;margin-bottom:.5rem">Patient code</label>
-          <input type="text" id="org-code-inp" class="inp" placeholder="AH-XXXX" required autocomplete="off" style="text-transform:uppercase;letter-spacing:.08em"/>
-        </div>
-        <button type="submit" class="btn btn-solid mag" style="width:100%;justify-content:center;padding:.875rem" id="org-join-btn">Connect</button>
-      </form>
-      <p style="font-size:.7rem;color:var(--mute);margin-top:1.25rem;line-height:1.75">Don't have a code? Ask your healthcare provider for your Acuros patient code.</p>
+  <section class="dash-hero">
+    <div class="dash-hero-img" aria-hidden="true">
+      <img class="px" data-px=".05" src="https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=1600&q=80&auto=format&fit=crop" alt=""/>
     </div>
-  </div>
+    <div class="dash-wrap dash-hero-inner">
+      <div class="dash-eyebrow rv"><span></span><span>Welcome to your portal</span></div>
+      <p class="dash-greeting rv d1">Good to see you again, signed in as <span id="dash-email-lbl"></span></p>
+      <h1 class="dash-name rv d1"><em id="dash-name">Patient</em></h1>
+      <p class="dash-lede rv d2">Your health record, your translations, your tools — everything you need between visits, in one quiet place.</p>
 
-  <!-- ── WELCOME HEADER ── -->
-  <section style="border-bottom:1px solid var(--border);padding-top:68px">
-    <div style="max-width:1440px;margin:0 auto;padding:5rem 3rem 0">
-
-
-
-      <!-- Giant italic name — the centrepiece -->
-      <h1 class="rv d1" style="font-size:clamp(4.5rem,11vw,9.5rem);font-weight:200;font-style:italic;color:var(--text);letter-spacing:-.04em;line-height:.88;margin-bottom:3.5rem">
-        <em id="dash-name">Patient</em>
-      </h1>
-
-      <!-- Stat strip + actions -->
-      <div class="dash-stat-strip" style="display:flex;align-items:center;border-top:1px solid var(--border);padding:2rem 0;gap:0;flex-wrap:wrap">
-        <div style="padding-right:3rem">
-          <div class="lbl" style="margin-bottom:.4rem">Status</div>
-          <div style="font-size:.8rem;color:var(--sub);font-weight:300">Active</div>
+      <div class="dash-stats stagger rv d3">
+        <div class="dash-stat">
+          <div class="dash-stat-lbl">Status</div>
+          <div class="dash-stat-val">Active</div>
+          <div class="dash-stat-sub">Membership in good standing</div>
         </div>
-        <div class="stat-div" style="width:1px;height:2.25rem;background:var(--border)"></div>
-        <div style="padding:0 3rem">
-          <div class="lbl" style="margin-bottom:.4rem">Connected clinic</div>
-          <div style="font-size:.8rem;color:var(--sub);font-weight:300" id="stat-org-name">Not connected</div>
+        <div class="dash-stat">
+          <div class="dash-stat-lbl">Connected clinic</div>
+          <div class="dash-stat-val" id="stat-org-name"><em>Not connected</em></div>
+          <div class="dash-stat-sub">Patient code unlocks bookings</div>
         </div>
-        <div class="stat-div" style="width:1px;height:2.25rem;background:var(--border)"></div>
-        <div style="padding:0 3rem">
-          <div class="lbl" style="margin-bottom:.4rem">Privacy</div>
-          <div style="font-size:.8rem;color:var(--sub);font-weight:300">PIPEDA compliant</div>
+        <div class="dash-stat">
+          <div class="dash-stat-lbl">Privacy</div>
+          <div class="dash-stat-val">PIPEDA</div>
+          <div class="dash-stat-sub">Canadian-compliant storage</div>
         </div>
-        <!-- Spacer -->
-        <div style="flex:1"></div>
-        <!-- Right side actions -->
-        <div class="dash-actions" style="display:flex;gap:.75rem;align-items:center">
-          <div id="dash-code-lbl" style="display:none;font-size:.65rem;color:var(--mute);letter-spacing:.08em;padding-right:.5rem"></div>
-          <a href="/ai-assistant" class="btn btn-outline" style="padding:.4rem 1.1rem;font-size:.63rem">AI</a>
-          <a href="/shop" class="btn btn-outline" style="padding:.4rem 1.1rem;font-size:.63rem">Shop</a>
-          <button id="book-btn" onclick="handleBookClick()" class="btn btn-outline" style="padding:.4rem 1.1rem;font-size:.63rem">Book</button>
-          <button onclick="ptLogout()" style="font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--mute);background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:color .2s;padding:.4rem .5rem" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--mute)'">Sign out</button>
+        <div class="dash-stat">
+          <div class="dash-stat-lbl">Member ID</div>
+          <div class="dash-stat-val" id="stat-member-id">—</div>
+          <div class="dash-stat-sub">Quote on clinic correspondence</div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ── DASHBOARD CONTENT ── -->
-  <section style="max-width:1440px;margin:0 auto;padding:4.5rem 3rem 6rem">
-
-    <!-- Org connect prompt — editorial style, not a card -->
-    <div id="dash-org-prompt" style="display:none;margin-bottom:4.5rem">
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:2.25rem 0;border-top:1.5px solid var(--ac);border-bottom:1px solid var(--border);gap:2rem;flex-wrap:wrap">
+  <div class="dash-wrap">
+    <div class="setup-prompt" id="dash-org-prompt">
+      <div class="setup-prompt-inner">
         <div>
           <div class="lbl" style="color:var(--ac);margin-bottom:.75rem">Complete your setup</div>
-          <h3 style="font-family:'Cormorant Garamond',serif;font-size:clamp(1.5rem,3vw,2rem);font-weight:300;color:var(--text);letter-spacing:-.025em;line-height:1.1">Connect your clinic to unlock<br/>your full health portal.</h3>
+          <h3>Connect your clinic to unlock<br/>your full <em>portal.</em></h3>
         </div>
-        <button onclick="showOrgPrompt()" class="btn btn-solid mag" style="flex-shrink:0;padding:.75rem 2rem">Enter Patient Code</button>
+        <button onclick="showOrgPrompt()" class="btn btn-solid mag" style="flex-shrink:0;padding:.85rem 2rem">Enter Patient Code</button>
       </div>
     </div>
+  </div>
 
-    <!-- Section header -->
-    <div style="display:flex;align-items:center;justify-content:space-between;padding-bottom:1.5rem;border-bottom:1px solid var(--border);margin-bottom:0">
-      <div class="lbl">Your tools</div>
-      <div class="lbl" style="color:var(--mute)">03 active</div>
+  <section class="dash-wrap">
+    <div class="sec-head">
+      <h2 class="sec-h rv">Your <em>tools.</em></h2>
+      <span class="sec-meta rv d1">03 active · 02 in development</span>
     </div>
 
-    <!-- EDITORIAL TOOL ROWS -->
-    <a href="/ai-assistant" class="tool-card" style="transition-delay:.05s">
-      <div class="tool-num">01</div>
-      <div>
-        <div class="tool-cat">AI Assistant</div>
-        <h4 class="tool-name">Health Dialogue</h4>
-        <p class="tool-desc">Ask questions, translate lab reports, and prepare for appointments with your AI health companion.</p>
-      </div>
-      <div class="tool-arrow">↗</div>
-    </a>
-
-    <a href="/shop" class="tool-card" style="transition-delay:.12s">
-      <div class="tool-num">02</div>
-      <div>
-        <div class="tool-cat">Clinic Shop</div>
-        <h4 class="tool-name">Product Shop</h4>
-        <p class="tool-desc">Browse clinic-curated products and skincare treatments recommended for your care plan.</p>
-      </div>
-      <div class="tool-arrow">↗</div>
-    </a>
-
-    <div class="tool-card" style="transition-delay:.19s" onclick="handleBookClick()">
-      <div class="tool-num">03</div>
-      <div>
-        <div class="tool-cat">Bookings</div>
-        <h4 class="tool-name">Book a Procedure</h4>
-        <p class="tool-desc">Schedule consultations and procedures directly with your clinic. Clinic connection required.</p>
-      </div>
-      <div class="tool-arrow">↗</div>
-    </div>
-
-    <!-- Coming soon -->
-    <div style="margin-top:4.5rem">
-      <div style="display:flex;align-items:center;justify-content:space-between;padding-bottom:1.5rem;border-bottom:1px solid var(--border);margin-bottom:0">
-        <div class="lbl">Upcoming</div>
-        <div class="lbl" style="color:var(--mute)">02 in development</div>
-      </div>
-
-      <div style="display:grid;grid-template-columns:5rem 1fr auto;align-items:start;padding:2.5rem 0;border-bottom:1px solid var(--border);opacity:.32;cursor:not-allowed">
-        <div class="tool-num">04</div>
-        <div>
-          <div class="tool-cat" style="color:var(--mute)">Medications</div>
-          <h4 class="tool-name">Medication Tracker</h4>
-          <p class="tool-desc">Review prescriptions and check drug interactions with your care team.</p>
+    <div class="bcard-grid stagger rv">
+      <a href="/ai-assistant" class="bcard lift">
+        <div class="bcard-img"><img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=1100&q=80&auto=format&fit=crop" alt=""/></div>
+        <div class="bcard-veil"></div>
+        <div class="bcard-body">
+          <div class="bcard-tag">AI Assistant</div>
+          <h3 class="bcard-h">Health <em>dialogue.</em></h3>
+          <p class="bcard-p">Ask questions, translate labs, prepare for appointments — your private health companion.</p>
+          <span class="bcard-cta">Open <span>→</span></span>
         </div>
-        <div style="font-size:.52rem;letter-spacing:.22em;text-transform:uppercase;color:var(--mute);padding-top:.4rem;border:1px solid var(--border);padding:.28rem .625rem;white-space:nowrap">Soon</div>
-      </div>
+      </a>
 
-      <div style="display:grid;grid-template-columns:5rem 1fr auto;align-items:start;padding:2.5rem 0;border-bottom:1px solid var(--border);opacity:.32;cursor:not-allowed">
-        <div class="tool-num">05</div>
-        <div>
-          <div class="tool-cat" style="color:var(--mute)">Journals</div>
-          <h4 class="tool-name">Symptom Journal</h4>
-          <p class="tool-desc">Log symptoms with timestamps and severity ratings for your care team to review.</p>
+      <a href="/shop" class="bcard lift">
+        <div class="bcard-img"><img src="https://images.unsplash.com/photo-1556228720-195a672e8a03?w=1100&q=80&auto=format&fit=crop" alt=""/></div>
+        <div class="bcard-veil"></div>
+        <div class="bcard-body">
+          <div class="bcard-tag">Clinic Shop</div>
+          <h3 class="bcard-h">Curated <em>care.</em></h3>
+          <p class="bcard-p">Treatments and products mapped to your care plan — by the people treating you, not a generic catalogue.</p>
+          <span class="bcard-cta">Browse <span>→</span></span>
         </div>
-        <div style="font-size:.52rem;letter-spacing:.22em;text-transform:uppercase;color:var(--mute);padding-top:.4rem;border:1px solid var(--border);padding:.28rem .625rem;white-space:nowrap">Soon</div>
+      </a>
+
+      <div class="bcard lift" onclick="handleBookClick()" role="button" tabindex="0" onkeydown="if(event.key==='Enter')handleBookClick()">
+        <div class="bcard-img"><img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=1100&q=80&auto=format&fit=crop" alt=""/></div>
+        <div class="bcard-veil"></div>
+        <div class="bcard-body">
+          <div class="bcard-tag">Bookings</div>
+          <h3 class="bcard-h">Procedure <em>scheduling.</em></h3>
+          <p class="bcard-p">Book consultations and procedures directly with your clinic. Confirmed within one business day.</p>
+          <span class="bcard-cta">Book <span>→</span></span>
+        </div>
       </div>
+
+      <div class="bcard disabled lift" aria-disabled="true">
+        <div class="bcard-img"><img src="https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=1100&q=80&auto=format&fit=crop" alt=""/></div>
+        <div class="bcard-veil"></div>
+        <span class="bcard-soon">Soon</span>
+        <div class="bcard-body">
+          <div class="bcard-tag">Medications</div>
+          <h3 class="bcard-h">Medication <em>tracker.</em></h3>
+          <p class="bcard-p">Review prescriptions and check drug interactions with your care team.</p>
+          <span class="bcard-cta">Coming soon</span>
+        </div>
+      </div>
+
+      <div class="bcard disabled lift" aria-disabled="true">
+        <div class="bcard-img"><img src="https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=1100&q=80&auto=format&fit=crop" alt=""/></div>
+        <div class="bcard-veil"></div>
+        <span class="bcard-soon">Soon</span>
+        <div class="bcard-body">
+          <div class="bcard-tag">Symptom Journal</div>
+          <h3 class="bcard-h">Daily <em>journal.</em></h3>
+          <p class="bcard-p">Log symptoms with timestamps and severity for your care team to review.</p>
+          <span class="bcard-cta">Coming soon</span>
+        </div>
+      </div>
+
+      <a href="/settings" class="bcard lift">
+        <div class="bcard-img"><img src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=1100&q=80&auto=format&fit=crop" alt=""/></div>
+        <div class="bcard-veil"></div>
+        <div class="bcard-body">
+          <div class="bcard-tag">Account</div>
+          <h3 class="bcard-h">Settings &amp; <em>privacy.</em></h3>
+          <p class="bcard-p">Manage your profile, security, two-factor authentication, and clinic connections.</p>
+          <span class="bcard-cta">Settings <span>→</span></span>
+        </div>
+      </a>
     </div>
+  </section>
 
-    <!-- Account & Settings section -->
-    <div style="margin-top:5rem;padding-top:2.5rem;border-top:1px solid var(--border)">
-      <div class="lbl" style="margin-bottom:2rem">Account &amp; Settings</div>
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:2rem">
+  <section class="dash-wrap">
+    <div class="acct-block">
+      <div class="lbl rv" style="margin-bottom:2rem">Account &amp; preferences</div>
+      <div class="acct-grid stagger rv">
 
-        <!-- Left: avatar + identity + org pill -->
-        <div style="display:flex;align-items:flex-start;gap:1rem">
-          <div id="dash-avatar" style="width:38px;height:38px;border-radius:50%;background:var(--ac);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:.3rem">
-            <span id="dash-initial" style="font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:500;color:#fff;line-height:1">?</span>
-          </div>
+        <div class="acct-id">
+          <div class="acct-avatar" id="dash-avatar"><span id="dash-initial">?</span></div>
           <div>
-            <div style="font-family:'Cormorant Garamond',serif;font-size:2.25rem;font-weight:300;color:var(--text);letter-spacing:-.03em;line-height:1.04;margin-bottom:.4rem" id="dash-full-name">—</div>
-            <div style="font-size:.78rem;color:var(--mute);font-weight:300;letter-spacing:.02em" id="dash-email-display">—</div>
-            <div style="font-size:.72rem;color:var(--mute);font-weight:300;margin-top:.25rem" id="dash-email-lbl"></div>
-            <!-- Org connection pill -->
-            <div id="dash-org-pill" style="display:none;margin-top:.75rem">
-              <span id="dash-org-pill-label" style="font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ac);background:rgba(201,146,42,.07);border:1px solid rgba(201,146,42,.22);padding:.25rem .7rem;border-radius:999px"></span>
+            <div class="acct-name" id="dash-full-name">—</div>
+            <div class="acct-email" id="dash-email-display">—</div>
+            <div id="dash-org-pill" style="display:none">
+              <span id="dash-org-pill-label" class="acct-pill"></span>
             </div>
           </div>
         </div>
 
-        <!-- Right: settings actions -->
-        <div style="display:flex;flex-direction:column;gap:.625rem;align-items:flex-end">
-          <button onclick="toggleTheme()" id="theme-toggle-btn" style="display:flex;align-items:center;gap:.5rem;font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--mute);background:none;border:1px solid var(--border);padding:.38rem .9rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:border-color .2s,color .2s;white-space:nowrap" onmouseover="this.style.borderColor='var(--ac)';this.style.color='var(--ac)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--mute)'">
-            <span id="theme-toggle-icon" style="display:flex;align-items:center"></span>
-            <span id="theme-toggle-label">Dark Mode</span>
-          </button>
-          <button onclick="ptLogout()" class="btn btn-outline" style="padding:.45rem 1.1rem;font-size:.63rem">Sign Out</button>
+        <div class="acct-actions">
+          <div class="acct-row">
+            <span class="acct-row-label">Theme</span>
+            <button onclick="toggleTheme()" id="theme-toggle-btn">
+              <span id="theme-toggle-icon"></span>
+              <span id="theme-toggle-label">Dark Mode</span>
+            </button>
+          </div>
+          <div class="acct-row">
+            <span class="acct-row-label">Account settings</span>
+            <a href="/settings">Manage <span>→</span></a>
+          </div>
+          <div class="acct-row">
+            <span class="acct-row-label">AI Assistant</span>
+            <a href="/ai-assistant">Open <span>→</span></a>
+          </div>
+          <div class="acct-row">
+            <span class="acct-row-label">Clinic connection</span>
+            <button onclick="showOrgPrompt()" id="acct-clinic-btn">Connect <span>→</span></button>
+          </div>
+          <div class="acct-row">
+            <span class="acct-row-label">Sign out</span>
+            <button onclick="ptLogout()">End session <span>→</span></button>
+          </div>
         </div>
-
       </div>
     </div>
-
   </section>
 
-  <footer style="border-top:1px solid var(--border)">
-    <div style="max-width:1440px;margin:0 auto;padding:2rem 3rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
-      <p style="font-size:.68rem;color:var(--mute);font-weight:300;letter-spacing:.04em">© 2025 Acuros Health Inc.</p>
+  <footer class="dash-wrap">
+    <div class="dash-footer">
+      <p>© 2025 Acuros Health Inc. — patient portal · <em>private &amp; encrypted</em></p>
       <div style="display:flex;gap:2rem">
         <a href="/privacy" class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Privacy</a>
         <a href="/terms"   class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Terms</a>
@@ -731,33 +733,64 @@
     </div>
   </footer>
 
-</div><!-- /portal-dash -->
+</div>
+
+
+<div id="org-modal">
+  <div class="modal-card">
+    <button class="modal-x" onclick="hideOrgPrompt()" aria-label="Close">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+    <div style="display:flex;align-items:center;gap:.625rem;margin-bottom:1.5rem;font-size:.52rem;letter-spacing:.32em;text-transform:uppercase;color:var(--ac);font-weight:500">
+      <span style="display:block;width:18px;height:1px;background:var(--ac)"></span>CLINIC ACCESS
+    </div>
+    <h3 style="font-family:'Cormorant Garamond',serif;font-size:1.95rem;font-weight:300;letter-spacing:-.025em;line-height:1.05;margin-bottom:.75rem">Join your clinic's <em style="color:var(--ac);font-style:italic">network.</em></h3>
+    <p style="font-size:.78rem;color:var(--sub);line-height:1.7;margin-bottom:2rem;font-weight:300">Enter the unique code from your clinic to connect your account and unlock your full portal.</p>
+    <div id="org-err" style="display:none;margin-bottom:1rem"></div>
+    <div id="org-ok"  style="display:none;margin-bottom:1rem"></div>
+    <form onsubmit="joinOrg(event)" style="display:flex;flex-direction:column;gap:1.5rem">
+      <div>
+        <label class="lbl" style="display:block;margin-bottom:.5rem">Patient code</label>
+        <input type="text" id="org-code-inp" class="inp" placeholder="AH-XXXX" required autocomplete="off" style="text-transform:uppercase;letter-spacing:.08em"/>
+      </div>
+      <button type="submit" class="btn btn-solid mag" style="width:100%;padding:.95rem" id="org-join-btn">Connect</button>
+    </form>
+    <p style="font-size:.7rem;color:var(--mute);margin-top:1.25rem;line-height:1.7">Don't have a code? Ask your healthcare provider for your Acuros patient code.</p>
+  </div>
+</div>
 
 
 <script>
-/* ── Theme — light by default, dark if saved ── */
+/* ═══════════════════════════════════════════════════════════════════════
+   THEME — light by default, dark if saved
+═══════════════════════════════════════════════════════════════════════ */
 (function initTheme() {
-  if (localStorage.getItem('ah-theme') === 'dark') {
-    document.documentElement.classList.add('dark');
-  }
+  if (localStorage.getItem('ah-theme') === 'dark') document.documentElement.classList.add('dark');
 })();
 
-function toggleTheme() {
+const SUN  = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>';
+const MOON = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+
+function toggleTheme(){
   const isDark = document.documentElement.classList.toggle('dark');
   localStorage.setItem('ah-theme', isDark ? 'dark' : 'light');
   renderThemeToggle();
 }
-
-function renderThemeToggle() {
+function renderThemeToggle(){
   const isDark = document.documentElement.classList.contains('dark');
-  const icon  = document.getElementById('theme-toggle-icon');
-  const label = document.getElementById('theme-toggle-label');
-  if (icon) icon.innerHTML = isDark
-    ? '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>'
-    : '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
-  if (label) label.textContent = isDark ? 'Light Mode' : 'Dark Mode';
+  const navIcon = document.getElementById('th-icon');
+  if (navIcon) navIcon.innerHTML = isDark ? SUN : MOON;
+  const dashIcon  = document.getElementById('theme-toggle-icon');
+  const dashLabel = document.getElementById('theme-toggle-label');
+  if (dashIcon)  dashIcon.innerHTML  = isDark ? SUN : MOON;
+  if (dashLabel) dashLabel.textContent = isDark ? 'Light mode' : 'Dark mode';
 }
+renderThemeToggle();
 
+
+/* ═══════════════════════════════════════════════════════════════════════
+   SUPABASE CONFIG  (auth + profile fetch — preserved)
+═══════════════════════════════════════════════════════════════════════ */
 const CONFIG = {
   supabaseUrl: 'https://pyexkdoupqzbnrybiubo.supabase.co',
   supabaseKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB5ZXhrZG91cHF6Ym5yeWJpdWJvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4Mzg4MzYsImV4cCI6MjA4NzQxNDgzNn0.3_dLQEJfmC08A2-hlgOfwlu4ngx7hslUR3Dun4BoXLU',
@@ -768,79 +801,131 @@ let currentUser = null, ptMode = 'login';
 const ORG_BANNER_DISMISSED_KEY = 'ah-org-banner-dismissed';
 const KNOWN_CLINIC_CODES = { 'AAACLINICS-001': { name: 'Anti-Aging Academic Clinic', active: true } };
 
-function getClinicPortalUrl(code) {
+function getClinicPortalUrl(code){
   const c = String(code||'').toUpperCase();
   if (c.startsWith('AAACLINICS')) return '/aaaclinics-portal';
   return null;
 }
-function userHasOrg() { return !!(currentUser?.org_id||currentUser?.code); }
+function userHasOrg(){ return !!(currentUser?.org_id || currentUser?.code); }
 
-function handleBookClick() {
+function handleBookClick(){
   if (userHasOrg()) {
     window.location.href = '/bookings';
   } else {
     showOrgPrompt();
-    const modal = document.getElementById('org-modal');
-    if (modal) {
-      const notice = document.createElement('div');
-      notice.className = 'warn-box';
-      notice.style.cssText = 'margin-bottom:1rem;font-size:.8rem';
-      notice.innerHTML = '<strong>Clinic connection required</strong> to access Bookings. Enter your patient code below.';
-      const existingNotice = modal.querySelector('.warn-box');
-      if (!existingNotice) modal.querySelector('form').parentNode.insertBefore(notice, modal.querySelector('.lbl'));
-    }
   }
 }
 
-async function fetchProfile(userId) {
-  if (!sb||!userId) return null;
+async function fetchProfile(userId){
+  if (!sb || !userId) return null;
   try {
     const { data, error } = await sb.from('profiles').select('*, org:org_id(id, name)').eq('id', userId).maybeSingle();
-    if (error) { const { data: plain } = await sb.from('profiles').select('*').eq('id', userId).maybeSingle(); return plain; }
+    if (error) {
+      const { data: plain } = await sb.from('profiles').select('*').eq('id', userId).maybeSingle();
+      return plain;
+    }
     return data;
   } catch(e) { return null; }
 }
 
-function openMob()  { document.getElementById('mob-menu').classList.add('open'); document.body.style.overflow='hidden'; }
-function closeMob() { document.getElementById('mob-menu').classList.remove('open'); document.body.style.overflow=''; }
 
-/* ── Cursor ── */
-(function initCursor() {
+/* ═══════════════════════════════════════════════════════════════════════
+   NAV / MOBILE / SCROLL / CURSOR
+═══════════════════════════════════════════════════════════════════════ */
+function openMob() { document.getElementById('mob-menu').classList.add('open'); document.body.style.overflow='hidden'; }
+function closeMob(){ document.getElementById('mob-menu').classList.remove('open'); document.body.style.overflow=''; }
+
+const mainNav = document.getElementById('main-nav');
+const prog    = document.getElementById('scroll-prog');
+window.addEventListener('scroll', () => {
+  const sy    = window.scrollY;
+  const total = document.documentElement.scrollHeight - window.innerHeight;
+  if (prog)    prog.style.width = (total > 0 ? (sy/total*100) : 0) + '%';
+  if (mainNav) mainNav.classList.toggle('scrolled', sy > 40);
+}, { passive: true });
+
+(function initCursor(){
   if (window.matchMedia('(pointer:coarse),(hover:none)').matches) return;
   const dot=document.getElementById('cursor-dot'), ring=document.getElementById('cursor-ring');
   if (!dot||!ring) return;
   let mx=-100,my=-100,rx=-100,ry=-100;
   document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px';},{passive:true});
   (function ar(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(ar);})();
-  document.addEventListener('mouseover',e=>{if(e.target.closest('a,button,.btn,.tool-card'))document.body.classList.add('c-hover');});
-  document.addEventListener('mouseout', e=>{if(e.target.closest('a,button,.btn,.tool-card'))document.body.classList.remove('c-hover');});
+  document.addEventListener('mouseover',e=>{if(e.target.closest('a,button,.btn,.bcard,.acct-row'))document.body.classList.add('c-hover');});
+  document.addEventListener('mouseout', e=>{if(e.target.closest('a,button,.btn,.bcard,.acct-row'))document.body.classList.remove('c-hover');});
 })();
 
-/* ── Scroll progress + nav ── */
-const prog=document.getElementById('scroll-prog'), mainNav=document.getElementById('main-nav');
-window.addEventListener('scroll',()=>{
-  const sy=window.scrollY, total=document.documentElement.scrollHeight-window.innerHeight;
-  if(prog) prog.style.width=(total>0?(sy/total*100):0)+'%';
-  if(mainNav) mainNav.classList.toggle('scrolled',sy>40);
-},{passive:true});
 
-/* ── Magnetic buttons ── */
-document.querySelectorAll('.mag').forEach(el=>{
-  el.addEventListener('mousemove',e=>{const r=el.getBoundingClientRect();el.style.transform=`translate(${(e.clientX-(r.left+r.width/2))*.32}px,${(e.clientY-(r.top+r.height/2))*.32}px)`;});
-  el.addEventListener('mouseleave',()=>{el.style.transform='';});
+/* ═══════════════════════════════════════════════════════════════════════
+   FRAMER-MOTION-LIKE INTERACTIVITY
+   • Magnetic   • Mouse parallax   • Scroll reveal + stagger
+   • Card 3D tilt   • Spring lift
+═══════════════════════════════════════════════════════════════════════ */
+
+document.querySelectorAll('.mag').forEach(el => {
+  el.addEventListener('mousemove', e => {
+    const r = el.getBoundingClientRect();
+    el.style.transform = `translate(${(e.clientX-(r.left+r.width/2))*.32}px,${(e.clientY-(r.top+r.height/2))*.32}px)`;
+  });
+  el.addEventListener('mouseleave', () => { el.style.transform=''; });
 });
 
-/* ── Reveal ── */
-function setupReveal() {
-  if (!('IntersectionObserver' in window)) { document.querySelectorAll('.rv').forEach(el=>el.classList.add('in')); return; }
-  const io=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:0,rootMargin:'0px 0px -40px 0px'});
-  document.querySelectorAll('.rv:not(.in)').forEach(el=>io.observe(el));
-}
-document.addEventListener('DOMContentLoaded',setupReveal);
-setTimeout(()=>document.querySelectorAll('.rv').forEach(el=>el.classList.add('in')),4000);
+(function initParallax(){
+  if (window.matchMedia('(pointer:coarse),(hover:none)').matches) return;
+  const els = Array.from(document.querySelectorAll('.px'));
+  if (!els.length) return;
+  let tx=0,ty=0,rafQ=null;
+  document.addEventListener('mousemove', e => {
+    tx = (e.clientX/window.innerWidth - .5) * 2;
+    ty = (e.clientY/window.innerHeight - .5) * 2;
+    if (!rafQ) rafQ = requestAnimationFrame(() => {
+      els.forEach(el => {
+        const k = parseFloat(el.dataset.px || .03);
+        el.style.transform = `translate3d(${(-tx*k*60).toFixed(1)}px,${(-ty*k*60).toFixed(1)}px,0)`;
+      });
+      rafQ = null;
+    });
+  }, { passive: true });
+})();
 
-/* ── ?from=bookings param ── */
-(function checkFromBookings() {
+(function initTilt(){
+  if (window.matchMedia('(pointer:coarse),(hover:none)').matches) return;
+  document.querySelectorAll('.bcard:not(.disabled)').forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const r  = card.getBoundingClientRect();
+      const rx = ((e.clientY - r.top)  / r.height - .5) * -8;
+      const ry = ((e.clientX - r.left) / r.width  - .5) *  8;
+      card.style.transition = 'transform .14s cubic-bezier(.22,1,.36,1)';
+      card.style.transform  = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-4px)`;
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.transition = 'transform .68s cubic-bezier(.34,1.56,.64,1)';
+      card.style.transform  = '';
+      setTimeout(() => { card.style.transition = ''; }, 700);
+    });
+  });
+})();
+
+function setupReveal(){
+  const sel = '.rv:not(.in),.stagger:not(.in),.clip-wipe:not(.in)';
+  if (!('IntersectionObserver' in window)) {
+    document.querySelectorAll(sel).forEach(el => el.classList.add('in')); return;
+  }
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0, rootMargin: '0px 0px -60px 0px' });
+  document.querySelectorAll(sel).forEach(el => io.observe(el));
+}
+document.addEventListener('DOMContentLoaded', setupReveal);
+setTimeout(setupReveal, 200);
+setTimeout(() => document.querySelectorAll('.rv,.stagger,.clip-wipe').forEach(el => el.classList.add('in')), 4000);
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   AUTH FLOWS  (preserved)
+═══════════════════════════════════════════════════════════════════════ */
+
+(function checkFromBookings(){
   const params = new URLSearchParams(window.location.search);
   if (params.get('from') === 'bookings') {
     const notice = document.getElementById('from-bookings-notice');
@@ -848,15 +933,14 @@ setTimeout(()=>document.querySelectorAll('.rv').forEach(el=>el.classList.add('in
   }
 })();
 
-/* ── Auth helpers ── */
 function showMsg(id,msg,type){const el=document.getElementById(id);if(!el)return;el.style.display='block';el.className=type==='err'?'err-box':'ok-box';el.textContent=msg;}
 function hideMsg(...ids){ids.forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});}
 function setBtn(id,loading,label){const b=document.getElementById(id);if(!b)return;b.disabled=loading;b.innerHTML=loading?'<span class="spin"></span>':label;}
-function showOrgPrompt(){const m=document.getElementById('org-modal');if(m)m.style.display='flex';hideMsg('org-err','org-ok');}
-function hideOrgPrompt(){const m=document.getElementById('org-modal');if(m)m.style.display='none';}
+function showOrgPrompt(){const m=document.getElementById('org-modal');if(m)m.classList.add('open');hideMsg('org-err','org-ok');}
+function hideOrgPrompt(){const m=document.getElementById('org-modal');if(m)m.classList.remove('open');}
 function dismissOrgBanner(){localStorage.setItem(ORG_BANNER_DISMISSED_KEY,'1');const b=document.getElementById('org-banner');if(b)b.style.display='none';}
 
-async function joinOrg(e) {
+async function joinOrg(e){
   e.preventDefault(); hideMsg('org-err','org-ok');
   const rawCode=document.getElementById('org-code-inp')?.value??'', code=rawCode.trim().toUpperCase();
   if(!code){showMsg('org-err','Please enter your clinic code.','err');return;}
@@ -864,162 +948,269 @@ async function joinOrg(e) {
   try {
     if (!currentUser?.id) throw new Error('Not signed in. Please sign in before connecting.');
     let org = KNOWN_CLINIC_CODES[code]||null;
-    if (!org&&sb) {
-      try { const{data,error}=await Promise.race([sb.from('organizations').select('id, name, active').filter('code','ilike',code).maybeSingle(),new Promise((_,rej)=>setTimeout(()=>rej(new Error('Request timed out.')),6000))]); if(!error&&data) org=data; } catch(dbErr){throw dbErr;}
+    if (!org && sb) {
+      try {
+        const{data,error}=await Promise.race([
+          sb.from('organizations').select('id, name, active').filter('code','ilike',code).maybeSingle(),
+          new Promise((_,rej)=>setTimeout(()=>rej(new Error('Request timed out.')),6000))
+        ]);
+        if(!error && data) org=data;
+      } catch(dbErr){throw dbErr;}
     }
     if(!org) throw new Error('Code not recognized. Please verify the code with your clinic.');
     if(!org.active) throw new Error('This clinic code is no longer active. Please contact your clinic.');
-    localStorage.setItem('ah-org-code',code); localStorage.setItem('ah-org-id',org.id||''); localStorage.setItem('ah-org-name',org.name);
-    (async()=>{try{const{error:e1}=await sb.from('profiles').update({patient_code:code,org_id:org.id}).eq('id',currentUser.id);if(e1)await sb.from('profiles').update({patient_code:code}).eq('id',currentUser.id).catch(()=>{});}catch(_){}})();
+    localStorage.setItem('ah-org-code',code);
+    localStorage.setItem('ah-org-id',org.id||'');
+    localStorage.setItem('ah-org-name',org.name);
+    (async()=>{
+      try{
+        const{error:e1}=await sb.from('profiles').update({patient_code:code,org_id:org.id}).eq('id',currentUser.id);
+        if(e1) await sb.from('profiles').update({patient_code:code}).eq('id',currentUser.id).catch(()=>{});
+      }catch(_){}
+    })();
     const portalUrl=getClinicPortalUrl(code);
     setBtn('org-join-btn',false,'Connect');
-    if(portalUrl){showMsg('org-ok',`Connected to ${org.name}. Redirecting to your portal…`,'ok');setTimeout(()=>window.location.replace(portalUrl),1200);}
-    else{currentUser.code=code;currentUser.org_id=org.id||'';currentUser.org_name=org.name;showMsg('org-ok',`Connected to ${org.name}. Welcome.`,'ok');setTimeout(()=>{hideOrgPrompt();syncPortal();},1600);}
+    if(portalUrl){
+      showMsg('org-ok',`Connected to ${org.name}. Redirecting to your portal…`,'ok');
+      setTimeout(()=>window.location.replace(portalUrl),1200);
+    } else {
+      currentUser.code=code; currentUser.org_id=org.id||''; currentUser.org_name=org.name;
+      showMsg('org-ok',`Connected to ${org.name}. Welcome.`,'ok');
+      setTimeout(()=>{hideOrgPrompt();syncPortal();},1600);
+    }
   } catch(err) {
     showMsg('org-err',err.message||'Connection failed.','err');
     setBtn('org-join-btn',false,'Connect');
   }
 }
 
-function ptToggle() {
-  ptMode=ptMode==='login'?'register':'login'; const reg=ptMode==='register';
-  document.getElementById('pt-login').style.display=reg?'none':'flex';
-  document.getElementById('pt-register').style.display=reg?'flex':'none';
-  document.getElementById('pt-title').textContent=reg?'Create your account':'Sign in to your portal';
-  document.getElementById('pt-sub').textContent=reg?'Enter your details to get started':'Access your health records and tools';
-  document.getElementById('pt-toggle').textContent=reg?'Already have an account? Sign in':"Don't have an account? Create one";
+function ptToggle(){
+  ptMode=ptMode==='login'?'register':'login';
+  const reg=ptMode==='register';
+  document.getElementById('pt-login').style.display    = reg ? 'none' : 'flex';
+  document.getElementById('pt-register').style.display = reg ? 'flex' : 'none';
+  document.getElementById('pt-title').innerHTML = reg ? 'Create your <em>account.</em>' : 'Sign in to your <em>portal.</em>';
+  document.getElementById('pt-sub').textContent = reg ? 'Enter your details to get started.' : 'Welcome back. Pick up where you left off.';
+  document.getElementById('pt-toggle').textContent = reg ? 'Already have an account? Sign in' : "Don't have an account? Create one";
   hideMsg('pt-err','pt-ok');
 }
 
-async function ptGoogleAuth() {
+async function ptGoogleAuth(){
   if(!sb){showMsg('pt-err','Auth not configured.','err');return;}
-  try{const{error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin+'/patient-portal?portal=1'}});if(error)throw error;}
-  catch(err){showMsg('pt-err',err.message||'Google sign-in failed.','err');}
-}
-
-async function ptLogin(e) {
-  e.preventDefault();hideMsg('pt-err','pt-ok');setBtn('pt-li-btn',true,'Sign In');
   try{
-    if(sb){const{data,error}=await sb.auth.signInWithPassword({email:document.getElementById('pt-email').value,password:document.getElementById('pt-pass').value});if(error)throw error;const p=await fetchProfile(data.user.id);currentUser={id:data.user.id,email:data.user.email,name:p?.name||data.user.user_metadata?.full_name||data.user.email.split('@')[0],first:p?.first_name||'',last:p?.last_name||'',code:p?.patient_code||'',org_id:p?.org_id||'',org_name:p?.org?.name||''};}
-    else{const email=document.getElementById('pt-email').value;currentUser={id:'demo',email,name:email.split('@')[0],first:'',last:'',code:'',org_id:'',org_name:''};}
-    syncPortal();
-  }catch(err){showMsg('pt-err',err.message||'Sign in failed.','err');}
-  finally{setBtn('pt-li-btn',false,'Sign In');}
+    const{error}=await sb.auth.signInWithOAuth({
+      provider:'google',
+      options:{redirectTo:window.location.origin+'/patient-portal?portal=1'}
+    });
+    if(error)throw error;
+  } catch(err){ showMsg('pt-err',err.message||'Google sign-in failed.','err'); }
 }
 
-async function ptRegister(e) {
-  e.preventDefault();hideMsg('pt-err','pt-ok');setBtn('pt-r-btn',true,'Create Account');
-  const first=document.getElementById('pt-first').value.trim(),last=document.getElementById('pt-last').value.trim(),code=document.getElementById('pt-code').value.trim(),email=document.getElementById('pt-remail').value,pass=document.getElementById('pt-rpass').value,name=(first+' '+last).trim();
+async function ptLogin(e){
+  e.preventDefault(); hideMsg('pt-err','pt-ok'); setBtn('pt-li-btn',true,'Sign In');
   try{
-    if(sb){const{data,error}=await sb.auth.signUp({email,password:pass,options:{data:{full_name:name}}});if(error)throw error;if(!data.session){showMsg('pt-ok','Account created. Check your email to confirm, then sign in.','ok');setBtn('pt-r-btn',false,'Create Account');return;}let regOrgId='',regOrgName='',safeCode=code?code.toUpperCase():'';if(safeCode){const{data:org}=await sb.from('organizations').select('id, name').eq('code',safeCode).eq('active',true).maybeSingle().catch(()=>({data:null}));if(org){regOrgId=org.id;regOrgName=org.name;}else safeCode='';}try{await sb.from('profiles').upsert({id:data.user.id,name,first_name:first,last_name:last,patient_code:safeCode||null,org_id:regOrgId||null,tier:'free',usage_count:0});}catch(_){}currentUser={id:data.user.id,email,name,first,last,code:safeCode,org_id:regOrgId,org_name:regOrgName};}
-    else{currentUser={id:'demo',email,name,first,last,code:'',org_id:'',org_name:''};}
+    if(sb){
+      const{data,error}=await sb.auth.signInWithPassword({
+        email:document.getElementById('pt-email').value,
+        password:document.getElementById('pt-pass').value
+      });
+      if(error)throw error;
+      const p = await fetchProfile(data.user.id);
+      currentUser = {
+        id:data.user.id, email:data.user.email,
+        name: p?.name || data.user.user_metadata?.full_name || data.user.email.split('@')[0],
+        first: p?.first_name||'', last: p?.last_name||'',
+        code: p?.patient_code||'', org_id: p?.org_id||'',
+        org_name: p?.org?.name||''
+      };
+    } else {
+      const email=document.getElementById('pt-email').value;
+      currentUser={id:'demo',email,name:email.split('@')[0],first:'',last:'',code:'',org_id:'',org_name:''};
+    }
     syncPortal();
-  }catch(err){showMsg('pt-err',err.message||'Registration failed.','err');}
-  finally{setBtn('pt-r-btn',false,'Create Account');}
+  } catch(err){ showMsg('pt-err',err.message||'Sign in failed.','err'); }
+  finally{ setBtn('pt-li-btn',false,'Sign In'); }
 }
 
-async function ptLogout() {
-  if(sb){try{await sb.auth.signOut();}catch(e){}} currentUser=null; localStorage.removeItem('ah-user-initial'); syncPortal();
+async function ptRegister(e){
+  e.preventDefault(); hideMsg('pt-err','pt-ok'); setBtn('pt-r-btn',true,'Create Account');
+  const first=document.getElementById('pt-first').value.trim(),
+        last =document.getElementById('pt-last').value.trim(),
+        code =document.getElementById('pt-code').value.trim(),
+        email=document.getElementById('pt-remail').value,
+        pass =document.getElementById('pt-rpass').value,
+        name =(first+' '+last).trim();
+  try{
+    if(sb){
+      const{data,error}=await sb.auth.signUp({email,password:pass,options:{data:{full_name:name}}});
+      if(error)throw error;
+      if(!data.session){
+        showMsg('pt-ok','Account created. Check your email to confirm, then sign in.','ok');
+        setBtn('pt-r-btn',false,'Create Account'); return;
+      }
+      let regOrgId='', regOrgName='', safeCode = code ? code.toUpperCase() : '';
+      if(safeCode){
+        const{data:org}=await sb.from('organizations').select('id, name').eq('code',safeCode).eq('active',true).maybeSingle().catch(()=>({data:null}));
+        if(org){ regOrgId=org.id; regOrgName=org.name; } else safeCode='';
+      }
+      try{
+        await sb.from('profiles').upsert({
+          id:data.user.id, name, first_name:first, last_name:last,
+          patient_code:safeCode||null, org_id:regOrgId||null,
+          tier:'free', usage_count:0
+        });
+      }catch(_){}
+      currentUser={id:data.user.id,email,name,first,last,code:safeCode,org_id:regOrgId,org_name:regOrgName};
+    } else {
+      currentUser={id:'demo',email,name,first,last,code:'',org_id:'',org_name:''};
+    }
+    syncPortal();
+  } catch(err){ showMsg('pt-err',err.message||'Registration failed.','err'); }
+  finally{ setBtn('pt-r-btn',false,'Create Account'); }
 }
 
-function syncPortal() {
-  const gate=document.getElementById('portal-gate'), dash=document.getElementById('portal-dash');
-  if(currentUser) {
-    const effectiveCode=currentUser.code||localStorage.getItem('ah-org-code')||'';
-    const portalUrl=getClinicPortalUrl(effectiveCode);
-    if(portalUrl){window.location.replace(portalUrl);return;}
-    gate.style.display='none'; dash.style.display='block';
-    /* nav solid when dashboard is visible */
+async function ptLogout(){
+  if(sb){try{await sb.auth.signOut();}catch(e){}}
+  currentUser=null;
+  localStorage.removeItem('ah-user-initial');
+  syncPortal();
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   SYNC PORTAL — switches between gate and dashboard
+═══════════════════════════════════════════════════════════════════════ */
+function syncPortal(){
+  const gate = document.getElementById('portal-gate');
+  const dash = document.getElementById('portal-dash');
+
+  if(currentUser){
+    const effectiveCode = currentUser.code || localStorage.getItem('ah-org-code') || '';
+    const portalUrl = getClinicPortalUrl(effectiveCode);
+    if(portalUrl){ window.location.replace(portalUrl); return; }
+
+    gate.style.display = 'none';
+    dash.style.display = 'block';
     if(mainNav) mainNav.classList.add('solid');
-    document.getElementById('dash-name').textContent=currentUser.first||currentUser.name||'Patient';
-    document.getElementById('dash-email-lbl').textContent=currentUser.email||'';
-    document.getElementById('dash-full-name').textContent=(currentUser.first&&currentUser.last)?currentUser.first+' '+currentUser.last:currentUser.name||'—';
-    document.getElementById('dash-email-display').textContent=currentUser.email||'—';
-    /* ── avatar initial ── */
-    const di=document.getElementById('dash-initial');if(di)di.textContent=(currentUser.first||currentUser.name||'?').charAt(0).toUpperCase();
+
+    document.getElementById('dash-name').textContent = currentUser.first || currentUser.name || 'Patient';
+    document.getElementById('dash-email-lbl').textContent = currentUser.email || '';
+    document.getElementById('dash-full-name').textContent =
+      (currentUser.first && currentUser.last) ? currentUser.first+' '+currentUser.last : (currentUser.name||'—');
+    document.getElementById('dash-email-display').textContent = currentUser.email || '—';
+
+    const di = document.getElementById('dash-initial');
+    if(di) di.textContent = (currentUser.first||currentUser.name||'?').charAt(0).toUpperCase();
     localStorage.setItem('ah-user-initial', (currentUser.first||currentUser.name||'?').charAt(0).toUpperCase());
-    /* ── org pill ── */
-    const op=document.getElementById('dash-org-pill'),opl=document.getElementById('dash-org-pill-label');
-    if(op&&opl){if(currentUser.org_name){opl.textContent=currentUser.org_name;op.style.display='block';}else if(currentUser.code){opl.textContent='Code: '+currentUser.code;op.style.display='block';}else{op.style.display='none';}}
-    /* ── theme toggle ── */
+
+    const mid = document.getElementById('stat-member-id');
+    if(mid) mid.innerHTML = currentUser.code ? `<em>${currentUser.code}</em>` : '<em>—</em>';
+    const statOrg = document.getElementById('stat-org-name');
+    if(statOrg){
+      if(currentUser.org_name) statOrg.textContent = currentUser.org_name;
+      else if(currentUser.code) statOrg.textContent = currentUser.code;
+      else statOrg.innerHTML = '<em>Not connected</em>';
+    }
+
+    const op  = document.getElementById('dash-org-pill');
+    const opl = document.getElementById('dash-org-pill-label');
+    if(op && opl){
+      if(currentUser.org_name)      { opl.textContent = currentUser.org_name; op.style.display = 'block'; }
+      else if(currentUser.code)     { opl.textContent = 'Code: '+currentUser.code; op.style.display = 'block'; }
+      else                          { op.style.display = 'none'; }
+    }
+
+    const acctClinic = document.getElementById('acct-clinic-btn');
+    if(acctClinic){
+      acctClinic.innerHTML = userHasOrg() ? 'Manage <span>→</span>' : 'Connect <span>→</span>';
+    }
+
     renderThemeToggle();
-    const cl=document.getElementById('dash-code-lbl');
-    const statOrg=document.getElementById('stat-org-name');
-    if(currentUser.org_name){cl.textContent=currentUser.org_name;cl.style.display='block';if(statOrg)statOrg.textContent=currentUser.org_name;}
-    else if(currentUser.code){cl.textContent='Code: '+currentUser.code;cl.style.display='block';if(statOrg)statOrg.textContent=currentUser.code;}
-    else{cl.style.display='none';if(statOrg)statOrg.textContent='Not connected';}
-    const hasOrg=userHasOrg(), bannerDismissed=localStorage.getItem(ORG_BANNER_DISMISSED_KEY)==='1';
-    const topBanner=document.getElementById('org-banner'), dashPrompt=document.getElementById('dash-org-prompt');
-    if(!hasOrg){if(topBanner)topBanner.style.display=bannerDismissed?'none':'block';if(dashPrompt)dashPrompt.style.display='block';}
-    else{if(topBanner)topBanner.style.display='none';if(dashPrompt)dashPrompt.style.display='none';}
-    setTimeout(()=>{
-      document.querySelectorAll('.tool-card').forEach((el,i)=>setTimeout(()=>el.classList.add('in'),i*80));
-    }, 150);
+
+    const hasOrg = userHasOrg(), bannerDismissed = localStorage.getItem(ORG_BANNER_DISMISSED_KEY) === '1';
+    const topBanner = document.getElementById('org-banner');
+    const dashPrompt = document.getElementById('dash-org-prompt');
+    if(!hasOrg){
+      if(topBanner)  topBanner.style.display  = bannerDismissed ? 'none' : 'block';
+      if(dashPrompt) dashPrompt.style.display = 'block';
+    } else {
+      if(topBanner)  topBanner.style.display  = 'none';
+      if(dashPrompt) dashPrompt.style.display = 'none';
+    }
+
+    const np = document.getElementById('nav-profile');
+    const npi = document.getElementById('nav-profile-initial');
+    if(np && npi){
+      npi.textContent = (currentUser.first||currentUser.name||'?').charAt(0).toUpperCase();
+      np.style.display = 'flex';
+    }
   } else {
-    gate.style.display='block'; dash.style.display='none'; ptMode='login';
-    /* nav transparent on gate */
+    gate.style.display = 'block';
+    dash.style.display = 'none';
+    ptMode = 'login';
     if(mainNav) { mainNav.classList.remove('solid'); mainNav.classList.remove('scrolled'); }
-    document.getElementById('pt-login').style.display='flex'; document.getElementById('pt-register').style.display='none';
-    document.getElementById('pt-title').textContent='Sign in to your portal'; document.getElementById('pt-sub').textContent='Access your health records and tools';
-    document.getElementById('pt-toggle').textContent="Don't have an account? Create one"; hideMsg('pt-err','pt-ok');
+    document.getElementById('pt-login').style.display = 'flex';
+    document.getElementById('pt-register').style.display = 'none';
+    document.getElementById('pt-title').innerHTML = 'Sign in to your <em>portal.</em>';
+    document.getElementById('pt-sub').textContent = 'Welcome back. Pick up where you left off.';
+    document.getElementById('pt-toggle').textContent = "Don't have an account? Create one";
+    hideMsg('pt-err','pt-ok');
+    const np = document.getElementById('nav-profile');
+    if(np) np.style.display = 'none';
   }
-  setTimeout(()=>{document.querySelectorAll('.stagger-item').forEach((el,i)=>setTimeout(()=>el.classList.add('in'),i*110));},200);
   setupReveal();
 }
 
 if(sb?.auth?.onAuthStateChange){
   sb.auth.onAuthStateChange(async(event,session)=>{
     if(session?.user){
-      currentUser={id:session.user.id,email:session.user.email,name:session.user.user_metadata?.full_name||session.user.email?.split('@')[0]||'User',first:'',last:'',code:'',org_id:'',org_name:''};
+      currentUser = {
+        id:session.user.id, email:session.user.email,
+        name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'User',
+        first:'', last:'', code:'', org_id:'', org_name:''
+      };
       syncPortal();
-      try{const p=await fetchProfile(session.user.id);if(p&&currentUser){currentUser.name=p.name||currentUser.name;currentUser.first=p.first_name||'';currentUser.last=p.last_name||'';currentUser.code=p.patient_code||'';currentUser.org_id=p.org_id||'';currentUser.org_name=p.org?.name||'';syncPortal();}}catch(_e){}
-    }else if(event==='SIGNED_OUT'){currentUser=null;syncPortal();}
-    if(window.location.hash?.includes('access_token'))window.history.replaceState(null,'',window.location.pathname+window.location.search);
+      try{
+        const p = await fetchProfile(session.user.id);
+        if(p && currentUser){
+          currentUser.name = p.name || currentUser.name;
+          currentUser.first = p.first_name || '';
+          currentUser.last = p.last_name || '';
+          currentUser.code = p.patient_code || '';
+          currentUser.org_id = p.org_id || '';
+          currentUser.org_name = p.org?.name || '';
+          syncPortal();
+        }
+      } catch(_e){}
+    } else if(event==='SIGNED_OUT'){
+      currentUser = null;
+      syncPortal();
+    }
+    if(window.location.hash?.includes('access_token')){
+      window.history.replaceState(null,'',window.location.pathname+window.location.search);
+    }
   });
-}else{syncPortal();}
+} else { syncPortal(); }
 
-// ── Ambient star field ────────────────────────────────────────────────────────
+
+/* ═══════════════════════════════════════════════════════════════════════
+   AMBIENT STAR FIELD
+═══════════════════════════════════════════════════════════════════════ */
 (function(){
   const sf=document.createElement('div');sf.id='star-canvas';sf.setAttribute('aria-hidden','true');
+  sf.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden';
   document.body.appendChild(sf);
-  for(let i=0;i<40;i++){const s=document.createElement('div');s.className='star';const sz=Math.random()<.65?2:3;
-  s.style.cssText=`width:${sz}px;height:${sz}px;left:${(Math.random()*100).toFixed(1)}%;top:${(Math.random()*100).toFixed(1)}%;--dur:${(3.5+Math.random()*6).toFixed(1)}s;--del:${(Math.random()*12).toFixed(1)}s;--peak:${(.08+Math.random()*.14).toFixed(2)}`;sf.appendChild(s);}
-})();
-
-// ── Flow rail — gold dot that traces the page as you scroll ───────────────
-(function(){
-  if(window.matchMedia('(prefers-reduced-motion:reduce)').matches) return;
-  if(document.getElementById('flow-rail')) return;
-  const rail=document.createElement('div');rail.id='flow-rail';rail.setAttribute('aria-hidden','true');
-  document.body.appendChild(rail);
-  setTimeout(()=>rail.classList.add('in'),300);
-  let ticking=false;
-  function update(){
-    const sy=window.scrollY;
-    const max=document.documentElement.scrollHeight-window.innerHeight;
-    const p=max>0?Math.min(1,Math.max(0,sy/max)):0;
-    rail.style.setProperty('--y',(8+p*84).toFixed(2)+'%');
-    ticking=false;
+  for(let i=0;i<32;i++){
+    const s=document.createElement('div');
+    s.style.cssText=`position:absolute;width:${Math.random()<.65?2:3}px;height:${Math.random()<.65?2:3}px;border-radius:50%;background:var(--ac);left:${(Math.random()*100).toFixed(1)}%;top:${(Math.random()*100).toFixed(1)}%;opacity:0;transform:scale(.3);animation:starPulse ${(3.5+Math.random()*6).toFixed(1)}s ${(Math.random()*12).toFixed(1)}s ease-in-out infinite;--peak:${(.08+Math.random()*.14).toFixed(2)}`;
+    sf.appendChild(s);
   }
-  window.addEventListener('scroll',()=>{if(!ticking){requestAnimationFrame(update);ticking=true;}},{passive:true});
-  update();
-})();
-
-// ── Flow stream — drifting gold particles ─────────────────────────────────
-(function(){
-  if(window.matchMedia('(prefers-reduced-motion:reduce)').matches) return;
-  if(document.getElementById('flow-stream')) return;
-  const stream=document.createElement('div');stream.id='flow-stream';stream.setAttribute('aria-hidden','true');
-  document.body.appendChild(stream);
-  for(let i=0;i<8;i++){
-    const p=document.createElement('div');p.className='flow-particle';
-    p.style.setProperty('--ds',(14+Math.random()*16).toFixed(1)+'s');
-    p.style.setProperty('--dl',(-Math.random()*22).toFixed(1)+'s');
-    p.style.setProperty('--ty',(8+Math.random()*82).toFixed(1)+'%');
-    stream.appendChild(p);
+  if(!document.querySelector('style[data-star]')){
+    const st=document.createElement('style');st.setAttribute('data-star','');
+    st.textContent='@keyframes starPulse{0%,100%{opacity:0;transform:scale(.2)}40%,60%{opacity:var(--peak,.18);transform:scale(1)}}';
+    document.head.appendChild(st);
   }
 })();
-
 </script>
 </body>
 </html>

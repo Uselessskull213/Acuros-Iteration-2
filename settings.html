@@ -177,13 +177,6 @@
     .portal-btn{display:inline-flex;align-items:center;gap:.75rem;background:var(--text);color:var(--bg);padding:.875rem 2rem;font-family:'Cormorant Garamond',serif;font-size:1rem;letter-spacing:.06em;text-decoration:none;transition:background .22s,color .22s}
     .portal-btn:hover{background:var(--ac);color:#fff}
 
-    /* ── Flow rail / stream — connective gold motion ── */
-    #flow-rail{position:fixed;top:0;left:50%;width:1px;height:100vh;background:linear-gradient(180deg,transparent 0%,rgba(201,169,110,0) 8%,rgba(201,169,110,.18) 50%,rgba(201,169,110,0) 92%,transparent 100%);pointer-events:none;z-index:0;transform:translateX(-50%);opacity:0;transition:opacity .8s}
-    #flow-rail.in{opacity:1}
-    #flow-rail::after{content:'';position:absolute;left:50%;top:var(--y,30%);width:6px;height:6px;background:var(--ac);border-radius:50%;transform:translate(-50%,-50%);box-shadow:0 0 24px 4px rgba(201,169,110,.5);transition:top 1.6s cubic-bezier(.22,1,.36,1)}
-    @keyframes flowDrift{0%{transform:translate3d(-15vw,0,0);opacity:0}8%{opacity:.8}92%{opacity:.8}100%{transform:translate3d(115vw,0,0);opacity:0}}
-    #flow-stream{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}
-    .flow-particle{position:absolute;width:2px;height:2px;border-radius:50%;background:var(--ac);box-shadow:0 0 8px rgba(201,169,110,.6);opacity:0;will-change:transform,opacity;animation:flowDrift var(--ds,18s) var(--dl,0s) linear infinite;top:var(--ty,50%)}
   </style>
 </head>
 <body>
@@ -916,42 +909,6 @@ function toggleEye(inputId,btn){
   btn.innerHTML=show
     ?'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>'
     :'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
-}
-
-// ── Flow rail — gold dot that traces the page as you scroll ───────────────
-(function(){
-  if(window.matchMedia('(prefers-reduced-motion:reduce)').matches) return;
-  if(document.getElementById('flow-rail')) return;
-  const rail=document.createElement('div');rail.id='flow-rail';rail.setAttribute('aria-hidden','true');
-  document.body.appendChild(rail);
-  setTimeout(()=>rail.classList.add('in'),300);
-  let ticking=false;
-  function update(){
-    const sy=window.scrollY;
-    const max=document.documentElement.scrollHeight-window.innerHeight;
-    const p=max>0?Math.min(1,Math.max(0,sy/max)):0;
-    rail.style.setProperty('--y',(8+p*84).toFixed(2)+'%');
-    ticking=false;
-  }
-  window.addEventListener('scroll',()=>{if(!ticking){requestAnimationFrame(update);ticking=true;}},{passive:true});
-  update();
-})();
-
-// ── Flow stream — drifting gold particles ─────────────────────────────────
-(function(){
-  if(window.matchMedia('(prefers-reduced-motion:reduce)').matches) return;
-  if(document.getElementById('flow-stream')) return;
-  const stream=document.createElement('div');stream.id='flow-stream';stream.setAttribute('aria-hidden','true');
-  document.body.appendChild(stream);
-  for(let i=0;i<8;i++){
-    const p=document.createElement('div');p.className='flow-particle';
-    p.style.setProperty('--ds',(14+Math.random()*16).toFixed(1)+'s');
-    p.style.setProperty('--dl',(-Math.random()*22).toFixed(1)+'s');
-    p.style.setProperty('--ty',(8+Math.random()*82).toFixed(1)+'%');
-    stream.appendChild(p);
-  }
-})();
-
-</script>
+}</script>
 </body>
 </html>
