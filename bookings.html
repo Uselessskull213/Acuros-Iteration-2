@@ -410,7 +410,8 @@
 </div>
 
 <script>
-const GOOGLE_SHEETS_URL = '';
+// Booking page boot timestamp for anti-spam check on the API
+const BOOKING_FORM_TS = Date.now();
 
 // ── Theme ──
 (function initTheme() {
@@ -537,8 +538,8 @@ function fireHeroAnims() {
   // Try Supabase session check with 4s timeout
   const timeout = setTimeout(() => denyAccess(), 4000);
 
-  const SB_URL = 'https://oqwfhcxgcgvqphfymzpx.supabase.co';
-  const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9xd2ZoY3hnY2d2cXBoZnltenB4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY2NTM4MTQsImV4cCI6MjA2MjIyOTgxNH0.TzqLHBa0tGlMqDiXGJq7X_wW1mYz-IXS6-F_P3t9MKQ';
+  const SB_URL = 'https://pyexkdoupqzbnrybiubo.supabase.co';
+  const SB_KEY = 'sb_publishable_ywcyXTqGzRTik8YJfTTHiw_B-pmj2w-';
 
   const script = document.createElement('script');
   script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js';
@@ -732,45 +733,63 @@ function updateStepIndicator(n) {
   if (l23) l23.classList.toggle('filled', n >= 3);
 }
 
-// ── Submit to Google Sheets ──
+// ── Submit booking to /api/bookings (Supabase + Resend) ──
 async function submitBooking() {
   const btn  = document.getElementById('submit-btn');
   const okEl = document.getElementById('bk-ok');
   btn.disabled = true;
   btn.innerHTML = '<span class="spin"></span> Submitting…';
 
+  // Pull token (if signed in) so the booking is linked to the patient_id.
+  // Pull org code (if patient is connected to a clinic) so the clinic owner
+  // gets emailed instead of the fallback inbox.
+  let authToken = null;
+  try {
+    const raw = localStorage.getItem('sb-pyexkdoupqzbnrybiubo-auth-token');
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      authToken = parsed?.access_token || parsed?.currentSession?.access_token || null;
+    }
+  } catch { /* ignore */ }
+  const orgCode = (localStorage.getItem('ah-org-code') || '').trim();
+
   const payload = {
-    procedure:   selectedProcedure.name,
-    category:    selectedProcedure.category,
-    price:       selectedProcedure.price,
-    firstName:   document.getElementById('bk-first').value.trim(),
-    lastName:    document.getElementById('bk-last').value.trim(),
-    email:       document.getElementById('bk-email').value.trim(),
-    phone:       document.getElementById('bk-phone').value.trim(),
-    date:        document.getElementById('bk-date').value,
-    time:        document.getElementById('bk-time').value || 'No preference',
-    notes:       document.getElementById('bk-notes').value.trim(),
-    submittedAt: new Date().toISOString(),
+    procedure:  selectedProcedure.name,
+    category:   selectedProcedure.category,
+    price:      selectedProcedure.price,
+    firstName:  document.getElementById('bk-first').value.trim(),
+    lastName:   document.getElementById('bk-last').value.trim(),
+    email:      document.getElementById('bk-email').value.trim(),
+    phone:      document.getElementById('bk-phone').value.trim(),
+    date:       document.getElementById('bk-date').value,
+    time:       document.getElementById('bk-time').value || 'No preference',
+    notes:      document.getElementById('bk-notes').value.trim(),
+    orgCode,
+    formTs:     BOOKING_FORM_TS,
+    honeypot:   '',
   };
 
   try {
-    if (GOOGLE_SHEETS_URL) {
-      await fetch(GOOGLE_SHEETS_URL, {
-        method: 'POST', mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-    }
+    const headers = { 'Content-Type': 'application/json' };
+    if (authToken) headers['Authorization'] = `Bearer ${authToken}`;
+    const resp = await fetch('/api/bookings', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(payload),
+    });
+    const data = await resp.json().catch(() => ({}));
+    if (!resp.ok) throw new Error(data.error || `Request failed (${resp.status})`);
+
     okEl.style.display = 'block'; okEl.className = 'ok-box';
-    okEl.innerHTML = `<strong>Booking request received!</strong><br/>Thank you, ${payload.firstName}. We'll confirm your <strong>${payload.procedure}</strong> appointment by email within one business day.${!GOOGLE_SHEETS_URL ? '<br/><em style="opacity:.7">(Note: Google Sheets URL not yet configured.)</em>' : ''}`;
+    okEl.innerHTML = `<strong>Booking request received!</strong><br/>Thank you, ${payload.firstName}. We'll confirm your <strong>${payload.procedure}</strong> appointment by email within one business day.`;
     document.getElementById('review-card').style.opacity = '.5';
     document.getElementById('review-card').style.pointerEvents = 'none';
     btn.style.display = 'none';
     document.getElementById('back-3').style.display = 'none';
     window.scrollTo({ top: okEl.getBoundingClientRect().top + window.scrollY - 120, behavior: 'smooth' });
-  } catch {
+  } catch (err) {
     okEl.style.display = 'block'; okEl.className = 'err-box';
-    okEl.textContent = 'Unable to submit right now. Please try again or call your clinic directly.';
+    okEl.textContent = (err && err.message) ? err.message : 'Unable to submit right now. Please try again or call your clinic directly.';
     btn.disabled = false; btn.textContent = 'Confirm Booking';
   }
 }

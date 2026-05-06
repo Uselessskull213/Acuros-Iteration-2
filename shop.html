@@ -282,26 +282,47 @@
 
 <!-- ── CHECKOUT MODAL ── -->
 <div id="checkout-modal" role="dialog" aria-label="Checkout">
-  <div class="modal-inner checkout-glass" style="width:100%;max-width:480px;padding:3rem 3rem 2.5rem;margin:1.5rem;position:relative;text-align:center;border-radius:.75rem">
+  <div class="modal-inner checkout-glass" style="width:100%;max-width:480px;padding:2.5rem 2.5rem 2rem;margin:1.5rem;position:relative;border-radius:.75rem;max-height:90vh;overflow-y:auto">
     <button onclick="closeCheckout()" aria-label="Close" style="position:absolute;top:1.125rem;right:1.125rem;background:none;border:none;cursor:pointer;color:var(--mute);transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--mute)'">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
     </button>
-    <div style="width:44px;height:44px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ac)" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+
+    <!-- Form view -->
+    <div id="checkout-view-form">
+      <div class="lbl" style="color:var(--ac);margin-bottom:.875rem;display:flex;align-items:center;gap:.625rem">
+        <span style="display:inline-block;width:16px;height:1px;background:var(--ac)"></span>
+        Checkout
+      </div>
+      <h3 style="font-family:'Cormorant Garamond',serif;font-size:1.85rem;font-weight:300;color:var(--text);margin-bottom:.5rem;line-height:1.1;letter-spacing:-.02em">Confirm your order</h3>
+      <p style="font-size:.78rem;color:var(--sub);line-height:1.75;margin-bottom:1.25rem;font-weight:300">Your clinic will confirm and arrange pickup or delivery. Payment is collected by the clinic.</p>
+
+      <div style="background:var(--bg3);border:1px solid var(--border);padding:1rem 1.125rem;margin-bottom:1.25rem">
+        <div class="lbl" style="margin-bottom:.5rem">Your Order</div>
+        <div id="checkout-summary" style="font-size:.78rem;color:var(--sub);line-height:1.75;font-weight:300"></div>
+      </div>
+
+      <div id="checkout-err" style="display:none;background:rgba(220,38,38,.08);border:1px solid rgba(220,38,38,.3);color:#dc2626;font-size:.78rem;padding:.75rem 1rem;margin-bottom:1rem;line-height:1.55"></div>
+
+      <form id="checkout-form" onsubmit="return false" style="display:flex;flex-direction:column;gap:.75rem;margin-bottom:1rem">
+        <div><label class="lbl" style="display:block;margin-bottom:.35rem">Full Name *</label><input type="text" id="co-name" class="inp" placeholder="Jane Doe" required maxlength="160"/></div>
+        <div><label class="lbl" style="display:block;margin-bottom:.35rem">Email *</label><input type="email" id="co-email" class="inp" placeholder="name@email.com" required maxlength="160"/></div>
+        <div><label class="lbl" style="display:block;margin-bottom:.35rem">Phone</label><input type="tel" id="co-phone" class="inp" placeholder="(555) 000-0000" maxlength="30"/></div>
+        <div><label class="lbl" style="display:block;margin-bottom:.35rem">Note (optional)</label><textarea id="co-note" class="inp" placeholder="Pickup / delivery preferences, etc." rows="2" maxlength="1000" style="resize:vertical"></textarea></div>
+      </form>
+
+      <button onclick="submitCheckout()" id="co-submit" class="btn btn-solid mag" style="justify-content:center;width:100%;margin-bottom:.5rem">Place Order Request</button>
+      <button onclick="closeCheckout()" class="btn btn-outline mag" style="justify-content:center;width:100%;font-size:.67rem">Continue Shopping</button>
     </div>
-    <div class="lbl" style="color:var(--ac);margin-bottom:.875rem;display:flex;align-items:center;justify-content:center;gap:.75rem">
-      <span style="display:inline-block;width:16px;height:1px;background:var(--ac)"></span>
-      Checkout
-      <span style="display:inline-block;width:16px;height:1px;background:var(--ac)"></span>
+
+    <!-- Success view -->
+    <div id="checkout-view-success" style="display:none;text-align:center;padding:1rem 0">
+      <div style="width:44px;height:44px;border:1px solid var(--ac);display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;border-radius:50%">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--ac)" stroke-width="1.6"><path d="M20 6L9 17l-5-5"/></svg>
+      </div>
+      <h3 style="font-family:'Cormorant Garamond',serif;font-size:1.85rem;font-weight:300;color:var(--text);margin-bottom:.625rem;line-height:1.1;letter-spacing:-.02em">Order received.</h3>
+      <p id="co-success-msg" style="font-size:.82rem;color:var(--sub);line-height:1.85;max-width:32ch;margin:0 auto 1.5rem;font-weight:300"></p>
+      <button onclick="closeCheckout()" class="btn btn-solid mag" style="justify-content:center;width:100%">Continue Shopping</button>
     </div>
-    <h3 style="font-family:'Cormorant Garamond',serif;font-size:2.25rem;font-weight:200;color:var(--text);margin-bottom:.875rem;line-height:1.04;letter-spacing:-.025em">Online payment<br/><em style="color:var(--ac);font-style:italic">coming soon.</em></h3>
-    <p style="font-size:.82rem;color:var(--sub);line-height:1.85;max-width:32ch;margin:0 auto 1.75rem;font-weight:300">To purchase, contact your clinic directly or mention your order at your next appointment.</p>
-    <div style="background:var(--bg3);border:1px solid var(--border);padding:1.25rem;text-align:left;margin-bottom:1.5rem">
-      <div class="lbl" style="margin-bottom:.625rem">Your Order</div>
-      <div id="checkout-summary" style="font-size:.82rem;color:var(--sub);line-height:1.85;font-weight:300"></div>
-    </div>
-    <a id="checkout-email-link" href="mailto:info@acuros.ca?subject=Product%20Order%20Request" class="btn btn-solid mag" style="justify-content:center;width:100%;margin-bottom:.625rem">Contact Clinic to Order</a>
-    <button onclick="closeCheckout()" class="btn btn-outline mag" style="justify-content:center;width:100%;font-size:.67rem">Continue Shopping</button>
   </div>
 </div>
 
@@ -561,14 +582,12 @@ function initClinicUI() {
   const bannerPrimary    = document.getElementById('banner-primary');
   const bannerSecondary  = document.getElementById('banner-secondary');
   const bannerCta        = document.getElementById('banner-cta');
-  const checkoutEmailLink = document.getElementById('checkout-email-link');
 
   if (catalog) {
     bannerPrimary.textContent = 'Showing products from ' + catalog.name + '.';
     bannerSecondary.textContent = 'Log in to your patient portal to complete checkout securely.';
     bannerCta.textContent = 'My Portal';
     bannerCta.href = '/patient-portal';
-    if (checkoutEmailLink) checkoutEmailLink.href = 'mailto:' + catalog.contactEmail + '?subject=Product%20Order%20Request';
   } else {
     bannerPrimary.textContent = 'Connect to your clinic for a personalized product selection.';
     bannerSecondary.textContent = 'Log in or register to see products curated for your care plan.';
@@ -708,15 +727,114 @@ function closeCart() {
   document.body.style.overflow = '';
 }
 function openCheckout() {
+  if (!cart.length) return;
   closeCart();
   const summary = document.getElementById('checkout-summary');
   if (summary) {
     summary.innerHTML = cart.map(x => `<div style="display:flex;justify-content:space-between;margin-bottom:.25rem"><span>${x.name} × ${x.qty}</span><span style="font-variant-numeric:tabular-nums">${fmt(x.price * x.qty)}</span></div>`).join('') +
       `<div style="margin-top:.75rem;padding-top:.75rem;border-top:1px solid var(--border);display:flex;justify-content:space-between"><span>Total</span><span style="font-variant-numeric:tabular-nums">${fmt(totalPrice())}</span></div>`;
   }
+  // Reset modal state to form view, prefill from localStorage if available.
+  const formView    = document.getElementById('checkout-view-form');
+  const successView = document.getElementById('checkout-view-success');
+  if (formView)    formView.style.display    = '';
+  if (successView) successView.style.display = 'none';
+  const errEl = document.getElementById('checkout-err');
+  if (errEl) errEl.style.display = 'none';
+  const submitBtn = document.getElementById('co-submit');
+  if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Place Order Request'; }
+
+  const savedName  = localStorage.getItem('ah-user-name')  || '';
+  const savedEmail = localStorage.getItem('ah-user-email') || '';
+  const savedPhone = localStorage.getItem('ah-user-phone') || '';
+  const nameInp  = document.getElementById('co-name');
+  const emailInp = document.getElementById('co-email');
+  const phoneInp = document.getElementById('co-phone');
+  const noteInp  = document.getElementById('co-note');
+  if (nameInp  && !nameInp.value)  nameInp.value  = savedName;
+  if (emailInp && !emailInp.value) emailInp.value = savedEmail;
+  if (phoneInp && !phoneInp.value) phoneInp.value = savedPhone;
+  if (noteInp) noteInp.value = '';
+
   document.getElementById('checkout-modal').classList.add('show');
 }
 function closeCheckout() { document.getElementById('checkout-modal').classList.remove('show'); }
+
+async function submitCheckout() {
+  const errEl = document.getElementById('checkout-err');
+  const btn   = document.getElementById('co-submit');
+  const name  = (document.getElementById('co-name').value  || '').trim();
+  const email = (document.getElementById('co-email').value || '').trim();
+  const phone = (document.getElementById('co-phone').value || '').trim();
+  const note  = (document.getElementById('co-note').value  || '').trim();
+
+  errEl.style.display = 'none';
+  if (!cart.length) { errEl.textContent = 'Your cart is empty.'; errEl.style.display = 'block'; return; }
+  if (!name)  { errEl.textContent = 'Please enter your full name.'; errEl.style.display = 'block'; return; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    errEl.textContent = 'Please enter a valid email address.';
+    errEl.style.display = 'block'; return;
+  }
+
+  // Pull auth token (if signed in) so the order links to user_id and earns points.
+  let authToken = null;
+  try {
+    const raw = localStorage.getItem('sb-pyexkdoupqzbnrybiubo-auth-token');
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      authToken = parsed?.access_token || parsed?.currentSession?.access_token || null;
+    }
+  } catch { /* ignore */ }
+
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+
+  const payload = {
+    items: cart.map(x => ({ id: x.id, name: x.name, qty: x.qty, price: x.price })),
+    customerName:  name,
+    customerEmail: email,
+    customerPhone: phone,
+    note,
+    orgCode: (localStorage.getItem('ah-org-code') || '').trim(),
+    honeypot: '',
+  };
+
+  try {
+    const headers = { 'Content-Type': 'application/json' };
+    if (authToken) headers['Authorization'] = `Bearer ${authToken}`;
+    const resp = await fetch('/api/checkout', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(payload),
+    });
+    const data = await resp.json().catch(() => ({}));
+    if (!resp.ok) throw new Error(data.error || `Request failed (${resp.status})`);
+
+    // Persist contact info for next time.
+    localStorage.setItem('ah-user-name',  name);
+    localStorage.setItem('ah-user-email', email);
+    if (phone) localStorage.setItem('ah-user-phone', phone);
+
+    // Clear cart on success.
+    cart = []; saveCart(); updateCartUI();
+
+    // Show success state.
+    const formView    = document.getElementById('checkout-view-form');
+    const successView = document.getElementById('checkout-view-success');
+    const msg         = document.getElementById('co-success-msg');
+    const pts         = Number(data.pointsEarned || 0);
+    if (msg) {
+      msg.innerHTML = `Thanks, ${name.split(' ')[0]}. We've sent confirmation to <strong>${email}</strong>. Your clinic will be in touch shortly.${pts > 0 ? `<br/><br/><span style="color:var(--ac)">+${pts} loyalty point${pts !== 1 ? 's' : ''} pending.</span>` : ''}`;
+    }
+    if (formView)    formView.style.display    = 'none';
+    if (successView) successView.style.display = '';
+  } catch (err) {
+    errEl.textContent = (err && err.message) ? err.message : 'Could not place order. Please try again.';
+    errEl.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Place Order Request';
+  }
+}
 
 /* ─── Nav helpers ─── */
 function openMob()  { document.getElementById('mob-menu').classList.add('open'); document.body.style.overflow='hidden'; }
