@@ -5,7 +5,7 @@
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-80K00SEBQK');</script>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>Book a Procedure — Acuros Health</title>
+  <title>Book a Procedure - Acuros Health</title>
   <link rel="icon" type="image/x-icon" href="/favicon.ico"/>
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png"/>
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png"/>
@@ -18,7 +18,7 @@
   <link rel="canonical" href="https://acuros.ca/bookings"/>
   <meta property="og:type" content="website"/>
   <meta property="og:url" content="https://acuros.ca/bookings"/>
-  <meta property="og:title" content="Book a Procedure — Acuros Health"/>
+  <meta property="og:title" content="Book a Procedure - Acuros Health"/>
   <meta property="og:description" content="Schedule consultations and procedures online through Acuros Health."/>
   <meta property="og:site_name" content="Acuros Health"/>
   <script src="https://cdn.tailwindcss.com"></script>
@@ -255,7 +255,7 @@
       <div class="step-line" id="line-2-3"></div>
       <div class="step-dot" id="dot-3">3</div>
       <div style="margin-left:.75rem">
-        <div class="lbl" id="step-label">Step 1 of 3 — Select a Procedure</div>
+        <div class="lbl" id="step-label">Step 1 of 3 - Select a Procedure</div>
       </div>
     </div>
 
@@ -287,9 +287,9 @@
               <div><label class="lbl" style="display:block;margin-bottom:.4rem">Preferred Time</label>
                 <select id="bk-time" class="inp">
                   <option value="">No preference</option>
-                  <option value="Morning (9am–12pm)">Morning (9am–12pm)</option>
-                  <option value="Afternoon (12pm–3pm)">Afternoon (12pm–3pm)</option>
-                  <option value="Late Afternoon (3pm–6pm)">Late Afternoon (3pm–6pm)</option>
+                  <option value="Morning (9am-12pm)">Morning (9am-12pm)</option>
+                  <option value="Afternoon (12pm-3pm)">Afternoon (12pm-3pm)</option>
+                  <option value="Late Afternoon (3pm-6pm)">Late Afternoon (3pm-6pm)</option>
                 </select>
               </div>
               <div><label class="lbl" style="display:block;margin-bottom:.4rem">Additional Notes</label><textarea id="bk-notes" class="inp" placeholder="Any health history, concerns, or questions relevant to your appointment…" rows="4" maxlength="2000" style="resize:vertical"></textarea></div>
@@ -684,7 +684,7 @@ function goStep(n) {
     oldPanel.style.transition = 'opacity .4s cubic-bezier(.22,1,.36,1),transform .4s cubic-bezier(.22,1,.36,1)';
   }
 
-  // Enter new — prime position
+  // Enter new - prime position
   newPanel.style.transform  = `translateX(${isForward ? 40 : -40}px)`;
   newPanel.style.opacity    = '0';
   newPanel.style.transition = 'none';
@@ -715,9 +715,9 @@ function goStep(n) {
 
 function updateStepIndicator(n) {
   const labels = [
-    'Step 1 of 3 — Select a Procedure',
-    'Step 2 of 3 — Your Details',
-    'Step 3 of 3 — Review & Confirm'
+    'Step 1 of 3 - Select a Procedure',
+    'Step 2 of 3 - Your Details',
+    'Step 3 of 3 - Review & Confirm'
   ];
   document.getElementById('step-label').textContent = labels[n - 1];
   [1,2,3].forEach(i => {

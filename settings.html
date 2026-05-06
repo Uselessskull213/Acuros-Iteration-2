@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>Account — Acuros Health</title>
+  <title>Account - Acuros Health</title>
   <link rel="icon" type="image/x-icon" href="/favicon.ico"/>
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png"/>
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png"/>
@@ -332,7 +332,7 @@
           <span class="s-icon" id="twofa-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
           <div class="s-text">
             <div class="s-label">Two-Factor Authentication</div>
-            <div class="s-value" id="twofa-value">Off — password only</div>
+            <div class="s-value" id="twofa-value">Off - password only</div>
           </div>
         </div>
         <button class="toggle-track" id="twofa-toggle" onclick="handleToggle2FA()" aria-label="Toggle 2FA"><div class="toggle-thumb"></div></button>
@@ -399,7 +399,7 @@
           <span class="s-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
           <div class="s-text">
             <div class="s-label">App Version</div>
-            <div class="s-value">2.0.0 — Web</div>
+            <div class="s-value">2.0.0 - Web</div>
           </div>
         </div>
       </div>
@@ -614,14 +614,14 @@ function showToast(msg,duration=3000){
 }
 
 // ════════════════════════════════════════════════════════════════════
-// AUTH — Supabase session detection
+// AUTH - Supabase session detection
 // ════════════════════════════════════════════════════════════════════
 showView('view-loading');
 
 async function initAuth(){
   if(!sb){ showView('view-signedout'); return; }
   try{
-    // getSession() is immediate — resolves from localStorage without waiting for a callback
+    // getSession() is immediate - resolves from localStorage without waiting for a callback
     const { data:{ session } } = await sb.auth.getSession();
     if(session?.user){
       currentUser = session.user;
@@ -676,7 +676,7 @@ function renderMain(){
   const email = currentUser.email || '';
   const tier  = profile?.tier || 'free';
   const usage = profile?.usage_count ?? 0;
-  const code  = profile?.account_code || '—';
+  const code  = profile?.account_code || '-';
   const since = profile?.created_at
     ? new Date(profile.created_at).toLocaleDateString('en-CA',{year:'numeric',month:'long'})
     : '';
@@ -707,7 +707,7 @@ function renderMain(){
   // 2FA
   const tt=document.getElementById('twofa-toggle');
   if(tt)tt.classList.toggle('on',twoFAOn);
-  setText('twofa-value',twoFAOn?'On — OTP required at sign in':'Off — password only');
+  setText('twofa-value',twoFAOn?'On - OTP required at sign in':'Off - password only');
 
   // Account
   setText('acc-code',code);
@@ -855,7 +855,7 @@ async function handleToggle2FA(){
   try{
     await sb.from('profiles').update({two_fa_enabled:newVal}).eq('id',currentUser.id);
     twoFAOn=newVal;
-    setText('twofa-value',twoFAOn?'On — OTP required at sign in':'Off — password only');
+    setText('twofa-value',twoFAOn?'On - OTP required at sign in':'Off - password only');
   }catch(e){
     // Revert on error
     if(tt)tt.classList.toggle('on',!newVal);

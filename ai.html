@@ -5,7 +5,7 @@
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-80K00SEBQK');</script>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>AI Assistant — Acuros Health</title>
+  <title>AI Assistant - Acuros Health</title>
   <link rel="icon" type="image/x-icon" href="/favicon.ico"/>
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png"/>
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png"/>
@@ -18,7 +18,7 @@
   <link rel="canonical" href="https://acuros.ca/ai-assistant"/>
   <meta property="og:type" content="website"/>
   <meta property="og:url" content="https://acuros.ca/ai-assistant"/>
-  <meta property="og:title" content="AI Assistant — Acuros Health"/>
+  <meta property="og:title" content="AI Assistant - Acuros Health"/>
   <meta property="og:description" content="Ask medical questions with confidence. Powered by Gemini with evidence-based reasoning."/>
   <meta property="og:site_name" content="Acuros Health"/>
   <meta name="twitter:card" content="summary"/>
@@ -309,7 +309,6 @@
     <div class="orb" style="top:-10%;right:-5%;width:50vw;height:50vw;background:radial-gradient(circle,rgba(201,169,110,.12) 0%,transparent 65%)"></div>
     <div class="orb" style="bottom:0%;left:10%;width:30vw;height:30vw;background:radial-gradient(circle,rgba(201,169,110,.07) 0%,transparent 65%)"></div>
     <div style="position:relative;max-width:1320px;margin:0 auto;width:100%">
-      <div class="lbl rv" style="margin-bottom:1.5rem;color:var(--ac)">AI Health Assistant</div>
       <h1 class="rv d1" style="font-size:clamp(3rem,7.5vw,6rem);font-weight:200;color:#f4efe7;margin-bottom:1.5rem;letter-spacing:-.035em;line-height:.95">Intelligent Health<br/><em style="color:var(--ac);font-style:italic">Dialogue.</em></h1>
       <p class="rv d2" style="font-size:.93rem;color:rgba(244,239,231,.65);max-width:46ch;line-height:1.9;margin-bottom:2.5rem">Ask medical questions with confidence. Powered by Gemini with evidence-based reasoning, structured logic, and safety governance.</p>
       <div class="rv d3" style="display:flex;flex-wrap:wrap;gap:.625rem">
@@ -327,7 +326,7 @@
       <div class="rv">
         <div class="lbl" style="margin-bottom:1.25rem">Live Assistant</div>
         <div id="guest-notice" style="display:none;margin-bottom:.875rem" class="warn-box">
-          You're using Acuros AI as a guest — <strong>1 free message</strong> per session. <a href="/patient-portal" style="color:inherit;font-weight:600;text-decoration:underline">Sign in</a> or join an organization for unlimited access.
+          You're using Acuros AI as a guest - <strong>1 free message</strong> per session. <a href="/patient-portal" style="color:inherit;font-weight:600;text-decoration:underline">Sign in</a> or join an organization for unlimited access.
         </div>
         <div class="card glass-chat" style="display:flex;flex-direction:column;height:560px;position:relative">
           <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.625rem">
@@ -336,7 +335,7 @@
             <span id="ai-status" style="margin-left:auto;font-size:.63rem;color:var(--mute)"></span>
           </div>
           <div id="chat-msgs" style="flex:1;overflow-y:auto;padding:1.25rem;display:flex;flex-direction:column;gap:.875rem">
-            <div class="bubble ai">Hello — I'm the Acuros AI health assistant. I provide evidence-based health education and information. What would you like to explore today?</div>
+            <div class="bubble ai">Hello - I'm the Acuros AI health assistant. I provide evidence-based health education and information. What would you like to explore today?</div>
           </div>
           <div style="padding:.875rem 1.25rem;border-top:1px solid var(--border);display:flex;gap:.625rem">
             <input id="chat-in" type="text" class="inp" placeholder="Ask a health question…" style="flex:1" onkeydown="if(event.key==='Enter'&&!event.shiftKey)sendChat()"/>
@@ -358,7 +357,6 @@
       </div>
 
       <div style="display:flex;flex-direction:column;gap:1.25rem" class="rv d1">
-        <div class="lbl" style="margin-bottom:.25rem">How It Works</div>
         <div class="glass-panel" style="border-radius:.75rem;overflow:hidden">
           <div class="glass-panel-row" style="padding:1.25rem;border-bottom:1px solid rgba(255,255,255,.06)">
             <div class="lbl" style="color:var(--ac);margin-bottom:.4rem">01</div>
@@ -397,7 +395,6 @@
     <div style="max-width:1320px;margin:0 auto;padding:5rem 2rem;position:relative;z-index:1">
       <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:3rem;flex-wrap:wrap;gap:1.5rem">
         <div>
-          <div class="lbl rv" style="margin-bottom:.875rem">What you can do</div>
           <h2 class="rv d1" style="font-size:clamp(1.75rem,3.5vw,3rem);font-weight:200;letter-spacing:-.03em;line-height:1.08;color:var(--text)">Four ways to use<br/><em style="color:var(--sub);font-style:italic">Acuros AI.</em></h2>
         </div>
         <a href="/patient-portal" class="btn btn-outline mag rv d2" style="flex-shrink:0">Unlock full access →</a>
@@ -550,7 +547,7 @@ function normalizeChatHistory(raw) { if(!Array.isArray(raw)) return []; return r
 function saveChatHistory() { localStorage.setItem(getChatHistoryKey(), JSON.stringify(chatHistory.slice(-MAX_CHAT_MESSAGES))); }
 function renderChatHistory() {
   const msgs = document.getElementById('chat-msgs'); if(!msgs) return; msgs.innerHTML='';
-  if(!chatHistory.length) { addBubble("Hello — I'm the Acuros AI health assistant. I provide evidence-based health education and information. What would you like to explore today?",'ai',false); }
+  if(!chatHistory.length) { addBubble("Hello - I'm the Acuros AI health assistant. I provide evidence-based health education and information. What would you like to explore today?",'ai',false); }
   else { chatHistory.forEach(e=>addBubble(e.text,e.role==='user'?'user':'ai',false)); }
   msgs.scrollTop=msgs.scrollHeight;
 }
@@ -586,7 +583,7 @@ async function sendChat() {
     if(data.sources?.length){const sd=document.createElement('div');sd.style.cssText='font-size:.72rem;color:var(--mute);margin-top:-.5rem;align-self:flex-start;padding:0 .25rem';sd.appendChild(document.createTextNode('Sources: '));data.sources.slice(0,3).forEach((s,i)=>{if(i>0)sd.appendChild(document.createTextNode(', '));const a=document.createElement('a');try{a.href=new URL(s.uri).href;}catch{a.href='#';}a.target='_blank';a.rel='noopener noreferrer';a.style.cssText='color:var(--ac);text-decoration:none';a.textContent=s.title||s.uri;sd.appendChild(a);});document.getElementById('chat-msgs').appendChild(sd);}
     if(status) status.textContent=data.modelUsed?`Model: ${data.modelUsed}`:'';
   } catch(err) {
-    thinking.remove(); const fallback=localAIResponse(msg); chatHistory.push({role:'model',text:fallback}); chatHistory=chatHistory.slice(-MAX_CHAT_MESSAGES); saveChatHistory(); addBubble(fallback+'\n\n⚠ AI unavailable — showing cached response.','ai'); if(status) status.textContent='Offline mode';
+    thinking.remove(); const fallback=localAIResponse(msg); chatHistory.push({role:'model',text:fallback}); chatHistory=chatHistory.slice(-MAX_CHAT_MESSAGES); saveChatHistory(); addBubble(fallback+'\n\n⚠ AI unavailable - showing cached response.','ai'); if(status) status.textContent='Offline mode';
   } finally {
     setBtn('chat-send-btn',false,'Send'); document.getElementById('chat-msgs').scrollTop=999999;
     if(!currentUser&&guestMessageUsed()) setTimeout(showLimitOverlay,1200);
@@ -598,11 +595,11 @@ function inferChatType(msg) { const l=msg.toLowerCase(); if(/\b(study|trial|meta
 function addBubble(txt,type,scroll=true) { const msgs=document.getElementById('chat-msgs'); const d=document.createElement('div'); d.className='bubble '+type; d.style.whiteSpace='pre-line'; d.textContent=txt; msgs.appendChild(d); if(scroll) msgs.scrollTop=msgs.scrollHeight; return d; }
 function localAIResponse(msg) {
   const l=msg.toLowerCase();
-  if(l.includes('metformin')) return "Metformin is generally well-tolerated. Common side effects include gastrointestinal symptoms — nausea, diarrhea, abdominal discomfort — particularly when starting. Always take with food. Lactic acidosis is a rare but serious risk in patients with renal impairment.\n\n⚠ Educational information only — consult your healthcare provider.";
-  if(l.includes('cbc')||l.includes('blood count')) return "A CBC measures key blood components:\n• Hemoglobin: 120–160 g/L (women), 130–180 g/L (men)\n• WBC: 4.5–11.0 × 10⁹/L\n• Platelets: 150–400 × 10⁹/L\n\nValues outside range are flagged H or L. Discuss with your physician.\n\n⚠ Educational information only.";
+  if(l.includes('metformin')) return "Metformin is generally well-tolerated. Common side effects include gastrointestinal symptoms - nausea, diarrhea, abdominal discomfort - particularly when starting. Always take with food. Lactic acidosis is a rare but serious risk in patients with renal impairment.\n\n⚠ Educational information only - consult your healthcare provider.";
+  if(l.includes('cbc')||l.includes('blood count')) return "A CBC measures key blood components:\n• Hemoglobin: 120-160 g/L (women), 130-180 g/L (men)\n• WBC: 4.5-11.0 × 10⁹/L\n• Platelets: 150-400 × 10⁹/L\n\nValues outside range are flagged H or L. Discuss with your physician.\n\n⚠ Educational information only.";
   if(l.includes('cardiolog')||l.includes('heart')) return "Questions for your cardiologist:\n1. What is my cardiovascular risk score?\n2. What lifestyle changes matter most?\n3. Should I be on preventive medications?\n4. What symptoms require emergency care?\n5. What follow-up testing do I need?\n\n⚠ Educational information only.";
   if(l.includes('crp')) return "Elevated CRP indicates systemic inflammation. Causes include infection, autoimmune conditions, inflammatory bowel disease, or tissue injury. hs-CRP is used for cardiovascular risk assessment.\n\n⚠ Educational information only.";
-  return "I can provide general health education on that topic. For personalised medical advice, please consult your physician or pharmacist.\n\n⚠ Educational information only — not a substitute for professional medical advice.";
+  return "I can provide general health education on that topic. For personalised medical advice, please consult your physician or pharmacist.\n\n⚠ Educational information only - not a substitute for professional medical advice.";
 }
 function setBtn(id,loading,label) { const b=document.getElementById(id); if(!b) return; b.disabled=loading; b.innerHTML=loading?'<span class="spin"></span>':label; }
 document.addEventListener('DOMContentLoaded', () => { if(authReady){ensureChatHistoryLoaded(true);if(!currentUser&&guestMessageUsed())showLimitOverlay();} });
