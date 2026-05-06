@@ -5,27 +5,27 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <title>Account — Acuros Health</title>
   <link rel="icon" type="image/png" href="favicon.png"/>
-  <link rel="apple-touch-icon" href="favicon.png"/>
   <meta name="robots" content="noindex"/>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,200;0,300;0,400;0,500;1,200;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
-  <script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{display:['Cormorant Garamond','Georgia','serif'],sans:['DM Sans','sans-serif']}}}}</script>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,200;0,300;0,400;0,500;1,200;1,300&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
   <style>
     :root{
       --bg:#f0ebe1;--bg2:#f8f4ec;--bg3:#e6e0d4;
       --border:#d4cdb8;--text:#1c1a14;--sub:#5c5346;--mute:#a09480;
-      --ac:#c9922a;--nav:rgba(240,235,225,.97)
+      --ac:#c9922a;--nav:rgba(240,235,225,.97);
+      --card:#fff;--input:#fff;--input-border:#d4cdb8
     }
     html.dark{
       --bg:#0a0a09;--bg2:#111110;--bg3:#161614;
       --border:#1e1e1b;--text:#f0ede8;--sub:#8c8880;--mute:#4e4c48;
-      --ac:#c9a96e;--nav:rgba(10,10,9,.96)
+      --ac:#c9a96e;--nav:rgba(10,10,9,.96);
+      --card:#141412;--input:#141412;--input-border:#272724
     }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     html{scroll-behavior:smooth}
-    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;cursor:none;min-height:100dvh}
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;min-height:100dvh;cursor:none}
     @media(hover:none),(pointer:coarse){body{cursor:auto}}
 
     /* ── Grain ── */
@@ -42,107 +42,133 @@
     @media(hover:none),(pointer:coarse){#cursor-dot,#cursor-ring{display:none}}
 
     /* ── Scroll progress ── */
-    #scroll-prog{position:fixed;top:0;left:0;z-index:9001;height:1px;background:var(--ac);width:0%;will-change:width;pointer-events:none}
+    #scroll-prog{position:fixed;top:0;left:0;z-index:9001;height:1px;background:var(--ac);width:0%;pointer-events:none}
 
     /* ── NAV ── */
-    nav{position:fixed;top:0;left:0;right:0;z-index:200;
-      background:var(--nav);backdrop-filter:blur(28px) saturate(180%);-webkit-backdrop-filter:blur(28px) saturate(180%);border-bottom:1px solid var(--border);
-      transition:background .45s,border-color .45s}
+    nav{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--nav);backdrop-filter:blur(28px) saturate(180%);-webkit-backdrop-filter:blur(28px) saturate(180%);border-bottom:1px solid var(--border)}
     .nav-inner{height:68px;max-width:1440px;margin:0 auto;padding:0 3rem;display:flex;align-items:center;justify-content:space-between}
     .nav-logo{display:flex;align-items:center;gap:.875rem;text-decoration:none}
-    #nav-logo-img{width:32px;height:32px;object-fit:contain;display:block}
     .nav-logo-text{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:.9rem;letter-spacing:.22em;color:var(--text);line-height:1}
-    .nav-logo-sub{font-size:.42rem;letter-spacing:.42em;text-transform:uppercase;color:var(--mute);font-family:'DM Sans',sans-serif;font-weight:400}
-    .nav-link{position:relative;font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--sub);background:none;border:none;cursor:pointer;padding:0;font-family:inherit;transition:color .22s;text-decoration:none;display:inline-block}
+    .nav-logo-sub{font-size:.42rem;letter-spacing:.42em;text-transform:uppercase;color:var(--mute);font-family:'DM Sans',sans-serif}
+    .nav-link{position:relative;font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--sub);background:none;border:none;cursor:pointer;padding:0;font-family:inherit;transition:color .22s;text-decoration:none}
     .nav-link::after{content:'';position:absolute;left:0;bottom:-2px;width:0;height:1px;background:var(--ac);transition:width .3s cubic-bezier(.22,1,.36,1)}
-    .nav-link:hover::after,.nav-link.active::after{width:100%}
-    .nav-link:hover,.nav-link.active{color:var(--text)}
+    .nav-link:hover::after{width:100%}
+    .nav-link:hover{color:var(--text)}
     .nav-icon-btn{width:34px;height:34px;border:1px solid var(--border);background:none;color:var(--sub);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .22s,color .22s;text-decoration:none;flex-shrink:0}
-    .nav-icon-btn:hover{border-color:var(--ac);color:var(--ac)}
-    .nav-icon-btn.active{border-color:var(--ac);color:var(--ac)}
+    .nav-icon-btn:hover,.nav-icon-btn.active{border-color:var(--ac);color:var(--ac)}
     @media(max-width:900px){.hnm{display:none!important}.nav-inner{padding:0 1.5rem}#mob-btn{display:flex!important}#nav-cta{display:none!important}}
 
     /* ── Mobile menu ── */
-    #mob-menu{position:fixed;inset:0;z-index:500;background:var(--bg);padding:4rem 2.5rem;display:none;flex-direction:column;opacity:0;transition:opacity .3s cubic-bezier(.22,1,.36,1)}
+    #mob-menu{position:fixed;inset:0;z-index:500;background:var(--bg);padding:4rem 2.5rem;display:none;flex-direction:column;opacity:0;transition:opacity .3s}
     #mob-menu.open{display:flex;opacity:1}
 
-    /* ── Atoms ── */
-    .lbl{font-family:'DM Sans',sans-serif;font-size:.56rem;letter-spacing:.26em;text-transform:uppercase;color:var(--mute);font-weight:400}
-    .rv{opacity:0;transform:translateY(14px);transition:opacity .82s cubic-bezier(.22,1,.36,1),transform .82s}
-    .rv.in{opacity:1;transform:none}
-    .rv.d1{transition-delay:.08s}.rv.d2{transition-delay:.16s}.rv.d3{transition-delay:.24s}.rv.d4{transition-delay:.32s}.rv.d5{transition-delay:.4s}
-
-    /* ── G-card (glass card) ── */
-    .g-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);box-shadow:0 1px 0 rgba(255,255,255,.06) inset}
-    html:not(.dark) .g-card{background:var(--bg2);border-color:var(--border);backdrop-filter:none;box-shadow:none}
-
-    /* ── Settings layout ── */
-    .settings-wrap{max-width:1100px;margin:0 auto;padding:7.5rem 3rem 6rem}
-    @media(max-width:700px){.settings-wrap{padding:6rem 1.5rem 4rem}}
-
-    /* ── Profile hero ── */
-    .profile-hero{display:grid;grid-template-columns:auto 1fr;gap:2.5rem;align-items:center;padding:3.5rem;border-bottom:1px solid var(--border)}
-    @media(max-width:640px){.profile-hero{grid-template-columns:1fr;gap:1.75rem}}
-    .profile-avatar{width:80px;height:80px;border-radius:50%;background:var(--ac);display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative}
-    .profile-avatar-initial{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:300;color:#fff;line-height:1}
-    .profile-avatar::after{content:'';position:absolute;inset:-3px;border-radius:50%;border:1px solid var(--ac);opacity:.3}
-    .profile-name{font-family:'Cormorant Garamond',serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:200;letter-spacing:-.02em;line-height:1;color:var(--text);margin-bottom:.4rem}
-    .profile-email{font-size:.78rem;color:var(--sub);letter-spacing:.04em}
-    .profile-tag{display:inline-flex;align-items:center;gap:.4rem;padding:.25rem .875rem;border-radius:999px;border:1px solid rgba(201,169,110,.2);background:rgba(201,169,110,.06);font-size:.52rem;letter-spacing:.22em;text-transform:uppercase;color:var(--ac);font-family:'DM Sans',sans-serif;margin-top:.75rem}
-
-    /* ── Settings sections ── */
-    .settings-section{border-bottom:1px solid var(--border);padding:2.75rem 0}
-    .settings-section:last-child{border-bottom:none}
-    .section-label{font-size:.52rem;letter-spacing:.28em;text-transform:uppercase;color:var(--mute);font-family:'DM Sans',sans-serif;margin-bottom:1.5rem}
-
-    /* ── Nav rows ── */
-    .settings-row{display:flex;align-items:center;justify-content:space-between;padding:1rem 0;border-bottom:1px solid var(--border);cursor:pointer;transition:color .2s;text-decoration:none;color:var(--text)}
-    .settings-row:last-child{border-bottom:none}
-    .settings-row:hover{color:var(--ac)}
-    .settings-row:hover .row-arrow{transform:translateX(4px);color:var(--ac)}
-    .row-left{display:flex;align-items:center;gap:.875rem}
-    .row-icon{width:32px;height:32px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--sub);flex-shrink:0;transition:border-color .2s,color .2s}
-    .settings-row:hover .row-icon{border-color:var(--ac);color:var(--ac)}
-    .row-label{font-size:.8rem;letter-spacing:.04em;color:inherit}
-    .row-arrow{font-size:.9rem;color:var(--mute);transition:transform .25s cubic-bezier(.22,1,.36,1),color .2s}
-
-    /* ── Preference toggle ── */
-    .pref-row{display:flex;align-items:center;justify-content:space-between;padding:1rem 0;border-bottom:1px solid var(--border)}
-    .pref-row:last-child{border-bottom:none}
-    .pref-label{font-size:.8rem;color:var(--sub);letter-spacing:.04em}
-    .toggle-track{width:42px;height:22px;border-radius:999px;background:var(--border);position:relative;cursor:pointer;transition:background .25s;flex-shrink:0;border:none;padding:0}
-    .toggle-track.on{background:var(--ac)}
-    .toggle-thumb{position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .25s cubic-bezier(.22,1,.36,1);box-shadow:0 1px 3px rgba(0,0,0,.2)}
-    .toggle-track.on .toggle-thumb{transform:translateX(20px)}
-
-    /* ── Legal links ── */
-    .legal-row{display:flex;gap:2rem;flex-wrap:wrap}
-    .legal-link{font-size:.72rem;color:var(--mute);text-decoration:none;letter-spacing:.06em;transition:color .2s;border-bottom:1px solid transparent;padding-bottom:.15rem}
-    .legal-link:hover{color:var(--text);border-bottom-color:var(--ac)}
-
-    /* ── Sign out ── */
-    .signout-btn{display:inline-flex;align-items:center;gap:.625rem;font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--mute);background:none;border:1px solid var(--border);cursor:pointer;padding:.7rem 1.5rem;font-family:'DM Sans',sans-serif;transition:color .22s,border-color .22s}
-    .signout-btn:hover{color:#c0392b;border-color:#c0392b}
-    html:not(.dark) .signout-btn:hover{color:#b02020;border-color:#b02020}
-
-    /* ── Recent sessions ── */
-    .session-item{display:flex;align-items:center;gap:.875rem;padding:.875rem 0;border-bottom:1px solid var(--border);cursor:pointer;transition:color .2s;text-decoration:none}
-    .session-item:last-child{border-bottom:none}
-    .session-item:hover{color:var(--ac)}
-    .session-dot{width:5px;height:5px;border-radius:50%;background:var(--mute);flex-shrink:0;transition:background .2s}
-    .session-item:hover .session-dot{background:var(--ac)}
-    .session-title{flex:1;font-size:.76rem;color:var(--sub);letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .session-date{font-size:.62rem;color:var(--mute);letter-spacing:.04em;flex-shrink:0}
-
-    /* ── Ambient stars ── */
+    /* ── Stars ── */
     #star-canvas{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}
     .star{position:absolute;width:2px;height:2px;border-radius:1px;background:var(--ac);opacity:0;transform:rotate(45deg) scale(.3);animation:starPulse var(--dur,5s) var(--del,0s) ease-in-out infinite}
     @keyframes starPulse{0%,100%{opacity:0;transform:rotate(45deg) scale(.2)}40%,60%{opacity:var(--peak,.18);transform:rotate(45deg) scale(1)}}
 
-    /* ── Footer ── */
-    footer{border-top:1px solid var(--border);padding:2.5rem 3rem;max-width:1440px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
-    .footer-copy{font-size:.62rem;color:var(--mute);letter-spacing:.04em}
-    @media(max-width:700px){footer{padding:2rem 1.5rem;flex-direction:column;align-items:flex-start}}
+    /* ── Layout ── */
+    .page-wrap{max-width:860px;margin:0 auto;padding:6.5rem 3rem 5rem;position:relative;z-index:2}
+    @media(max-width:700px){.page-wrap{padding:5.5rem 1.5rem 4rem}}
+
+    .lbl{font-size:.52rem;letter-spacing:.28em;text-transform:uppercase;color:var(--mute);font-family:'DM Sans',sans-serif;margin-bottom:.875rem;display:block}
+
+    /* ── Sub-views ── */
+    .view{display:none}
+    .view.active{display:block}
+
+    /* ── Back button ── */
+    .back-btn{display:inline-flex;align-items:center;gap:.5rem;background:none;border:none;cursor:pointer;color:var(--sub);font-family:'DM Sans',sans-serif;font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;padding:0;margin-bottom:2rem;transition:color .2s}
+    .back-btn:hover{color:var(--ac)}
+    .back-btn svg{transition:transform .2s}
+    .back-btn:hover svg{transform:translateX(-3px)}
+
+    /* ── Profile card ── */
+    .profile-card{display:grid;grid-template-columns:auto 1fr auto;gap:1.25rem;align-items:center;padding:1.5rem;background:var(--card);border:1px solid var(--border);margin-bottom:2.5rem}
+    @media(max-width:500px){.profile-card{grid-template-columns:auto 1fr;}.edit-name-btn{grid-column:1/-1}}
+    .avatar{width:48px;height:48px;background:var(--bg3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .avatar-text{font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:400;color:var(--ac);letter-spacing:.04em}
+    .profile-name{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:300;letter-spacing:-.02em;color:var(--text);line-height:1.1}
+    .profile-email{font-size:.72rem;color:var(--sub);margin-top:.2rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:32ch}
+    .profile-since{font-size:.6rem;color:var(--mute);letter-spacing:.06em;margin-top:.25rem}
+    .edit-name-btn{padding:.4rem .875rem;border:1px solid var(--border);background:none;cursor:pointer;font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:var(--sub);font-family:'DM Sans',sans-serif;transition:border-color .2s,color .2s;flex-shrink:0}
+    .edit-name-btn:hover{border-color:var(--ac);color:var(--ac)}
+
+    /* ── Section header ── */
+    .section-hdr{display:flex;align-items:center;gap:.75rem;margin-bottom:.75rem;margin-top:1.5rem}
+    .section-hdr:first-child{margin-top:0}
+    .section-line{width:16px;height:1px;background:var(--ac);flex-shrink:0}
+    .section-title{font-size:.52rem;letter-spacing:.26em;text-transform:uppercase;color:var(--mute);font-family:'DM Sans',sans-serif}
+
+    /* ── Settings section box ── */
+    .settings-box{background:var(--card);border:1px solid var(--border);margin-bottom:1.75rem;overflow:hidden}
+    .s-row{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem;border-bottom:1px solid var(--border);cursor:default;transition:background .15s}
+    .s-row:last-child{border-bottom:none}
+    .s-row.clickable{cursor:pointer}
+    .s-row.clickable:hover{background:var(--bg2)}
+    .s-row.danger .s-label{color:#c0392b}
+    html.dark .s-row.danger .s-label{color:#e57373}
+    .s-left{display:flex;align-items:center;gap:.875rem;flex:1;min-width:0}
+    .s-icon{width:20px;display:flex;justify-content:center;flex-shrink:0;color:var(--sub)}
+    .s-row.danger .s-icon{color:#c0392b}
+    html.dark .s-row.danger .s-icon{color:#e57373}
+    .s-text{min-width:0}
+    .s-label{font-size:.82rem;color:var(--text);letter-spacing:.02em}
+    .s-value{font-size:.66rem;color:var(--mute);margin-top:.18rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:28ch}
+    .s-chevron{color:var(--mute);flex-shrink:0;transition:transform .2s}
+    .s-row.clickable:hover .s-chevron{transform:translateX(2px)}
+
+    /* ── Toggle ── */
+    .toggle-track{width:42px;height:22px;border-radius:999px;background:var(--border);position:relative;cursor:pointer;transition:background .25s;border:none;padding:0;flex-shrink:0}
+    .toggle-track.on{background:var(--ac)}
+    .toggle-thumb{position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .25s cubic-bezier(.22,1,.36,1);box-shadow:0 1px 3px rgba(0,0,0,.2)}
+    .toggle-track.on .toggle-thumb{transform:translateX(20px)}
+
+    /* ── Tier badge ── */
+    .tier-badge{display:inline-flex;align-items:center;gap:.35rem;padding:.2rem .6rem;font-size:.52rem;letter-spacing:.18em;text-transform:uppercase;background:rgba(201,146,42,.08);border:1px solid rgba(201,146,42,.18);color:var(--ac);font-family:'DM Sans',sans-serif;flex-shrink:0}
+
+    /* ── Forms ── */
+    .form-wrap{max-width:480px}
+    .form-desc{font-size:.8rem;color:var(--sub);line-height:1.85;margin-bottom:1.75rem}
+    .field-lbl{font-size:.52rem;letter-spacing:.22em;text-transform:uppercase;color:var(--mute);font-family:'DM Sans',sans-serif;display:block;margin-bottom:.5rem}
+    .field-group{margin-bottom:1.25rem}
+    .f-input{width:100%;padding:.8rem 1rem;border:1px solid var(--input-border);background:var(--input);color:var(--text);font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:300;outline:none;transition:border-color .2s}
+    .f-input:focus{border-color:var(--ac)}
+    .f-input::placeholder{color:var(--mute)}
+    .pass-wrap{position:relative}
+    .pass-wrap .f-input{padding-right:3rem}
+    .eye-btn{position:absolute;right:.875rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--mute);display:flex;padding:.25rem;transition:color .2s}
+    .eye-btn:hover{color:var(--sub)}
+    .readonly-field{padding:.8rem 1rem;border:1px solid var(--border);background:var(--bg3);color:var(--sub);font-size:.88rem;font-family:'DM Sans',sans-serif;font-weight:300;margin-bottom:1.25rem}
+
+    /* ── OTP grid ── */
+    .otp-grid{display:flex;gap:.625rem;margin-bottom:1.75rem;justify-content:flex-start}
+    .otp-box{width:48px;height:58px;border:1px solid var(--border);background:var(--input);color:var(--text);font-size:1.25rem;text-align:center;font-family:'DM Sans',sans-serif;font-weight:300;outline:none;transition:border-color .2s;-webkit-appearance:none}
+    .otp-box:focus{border-color:var(--ac)}
+    .otp-email-lbl{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:300;color:var(--ac);letter-spacing:-.02em;margin-bottom:1.5rem;display:block}
+
+    /* ── Buttons ── */
+    .solid-btn{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.375rem;background:var(--text);color:var(--bg);border:none;cursor:pointer;font-family:'Cormorant Garamond',serif;font-size:1rem;letter-spacing:.08em;width:100%;transition:background .22s;margin-top:1.25rem}
+    html.dark .solid-btn{background:#f0f0ec;color:#181816}
+    .solid-btn:hover{background:var(--ac);color:#fff}
+    html.dark .solid-btn:hover{background:var(--ac);color:#fff}
+    .solid-btn:disabled{opacity:.5;cursor:not-allowed}
+    .solid-btn .btn-arrow{font-size:1.1rem}
+
+    .resend-btn{background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.76rem;color:var(--sub);text-decoration:none;display:block;text-align:center;padding:.75rem;margin-top:.25rem;transition:color .2s}
+    .resend-btn:hover{color:var(--ac)}
+    .resend-btn:disabled{color:var(--mute);cursor:default}
+
+    /* ── Toast ── */
+    #toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(8px);background:var(--text);color:var(--bg);padding:.75rem 1.5rem;font-size:.72rem;letter-spacing:.08em;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;z-index:9000;white-space:nowrap}
+    #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+    /* ── Signed-out state ── */
+    .signed-out-card{padding:3.5rem 2.5rem;text-align:center;background:var(--card);border:1px solid var(--border)}
+    .signed-out-title{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:200;color:var(--text);margin-bottom:.75rem;letter-spacing:-.03em}
+    .signed-out-sub{font-size:.8rem;color:var(--sub);line-height:1.85;margin-bottom:2rem}
+    .portal-btn{display:inline-flex;align-items:center;gap:.75rem;background:var(--text);color:var(--bg);padding:.875rem 2rem;font-family:'Cormorant Garamond',serif;font-size:1rem;letter-spacing:.06em;text-decoration:none;transition:background .22s}
+    .portal-btn:hover{background:var(--ac);color:#fff}
   </style>
 </head>
 <body>
@@ -150,33 +176,31 @@
 <div id="cursor-dot" aria-hidden="true"></div>
 <div id="cursor-ring" aria-hidden="true"></div>
 <div id="scroll-prog" aria-hidden="true"></div>
-
+<div id="toast" aria-live="polite"></div>
 
 <!-- ── Nav ── -->
-<nav id="main-nav">
+<nav>
   <div class="nav-inner">
     <a href="/" class="nav-logo">
-      <img id="nav-logo-img" src="/assets/logo-gold.jpg" alt="Acuros"/>
+      <img src="/assets/logo-gold.jpg" alt="Acuros" width="32" height="32" style="object-fit:contain;flex-shrink:0"/>
       <div style="display:flex;flex-direction:column;gap:2px">
         <span class="nav-logo-text">ACUROS</span>
         <span class="nav-logo-sub">HEALTH</span>
       </div>
     </a>
-
     <div style="display:flex;align-items:center;gap:3rem" class="hnm">
       <a class="nav-link" href="/">Home</a>
       <a class="nav-link" href="/ai-assistant">AI Assistant</a>
       <a class="nav-link" href="/patient-portal">Patient Login</a>
     </div>
-
     <div style="display:flex;align-items:center;gap:.875rem">
-      <a href="/settings" id="nav-account" class="nav-icon-btn active" title="Account" aria-label="Account settings" style="border-radius:0">
+      <a href="/settings" class="nav-icon-btn active" title="Account" aria-label="Account settings">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 10-16 0"/></svg>
       </a>
-      <button id="nav-theme-toggle" onclick="toggleTheme()" style="width:34px;height:34px;border:1px solid var(--border);background:none;color:var(--sub);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .22s,color .22s" title="Toggle theme" aria-label="Toggle theme">
+      <button id="nav-theme-toggle" onclick="toggleTheme()" class="nav-icon-btn" title="Toggle theme" aria-label="Toggle theme">
         <span id="th-icon" style="display:flex;align-items:center"></span>
       </button>
-      <a href="#contact" class="nav-icon-btn" id="nav-cta" style="width:auto;padding:0 1.25rem;font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;font-family:'DM Sans',sans-serif;text-decoration:none;color:var(--text);background:var(--text);color:var(--bg);" onclick="window.location.href='/#contact';return false">Request Demo</a>
+      <a href="/patient-portal" class="nav-icon-btn" id="nav-cta" style="width:auto;padding:0 1rem;font-size:.58rem;letter-spacing:.16em;text-transform:uppercase;background:var(--text);color:var(--bg);text-decoration:none">Portal</a>
       <button onclick="openMob()" style="display:none;background:none;border:none;cursor:pointer;color:var(--text);padding:.25rem" id="mob-btn" aria-label="Open menu">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16M4 12h12M4 18h8"/></svg>
       </button>
@@ -193,320 +217,677 @@
     </button>
   </div>
   <div style="display:flex;flex-direction:column">
-    <a href="/"             style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:200;color:var(--sub);text-decoration:none;border-bottom:1px solid var(--border);padding:.875rem 0">Home</a>
+    <a href="/" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:200;color:var(--sub);text-decoration:none;border-bottom:1px solid var(--border);padding:.875rem 0">Home</a>
     <a href="/ai-assistant" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:200;color:var(--sub);text-decoration:none;border-bottom:1px solid var(--border);padding:.875rem 0">AI Assistant</a>
     <a href="/patient-portal" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:200;color:var(--sub);text-decoration:none;border-bottom:1px solid var(--border);padding:.875rem 0">Patient Login</a>
     <a href="/settings" style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:200;color:var(--ac);text-decoration:none;padding:.875rem 0">Account</a>
   </div>
 </div>
 
-
-<!-- ══════════════════════════════════
-     SETTINGS CONTENT
-════════════════════════════════════ -->
+<!-- ══════════════════════════════════════════════════════
+     MAIN CONTENT
+══════════════════════════════════════════════════════ -->
 <main style="position:relative;z-index:2">
-  <div class="settings-wrap">
+<div class="page-wrap">
 
-    <!-- ── Section header ── -->
-    <div class="rv" style="margin-bottom:3rem">
-      <div class="lbl" style="margin-bottom:.875rem">Account &amp; Settings</div>
-      <h1 style="font-family:'Cormorant Garamond',serif;font-size:clamp(2.5rem,5vw,4rem);font-weight:200;letter-spacing:-.03em;line-height:.98;color:var(--text)">Your Profile</h1>
+  <span class="lbl">Account &amp; Settings</span>
+  <h1 style="font-family:'Cormorant Garamond',serif;font-size:clamp(2.25rem,5vw,3.5rem);font-weight:200;letter-spacing:-.035em;line-height:.96;color:var(--text);margin-bottom:2.5rem" id="page-title">Account</h1>
+
+  <!-- ── SIGNED-OUT STATE ── -->
+  <div id="view-signedout" class="view active">
+    <div class="signed-out-card">
+      <div style="width:56px;height:56px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;margin:0 auto 1.75rem">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 10-16 0"/></svg>
+      </div>
+      <div class="signed-out-title">Sign in to view your account</div>
+      <div class="signed-out-sub">Access your profile, security settings, membership, and more.</div>
+      <a href="/patient-portal" class="portal-btn">Patient Login <span>→</span></a>
+    </div>
+  </div>
+
+  <!-- ── LOADING STATE ── -->
+  <div id="view-loading" class="view">
+    <div style="display:flex;align-items:center;gap:.75rem;padding:3rem 0;color:var(--mute)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="animation:spin 1s linear infinite"><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0" stroke-dasharray="56" stroke-dashoffset="28"/></svg>
+      <span style="font-size:.72rem;letter-spacing:.12em;text-transform:uppercase">Loading</span>
+    </div>
+    <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+  </div>
+
+  <!-- ── MAIN SETTINGS VIEW ── -->
+  <div id="view-main" class="view">
+
+    <!-- Profile card -->
+    <div class="profile-card" id="profile-card">
+      <div class="avatar"><span class="avatar-text" id="av-initials">?</span></div>
+      <div style="min-width:0">
+        <div class="profile-name" id="pf-name">Loading…</div>
+        <div class="profile-email" id="pf-email"></div>
+        <div class="profile-since" id="pf-since"></div>
+      </div>
+      <button class="edit-name-btn" onclick="showView('view-edit-name')">EDIT NAME</button>
     </div>
 
-    <!-- ── Profile card ── -->
-    <div class="g-card rv d1" style="margin-bottom:3rem;overflow:hidden">
-      <div class="profile-hero">
-        <div class="profile-avatar">
-          <span class="profile-avatar-initial" id="profile-initial">A</span>
+    <!-- MEMBERSHIP -->
+    <div class="section-hdr"><div class="section-line"></div><span class="section-title">Membership</span></div>
+    <div class="settings-box">
+      <div class="s-row">
+        <div class="s-left">
+          <span class="s-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span>
+          <div class="s-text">
+            <div class="s-label" id="tier-label">Free Plan</div>
+            <div class="s-value" id="tier-value">Standard access</div>
+          </div>
         </div>
-        <div>
-          <div class="profile-name" id="profile-name">Acuros User</div>
-          <div class="profile-email" id="profile-email">Loading…</div>
-          <div class="profile-tag" id="profile-tag">
-            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7H4a2 2 0 00-2 2v6a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
-            Patient Account
+        <span class="tier-badge" id="tier-badge">FREE</span>
+      </div>
+      <div class="s-row">
+        <div class="s-left">
+          <span class="s-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>
+          <div class="s-text">
+            <div class="s-label">AI Interactions</div>
+            <div class="s-value" id="usage-value">—</div>
           </div>
         </div>
       </div>
-      <!-- Accent rule -->
-      <div style="height:1px;background:linear-gradient(90deg,var(--ac) 0%,transparent 60%)"></div>
     </div>
 
-    <!-- ── Main settings grid ── -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start" class="settings-grid">
-
-      <!-- Left column -->
-      <div style="display:flex;flex-direction:column;gap:0">
-
-        <!-- Navigate -->
-        <div class="settings-section rv d2">
-          <div class="section-label">Navigate</div>
-          <a href="/" class="settings-row">
-            <div class="row-left">
-              <div class="row-icon">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-              </div>
-              <span class="row-label">Home</span>
-            </div>
-            <span class="row-arrow">→</span>
-          </a>
-          <a href="/ai-assistant" class="settings-row">
-            <div class="row-left">
-              <div class="row-icon">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-              </div>
-              <span class="row-label">AI Assistant</span>
-            </div>
-            <span class="row-arrow">→</span>
-          </a>
-          <a href="/patient-portal" class="settings-row">
-            <div class="row-left">
-              <div class="row-icon">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 13h4"/></svg>
-              </div>
-              <span class="row-label">Patient Portal</span>
-            </div>
-            <span class="row-arrow">→</span>
-          </a>
-          <a href="/shop" class="settings-row">
-            <div class="row-left">
-              <div class="row-icon">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
-              </div>
-              <span class="row-label">Shop</span>
-            </div>
-            <span class="row-arrow">→</span>
-          </a>
-          <a href="/bookings" class="settings-row">
-            <div class="row-left">
-              <div class="row-icon">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-              </div>
-              <span class="row-label">Bookings</span>
-            </div>
-            <span class="row-arrow">→</span>
-          </a>
+    <!-- SECURITY -->
+    <div class="section-hdr"><div class="section-line"></div><span class="section-title">Security</span></div>
+    <div class="settings-box">
+      <div class="s-row clickable" onclick="showView('view-change-password')">
+        <div class="s-left">
+          <span class="s-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></span>
+          <div class="s-text"><div class="s-label">Change Password</div></div>
         </div>
-
-        <!-- Preferences -->
-        <div class="settings-section rv d3">
-          <div class="section-label">Preferences</div>
-          <div class="pref-row">
-            <span class="pref-label">Dark Mode</span>
-            <button class="toggle-track" id="theme-toggle-btn" onclick="toggleThemeBtn()" aria-label="Toggle dark mode">
-              <div class="toggle-thumb"></div>
-            </button>
-          </div>
-          <div class="pref-row">
-            <span class="pref-label">Language</span>
-            <span style="font-size:.72rem;color:var(--mute);letter-spacing:.06em">English</span>
-          </div>
-          <div class="pref-row" style="border-bottom:none">
-            <span class="pref-label">Region</span>
-            <span style="font-size:.72rem;color:var(--mute);letter-spacing:.06em">Canada</span>
-          </div>
-        </div>
-
+        <svg class="s-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="9 18 15 12 9 6"/></svg>
       </div>
-
-      <!-- Right column -->
-      <div style="display:flex;flex-direction:column;gap:0">
-
-        <!-- Recent Sessions -->
-        <div class="settings-section rv d2">
-          <div class="section-label">Recent Sessions</div>
-          <div id="recent-sessions">
-            <!-- Populated by JS -->
-            <div class="session-item">
-              <div class="session-dot"></div>
-              <span class="session-title" style="color:var(--mute);font-style:italic">No recent sessions</span>
-            </div>
+      <div class="s-row clickable" onclick="showView('view-change-email')">
+        <div class="s-left">
+          <span class="s-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>
+          <div class="s-text">
+            <div class="s-label">Change Email</div>
+            <div class="s-value" id="sec-email">—</div>
           </div>
         </div>
-
-        <!-- About Acuros -->
-        <div class="settings-section rv d3">
-          <div class="section-label">About</div>
-          <a href="/" class="settings-row">
-            <div class="row-left">
-              <div class="row-icon">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-              </div>
-              <span class="row-label">About Acuros</span>
-            </div>
-            <span class="row-arrow">→</span>
-          </a>
-          <a href="/#contact" class="settings-row">
-            <div class="row-left">
-              <div class="row-icon">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-              </div>
-              <span class="row-label">Contact &amp; Support</span>
-            </div>
-            <span class="row-arrow">→</span>
-          </a>
-        </div>
-
-        <!-- Legal -->
-        <div class="settings-section rv d4">
-          <div class="section-label">Legal</div>
-          <div class="legal-row" style="margin-bottom:1rem">
-            <a href="/privacy" class="legal-link">Privacy Policy</a>
-            <a href="/terms" class="legal-link">Terms of Service</a>
-          </div>
-          <p style="font-size:.66rem;color:var(--mute);line-height:1.7;max-width:30ch">Acuros Health Inc. · Registered in Canada · PIPEDA Compliant</p>
-        </div>
-
-        <!-- Account actions -->
-        <div class="settings-section rv d5" style="border-bottom:none">
-          <div class="section-label">Account</div>
-          <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
-            <a href="/patient-portal" style="display:inline-flex;align-items:center;gap:.5rem;font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ac);text-decoration:none;border-bottom:1px solid rgba(201,169,110,.3);padding-bottom:.2rem;transition:border-color .22s" onmouseover="this.style.borderColor='var(--ac)'" onmouseout="this.style.borderColor='rgba(201,169,110,.3)'">
-              Patient Portal
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M7 7h10v10"/></svg>
-            </a>
-            <button class="signout-btn" id="signout-btn" onclick="handleSignOut()">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-              Sign Out
-            </button>
-          </div>
-          <p style="font-size:.62rem;color:var(--mute);margin-top:1.25rem;line-height:1.7">Version 2.0 · Built by Acuros Health</p>
-        </div>
-
+        <svg class="s-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="9 18 15 12 9 6"/></svg>
       </div>
-    </div><!-- /settings-grid -->
+      <div class="s-row">
+        <div class="s-left">
+          <span class="s-icon" id="twofa-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+          <div class="s-text">
+            <div class="s-label">Two-Factor Authentication</div>
+            <div class="s-value" id="twofa-value">Off — password only</div>
+          </div>
+        </div>
+        <button class="toggle-track" id="twofa-toggle" onclick="handleToggle2FA()" aria-label="Toggle 2FA"><div class="toggle-thumb"></div></button>
+      </div>
+    </div>
 
-  </div><!-- /settings-wrap -->
+    <!-- YOUR ACCOUNT -->
+    <div class="section-hdr"><div class="section-line"></div><span class="section-title">Your Account</span></div>
+    <div class="settings-box">
+      <div class="s-row">
+        <div class="s-left">
+          <span class="s-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></span>
+          <div class="s-text">
+            <div class="s-label">Account ID</div>
+            <div class="s-value" id="acc-code">—</div>
+          </div>
+        </div>
+      </div>
+      <div class="s-row">
+        <div class="s-left">
+          <span class="s-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+          <div class="s-text">
+            <div class="s-label">Account Type</div>
+            <div class="s-value" id="acc-type">Patient</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRIVACY & LEGAL -->
+    <div class="section-hdr"><div class="section-line"></div><span class="section-title">Privacy &amp; Legal</span></div>
+    <div class="settings-box">
+      <a href="/privacy" class="s-row clickable" style="text-decoration:none">
+        <div class="s-left">
+          <span class="s-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>
+          <div class="s-text"><div class="s-label">Privacy Policy</div></div>
+        </div>
+        <svg class="s-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+      <a href="/terms" class="s-row clickable" style="text-decoration:none">
+        <div class="s-left">
+          <span class="s-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>
+          <div class="s-text"><div class="s-label">Terms of Service</div></div>
+        </div>
+        <svg class="s-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+    </div>
+
+    <!-- SUPPORT -->
+    <div class="section-hdr"><div class="section-line"></div><span class="section-title">Support</span></div>
+    <div class="settings-box">
+      <a href="mailto:info@acuros.ca" class="s-row clickable" style="text-decoration:none">
+        <div class="s-left">
+          <span class="s-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg></span>
+          <div class="s-text">
+            <div class="s-label">Help &amp; Support</div>
+            <div class="s-value">info@acuros.ca</div>
+          </div>
+        </div>
+        <svg class="s-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+      <div class="s-row">
+        <div class="s-left">
+          <span class="s-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+          <div class="s-text">
+            <div class="s-label">App Version</div>
+            <div class="s-value">2.0.0 — Web</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACCOUNT ACTIONS -->
+    <div class="section-hdr"><div class="section-line"></div><span class="section-title">Account Actions</span></div>
+    <div class="settings-box">
+      <div class="s-row clickable danger" onclick="handleSignOut()">
+        <div class="s-left">
+          <span class="s-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span>
+          <div class="s-text"><div class="s-label">Sign Out</div></div>
+        </div>
+      </div>
+      <div class="s-row clickable danger" onclick="handleDeleteAccount()">
+        <div class="s-left">
+          <span class="s-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg></span>
+          <div class="s-text"><div class="s-label">Delete Account</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="height:2rem"></div>
+  </div><!-- /view-main -->
+
+  <!-- ── EDIT NAME ── -->
+  <div id="view-edit-name" class="view">
+    <button class="back-btn" onclick="showView('view-main')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="15 18 9 12 15 6"/></svg>
+      Back
+    </button>
+    <h2 style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:200;color:var(--text);margin-bottom:2rem;letter-spacing:-.03em">Edit Display Name</h2>
+    <div class="form-wrap">
+      <div class="field-group">
+        <label class="field-lbl" for="name-input">Display Name</label>
+        <input id="name-input" class="f-input" type="text" placeholder="Your name" autocomplete="name"/>
+      </div>
+      <button class="solid-btn" id="save-name-btn" onclick="handleSaveName()">
+        <span>SAVE NAME</span><span class="btn-arrow">→</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ── CHANGE PASSWORD form ── -->
+  <div id="view-change-password" class="view">
+    <button class="back-btn" onclick="showView('view-main')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="15 18 9 12 15 6"/></svg>
+      Back
+    </button>
+    <h2 style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:200;color:var(--text);margin-bottom:1rem;letter-spacing:-.03em">Change Password</h2>
+    <div class="form-wrap">
+      <p class="form-desc">Enter your current password and choose a new one. We'll send a verification code to your email to confirm.</p>
+      <div class="field-group">
+        <label class="field-lbl" for="cp-current">Current Password</label>
+        <div class="pass-wrap">
+          <input id="cp-current" class="f-input" type="password" placeholder="Current password" autocomplete="current-password"/>
+          <button class="eye-btn" type="button" onclick="toggleEye('cp-current',this)" aria-label="Toggle visibility">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-lbl" for="cp-new">New Password</label>
+        <div class="pass-wrap">
+          <input id="cp-new" class="f-input" type="password" placeholder="Min. 8 characters" autocomplete="new-password"/>
+          <button class="eye-btn" type="button" onclick="toggleEye('cp-new',this)" aria-label="Toggle visibility">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-lbl" for="cp-confirm">Confirm New Password</label>
+        <div class="pass-wrap">
+          <input id="cp-confirm" class="f-input" type="password" placeholder="Repeat new password" autocomplete="new-password"/>
+          <button class="eye-btn" type="button" onclick="toggleEye('cp-confirm',this)" aria-label="Toggle visibility">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </div>
+      <button class="solid-btn" id="cp-submit-btn" onclick="handleChangePasswordStep1()">
+        <span>SEND VERIFICATION CODE</span><span class="btn-arrow">→</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ── OTP (shared for password + email) ── -->
+  <div id="view-otp" class="view">
+    <button class="back-btn" id="otp-back-btn" onclick="otpBack()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="15 18 9 12 15 6"/></svg>
+      Back
+    </button>
+    <h2 style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:200;color:var(--text);margin-bottom:.75rem;letter-spacing:-.03em">Verify Identity</h2>
+    <p style="font-size:.82rem;color:var(--sub);margin-bottom:.5rem">Enter the 6-digit code sent to</p>
+    <span class="otp-email-lbl" id="otp-email-lbl">—</span>
+    <div class="otp-grid" id="otp-grid"></div>
+    <div style="max-width:480px">
+      <button class="solid-btn" id="otp-confirm-btn" onclick="handleOTPConfirm()">
+        <span>CONFIRM</span><span class="btn-arrow">→</span>
+      </button>
+      <button class="resend-btn" id="otp-resend-btn" onclick="handleResend()">Didn't receive it? Resend code</button>
+    </div>
+  </div>
+
+  <!-- ── CHANGE EMAIL form ── -->
+  <div id="view-change-email" class="view">
+    <button class="back-btn" onclick="showView('view-main')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="15 18 9 12 15 6"/></svg>
+      Back
+    </button>
+    <h2 style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:200;color:var(--text);margin-bottom:1rem;letter-spacing:-.03em">Change Email</h2>
+    <div class="form-wrap">
+      <p class="form-desc">We'll send a verification code to your current email first, then a confirmation link to your new one.</p>
+      <div class="field-group">
+        <span class="field-lbl">Current Email</span>
+        <div class="readonly-field" id="ce-current-email">—</div>
+      </div>
+      <div class="field-group">
+        <label class="field-lbl" for="ce-new-email">New Email Address</label>
+        <input id="ce-new-email" class="f-input" type="email" placeholder="new@example.com" autocomplete="email"/>
+      </div>
+      <button class="solid-btn" id="ce-submit-btn" onclick="handleChangeEmailStep1()">
+        <span>SEND VERIFICATION CODE</span><span class="btn-arrow">→</span>
+      </button>
+    </div>
+  </div>
+
+</div><!-- /page-wrap -->
 </main>
 
-
-<!-- ── Footer ── -->
-<footer style="position:relative;z-index:2">
-  <span class="footer-copy">© 2025 Acuros Health Inc. All rights reserved.</span>
-  <div style="display:flex;gap:1.5rem">
-    <a href="/privacy" style="font-size:.6rem;color:var(--mute);text-decoration:none;letter-spacing:.06em;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--mute)'">Privacy</a>
-    <a href="/terms" style="font-size:.6rem;color:var(--mute);text-decoration:none;letter-spacing:.06em;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--mute)'">Terms</a>
-  </div>
-</footer>
-
-<style>
-  @media(max-width:700px){
-    .settings-grid{grid-template-columns:1fr!important}
-    .profile-hero{padding:2rem!important}
-  }
-</style>
-
 <script>
-// ── Theme ────────────────────────────────────────────────────────────────────
-const SUN='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>';
-const MOON='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+// ════════════════════════════════════════════════════════════════════
+// CONFIG & SUPABASE
+// ════════════════════════════════════════════════════════════════════
+const SB_URL  = 'https://pyexkdoupqzbnrybiubo.supabase.co';
+const SB_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB5ZXhrZG91cHF6Ym5yeWJpdWJvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4Mzg4MzYsImV4cCI6MjA4NzQxNDgzNn0.3_dLQEJfmC08A2-hlgOfwlu4ngx7hslUR3Dun4BoXLU';
+let sb = null;
+try { sb = window.supabase.createClient(SB_URL, SB_KEY); } catch(e) {}
 
+// ════════════════════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════════════════════
+let currentUser = null;       // Supabase auth user
+let profile     = null;       // profiles row
+let twoFAOn     = false;
+let otpMode     = null;       // 'password' | 'email'
+let pendingNewPassword = '';
+let pendingNewEmail    = '';
+let resendTimer = 0;
+let resendInterval = null;
+
+// ════════════════════════════════════════════════════════════════════
+// THEME
+// ════════════════════════════════════════════════════════════════════
+const SUN  = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>';
+const MOON = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
 function applyTheme(dark){
   document.documentElement.classList.toggle('dark',dark);
-  const ic=document.getElementById('th-icon');
-  if(ic) ic.innerHTML = dark ? SUN : MOON;
-  const tt=document.getElementById('theme-toggle-btn');
-  if(tt) tt.classList.toggle('on',dark);
-  localStorage.setItem('ah-theme', dark ? 'dark' : 'light');
+  const ic=document.getElementById('th-icon'); if(ic) ic.innerHTML=dark?SUN:MOON;
+  localStorage.setItem('ah-theme',dark?'dark':'light');
 }
-function toggleTheme(){applyTheme(!document.documentElement.classList.contains('dark'))}
-function toggleThemeBtn(){toggleTheme()}
+function toggleTheme(){applyTheme(!document.documentElement.classList.contains('dark'));}
+(function(){ applyTheme(localStorage.getItem('ah-theme')==='dark'); })();
 
-(function(){
-  const stored=localStorage.getItem('ah-theme');
-  applyTheme(stored==='dark');
-})();
+// ════════════════════════════════════════════════════════════════════
+// NAV
+// ════════════════════════════════════════════════════════════════════
+function openMob(){document.getElementById('mob-menu').classList.add('open');document.body.style.overflow='hidden';}
+function closeMob(){document.getElementById('mob-menu').classList.remove('open');document.body.style.overflow='';}
+window.addEventListener('scroll',()=>{const p=document.getElementById('scroll-prog');if(p){const m=document.documentElement.scrollHeight-window.innerHeight;p.style.width=(m>0?window.scrollY/m*100:0)+'%';}},{passive:true});
 
-// ── Cursor ───────────────────────────────────────────────────────────────────
+// ════════════════════════════════════════════════════════════════════
+// CURSOR
+// ════════════════════════════════════════════════════════════════════
 (function(){
-  const dot=document.getElementById('cursor-dot');
-  const ring=document.getElementById('cursor-ring');
+  const dot=document.getElementById('cursor-dot'),ring=document.getElementById('cursor-ring');
   if(!dot||!ring)return;
   let mx=0,my=0,rx=0,ry=0;
-  document.addEventListener('mousemove',e=>{
-    mx=e.clientX;my=e.clientY;
-    dot.style.left=mx+'px';dot.style.top=my+'px';
-  });
-  (function loop(){
-    rx+=(mx-rx)*.11;ry+=(my-ry)*.11;
-    ring.style.left=rx+'px';ring.style.top=ry+'px';
-    requestAnimationFrame(loop);
-  })();
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px';});
+  (function loop(){rx+=(mx-rx)*.11;ry+=(my-ry)*.11;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop);})();
   document.querySelectorAll('a,button,[role=button]').forEach(el=>{
     el.addEventListener('mouseenter',()=>document.body.classList.add('c-hover'));
     el.addEventListener('mouseleave',()=>document.body.classList.remove('c-hover'));
   });
 })();
 
-// ── Scroll progress ───────────────────────────────────────────────────────────
-window.addEventListener('scroll',()=>{
-  const prog=document.getElementById('scroll-prog');
-  if(!prog)return;
-  const max=document.documentElement.scrollHeight-window.innerHeight;
-  prog.style.width=(max>0?window.scrollY/max*100:0)+'%';
-},{passive:true});
-
-// ── Mobile menu ───────────────────────────────────────────────────────────────
-function openMob(){document.getElementById('mob-menu').classList.add('open');document.body.style.overflow='hidden'}
-function closeMob(){document.getElementById('mob-menu').classList.remove('open');document.body.style.overflow=''}
-
-// ── Reveal (IntersectionObserver) ────────────────────────────────────────────
+// ════════════════════════════════════════════════════════════════════
+// STAR FIELD
+// ════════════════════════════════════════════════════════════════════
 (function(){
-  const io=new IntersectionObserver((entries)=>{
-    entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')});
-  },{threshold:.12});
-  document.querySelectorAll('.rv').forEach(el=>io.observe(el));
-})();
-
-// ── Ambient star field ────────────────────────────────────────────────────────
-(function(){
-  const sf=document.createElement('div');
-  sf.id='star-canvas';sf.setAttribute('aria-hidden','true');
+  const sf=document.createElement('div');sf.id='star-canvas';sf.setAttribute('aria-hidden','true');
   document.body.appendChild(sf);
-  const count=40;
-  for(let i=0;i<count;i++){
-    const s=document.createElement('div');
-    s.className='star';
-    const size=Math.random()<.65?2:3;
-    s.style.cssText=`width:${size}px;height:${size}px;left:${(Math.random()*100).toFixed(1)}%;top:${(Math.random()*100).toFixed(1)}%;--dur:${(3.5+Math.random()*6).toFixed(1)}s;--del:${(Math.random()*10).toFixed(1)}s;--peak:${(.1+Math.random()*.15).toFixed(2)}`;
-    sf.appendChild(s);
-  }
+  for(let i=0;i<38;i++){const s=document.createElement('div');s.className='star';const sz=Math.random()<.65?2:3;
+  s.style.cssText=`width:${sz}px;height:${sz}px;left:${(Math.random()*100).toFixed(1)}%;top:${(Math.random()*100).toFixed(1)}%;--dur:${(3.5+Math.random()*6).toFixed(1)}s;--del:${(Math.random()*12).toFixed(1)}s;--peak:${(.08+Math.random()*.14).toFixed(2)}`;sf.appendChild(s);}
 })();
 
-// ── Profile data (from localStorage / auth) ───────────────────────────────────
-(function(){
-  try{
-    const user=JSON.parse(localStorage.getItem('ah-user')||'{}');
-    const nameEl=document.getElementById('profile-name');
-    const emailEl=document.getElementById('profile-email');
-    const initEl=document.getElementById('profile-initial');
-    if(user.name){nameEl.textContent=user.name;initEl.textContent=(user.name.charAt(0)||'A').toUpperCase()}
-    if(user.email){emailEl.textContent=user.email}else{emailEl.textContent='Not signed in — Patient Login to continue'}
-    const tagEl=document.getElementById('profile-tag');
-    if(user.accountTag==='org'&&tagEl){tagEl.innerHTML=tagEl.innerHTML.replace('Patient Account','Organisation Account')}
-    // Recent sessions
-    const sessionsEl=document.getElementById('recent-sessions');
-    const history=JSON.parse(localStorage.getItem('ah-sessions')||'[]');
-    if(history.length&&sessionsEl){
-      sessionsEl.innerHTML='';
-      history.slice(0,5).forEach(s=>{
-        const dateStr=new Date(s.timestamp||Date.now()).toLocaleDateString(undefined,{month:'short',day:'numeric'});
-        const item=document.createElement('a');
-        item.href='/ai-assistant'+(s.id?'?session='+s.id:'');
-        item.className='session-item';
-        item.innerHTML=`<div class="session-dot"></div><span class="session-title">${s.title||'Untitled session'}</span><span class="session-date">${dateStr}</span>`;
-        sessionsEl.appendChild(item);
-      });
+// ════════════════════════════════════════════════════════════════════
+// VIEW SWITCHING
+// ════════════════════════════════════════════════════════════════════
+function showView(id){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ════════════════════════════════════════════════════════════════════
+// TOAST
+// ════════════════════════════════════════════════════════════════════
+function showToast(msg,duration=3000){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),duration);
+}
+
+// ════════════════════════════════════════════════════════════════════
+// AUTH — Supabase session detection
+// ════════════════════════════════════════════════════════════════════
+showView('view-loading');
+
+if(sb){
+  sb.auth.onAuthStateChange(async(event,session)=>{
+    if(!session?.user){
+      currentUser=null;profile=null;
+      showView('view-signedout');
+      return;
     }
-  }catch(e){}
-})();
+    currentUser=session.user;
+    await loadProfile();
+    renderMain();
+    showView('view-main');
+  });
+  // Also check immediately (onAuthStateChange can be slow on first load)
+  sb.auth.getSession().then(({data})=>{
+    if(!data.session&&document.querySelector('.view.active')?.id==='view-loading'){
+      showView('view-signedout');
+    }
+  });
+} else {
+  showView('view-signedout');
+}
 
-// ── Sign out ──────────────────────────────────────────────────────────────────
-function handleSignOut(){
+// ════════════════════════════════════════════════════════════════════
+// LOAD PROFILE from Supabase
+// ════════════════════════════════════════════════════════════════════
+async function loadProfile(){
+  if(!sb||!currentUser)return;
+  try{
+    const {data}=await sb.from('profiles')
+      .select('name,tier,usage_count,two_fa_enabled,created_at,account_code,first_name,last_name')
+      .eq('id',currentUser.id).maybeSingle();
+    profile=data||{};
+    twoFAOn=!!profile.two_fa_enabled;
+  }catch(e){profile={};}
+}
+
+// ════════════════════════════════════════════════════════════════════
+// RENDER MAIN VIEW with real data
+// ════════════════════════════════════════════════════════════════════
+function renderMain(){
+  if(!currentUser)return;
+  const name = profile?.name || currentUser.user_metadata?.full_name || currentUser.email?.split('@')[0] || 'User';
+  const email = currentUser.email || '';
+  const tier  = profile?.tier || 'free';
+  const usage = profile?.usage_count ?? 0;
+  const code  = profile?.account_code || '—';
+  const since = profile?.created_at
+    ? new Date(profile.created_at).toLocaleDateString('en-CA',{year:'numeric',month:'long'})
+    : '';
+  const initials = name.split(' ').map(w=>w[0]||'').join('').slice(0,2).toUpperCase()||'?';
+
+  // Profile card
+  setText('av-initials',initials);
+  setText('pf-name',name);
+  setText('pf-email',email);
+  setText('pf-since',since?'Member since '+since:'');
+  document.getElementById('pf-since').style.display=since?'':'none';
+
+  // Membership
+  if(tier==='plus'){
+    setText('tier-label','Acuros Plus');
+    setText('tier-value','Full access to all features');
+    setText('tier-badge','PLUS');
+  } else {
+    setText('tier-label','Free Plan');
+    setText('tier-value','Standard access');
+    setText('tier-badge','FREE');
+  }
+  setText('usage-value',usage+' AI interactions used');
+
+  // Security
+  setText('sec-email',email);
+
+  // 2FA
+  const tt=document.getElementById('twofa-toggle');
+  if(tt)tt.classList.toggle('on',twoFAOn);
+  setText('twofa-value',twoFAOn?'On — OTP required at sign in':'Off — password only');
+
+  // Account
+  setText('acc-code',code);
+
+  // Pre-fill edit name
+  const ni=document.getElementById('name-input');
+  if(ni)ni.value=name;
+
+  // Pre-fill change email
+  const ce=document.getElementById('ce-current-email');
+  if(ce)ce.textContent=email;
+}
+
+function setText(id,val){const el=document.getElementById(id);if(el)el.textContent=val;}
+
+// ════════════════════════════════════════════════════════════════════
+// EDIT NAME
+// ════════════════════════════════════════════════════════════════════
+async function handleSaveName(){
+  const btn=document.getElementById('save-name-btn');
+  const val=document.getElementById('name-input').value.trim();
+  if(!val){showToast('Please enter a name.');return;}
+  setBtn(btn,true,'SAVING…');
+  try{
+    await sb.from('profiles').update({name:val}).eq('id',currentUser.id);
+    profile.name=val;
+    renderMain();
+    showView('view-main');
+    showToast('Name updated.');
+  }catch(e){showToast('Could not save name.');}
+  setBtn(btn,false,'SAVE NAME');
+}
+
+// ════════════════════════════════════════════════════════════════════
+// CHANGE PASSWORD
+// ════════════════════════════════════════════════════════════════════
+async function handleChangePasswordStep1(){
+  const btn=document.getElementById('cp-submit-btn');
+  const cur=document.getElementById('cp-current').value;
+  const nw =document.getElementById('cp-new').value;
+  const cf =document.getElementById('cp-confirm').value;
+  if(!cur){showToast('Enter your current password.');return;}
+  if(nw.length<8){showToast('New password must be at least 8 characters.');return;}
+  if(nw!==cf){showToast('Passwords do not match.');return;}
+  setBtn(btn,true,'SENDING CODE…');
+  try{
+    // Verify current password by re-signing in
+    const {error:e1}=await sb.auth.signInWithPassword({email:currentUser.email,password:cur});
+    if(e1)throw new Error('Current password is incorrect.');
+    // Send OTP to email
+    await sb.auth.signInWithOtp({email:currentUser.email,options:{shouldCreateUser:false}});
+    pendingNewPassword=nw;
+    otpMode='password';
+    buildOTPGrid();
+    setText('otp-email-lbl',currentUser.email);
+    document.getElementById('otp-back-btn').onclick=()=>showView('view-change-password');
+    showView('view-otp');
+  }catch(e){showToast(e.message||'Could not verify. Try again.');}
+  setBtn(btn,false,'SEND VERIFICATION CODE');
+}
+
+// ════════════════════════════════════════════════════════════════════
+// CHANGE EMAIL
+// ════════════════════════════════════════════════════════════════════
+async function handleChangeEmailStep1(){
+  const btn=document.getElementById('ce-submit-btn');
+  const newMail=document.getElementById('ce-new-email').value.trim();
+  if(!newMail||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newMail)){showToast('Enter a valid email address.');return;}
+  setBtn(btn,true,'SENDING CODE…');
+  try{
+    await sb.auth.signInWithOtp({email:currentUser.email,options:{shouldCreateUser:false}});
+    pendingNewEmail=newMail;
+    otpMode='email';
+    buildOTPGrid();
+    setText('otp-email-lbl',currentUser.email);
+    document.getElementById('otp-back-btn').onclick=()=>showView('view-change-email');
+    showView('view-otp');
+  }catch(e){showToast(e.message||'Could not send code.');}
+  setBtn(btn,false,'SEND VERIFICATION CODE');
+}
+
+// ════════════════════════════════════════════════════════════════════
+// OTP CONFIRM
+// ════════════════════════════════════════════════════════════════════
+async function handleOTPConfirm(){
+  const btn=document.getElementById('otp-confirm-btn');
+  const token=getOTPValue();
+  if(token.length<6){showToast('Enter all 6 digits.');return;}
+  setBtn(btn,true,'VERIFYING…');
+  try{
+    const {error:verifyErr}=await sb.auth.verifyOtp({email:currentUser.email,token,type:'email'});
+    if(verifyErr)throw verifyErr;
+
+    if(otpMode==='password'){
+      const {error:pwErr}=await sb.auth.updateUser({password:pendingNewPassword});
+      if(pwErr)throw pwErr;
+      showToast('Password updated successfully.');
+      showView('view-main');
+    } else if(otpMode==='email'){
+      const {error:emErr}=await sb.auth.updateUser({email:pendingNewEmail});
+      if(emErr)throw emErr;
+      showToast('Confirmation sent to '+pendingNewEmail+'. Check your inbox.');
+      showView('view-main');
+    }
+    clearOTPGrid();
+  }catch(e){showToast(e.message||'Verification failed. Try again.');}
+  setBtn(btn,false,'CONFIRM');
+}
+
+function otpBack(){
+  if(otpMode==='password')showView('view-change-password');
+  else showView('view-change-email');
+  clearOTPGrid();
+}
+
+// ════════════════════════════════════════════════════════════════════
+// RESEND OTP
+// ════════════════════════════════════════════════════════════════════
+async function handleResend(){
+  if(resendTimer>0)return;
+  try{
+    await sb.auth.signInWithOtp({email:currentUser.email,options:{shouldCreateUser:false}});
+    showToast('Code resent.');
+    startResendCooldown(30);
+  }catch(e){showToast('Could not resend.');}
+}
+function startResendCooldown(s){
+  resendTimer=s;
+  const btn=document.getElementById('otp-resend-btn');
+  clearInterval(resendInterval);
+  resendInterval=setInterval(()=>{
+    resendTimer--;
+    if(btn)btn.textContent=resendTimer>0?'Resend in '+resendTimer+'s':'Didn\'t receive it? Resend code';
+    if(resendTimer<=0)clearInterval(resendInterval);
+  },1000);
+}
+
+// ════════════════════════════════════════════════════════════════════
+// 2FA TOGGLE
+// ════════════════════════════════════════════════════════════════════
+async function handleToggle2FA(){
+  const newVal=!twoFAOn;
+  const tt=document.getElementById('twofa-toggle');
+  if(tt)tt.classList.toggle('on',newVal);
+  try{
+    await sb.from('profiles').update({two_fa_enabled:newVal}).eq('id',currentUser.id);
+    twoFAOn=newVal;
+    setText('twofa-value',twoFAOn?'On — OTP required at sign in':'Off — password only');
+  }catch(e){
+    // Revert on error
+    if(tt)tt.classList.toggle('on',!newVal);
+    showToast('Could not update 2FA setting.');
+  }
+}
+
+// ════════════════════════════════════════════════════════════════════
+// SIGN OUT / DELETE
+// ════════════════════════════════════════════════════════════════════
+async function handleSignOut(){
   if(!confirm('Sign out of your Acuros account?'))return;
-  localStorage.removeItem('ah-user');
-  localStorage.removeItem('ah-token');
+  if(sb)await sb.auth.signOut().catch(()=>{});
   window.location.href='/patient-portal';
+}
+async function handleDeleteAccount(){
+  if(!confirm('Permanently delete your account? This cannot be undone.'))return;
+  if(!confirm('Are you sure? All your data will be removed.'))return;
+  showToast('Please contact info@acuros.ca to delete your account.');
+}
+
+// ════════════════════════════════════════════════════════════════════
+// OTP GRID
+// ════════════════════════════════════════════════════════════════════
+function buildOTPGrid(){
+  const grid=document.getElementById('otp-grid');
+  grid.innerHTML='';
+  for(let i=0;i<6;i++){
+    const b=document.createElement('input');
+    b.type='text';b.inputMode='numeric';b.maxLength=1;
+    b.className='otp-box';b.autocomplete='one-time-code';
+    b.addEventListener('input',e=>{
+      const v=e.target.value.replace(/[^0-9]/g,'').slice(-1);
+      e.target.value=v;
+      if(v&&i<5)grid.children[i+1].focus();
+    });
+    b.addEventListener('keydown',e=>{
+      if(e.key==='Backspace'&&!e.target.value&&i>0)grid.children[i-1].focus();
+    });
+    grid.appendChild(b);
+  }
+  setTimeout(()=>grid.children[0]?.focus(),100);
+}
+function getOTPValue(){return Array.from(document.getElementById('otp-grid').children).map(b=>b.value).join('');}
+function clearOTPGrid(){Array.from(document.getElementById('otp-grid').children).forEach(b=>b.value='');}
+
+// ════════════════════════════════════════════════════════════════════
+// HELPERS
+// ════════════════════════════════════════════════════════════════════
+function setBtn(btn,loading,label){
+  btn.disabled=loading;
+  btn.querySelector('span:first-child').textContent=label;
+}
+function toggleEye(inputId,btn){
+  const inp=document.getElementById(inputId);
+  const show=inp.type==='password';
+  inp.type=show?'text':'password';
+  btn.innerHTML=show
+    ?'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>'
+    :'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
 }
 </script>
 </body>
