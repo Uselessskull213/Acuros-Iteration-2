@@ -603,27 +603,40 @@ function showToast(msg,duration=3000){
 // ════════════════════════════════════════════════════════════════════
 showView('view-loading');
 
-if(sb){
+async function initAuth(){
+  if(!sb){ showView('view-signedout'); return; }
+  try{
+    // getSession() is immediate — resolves from localStorage without waiting for a callback
+    const { data:{ session } } = await sb.auth.getSession();
+    if(session?.user){
+      currentUser = session.user;
+      await loadProfile();
+      try{ renderMain(); }catch(e){ console.error('[Acuros] renderMain error',e); }
+      showView('view-main');
+    } else {
+      showView('view-signedout');
+    }
+  } catch(e){
+    console.error('[Acuros] initAuth error',e);
+    showView('view-signedout');
+  }
+
+  // Listen for subsequent state changes (sign in / sign out / token refresh)
   sb.auth.onAuthStateChange(async(event,session)=>{
-    if(!session?.user){
-      currentUser=null;profile=null;
-      showView('view-signedout');
-      return;
-    }
-    currentUser=session.user;
-    await loadProfile();
-    renderMain();
-    showView('view-main');
+    try{
+      if(event==='SIGNED_OUT'||!session?.user){
+        currentUser=null; profile=null;
+        showView('view-signedout');
+      } else if(event==='SIGNED_IN'||event==='TOKEN_REFRESHED'){
+        currentUser=session.user;
+        await loadProfile();
+        try{ renderMain(); }catch(e){ console.error('[Acuros] renderMain error',e); }
+        showView('view-main');
+      }
+    }catch(e){ console.error('[Acuros] onAuthStateChange error',e); }
   });
-  // Also check immediately (onAuthStateChange can be slow on first load)
-  sb.auth.getSession().then(({data})=>{
-    if(!data.session&&document.querySelector('.view.active')?.id==='view-loading'){
-      showView('view-signedout');
-    }
-  });
-} else {
-  showView('view-signedout');
 }
+initAuth();
 
 // ════════════════════════════════════════════════════════════════════
 // LOAD PROFILE from Supabase
