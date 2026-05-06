@@ -8,7 +8,8 @@
     { "source": "/bookings",          "destination": "/bookings.html" },
     { "source": "/privacy",           "destination": "/privacy.html" },
     { "source": "/terms",             "destination": "/terms.html" },
-    { "source": "/aaaclinics-portal", "destination": "/portal-aaaclinics.html" }
+    { "source": "/aaaclinics-portal", "destination": "/portal-aaaclinics.html" },
+    { "source": "/settings",          "destination": "/settings.html" }
   ],
   "headers": [
     {
