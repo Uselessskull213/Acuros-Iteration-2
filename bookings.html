@@ -151,6 +151,11 @@
     #star-canvas{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}
     .star{position:absolute;width:2px;height:2px;border-radius:1px;background:var(--ac);opacity:0;transform:rotate(45deg) scale(.3);animation:starPulse var(--dur,5s) var(--del,0s) ease-in-out infinite}
     @keyframes starPulse{0%,100%{opacity:0;transform:rotate(45deg) scale(.2)}40%,60%{opacity:var(--peak,.18);transform:rotate(45deg) scale(1)}}
+      /* ── Canonical nav-logo (uniform across site) ── */
+    .nav-logo{display:flex;align-items:center;gap:.875rem;text-decoration:none}
+    #nav-logo-img{width:32px;height:32px;object-fit:contain;display:block;flex-shrink:0}
+    .nav-logo-text{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:.9rem;letter-spacing:.22em;color:var(--text);line-height:1}
+    .nav-logo-sub{font-size:.42rem;letter-spacing:.42em;text-transform:uppercase;color:var(--mute);font-family:'DM Sans',sans-serif;font-weight:400}
   </style>
 </head>
 <body>

@@ -234,6 +234,11 @@
     #star-canvas{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}
     .star{position:absolute;width:2px;height:2px;border-radius:1px;background:var(--ac);opacity:0;transform:rotate(45deg) scale(.3);animation:starPulse var(--dur,5s) var(--del,0s) ease-in-out infinite}
     @keyframes starPulse{0%,100%{opacity:0;transform:rotate(45deg) scale(.2)}40%,60%{opacity:var(--peak,.18);transform:rotate(45deg) scale(1)}}
+      /* ── Canonical nav-logo (uniform across site) ── */
+    .nav-logo{display:flex;align-items:center;gap:.875rem;text-decoration:none}
+    #nav-logo-img{width:32px;height:32px;object-fit:contain;display:block;flex-shrink:0}
+    .nav-logo-text{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:.9rem;letter-spacing:.22em;color:var(--text);line-height:1}
+    .nav-logo-sub{font-size:.42rem;letter-spacing:.42em;text-transform:uppercase;color:var(--mute);font-family:'DM Sans',sans-serif;font-weight:400}
   </style>
 </head>
 <body>
@@ -296,22 +301,22 @@
 <div style="padding-top:4rem">
 
   <!-- Hero -->
-  <section style="position:relative;padding:8rem 2rem 6rem;border-bottom:1px solid var(--border);overflow:hidden;min-height:480px;display:flex;align-items:flex-end">
-    <img src="https://images.unsplash.com/photo-1530026405186-ed1f139313f8?w=1600&q=80&auto=format&fit=crop" alt="Medical research" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;filter:saturate(0.2) brightness(0.1)"/>
-    <div style="position:absolute;inset:0;background:linear-gradient(0deg,var(--bg) 0%,rgba(0,0,0,.4) 60%,rgba(0,0,0,.15) 100%)"></div>
-    <div class="mesh" style="position:absolute;inset:0;opacity:.1"></div>
+  <section class="ai-hero" style="position:relative;padding:8rem 2rem 6rem;border-bottom:1px solid var(--border);overflow:hidden;min-height:480px;display:flex;align-items:flex-end;background:#0a0908">
+    <img src="https://images.unsplash.com/photo-1530026405186-ed1f139313f8?w=1600&q=80&auto=format&fit=crop" alt="Medical research" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;filter:saturate(.4) brightness(.32)"/>
+    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,7,6,.4) 0%,rgba(8,7,6,.6) 60%,rgba(8,7,6,.92) 100%)"></div>
+    <div class="mesh" style="position:absolute;inset:0;opacity:.06"></div>
     <!-- Ambient orbs -->
-    <div class="orb" style="top:-10%;right:-5%;width:50vw;height:50vw;background:radial-gradient(circle,rgba(201,169,110,.07) 0%,transparent 65%)"></div>
-    <div class="orb" style="bottom:0%;left:10%;width:30vw;height:30vw;background:radial-gradient(circle,rgba(201,169,110,.04) 0%,transparent 65%)"></div>
+    <div class="orb" style="top:-10%;right:-5%;width:50vw;height:50vw;background:radial-gradient(circle,rgba(201,169,110,.12) 0%,transparent 65%)"></div>
+    <div class="orb" style="bottom:0%;left:10%;width:30vw;height:30vw;background:radial-gradient(circle,rgba(201,169,110,.07) 0%,transparent 65%)"></div>
     <div style="position:relative;max-width:1320px;margin:0 auto;width:100%">
       <div class="lbl rv" style="margin-bottom:1.5rem;color:var(--ac)">AI Health Assistant</div>
-      <h1 class="rv d1" style="font-size:clamp(3rem,7.5vw,6rem);font-weight:200;color:var(--text);margin-bottom:1.5rem;letter-spacing:-.035em;line-height:.95">Intelligent Health<br/><em style="color:var(--sub);font-style:italic">Dialogue.</em></h1>
-      <p class="rv d2" style="font-size:.93rem;color:var(--sub);max-width:46ch;line-height:1.9;margin-bottom:2.5rem">Ask medical questions with confidence. Powered by Gemini with evidence-based reasoning, structured logic, and safety governance.</p>
+      <h1 class="rv d1" style="font-size:clamp(3rem,7.5vw,6rem);font-weight:200;color:#f4efe7;margin-bottom:1.5rem;letter-spacing:-.035em;line-height:.95">Intelligent Health<br/><em style="color:var(--ac);font-style:italic">Dialogue.</em></h1>
+      <p class="rv d2" style="font-size:.93rem;color:rgba(244,239,231,.65);max-width:46ch;line-height:1.9;margin-bottom:2.5rem">Ask medical questions with confidence. Powered by Gemini with evidence-based reasoning, structured logic, and safety governance.</p>
       <div class="rv d3" style="display:flex;flex-wrap:wrap;gap:.625rem">
-        <div class="hero-chip"><div class="hero-chip-dot"></div><span class="hero-chip-text">Gemini-Powered</span></div>
-        <div class="hero-chip"><div class="hero-chip-dot"></div><span class="hero-chip-text">Evidence-Based</span></div>
-        <div class="hero-chip"><div class="hero-chip-dot"></div><span class="hero-chip-text">PIPEDA Compliant</span></div>
-        <div class="hero-chip"><div class="hero-chip-dot"></div><span class="hero-chip-text">Zero Data Sharing</span></div>
+        <div class="hero-chip" style="border-color:rgba(255,255,255,.14);background:rgba(255,255,255,.04)"><div class="hero-chip-dot"></div><span class="hero-chip-text" style="color:rgba(255,255,255,.65)">Gemini-Powered</span></div>
+        <div class="hero-chip" style="border-color:rgba(255,255,255,.14);background:rgba(255,255,255,.04)"><div class="hero-chip-dot"></div><span class="hero-chip-text" style="color:rgba(255,255,255,.65)">Evidence-Based</span></div>
+        <div class="hero-chip" style="border-color:rgba(255,255,255,.14);background:rgba(255,255,255,.04)"><div class="hero-chip-dot"></div><span class="hero-chip-text" style="color:rgba(255,255,255,.65)">PIPEDA Compliant</span></div>
+        <div class="hero-chip" style="border-color:rgba(255,255,255,.14);background:rgba(255,255,255,.04)"><div class="hero-chip-dot"></div><span class="hero-chip-text" style="color:rgba(255,255,255,.65)">Zero Data Sharing</span></div>
       </div>
     </div>
   </section>
