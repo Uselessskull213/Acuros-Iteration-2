@@ -375,40 +375,43 @@
           window.location.href = '/';
         });
 
-        // ── Authoritative visibility: hide the pill if there's no
-        // Supabase session. Corrects stale localStorage that may have
-        // survived from before sign-out cleanup shipped. ──
+        // ── Authoritative visibility (storage-only).
+        // Reads the supabase-js v2 auth-token storage key directly so
+        // we don't have to instantiate a second client (which would
+        // race the page's primary one and cause sign-out loops).
         (function(){
-          let _sb = null;
-          try {
-            if (typeof sb !== 'undefined' && sb && sb.auth) _sb = sb;
-            else if (window.supabase && window.supabase.createClient) {
-              _sb = window.supabase.createClient(
-                'https://pyexkdoupqzbnrybiubo.supabase.co',
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB5ZXhrZG91cHF6Ym5yeWJpdWJvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4Mzg4MzYsImV4cCI6MjA4NzQxNDgzNn0.3_dLQEJfmC08A2-hlgOfwlu4ngx7hslUR3Dun4BoXLU'
-              );
+          const STORAGE_KEY = 'sb-pyexkdoupqzbnrybiubo-auth-token';
+          function hasValidSession(){
+            try {
+              const raw = localStorage.getItem(STORAGE_KEY);
+              if (!raw) return false;
+              const parsed = JSON.parse(raw);
+              const session = parsed && (parsed.currentSession || parsed);
+              const exp = session && session.expires_at;
+              if (typeof exp === 'number') return exp * 1000 > Date.now();
+              return !!(session && session.access_token);
+            } catch(_e) { return false; }
+          }
+          function refresh(){
+            if (hasValidSession()) {
+              wrap.style.display = 'flex';
+            } else {
+              wrap.style.display = 'none';
+              try {
+                localStorage.removeItem('ah-user-initial');
+                localStorage.removeItem('ah-user-role');
+              } catch(_e){}
             }
-          } catch(_e){}
-          function hidePill(){
-            wrap.style.display = 'none';
-            try {
-              localStorage.removeItem('ah-user-initial');
-              localStorage.removeItem('ah-user-role');
-            } catch(_e){}
           }
-          function showPill(){ wrap.style.display = 'flex'; }
-          if (_sb && _sb.auth) {
-            _sb.auth.getSession().then(({data}) => {
-              if (!data || !data.session || !data.session.user) hidePill();
-              else showPill();
-            }).catch(() => {});
-            try {
-              _sb.auth.onAuthStateChange((event, session) => {
-                if (event === 'SIGNED_OUT' || !session) hidePill();
-                else if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') showPill();
-              });
-            } catch(_e){}
-          }
+          refresh();
+          // Catch sign-ins that happen after our IIFE first ran.
+          setTimeout(refresh, 800);
+          setTimeout(refresh, 2400);
+          // Cross-tab auth changes.
+          window.addEventListener('storage', (e) => {
+            if (!e.key) return;
+            if (e.key === STORAGE_KEY || e.key === 'ah-user-initial') refresh();
+          });
         })();
       })();
       </script>
