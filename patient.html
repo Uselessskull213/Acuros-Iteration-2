@@ -16,14 +16,18 @@
   <meta name="theme-color" content="#c9a96e"/>
   <meta name="description" content="Patient workspace. Manage your health records, prepare for appointments, and access your care tools."/>
   <link rel="canonical" href="https://acuros.ca/patient-portal"/>
-  <meta name="robots" content="noindex"/>
+    <meta property="og:image" content="https://acuros.ca/hero-bg.jpg"/>
+  <meta property="og:image:width" content="1400"/>
+  <meta property="og:image:height" content="900"/>
+  <meta name="twitter:image" content="https://acuros.ca/hero-bg.jpg"/>
+<meta name="robots" content="noindex"/>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
   <style>
     /* ═══════════════════════════════════════════════════════════════════
-       PATIENT PORTAL — Workspace app-shell. Different language from
+       PATIENT PORTAL. Workspace app-shell. Different language from
        marketing pages: sidebar layout, bento canvas, mono numerics,
        sans-only typography (Cormorant only as small accent).
     ═══════════════════════════════════════════════════════════════════ */
@@ -127,7 +131,7 @@
     .stag.in > *:nth-child(8){transition-delay:.46s}
 
     /* ═══════════════════════════════════════════════════════════════════
-       GATE — single centered application-style sign-in (radical deviation
+       GATE, single centered application-style sign-in (radical deviation
        from the previous full-bleed editorial)
     ═══════════════════════════════════════════════════════════════════ */
     #portal-gate{
@@ -166,7 +170,7 @@
     .gate-feature-h{font-size:.75rem;color:var(--text);font-weight:500;letter-spacing:.01em}
     .gate-feature-p{font-size:.7rem;color:var(--sub);line-height:1.55;font-weight:400}
 
-    /* Auth panel — utility/app card, not magazine */
+    /* Auth panel, utility/app card, not magazine */
     .gate-card{
       background:var(--bg2);
       border:1px solid var(--border);
@@ -183,7 +187,7 @@
     .gate-tab.active{background:var(--bg2);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.07)}
     html.dark .gate-tab.active{box-shadow:0 1px 3px rgba(0,0,0,.4)}
 
-    /* Inputs — boxed, not underline (different from before) */
+    /* Inputs, boxed, not underline (different from before) */
     .field{display:flex;flex-direction:column;gap:.4rem}
     .field-lbl{font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);font-weight:500}
     .inp{width:100%;background:var(--bg);border:1px solid var(--border);padding:.75rem .85rem;font-size:.85rem;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s,box-shadow .2s;border-radius:5px}
@@ -197,7 +201,7 @@
     .btn-google:hover{border-color:var(--ac);background:rgba(184,138,42,.04)}
 
     /* ═══════════════════════════════════════════════════════════════════
-       DASHBOARD — Workspace shell with sidebar nav + bento canvas.
+       DASHBOARD. Workspace shell with sidebar nav + bento canvas.
     ═══════════════════════════════════════════════════════════════════ */
     #portal-dash{display:none;background:var(--bg);min-height:100dvh}
 
@@ -386,7 +390,7 @@
     .feed-text strong{color:var(--text);font-weight:500}
     .feed-time{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--mute);letter-spacing:.02em;margin-top:.18rem}
 
-    /* Setup prompt — gold accent strip */
+    /* Setup prompt, gold accent strip */
     .bx-setup{
       grid-column:span 12;
       background:linear-gradient(90deg,rgba(184,138,42,.06) 0%,rgba(184,138,42,.02) 100%);
@@ -501,7 +505,7 @@
 
 
 <!-- ══════════════════════════════════════════════════════════════════════
-     GATE — single application sign-in card
+     GATE, single application sign-in card
 ══════════════════════════════════════════════════════════════════════ -->
 <div id="portal-gate">
   <div class="gate">
@@ -589,7 +593,7 @@
 
 
 <!-- ══════════════════════════════════════════════════════════════════════
-     DASHBOARD — Workspace shell with sidebar + bento canvas
+     DASHBOARD. Workspace shell with sidebar + bento canvas
 ══════════════════════════════════════════════════════════════════════ -->
 <div id="portal-dash">
 
@@ -614,8 +618,8 @@
         <div class="me-row">
           <div class="me-avatar"><span id="me-initial">?</span></div>
           <div style="min-width:0">
-            <div class="me-name" id="me-name">—</div>
-            <div class="me-email" id="me-email">—</div>
+            <div class="me-name" id="me-name">-</div>
+            <div class="me-email" id="me-email">-</div>
           </div>
         </div>
         <div class="me-status">
@@ -678,9 +682,9 @@
       <div class="ws-head rv">
         <div class="ws-greet">
           <div class="ws-greet-meta">
-            <span id="ws-date">—</span>
+            <span id="ws-date">-</span>
             <span>·</span>
-            <span class="mono" id="ws-time">—</span>
+            <span class="mono" id="ws-time">-</span>
           </div>
           <h1 class="ws-h1">Hello, <em id="dash-name">friend</em>.</h1>
         </div>
@@ -733,7 +737,7 @@
         <!-- Stat: member ID -->
         <div class="bx bx-2" style="grid-column:span 2">
           <div class="lbl">Member ID</div>
-          <div class="bx-stat-val mono" style="font-size:1.4rem;letter-spacing:.02em" id="stat-member-id">—</div>
+          <div class="bx-stat-val mono" style="font-size:1.4rem;letter-spacing:.02em" id="stat-member-id">-</div>
           <div class="bx-stat-trend">Quote on correspondence</div>
         </div>
 
@@ -801,7 +805,7 @@
                 <span class="mini-cal-legend"><span class="mini-cal-legend-dot"></span>booked</span>
               </div>
               <div class="mini-cal-grid" id="mini-cal-grid" role="list"></div>
-              <p class="mini-cal-footnote">Real-time clinic availability — coming soon.</p>
+              <p class="mini-cal-footnote">Real-time clinic availability, coming soon.</p>
             </div>
           </div>
         </div>
@@ -856,7 +860,7 @@
       </div>
 
       <footer class="ws-footer">
-        <p>© 2025 Acuros Health Inc. - patient workspace · encrypted</p>
+        <p>© 2026 Acuros Health Inc. · Patient workspace · Encrypted</p>
         <div class="ws-footer-links">
           <a href="/privacy">Privacy</a>
           <a href="/terms">Terms</a>
@@ -970,7 +974,7 @@ window.addEventListener('scroll', () => {
 }, { passive: true });
 
 /* ═══════════════════════════════════════════════════════════════════════
-   INTERACTIONS — magnetic + reveal + tile spring
+   INTERACTIONS, magnetic + reveal + tile spring
 ═══════════════════════════════════════════════════════════════════════ */
 document.querySelectorAll('.mag').forEach(el => {
   el.addEventListener('mousemove', e => {
@@ -996,7 +1000,7 @@ setTimeout(() => document.querySelectorAll('.rv,.stag').forEach(el => el.classLi
 
 
 /* ═══════════════════════════════════════════════════════════════════════
-   GREETING — date + time
+   GREETING, date + time
 ═══════════════════════════════════════════════════════════════════════ */
 function renderGreeting(){
   const date = new Date();
@@ -1349,7 +1353,7 @@ if(sb?.auth?.onAuthStateChange){
       const d = new Date((b.appointment_date || '') + 'T12:00:00');
       const valid = !isNaN(d.getTime());
       const mon  = valid ? MONTHS[d.getMonth()].toUpperCase() : '';
-      const day  = valid ? d.getDate() : '—';
+      const day  = valid ? d.getDate() : '-';
       const dow  = valid ? d.toLocaleDateString('en-CA',{weekday:'short'}) : '';
       const time = b.appointment_time_label || '';
       const proc = b.procedure_name || 'Appointment';

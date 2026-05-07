@@ -19,7 +19,11 @@
   <meta property="og:type" content="website"/>
   <meta property="og:url" content="https://acuros.ca/bookings"/>
   <meta property="og:title" content="Book a Procedure - Acuros Health"/>
-  <meta property="og:description" content="Schedule consultations and procedures online through Acuros Health."/>
+    <meta property="og:image" content="https://acuros.ca/hero-bg.jpg"/>
+  <meta property="og:image:width" content="1400"/>
+  <meta property="og:image:height" content="900"/>
+  <meta name="twitter:image" content="https://acuros.ca/hero-bg.jpg"/>
+<meta property="og:description" content="Schedule consultations and procedures online through Acuros Health."/>
   <meta property="og:site_name" content="Acuros Health"/>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -60,7 +64,7 @@
     .nav-link:hover::after,.nav-link.active::after{width:100%}
     .nav-link:hover,.nav-link.active{color:var(--text)}
 
-    /* ── Buttons — premium, theme-aware, with shimmer sweep ── */
+    /* ── Buttons, premium, theme-aware, with shimmer sweep ── */
     .btn{
       display:inline-flex;align-items:center;justify-content:center;gap:.5rem;
       padding:.78rem 1.875rem;font-size:.64rem;letter-spacing:.18em;text-transform:uppercase;
@@ -117,7 +121,7 @@
     #mob-menu{display:none;position:fixed;inset:0;z-index:300;background:var(--bg);flex-direction:column;padding:2.5rem}
     #mob-menu.open{display:flex;animation:pgIn .3s ease}
 
-    /* ── Step panels — slide transitions ── */
+    /* ── Step panels, slide transitions ── */
     .step-wrap{position:relative;overflow:hidden;min-height:320px}
     .step-panel{position:absolute;top:0;left:0;width:100%;opacity:0;transform:translateX(40px);transition:opacity .45s cubic-bezier(.22,1,.36,1),transform .45s cubic-bezier(.22,1,.36,1);pointer-events:none}
     .step-panel.active{position:relative;opacity:1;transform:none;pointer-events:auto}
@@ -392,7 +396,7 @@
 
   <footer style="border-top:1px solid var(--border);background:var(--bg2)">
     <div style="max-width:1280px;margin:0 auto;padding:2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
-      <p style="font-size:.74rem;color:var(--mute)">© 2025 Acuros Health Inc. Bookings are requests only and subject to clinic availability.</p>
+      <p style="font-size:.74rem;color:var(--mute)">© 2026 Acuros Health Inc. Bookings are requests only and subject to clinic availability.</p>
       <div style="display:flex;gap:1.5rem">
         <a href="/"        class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Home</a>
         <a href="/patient-portal" class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Patient Portal</a>

@@ -19,7 +19,11 @@
   <meta property="og:type" content="website"/>
   <meta property="og:url" content="https://acuros.ca/ai-assistant"/>
   <meta property="og:title" content="AI Assistant - Acuros Health"/>
-  <meta property="og:description" content="Ask medical questions with confidence. Powered by Gemini with evidence-based reasoning."/>
+    <meta property="og:image" content="https://acuros.ca/hero-bg.jpg"/>
+  <meta property="og:image:width" content="1400"/>
+  <meta property="og:image:height" content="900"/>
+  <meta name="twitter:image" content="https://acuros.ca/hero-bg.jpg"/>
+<meta property="og:description" content="Ask medical questions with confidence. Powered by Gemini with evidence-based reasoning."/>
   <meta property="og:site_name" content="Acuros Health"/>
   <meta name="twitter:card" content="summary"/>
   <script src="https://cdn.tailwindcss.com"></script>
@@ -59,7 +63,7 @@
     .nav-link:hover::after,.nav-link.active::after{width:100%}
     .nav-link:hover,.nav-link.active{color:var(--text)}
 
-    /* ── Buttons — premium, theme-aware, with shimmer sweep ── */
+    /* ── Buttons, premium, theme-aware, with shimmer sweep ── */
     .btn{
       display:inline-flex;align-items:center;justify-content:center;gap:.5rem;
       padding:.78rem 1.875rem;font-size:.64rem;letter-spacing:.18em;text-transform:uppercase;
@@ -188,7 +192,7 @@
       box-shadow:0 4px 24px rgba(0,0,0,.06)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important
     }
 
-    /* ── Animated AI Chat — input dock (adapted from 21st.dev/jatin-yadav05) ── */
+    /* ── Animated AI Chat, input dock (adapted from 21st.dev/jatin-yadav05) ── */
     .chat-dock{
       position:relative;padding:.875rem 1.25rem 1rem;border-top:1px solid var(--border);
       background:linear-gradient(to top,rgba(0,0,0,.05),transparent);
@@ -412,11 +416,15 @@
     <div style="position:relative;max-width:1320px;margin:0 auto;width:100%">
       <h1 class="rv d1" style="font-size:clamp(3rem,7.5vw,6rem);font-weight:200;color:#f4efe7;margin-bottom:1.5rem;letter-spacing:-.035em;line-height:.95">Intelligent Health<br/><em style="color:var(--ac);font-style:italic">Dialogue.</em></h1>
       <p class="rv d2" style="font-size:.93rem;color:rgba(244,239,231,.65);max-width:46ch;line-height:1.9;margin-bottom:2.5rem">Ask medical questions with confidence. Powered by Gemini with evidence-based reasoning, structured logic, and safety governance.</p>
-      <div class="rv d3" style="display:flex;flex-wrap:wrap;gap:.625rem">
-        <div class="hero-chip" style="border-color:rgba(255,255,255,.14);background:rgba(255,255,255,.04)"><div class="hero-chip-dot"></div><span class="hero-chip-text" style="color:rgba(255,255,255,.65)">Gemini-Powered</span></div>
-        <div class="hero-chip" style="border-color:rgba(255,255,255,.14);background:rgba(255,255,255,.04)"><div class="hero-chip-dot"></div><span class="hero-chip-text" style="color:rgba(255,255,255,.65)">Evidence-Based</span></div>
-        <div class="hero-chip" style="border-color:rgba(255,255,255,.14);background:rgba(255,255,255,.04)"><div class="hero-chip-dot"></div><span class="hero-chip-text" style="color:rgba(255,255,255,.65)">PIPEDA Compliant</span></div>
-        <div class="hero-chip" style="border-color:rgba(255,255,255,.14);background:rgba(255,255,255,.04)"><div class="hero-chip-dot"></div><span class="hero-chip-text" style="color:rgba(255,255,255,.65)">Zero Data Sharing</span></div>
+      <!-- Mellow text-only signals (no boxes, no backgrounds). -->
+      <div class="rv d3" style="display:flex;flex-wrap:wrap;gap:1.5rem;align-items:center;font-family:'DM Sans',sans-serif">
+        <span style="font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(244,239,231,.32)">Gemini-powered</span>
+        <span style="width:3px;height:3px;border-radius:50%;background:rgba(244,239,231,.18)"></span>
+        <span style="font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(244,239,231,.32)">Evidence-based</span>
+        <span style="width:3px;height:3px;border-radius:50%;background:rgba(244,239,231,.18)"></span>
+        <span style="font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(244,239,231,.32)">PIPEDA compliant</span>
+        <span style="width:3px;height:3px;border-radius:50%;background:rgba(244,239,231,.18)"></span>
+        <span style="font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(244,239,231,.32)">Zero data sharing</span>
       </div>
     </div>
   </section>
@@ -443,7 +451,7 @@
             <div class="bubble ai">Hello - I'm the Acuros AI health assistant. I provide evidence-based health education and information. What would you like to explore today?</div>
           </div>
 
-          <!-- Luxe input dock — adapted from 21st.dev "Animated AI Chat" by @jatin-yadav05 -->
+          <!-- Luxe input dock, adapted from 21st.dev "Animated AI Chat" by @jatin-yadav05 -->
           <div class="chat-dock" style="position:relative;z-index:1">
             <div class="chat-dock-inner">
               <textarea
@@ -524,7 +532,7 @@
         <div>
           <h2 class="rv d1" style="font-size:clamp(1.75rem,3.5vw,3rem);font-weight:200;letter-spacing:-.03em;line-height:1.08;color:var(--text)">Four ways to use<br/><em style="color:var(--sub);font-style:italic">Acuros AI.</em></h2>
         </div>
-        <a href="/patient-portal" class="btn btn-outline mag rv d2" style="flex-shrink:0">Unlock full access →</a>
+        <a href="/patient-portal" class="btn btn-outline mag rv d2" style="flex-shrink:0">Continue to portal →</a>
       </div>
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border)" class="g1m">
         <div class="use-card rv" style="background:var(--bg2)">
@@ -561,7 +569,7 @@
 
   <footer style="border-top:1px solid var(--border);background:var(--bg2)">
     <div style="max-width:1320px;margin:0 auto;padding:2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
-      <p style="font-size:.72rem;color:var(--mute)">© 2025 Acuros Health Inc.</p>
+      <p style="font-size:.72rem;color:var(--mute)">© 2026 Acuros Health Inc.</p>
       <div style="display:flex;gap:1.5rem">
         <a href="/"               class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Home</a>
         <a href="/patient-portal" class="lbl" style="text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color=''">Patient Portal</a>
@@ -736,7 +744,7 @@ function localAIResponse(msg) {
 function setBtn(id,loading,label) { const b=document.getElementById(id); if(!b) return; b.disabled=loading; b.innerHTML=loading?'<span class="spin"></span>':label; }
 document.addEventListener('DOMContentLoaded', () => { if(authReady){ensureChatHistoryLoaded(true);if(!currentUser&&guestMessageUsed())showLimitOverlay();} });
 
-// ── Animated chat dock — auto-resize, send-state, ⌘K focus, Enter to send ──
+// ── Animated chat dock, auto-resize, send-state, ⌘K focus, Enter to send ──
 (function initChatDock(){
   const inp=document.getElementById('chat-in');
   const send=document.getElementById('chat-send-btn');
@@ -772,7 +780,7 @@ document.addEventListener('DOMContentLoaded', () => { if(authReady){ensureChatHi
       inp.scrollIntoView({behavior:'smooth',block:'center'});
     }
   });
-  // Attach button — placeholder until file uploads land. Surface a hint.
+  // Attach button, placeholder until file uploads land. Surface a hint.
   const attach=document.getElementById('chat-attach-btn');
   if(attach) attach.addEventListener('click',()=>{
     const status=document.getElementById('ai-status');

@@ -19,7 +19,11 @@
   <meta property="og:type" content="website"/>
   <meta property="og:url" content="https://acuros.ca/"/>
   <meta property="og:title" content="Acuros Health - Patient Engagement Platform for Clinics"/>
-  <meta property="og:description" content="Give your clinic a branded patient portal with AI health support, loyalty rewards, and secure records."/>
+    <meta property="og:image" content="https://acuros.ca/hero-bg.jpg"/>
+  <meta property="og:image:width" content="1400"/>
+  <meta property="og:image:height" content="900"/>
+  <meta name="twitter:image" content="https://acuros.ca/hero-bg.jpg"/>
+<meta property="og:description" content="Give your clinic a branded patient portal with AI health support, loyalty rewards, and secure records."/>
   <meta property="og:site_name" content="Acuros Health"/>
   <meta name="twitter:card" content="summary"/>
   <script src="https://cdn.tailwindcss.com"></script>
@@ -62,7 +66,7 @@
     /* ── Scroll progress ── */
     #scroll-prog{position:fixed;top:0;left:0;z-index:9001;height:1px;background:var(--ac);width:0%;will-change:width;pointer-events:none}
 
-    /* ── NAV — transparent → solid ── */
+    /* ── NAV, transparent → solid ── */
     nav{position:fixed;top:0;left:0;right:0;z-index:200;
       background:transparent;
       transition:background .45s cubic-bezier(.22,1,.36,1),border-color .45s,backdrop-filter .45s}
@@ -80,7 +84,7 @@
     .nav-link:hover::after,.nav-link.active::after{width:100%}
     .nav-link:hover,.nav-link.active{color:var(--text)}
 
-    /* ── Buttons — premium, theme-aware, with magnetic shimmer ── */
+    /* ── Buttons, premium, theme-aware, with magnetic shimmer ── */
     .btn{
       display:inline-flex;align-items:center;justify-content:center;gap:.5rem;
       padding:.78rem 1.875rem;font-size:.64rem;letter-spacing:.18em;text-transform:uppercase;
@@ -98,12 +102,12 @@
     .btn:not([disabled]):active{transform:scale(.97);transition-duration:80ms}
     .btn-pill{border-radius:100px}
 
-    /* Solid CTA — primary action, always high-contrast both themes */
+    /* Solid CTA, primary action, always high-contrast both themes */
     .btn-solid{background:var(--text);color:var(--bg);border-color:var(--text)}
     .btn-solid:hover{background:var(--ac);color:#fff;border-color:var(--ac);box-shadow:0 10px 28px -10px rgba(201,169,110,.55)}
     html.dark .btn-solid:hover{box-shadow:0 10px 32px -8px rgba(201,169,110,.45)}
 
-    /* Outline / ghost — for secondary, theme aware over light bg */
+    /* Outline / ghost, for secondary, theme aware over light bg */
     .btn-outline{background:transparent;color:var(--text);border-color:var(--border)}
     /* Hero (over dark video) treatment */
     .hero-ctas .btn-outline{color:rgba(255,255,255,.92);border-color:rgba(255,255,255,.28);background:rgba(255,255,255,.03);backdrop-filter:blur(8px) saturate(160%);-webkit-backdrop-filter:blur(8px) saturate(160%)}
@@ -111,7 +115,7 @@
     .btn-outline:hover{border-color:var(--ac);color:var(--ac);background:rgba(201,146,42,.06)}
     html.dark .btn-outline:hover{background:rgba(201,169,110,.06)}
 
-    /* Light mode tightening — primary should never go invisible */
+    /* Light mode tightening, primary should never go invisible */
     html:not(.dark) .btn-solid{background:#1c1a14;color:#fff;border-color:#1c1a14}
     html:not(.dark) .btn-solid:hover{background:var(--ac);color:#fff;border-color:var(--ac)}
 
@@ -147,7 +151,7 @@
     .hero-ctas.in{opacity:1;transform:none}
     @keyframes scrollPulse{0%,100%{opacity:.12;transform:scaleY(1)}50%{opacity:.42;transform:scaleY(1.4)}}
 
-    /* ── Flow stream — drifting particle streak across sections ── */
+    /* ── Flow stream, drifting particle streak across sections ── */
       8%   {opacity:.8}
       92%  {opacity:.8}
       100% {transform:translate3d(115vw,0,0);opacity:0}
@@ -281,15 +285,15 @@
     }
     html:not(.dark) .g-card div[style*="height:1px"]{background:var(--border)!important}
 
-    /* Float animations — decorative only */
+    /* Float animations, decorative only */
     @keyframes float-a{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
     @keyframes float-b{0%,100%{transform:translateY(-6px) rotate(-.4deg)}50%{transform:translateY(8px) rotate(.4deg)}}
     @keyframes float-c{0%,100%{transform:translateY(0) rotate(.3deg)}50%{transform:translateY(-10px) rotate(-.3deg)}}
 
-    /* Hero — full-width, no split */
+    /* Hero, full-width, no split */
     .hero-title{font-family:'Cormorant Garamond',serif;font-weight:200;font-size:clamp(5.5rem,13vw,14rem);line-height:.88;letter-spacing:-.05em;text-align:left}
 
-    /* Tilt card — 3D hover physics */
+    /* Tilt card, 3D hover physics */
     .tilt-card{transform-style:preserve-3d;will-change:transform}
 
     /* ── FoundersCard-style image-led benefit cards ── */
@@ -350,7 +354,7 @@
 <div id="scroll-prog" aria-hidden="true"></div>
 
 <!-- ══════════════════════════════════
-     NAV — transparent over hero, slim pill CTA
+     NAV, transparent over hero, slim pill CTA
 ════════════════════════════════════ -->
 <nav id="main-nav">
   <div class="nav-inner">
@@ -404,7 +408,7 @@
 
 
 <!-- ══════════════════════════════════
-     HERO — left-aligned, glass card cluster right
+     HERO, left-aligned, glass card cluster right
 ════════════════════════════════════ -->
 <section style="position:relative;min-height:100dvh;display:flex;align-items:center;overflow:hidden">
   <video id="hero-video" autoplay muted loop playsinline preload="auto" aria-hidden="true"></video>
@@ -444,7 +448,7 @@
 
 
 <!-- ══════════════════════════════════
-     PLATFORM — For Clinics / For Patients full-bleed panels
+     PLATFORM. For Clinics / For Patients full-bleed panels
 ════════════════════════════════════ -->
 <div class="platform-split" style="display:grid;grid-template-columns:1fr 1fr">
   <a href="#contact" class="pp rv-left">
@@ -471,7 +475,7 @@
 
 
 <!-- ══════════════════════════════════
-     FEATURE CARDS — image-led, FoundersCard-style
+     FEATURE CARDS, image-led, FoundersCard-style
 ════════════════════════════════════ -->
 <section style="background:var(--bg);position:relative;z-index:4;padding:6rem 3rem 8rem;overflow:visible">
   <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 70% 40%,rgba(201,169,110,.04) 0%,transparent 65%);pointer-events:none"></div>
@@ -525,7 +529,7 @@
 
 
 <!-- ══════════════════════════════════
-     BENEFITS — tabbed, FoundersCard-style
+     BENEFITS, tabbed, FoundersCard-style
 ════════════════════════════════════ -->
 <section style="background:var(--bg2);border-top:1px solid var(--border)">
   <div style="max-width:1440px;margin:0 auto;padding:5rem 3rem">
@@ -621,7 +625,7 @@
 
 
 <!-- ══════════════════════════════════
-     HOW IT WORKS — editorial numbered rows
+     HOW IT WORKS, editorial numbered rows
 ════════════════════════════════════ -->
 <section style="background:var(--bg);border-top:1px solid var(--border);position:relative;z-index:3">
   <div style="max-width:1440px;margin:0 auto;padding:5rem 3rem">
@@ -666,7 +670,7 @@
 
 
 <!-- ══════════════════════════════════
-     AI SPOTLIGHT — cinematic full section
+     AI SPOTLIGHT, cinematic full section
 ════════════════════════════════════ -->
 <section style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);position:relative;overflow:hidden">
   <!-- Ambient orb -->
@@ -697,7 +701,7 @@
       </div>
     </div>
 
-    <!-- Chat demo — glass -->
+    <!-- Chat demo, glass -->
     <div style="display:flex;flex-direction:column;gap:.875rem" class="rv d2">
       <!-- Terminal chrome -->
       <div class="g-card" style="padding:1.25rem 1.5rem;display:flex;align-items:center;gap:.5rem;border-radius:1rem 1rem 0 0;border-bottom:1px solid rgba(255,255,255,.06)">
@@ -724,7 +728,7 @@
 
 
 <!-- ══════════════════════════════════
-     CTA BANNER — full-width dark strip before contact
+     CTA BANNER, full-width dark strip before contact
 ════════════════════════════════════ -->
 <div style="background:var(--bg2);border-bottom:1px solid var(--border);padding:5rem 3rem;text-align:center;position:relative;overflow:hidden">
   <div style="position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(201,169,110,.04) 0%,transparent 70%);pointer-events:none"></div>
@@ -776,31 +780,18 @@
       </div>
     </div>
 
-    <!-- Stats row -->
-    <div class="rv d3" style="display:flex;gap:2.5rem;margin-bottom:2.5rem">
-      <div class="ct-stat">
-        <span class="ct-stat-num" data-target="120" data-suffix="+">0+</span>
-        <span class="ct-stat-lbl">Clinics onboarded</span>
-      </div>
-      <div style="width:1px;background:rgba(240,237,232,.08)"></div>
-      <div class="ct-stat">
-        <span class="ct-stat-num">1 Day</span>
-        <span class="ct-stat-lbl">Average setup time</span>
-      </div>
-      <div style="width:1px;background:rgba(240,237,232,.08)"></div>
-      <div class="ct-stat">
-        <span class="ct-stat-num">96%</span>
-        <span class="ct-stat-lbl">Satisfaction rate</span>
-      </div>
+    <!-- Early-access framing (replaces unverified stats) -->
+    <div class="rv d3" style="margin-bottom:2.5rem;padding:1.25rem 0;border-top:1px solid rgba(240,237,232,.08);border-bottom:1px solid rgba(240,237,232,.08)">
+      <p style="font-size:.85rem;color:rgba(240,237,232,.7);line-height:1.7;letter-spacing:.005em">Now in early access. Built for Canadian clinics.</p>
     </div>
 
-    <!-- Compliance tags -->
-    <div class="rv d4" style="padding-top:1.75rem;border-top:1px solid rgba(240,237,232,.08)">
-      <div style="font-size:.5rem;letter-spacing:.28em;text-transform:uppercase;color:rgba(240,237,232,.28);font-family:'DM Sans',sans-serif;margin-bottom:.875rem">Compliance standards</div>
-      <div style="display:flex;gap:.625rem;flex-wrap:wrap">
-        <span class="ct-tag" style="font-family:'Cormorant Garamond',serif;font-size:.88rem;color:rgba(240,237,232,.55);border:1px solid rgba(240,237,232,.12);padding:.45rem 1rem;transition:border-color .22s,color .22s" onmouseover="this.style.borderColor='rgba(201,169,110,.4)';this.style.color='rgba(201,169,110,.85)'" onmouseout="this.style.borderColor='rgba(240,237,232,.12)';this.style.color='rgba(240,237,232,.55)'">PIPEDA</span>
-        <span class="ct-tag" style="font-family:'Cormorant Garamond',serif;font-size:.88rem;color:rgba(240,237,232,.55);border:1px solid rgba(240,237,232,.12);padding:.45rem 1rem;transition:border-color .22s,color .22s" onmouseover="this.style.borderColor='rgba(201,169,110,.4)';this.style.color='rgba(201,169,110,.85)'" onmouseout="this.style.borderColor='rgba(240,237,232,.12)';this.style.color='rgba(240,237,232,.55)'">PHIPA</span>
-        <span class="ct-tag" style="font-family:'Cormorant Garamond',serif;font-size:.88rem;color:rgba(240,237,232,.55);border:1px solid rgba(240,237,232,.12);padding:.45rem 1rem;transition:border-color .22s,color .22s" onmouseover="this.style.borderColor='rgba(201,169,110,.4)';this.style.color='rgba(201,169,110,.85)'" onmouseout="this.style.borderColor='rgba(240,237,232,.12)';this.style.color='rgba(240,237,232,.55)'">HL7/FHIR</span>
+    <!-- Compliance tags (mellow, no boxes) -->
+    <div class="rv d4" style="padding-top:1rem">
+      <div style="font-size:.5rem;letter-spacing:.28em;text-transform:uppercase;color:rgba(240,237,232,.28);font-family:'DM Sans',sans-serif;margin-bottom:.75rem">Compliance standards</div>
+      <div style="display:flex;gap:1.5rem;flex-wrap:wrap;font-family:'DM Sans',sans-serif">
+        <span style="font-size:.7rem;color:rgba(240,237,232,.4);letter-spacing:.05em">PIPEDA</span>
+        <span style="font-size:.7rem;color:rgba(240,237,232,.4);letter-spacing:.05em">PHIPA</span>
+        <span style="font-size:.7rem;color:rgba(240,237,232,.4);letter-spacing:.05em">HL7 / FHIR</span>
       </div>
     </div>
   </div>
@@ -881,18 +872,18 @@
       </div>
       <div>
         <div class="lbl" style="margin-bottom:1.25rem">Standards</div>
-        <div style="display:flex;flex-direction:column;gap:.625rem">
-          <span style="font-size:.7rem;color:var(--sub);letter-spacing:.04em">PIPEDA Compliant</span>
-          <span style="font-size:.7rem;color:var(--sub);letter-spacing:.04em">PHIPA Aligned</span>
-          <span style="font-size:.7rem;color:var(--sub);letter-spacing:.04em">Canadian Servers</span>
-          <span style="font-size:.7rem;color:var(--sub);letter-spacing:.04em">AES-256 Encrypted</span>
+        <div style="display:flex;flex-direction:column;gap:.5rem">
+          <span style="font-size:.62rem;color:var(--mute);letter-spacing:.04em">PIPEDA compliant</span>
+          <span style="font-size:.62rem;color:var(--mute);letter-spacing:.04em">PHIPA aligned</span>
+          <span style="font-size:.62rem;color:var(--mute);letter-spacing:.04em">Canadian servers</span>
+          <span style="font-size:.62rem;color:var(--mute);letter-spacing:.04em">AES-256 encrypted</span>
         </div>
       </div>
     </div>
     <div style="height:1px;background:var(--border);margin-bottom:1.75rem"></div>
     <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:.75rem">
-      <p style="font-size:.68rem;color:var(--mute)">© 2025 Acuros Health Inc. All rights reserved.</p>
-      <p style="font-size:.68rem;color:var(--mute)">AI tools are educational only - not a substitute for professional medical advice.</p>
+      <p style="font-size:.68rem;color:var(--mute)">© 2026 Acuros Health Inc. All rights reserved.</p>
+      <p style="font-size:.68rem;color:var(--mute)">AI tools are educational only. Not a substitute for professional medical advice.</p>
     </div>
   </div>
 </footer>
@@ -1031,7 +1022,7 @@ document.addEventListener('DOMContentLoaded', setupReveal);
 setTimeout(setupReveal, 300);
 setTimeout(() => document.querySelectorAll('.rv,.rv-left,.rv-right,.clip-wipe,.line-grow,.stagger').forEach(el=>el.classList.add('in')), 4500);
 
-/* ── Mouse parallax — gentle drift on .px elements (hero, card images) ── */
+/* ── Mouse parallax, gentle drift on .px elements (hero, card images) ── */
 (function initParallax(){
   if (window.matchMedia('(pointer:coarse),(hover:none)').matches) return;
   const els = Array.from(document.querySelectorAll('.px'));
