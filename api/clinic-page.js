@@ -57,8 +57,9 @@ function notFound(res, slug){
 }
 
 export default async function handler(req, res){
-  // Force GET — POSTs to a public marketing page are unexpected.
-  if (req.method !== 'GET') {
+  // Allow GET + HEAD only (HEAD lets crawlers probe status without
+  // pulling the body). Anything else is unexpected on a marketing page.
+  if (req.method !== 'GET' && req.method !== 'HEAD') {
     res.statusCode = 405;
     return res.end('Method not allowed');
   }
