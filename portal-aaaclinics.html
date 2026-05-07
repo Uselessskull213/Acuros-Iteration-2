@@ -226,6 +226,53 @@
     .nav-link:hover,.nav-link.active{color:var(--text)}
     @media(max-width:900px){.hnm{display:none!important}#mob-btn{display:flex!important}#nav-cta{display:none!important}.nav-inner{padding:0 1.5rem}}
 
+    /* ── Upcoming Appointments widget (mirrors patient.html) ── */
+    .upcoming-section{margin-bottom:3.5rem}
+    .upcoming-head{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem}
+    .upcoming-h{font-family:'Cormorant Garamond',serif;font-size:clamp(1.5rem,3vw,2.25rem);font-weight:200;color:var(--text);letter-spacing:-.025em;line-height:1.04}
+    .upcoming-link{font-family:'DM Sans',sans-serif;font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ac);text-decoration:none;display:inline-flex;align-items:center;gap:.5rem;transition:gap .25s cubic-bezier(.22,1,.36,1)}
+    .upcoming-link:hover{gap:.75rem}
+    .upcoming-body{display:grid;grid-template-columns:1.1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border)}
+    @media(max-width:900px){.upcoming-body{grid-template-columns:1fr}}
+    .upcoming-list{display:flex;flex-direction:column;gap:1px;background:var(--border);min-height:100%}
+    .upcoming-list-inner{padding:1.5rem;background:var(--bg2);display:flex;flex-direction:column;gap:.75rem;height:100%}
+    .upcoming-row{display:grid;grid-template-columns:64px 1fr auto;gap:1rem;align-items:center;padding:.875rem 1rem;border:1px solid var(--border);background:var(--bg);text-decoration:none;transition:border-color .25s,background .25s}
+    .upcoming-row:hover{border-color:var(--ac);background:var(--bg3)}
+    .upcoming-date{display:flex;flex-direction:column;align-items:center;justify-content:center;border-right:1px solid var(--border);padding-right:1rem}
+    .upcoming-date-mon{font-family:'DM Sans',sans-serif;font-size:.55rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ac);font-weight:500}
+    .upcoming-date-day{font-family:'Cormorant Garamond',serif;font-size:1.85rem;font-weight:200;color:var(--text);line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+    .upcoming-date-dow{font-size:.6rem;color:var(--mute);letter-spacing:.04em;margin-top:.2rem}
+    .upcoming-meta{min-width:0}
+    .upcoming-proc{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:300;color:var(--text);letter-spacing:-.015em;line-height:1.25;margin-bottom:.2rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .upcoming-sub{font-size:.7rem;color:var(--sub);line-height:1.5}
+    .upcoming-status{font-family:'DM Sans',sans-serif;font-size:.55rem;letter-spacing:.2em;text-transform:uppercase;padding:.3rem .65rem;border:1px solid var(--border);color:var(--mute);white-space:nowrap}
+    .upcoming-status.confirmed{border-color:rgba(201,169,110,.4);color:var(--ac);background:rgba(201,169,110,.05)}
+    .upcoming-status.requested{border-color:var(--border);color:var(--mute)}
+    .upcoming-empty{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding:1.5rem;border:1px dashed var(--border);background:var(--bg);min-height:120px}
+    .upcoming-empty-h{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:300;color:var(--text);margin-bottom:.5rem;letter-spacing:-.02em}
+    .upcoming-empty-p{font-size:.78rem;color:var(--sub);line-height:1.65;margin-bottom:1rem;max-width:42ch}
+    .upcoming-skel{height:80px;background:linear-gradient(90deg,var(--bg) 0%,var(--bg3) 50%,var(--bg) 100%);background-size:200% 100%;animation:upskShim 1.4s ease-in-out infinite}
+    @keyframes upskShim{0%{background-position:200% 0}100%{background-position:-200% 0}}
+    @media(prefers-reduced-motion:reduce){.upcoming-skel{animation:none;background:var(--bg3)}}
+
+    .mini-cal{padding:1.5rem;background:var(--bg2);display:flex;flex-direction:column;gap:.75rem;height:100%}
+    .mini-cal-h{display:flex;align-items:center;justify-content:space-between}
+    .mini-cal-month{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:300;color:var(--text);letter-spacing:.005em}
+    .mini-cal-legend{display:inline-flex;align-items:center;gap:.45rem;font-family:'DM Sans',sans-serif;font-size:.55rem;letter-spacing:.16em;text-transform:uppercase;color:var(--mute)}
+    .mini-cal-legend-dot{width:5px;height:5px;border-radius:50%;background:var(--ac)}
+    .mini-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:.4rem;margin-top:.25rem}
+    .mc-cell{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;height:46px;border:1px solid var(--border);background:var(--bg);color:var(--sub);font-family:'DM Sans',sans-serif;cursor:pointer;transition:border-color .22s,background .22s,color .22s,transform .22s}
+    .mc-cell:hover{border-color:var(--ac);color:var(--text)}
+    .mc-cell:focus-visible{outline:2px solid rgba(201,169,110,.5);outline-offset:1px}
+    .mc-cell:active{transform:scale(.97)}
+    .mc-cell-dow{font-size:.5rem;letter-spacing:.14em;color:var(--mute);text-transform:uppercase;line-height:1}
+    .mc-cell-day{font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:300;color:var(--text);line-height:1;margin-top:.2rem;font-variant-numeric:tabular-nums}
+    .mc-cell.today{background:var(--bg3);border-color:var(--text)}
+    .mc-cell.today .mc-cell-dow{color:var(--text)}
+    .mc-cell.has-event::after{content:'';position:absolute;bottom:5px;width:5px;height:5px;border-radius:50%;background:var(--ac)}
+    .mc-cell.has-event{border-color:rgba(201,169,110,.4);color:var(--ac)}
+    .mini-cal-footnote{font-size:.65rem;color:var(--mute);line-height:1.5;letter-spacing:.005em;margin-top:auto}
+
   </style>
   <meta property="og:image" content="https://acuros.ca/hero-bg.jpg"/>
   <meta property="og:image:width" content="1400"/>
@@ -353,6 +400,35 @@
 
     <!-- Dashboard Body -->
     <div style="max-width:1400px;margin:0 auto;padding:3rem 2.5rem">
+
+      <!-- ── Upcoming Appointments (reads /api/bookings?action=mine) ── -->
+      <section class="upcoming-section" id="upcoming-section">
+        <div class="upcoming-head">
+          <h2 class="upcoming-h">Your upcoming visits</h2>
+          <a href="/bookings" class="upcoming-link">Book a visit <span>→</span></a>
+        </div>
+
+        <div class="upcoming-body">
+          <!-- Left: appointment list -->
+          <div class="upcoming-list">
+            <div class="upcoming-list-inner" id="upcoming-list" aria-live="polite" aria-busy="true">
+              <div class="upcoming-skel"></div>
+              <div class="upcoming-skel"></div>
+              <div class="upcoming-skel"></div>
+            </div>
+          </div>
+
+          <!-- Right: 14-day mini calendar -->
+          <div class="mini-cal" aria-label="Next 14 days">
+            <div class="mini-cal-h">
+              <span class="mini-cal-month" id="mini-cal-month"></span>
+              <span class="mini-cal-legend"><span class="mini-cal-legend-dot"></span>booked</span>
+            </div>
+            <div class="mini-cal-grid" id="mini-cal-grid" role="list"></div>
+            <p class="mini-cal-footnote">Real-time clinic availability coming soon.</p>
+          </div>
+        </div>
+      </section>
 
       <!-- ── Book Treatments ── -->
       <div style="margin-bottom:3.5rem">
@@ -798,6 +874,177 @@ function inferAdvisorType(msg) {
   document.body.appendChild(sf);
   for(let i=0;i<35;i++){const s=document.createElement('div');s.className='star';const sz=Math.random()<.65?2:3;
   s.style.cssText=`width:${sz}px;height:${sz}px;left:${(Math.random()*100).toFixed(1)}%;top:${(Math.random()*100).toFixed(1)}%;--dur:${(3.5+Math.random()*6).toFixed(1)}s;--del:${(Math.random()*12).toFixed(1)}s;--peak:${(.08+Math.random()*.14).toFixed(2)}`;sf.appendChild(s);}
+})();
+
+// ── Upcoming Appointments + stats-bar dynamic fields ──
+// Reads /api/bookings?action=mine, renders the next 3 + a 14-day strip,
+// and updates the "Next Appointment" / "Treatments Booked" tiles in the
+// stats bar.
+(function initUpcoming(){
+  const listEl  = document.getElementById('upcoming-list');
+  const gridEl  = document.getElementById('mini-cal-grid');
+  const monthEl = document.getElementById('mini-cal-month');
+  if(!listEl || !gridEl || !monthEl) return;
+
+  const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const DOW    = ['S','M','T','W','T','F','S'];
+
+  function startOfDay(d){ const x=new Date(d); x.setHours(0,0,0,0); return x; }
+  function ymd(d){ return d.toISOString().slice(0,10); }
+  function escapeHtml(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+  function paintStrip(eventDates){
+    const today = startOfDay(new Date());
+    const cells = [];
+    let monthLabel = '';
+    for(let i=0;i<14;i++){
+      const d = new Date(today); d.setDate(today.getDate()+i);
+      const iso = ymd(d);
+      const isToday = i===0;
+      const has = eventDates.has(iso);
+      if(i===0 || d.getDate()===1) monthLabel = (monthLabel ? monthLabel + ' / ' : '') + MONTHS[d.getMonth()] + ' ' + d.getFullYear();
+      cells.push(
+        '<button class="mc-cell '+(isToday?'today':'')+' '+(has?'has-event':'')+'" '+
+          'role="listitem" type="button" '+
+          'aria-label="'+d.toDateString()+(has?' (has appointments)':'')+'" '+
+          'onclick="window.location.href=\'/bookings\'">'+
+          '<span class="mc-cell-dow">'+DOW[d.getDay()]+'</span>'+
+          '<span class="mc-cell-day">'+d.getDate()+'</span>'+
+        '</button>'
+      );
+    }
+    monthEl.textContent = monthLabel;
+    gridEl.innerHTML = cells.join('');
+  }
+
+  function renderEmpty(reason){
+    listEl.removeAttribute('aria-busy');
+    listEl.innerHTML =
+      '<div class="upcoming-empty">'+
+        '<div class="upcoming-empty-h">No upcoming visits.</div>'+
+        '<p class="upcoming-empty-p">'+reason+'</p>'+
+        '<a href="/bookings" class="upcoming-link">Book a visit <span>→</span></a>'+
+      '</div>';
+  }
+
+  function renderList(items){
+    listEl.removeAttribute('aria-busy');
+    if(!items.length){ renderEmpty('When you book a treatment, it will appear here.'); return; }
+    listEl.innerHTML = items.slice(0,3).map(b => {
+      const d = new Date((b.appointment_date || '') + 'T12:00:00');
+      const valid = !isNaN(d.getTime());
+      const mon  = valid ? MONTHS[d.getMonth()].toUpperCase() : '';
+      const day  = valid ? d.getDate() : '?';
+      const dow  = valid ? d.toLocaleDateString('en-CA',{weekday:'short'}) : '';
+      const time = b.appointment_time_label || '';
+      const proc = b.procedure_name || 'Appointment';
+      const status = (b.status || 'requested').toLowerCase();
+      const stLabel = status==='confirmed' ? 'Confirmed' : status==='cancelled' ? 'Cancelled' : 'Requested';
+      return ''+
+        '<a href="/bookings" class="upcoming-row">'+
+          '<div class="upcoming-date">'+
+            '<span class="upcoming-date-mon">'+mon+'</span>'+
+            '<span class="upcoming-date-day">'+day+'</span>'+
+            '<span class="upcoming-date-dow">'+dow+'</span>'+
+          '</div>'+
+          '<div class="upcoming-meta">'+
+            '<div class="upcoming-proc">'+escapeHtml(proc)+'</div>'+
+            '<div class="upcoming-sub">'+(time?escapeHtml(time):'Time confirmed by clinic')+'</div>'+
+          '</div>'+
+          '<span class="upcoming-status '+status+'">'+stLabel+'</span>'+
+        '</a>';
+    }).join('');
+  }
+
+  function updateStatsBar(allBookings, upcomingBookings){
+    // Update "Treatments Booked" lifetime count and "Next Appointment" tile
+    // by walking the stats grid by label text (avoiding ID dependence).
+    const tiles = document.querySelectorAll('.lbl');
+    tiles.forEach(lbl => {
+      const txt = (lbl.textContent || '').trim().toLowerCase();
+      const wrap = lbl.parentElement; if(!wrap) return;
+      if(txt === 'treatments booked'){
+        const num = wrap.querySelector('div[style*="2.5rem"]');
+        if(num) num.textContent = String(allBookings.length);
+      } else if(txt === 'next appointment'){
+        const detail = wrap.querySelector('div[style*="1.2rem"]');
+        if(!detail) return;
+        const next = upcomingBookings[0];
+        if(next && next.appointment_date){
+          const d = new Date(next.appointment_date + 'T12:00:00');
+          if(!isNaN(d.getTime())){
+            const day = d.toLocaleDateString('en-CA',{weekday:'short',month:'short',day:'numeric'});
+            const proc = (next.procedure_name || 'Appointment');
+            const safeProc = String(proc).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+            detail.style.color = 'var(--text)';
+            detail.innerHTML = day + '<br/><span style="font-size:.78rem;color:var(--sub)">'+safeProc+'</span>';
+          }
+        }
+      }
+    });
+  }
+
+  async function loadBookings(){
+    paintStrip(new Set());
+    if(typeof sb === 'undefined' || !sb){
+      renderEmpty('Sign in to view and manage your bookings.');
+      return;
+    }
+    let token = null;
+    try{
+      const { data } = await sb.auth.getSession();
+      token = data?.session?.access_token || null;
+    } catch(_e){}
+    if(!token){
+      renderEmpty('Sign in to view and manage your bookings.');
+      return;
+    }
+
+    try{
+      const resp = await fetch('/api/bookings?action=mine', {
+        headers: { 'Authorization': 'Bearer ' + token }
+      });
+      if(!resp.ok){
+        renderEmpty('We could not load your bookings just now. Please try again later.');
+        return;
+      }
+      const data = await resp.json();
+      const all  = (data.bookings || []).filter(b => b && b.appointment_date);
+      const today = startOfDay(new Date());
+      const upcoming = all
+        .filter(b => {
+          const d = new Date(b.appointment_date + 'T12:00:00');
+          return !isNaN(d.getTime()) && startOfDay(d) >= today && (b.status||'').toLowerCase() !== 'cancelled';
+        })
+        .sort((a,b) => new Date(a.appointment_date) - new Date(b.appointment_date));
+
+      const horizon = new Date(today); horizon.setDate(today.getDate()+13);
+      const eventDates = new Set(
+        upcoming
+          .filter(b => { const d=new Date(b.appointment_date+'T12:00:00'); return startOfDay(d) <= horizon; })
+          .map(b => b.appointment_date.slice(0,10))
+      );
+
+      paintStrip(eventDates);
+      renderList(upcoming);
+      updateStatsBar(all, upcoming);
+    } catch(_e){
+      renderEmpty('We could not load your bookings just now. Please try again later.');
+    }
+  }
+
+  paintStrip(new Set());
+
+  // Wait for currentUser to be set, then load. AAA portal sets it via the
+  // session-guard above; we poll briefly so we don't double-listen.
+  let attempts = 0;
+  function tryLoad(){
+    if(typeof currentUser !== 'undefined' && currentUser){ loadBookings(); return; }
+    if(++attempts < 14) setTimeout(tryLoad, 350);
+    else renderEmpty('Sign in to view and manage your bookings.');
+  }
+  if(document.readyState !== 'loading') tryLoad();
+  else document.addEventListener('DOMContentLoaded', tryLoad);
 })();</script>
 </body>
 </html>
