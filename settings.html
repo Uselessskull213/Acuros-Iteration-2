@@ -32,8 +32,7 @@
     }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     html{scroll-behavior:smooth}
-    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;min-height:100dvh;cursor:none}
-    @media(hover:none),(pointer:coarse){body{cursor:auto}}
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;min-height:100dvh}
 
     /* ── Grain ── */
     #grain{position:fixed;inset:0;z-index:9992;pointer-events:none;opacity:.055;
@@ -41,12 +40,6 @@
       background-repeat:repeat;background-size:180px 180px}
 
     /* ── Cursor ── */
-    #cursor-dot{position:fixed;top:0;left:0;width:5px;height:5px;background:var(--text);border-radius:50%;pointer-events:none;z-index:8999;transform:translate(-50%,-50%);transition:background .2s,transform .2s cubic-bezier(.22,1,.36,1);will-change:left,top}
-    #cursor-ring{position:fixed;top:0;left:0;width:30px;height:30px;border:1px solid rgba(201,169,110,.25);border-radius:50%;pointer-events:none;z-index:8998;transform:translate(-50%,-50%);transition:width .32s cubic-bezier(.22,1,.36,1),height .32s,border-color .3s;will-change:left,top}
-    html:not(.dark) #cursor-ring{border-color:rgba(28,26,20,.15)}
-    body.c-hover #cursor-dot{transform:translate(-50%,-50%) scale(2.4);background:var(--ac)}
-    body.c-hover #cursor-ring{width:50px;height:50px;border-color:rgba(201,169,110,.4)}
-    @media(hover:none),(pointer:coarse){#cursor-dot,#cursor-ring{display:none}}
 
     /* ── Scroll progress ── */
     #scroll-prog{position:fixed;top:0;left:0;z-index:9001;height:1px;background:var(--ac);width:0%;pointer-events:none}
@@ -183,8 +176,6 @@
 </head>
 <body>
 <div id="grain" aria-hidden="true"></div>
-<div id="cursor-dot" aria-hidden="true"></div>
-<div id="cursor-ring" aria-hidden="true"></div>
 <div id="scroll-prog" aria-hidden="true"></div>
 <div id="toast" aria-live="polite"></div>
 
@@ -569,21 +560,6 @@ function toggleTheme(){applyTheme(!document.documentElement.classList.contains('
 function openMob(){document.getElementById('mob-menu').classList.add('open');document.body.style.overflow='hidden';}
 function closeMob(){document.getElementById('mob-menu').classList.remove('open');document.body.style.overflow='';}
 window.addEventListener('scroll',()=>{const p=document.getElementById('scroll-prog');if(p){const m=document.documentElement.scrollHeight-window.innerHeight;p.style.width=(m>0?window.scrollY/m*100:0)+'%';}},{passive:true});
-
-// ════════════════════════════════════════════════════════════════════
-// CURSOR
-// ════════════════════════════════════════════════════════════════════
-(function(){
-  const dot=document.getElementById('cursor-dot'),ring=document.getElementById('cursor-ring');
-  if(!dot||!ring)return;
-  let mx=0,my=0,rx=0,ry=0;
-  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px';});
-  (function loop(){rx+=(mx-rx)*.11;ry+=(my-ry)*.11;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop);})();
-  document.querySelectorAll('a,button,[role=button]').forEach(el=>{
-    el.addEventListener('mouseenter',()=>document.body.classList.add('c-hover'));
-    el.addEventListener('mouseleave',()=>document.body.classList.remove('c-hover'));
-  });
-})();
 
 // ════════════════════════════════════════════════════════════════════
 // STAR FIELD

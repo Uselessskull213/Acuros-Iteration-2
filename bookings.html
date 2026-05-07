@@ -31,14 +31,10 @@
     html.dark{--bg:#0c0c0a;--bg2:#111110;--bg3:#161614;--border:#1e1e1b;--text:#f0ede8;--sub:#8c8880;--mute:#4e4c48;--ac:#c9a96e;--nav:rgba(12,12,10,.97)}
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     html{scroll-behavior:smooth}
-    body{font-family:'Inter','DM Sans',sans-serif;background:var(--bg);color:var(--text);transition:background .35s,color .35s;overflow-x:hidden;cursor:none}
-    @media(hover:none),(pointer:coarse){body{cursor:auto}#cursor-dot,#cursor-ring{display:none!important}}
+    body{font-family:'Inter','DM Sans',sans-serif;background:var(--bg);color:var(--text);transition:background .35s,color .35s;overflow-x:hidden}
     h1,h2,h3,h4{font-family:'Cormorant Garamond',serif;line-height:1.06;letter-spacing:-.02em}
 
     /* ── Custom cursor ── */
-    #cursor-dot{position:fixed;top:0;left:0;width:7px;height:7px;background:var(--ac);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);will-change:left,top}
-    #cursor-ring{position:fixed;top:0;left:0;width:34px;height:34px;border:1.5px solid var(--ac);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);opacity:.55;transition:width .3s cubic-bezier(.22,1,.36,1),height .3s cubic-bezier(.22,1,.36,1),opacity .3s;will-change:left,top}
-    body.cursor-expand #cursor-ring{width:52px;height:52px;opacity:.35}
 
     /* ── Scroll progress ── */
     #scroll-prog{position:fixed;top:0;left:0;height:1.5px;width:0;background:var(--ac);z-index:9997;pointer-events:none}
@@ -160,8 +156,6 @@
 </head>
 <body>
 
-<div id="cursor-dot"></div>
-<div id="cursor-ring"></div>
 <div id="scroll-prog"></div>
 
 <!-- ── Auth gate ── -->
@@ -446,26 +440,6 @@ function openMob()  { document.getElementById('mob-menu').classList.add('open');
 function closeMob() { document.getElementById('mob-menu').classList.remove('open'); document.body.style.overflow=''; }
 
 // ── Custom cursor ──
-(function initCursor() {
-  const dot  = document.getElementById('cursor-dot');
-  const ring = document.getElementById('cursor-ring');
-  if (!dot || !ring) return;
-  let mx=-100, my=-100, rx=-100, ry=-100;
-  document.addEventListener('mousemove', e => {
-    mx = e.clientX; my = e.clientY;
-    dot.style.left = mx + 'px'; dot.style.top = my + 'px';
-  });
-  (function animRing() {
-    rx += (mx - rx) * .12; ry += (my - ry) * .12;
-    ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
-    requestAnimationFrame(animRing);
-  })();
-  document.addEventListener('mouseover', e => {
-    if (e.target.closest('a,button,.procedure-card,.mag')) document.body.classList.add('cursor-expand');
-    else document.body.classList.remove('cursor-expand');
-  });
-})();
-
 // ── Scroll: progress + nav + parallax ──
 const mainNav = document.getElementById('main-nav');
 const prog    = document.getElementById('scroll-prog');

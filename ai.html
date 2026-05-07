@@ -41,18 +41,11 @@
     }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     html{scroll-behavior:smooth}
-    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;cursor:none}
-    @media(hover:none),(pointer:coarse){body{cursor:auto}}
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
     h1,h2,h3,h4{font-family:'Cormorant Garamond',serif;line-height:1.06;letter-spacing:-.02em}
 
     /* ── Cursor ── */
-    #cursor-dot{position:fixed;top:0;left:0;width:7px;height:7px;background:var(--text);border-radius:50%;pointer-events:none;z-index:8999;transform:translate(-50%,-50%);transition:background .25s,transform .25s cubic-bezier(.22,1,.36,1);will-change:left,top}
-    #cursor-ring{position:fixed;top:0;left:0;width:34px;height:34px;border:1px solid rgba(240,237,232,.22);border-radius:50%;pointer-events:none;z-index:8998;transform:translate(-50%,-50%);opacity:1;transition:width .3s cubic-bezier(.22,1,.36,1),height .3s,opacity .3s,border-color .3s;will-change:left,top}
-    html:not(.dark) #cursor-ring{border-color:rgba(28,26,20,.15)}
-    body.c-hover #cursor-dot{transform:translate(-50%,-50%) scale(2.2);background:var(--ac)}
-    body.c-hover #cursor-ring{width:56px;height:56px;border-color:rgba(201,169,110,.45)}
     #grain{position:fixed;inset:0;z-index:9992;pointer-events:none;opacity:.065;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");background-repeat:repeat;background-size:180px 180px}
-    @media(hover:none),(pointer:coarse){#cursor-dot,#cursor-ring{display:none}}
 
     /* ── Progress + Nav ── */
     #scroll-prog{position:fixed;top:0;left:0;z-index:9001;height:1px;background:var(--ac);width:0%;transform-origin:left}
@@ -244,8 +237,6 @@
 <body>
 
 <div id="grain" aria-hidden="true"></div>
-<div id="cursor-dot"></div>
-<div id="cursor-ring"></div>
 <div id="scroll-prog"></div>
 
 <!-- ── NAV ── -->
@@ -493,17 +484,6 @@ function openMob()  { document.getElementById('mob-menu').classList.add('open');
 function closeMob() { document.getElementById('mob-menu').classList.remove('open'); document.body.style.overflow=''; }
 
 /* ─── Cursor ─── */
-(function initCursor() {
-  if (window.matchMedia('(pointer:coarse),(hover:none)').matches) return;
-  const dot = document.getElementById('cursor-dot'), ring = document.getElementById('cursor-ring');
-  if (!dot || !ring) return;
-  let mx=-100, my=-100, rx=-100, ry=-100;
-  document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; dot.style.left=mx+'px'; dot.style.top=my+'px'; }, {passive:true});
-  (function animRing() { rx+=(mx-rx)*.12; ry+=(my-ry)*.12; ring.style.left=rx+'px'; ring.style.top=ry+'px'; requestAnimationFrame(animRing); })();
-  document.addEventListener('mouseover', e => { if(e.target.closest('a,button,.btn,.use-card')) document.body.classList.add('c-hover'); });
-  document.addEventListener('mouseout',  e => { if(e.target.closest('a,button,.btn,.use-card')) document.body.classList.remove('c-hover'); });
-})();
-
 /* ─── Scroll Progress + Nav ─── */
 const prog = document.getElementById('scroll-prog'), mainNav = document.getElementById('main-nav');
 window.addEventListener('scroll', () => {

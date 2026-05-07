@@ -39,8 +39,7 @@
     }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     html{scroll-behavior:smooth}
-    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;cursor:none}
-    @media(hover:none),(pointer:coarse){body{cursor:auto}}
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
     h1,h2,h3,h4{font-family:'Cormorant Garamond',serif;line-height:1.04;letter-spacing:-.025em}
 
     /* ── Grain ── */
@@ -49,12 +48,6 @@
       background-repeat:repeat;background-size:180px 180px}
 
     /* ── Cursor ── */
-    #cursor-dot{position:fixed;top:0;left:0;width:6px;height:6px;background:var(--text);border-radius:50%;pointer-events:none;z-index:8999;transform:translate(-50%,-50%);transition:background .2s,transform .18s cubic-bezier(.22,1,.36,1);will-change:left,top}
-    #cursor-ring{position:fixed;top:0;left:0;width:32px;height:32px;border:1px solid rgba(240,237,232,.25);border-radius:50%;pointer-events:none;z-index:8998;transform:translate(-50%,-50%);transition:width .32s cubic-bezier(.22,1,.36,1),height .32s,border-color .3s;will-change:left,top}
-    html:not(.dark) #cursor-ring{border-color:rgba(28,26,20,.15)}
-    body.c-expand #cursor-dot{transform:translate(-50%,-50%) scale(2);background:var(--ac)}
-    body.c-expand #cursor-ring{width:50px;height:50px;border-color:rgba(201,169,110,.3)}
-    @media(hover:none),(pointer:coarse){#cursor-dot,#cursor-ring{display:none!important}}
 
     /* ── Scroll progress ── */
     #scroll-prog{position:fixed;top:0;left:0;height:1px;width:0;background:var(--ac);z-index:9997;pointer-events:none}
@@ -246,8 +239,6 @@
 <body>
 
 <div id="grain" aria-hidden="true"></div>
-<div id="cursor-dot" aria-hidden="true"></div>
-<div id="cursor-ring" aria-hidden="true"></div>
 <div id="scroll-prog" aria-hidden="true"></div>
 
 <!-- ── CART BACKDROP ── -->
@@ -842,26 +833,6 @@ function openMob()  { document.getElementById('mob-menu').classList.add('open');
 function closeMob() { document.getElementById('mob-menu').classList.remove('open'); document.body.style.overflow=''; }
 
 /* ─── Cursor ─── */
-(function initCursor() {
-  if (window.matchMedia('(pointer:coarse),(hover:none)').matches) return;
-  const dot  = document.getElementById('cursor-dot');
-  const ring = document.getElementById('cursor-ring');
-  if (!dot || !ring) return;
-  let mx=-100, my=-100, rx=-100, ry=-100;
-  document.addEventListener('mousemove', e => {
-    mx=e.clientX; my=e.clientY;
-    dot.style.left=mx+'px'; dot.style.top=my+'px';
-  }, {passive:true});
-  (function animRing() {
-    rx+=(mx-rx)*.11; ry+=(my-ry)*.11;
-    ring.style.left=rx+'px'; ring.style.top=ry+'px';
-    requestAnimationFrame(animRing);
-  })();
-  document.addEventListener('mouseover', e => {
-    document.body.classList.toggle('c-expand', !!e.target.closest('a,button,.btn,.product-card,.filter-btn'));
-  });
-})();
-
 /* ─── Scroll ─── */
 const mainNav = document.getElementById('main-nav');
 const prog    = document.getElementById('scroll-prog');

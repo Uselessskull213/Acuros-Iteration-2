@@ -45,8 +45,7 @@
     }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     html{scroll-behavior:smooth}
-    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;cursor:none;min-height:100dvh;-webkit-font-smoothing:antialiased}
-    @media(hover:none),(pointer:coarse){body{cursor:auto}}
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;min-height:100dvh;-webkit-font-smoothing:antialiased}
     h1,h2,h3,h4{font-family:'Cormorant Garamond',serif;font-weight:300;line-height:1.04;letter-spacing:-.025em}
     em{font-style:italic;font-weight:300}
     .mono{font-family:'JetBrains Mono',monospace;font-feature-settings:'tnum';letter-spacing:-.01em}
@@ -59,12 +58,6 @@
     html:not(.dark) #grain{opacity:.02;mix-blend-mode:multiply}
 
     /* ── Cursor ── */
-    #cursor-dot{position:fixed;top:0;left:0;width:5px;height:5px;background:var(--text);border-radius:50%;pointer-events:none;z-index:8999;transform:translate(-50%,-50%);transition:background .2s,transform .2s cubic-bezier(.22,1,.36,1);will-change:left,top}
-    #cursor-ring{position:fixed;top:0;left:0;width:30px;height:30px;border:1px solid rgba(28,26,20,.18);border-radius:50%;pointer-events:none;z-index:8998;transform:translate(-50%,-50%);transition:width .32s cubic-bezier(.22,1,.36,1),height .32s,border-color .3s;will-change:left,top}
-    html.dark #cursor-ring{border-color:rgba(240,237,232,.22)}
-    body.c-hover #cursor-dot{transform:translate(-50%,-50%) scale(2.4);background:var(--ac)}
-    body.c-hover #cursor-ring{width:50px;height:50px;border-color:rgba(184,138,42,.4)}
-    @media(hover:none),(pointer:coarse){#cursor-dot,#cursor-ring{display:none}}
 
     /* ── Scroll progress ── */
     #scroll-prog{position:fixed;top:0;left:0;z-index:9001;height:1px;background:var(--ac);width:0%;will-change:width;pointer-events:none}
@@ -400,8 +393,6 @@
 <body>
 
 <div id="grain" aria-hidden="true"></div>
-<div id="cursor-dot" aria-hidden="true"></div>
-<div id="cursor-ring" aria-hidden="true"></div>
 <div id="scroll-prog" aria-hidden="true"></div>
 
 
@@ -897,18 +888,6 @@ window.addEventListener('scroll', () => {
   if (prog)    prog.style.width = (total > 0 ? (sy/total*100) : 0) + '%';
   if (mainNav && !mainNav.classList.contains('solid')) mainNav.classList.toggle('scrolled', sy > 40);
 }, { passive: true });
-
-(function initCursor(){
-  if (window.matchMedia('(pointer:coarse),(hover:none)').matches) return;
-  const dot=document.getElementById('cursor-dot'), ring=document.getElementById('cursor-ring');
-  if (!dot||!ring) return;
-  let mx=-100,my=-100,rx=-100,ry=-100;
-  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px';},{passive:true});
-  (function ar(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(ar);})();
-  document.addEventListener('mouseover',e=>{if(e.target.closest('a,button,.btn,.bx,.side-link,.ws-action'))document.body.classList.add('c-hover');});
-  document.addEventListener('mouseout', e=>{if(e.target.closest('a,button,.btn,.bx,.side-link,.ws-action'))document.body.classList.remove('c-hover');});
-})();
-
 
 /* ═══════════════════════════════════════════════════════════════════════
    INTERACTIONS — magnetic + reveal + tile spring
