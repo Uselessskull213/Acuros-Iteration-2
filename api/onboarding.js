@@ -56,18 +56,27 @@ async function getOrCreateOwnerOrg(admin, user, opts = {}) {
     .replace(/\s+/g, ' ')
     .trim() || 'Clinic';
 
+  // The legacy organizations.code column is NOT NULL with no default.
+  // Synthesise a stable, owner-unique code from the auth uuid so we never
+  // collide with another owner's code on insert.
+  const code = 'CLINIC-' + (user.id || '').replace(/-/g, '').slice(0, 8).toUpperCase();
+
   const { data: created, error: createErr } = await admin
     .from('organizations')
     .insert({
       owner_id: user.id,
       name: fallbackName,
+      code,
       active: false,
       is_published: false,
       onboarding_state: { step: 1, started_at: new Date().toISOString() },
     })
     .select()
     .single();
-  if (createErr) throw createErr;
+  if (createErr) {
+    console.error('[onboarding] org insert failed:', createErr);
+    throw createErr;
+  }
   return created;
 }
 
@@ -80,7 +89,7 @@ function slugify(input) {
     .slice(0, 32);
 }
 
-const ALLOWED_EXTRACT_KINDS = new Set(['services', 'products', 'brand', 'slug']);
+const ALLOWED_EXTRACT_KINDS = new Set(['services', 'products', 'brand', 'slug', 'design']);
 
 const EXTRACT_SCHEMAS = {
   services: {
@@ -150,26 +159,129 @@ const EXTRACT_SCHEMAS = {
       required: ['candidates'],
     },
   },
+  // ── design: one-shot full-portal generator ──
+  // Take a single paragraph from the clinic owner and produce the entire
+  // portal skeleton: brand voice, palette, services, products, slug.
+  // This is what "AI designs the page for them" actually means.
+  design: {
+    description: 'Design a complete clinic portal from a single paragraph. The owner has typed one or two sentences about their practice — produce a polished tagline, an 80-word public description, a brand voice, an accent palette hex (one of: #c9a96e, #2f6b5e, #7a3b2a, #3a4f7a, #262626), an inferred speciality and location if hinted, a list of 4 to 8 plausible services with categories and durations, an optional list of products, and 3 slug candidates. Be specific; do not hedge with generic copy.',
+    schema: {
+      type: 'object',
+      properties: {
+        name:        { type: 'string', description: 'Suggested or extracted clinic name. Empty string if not stated.' },
+        specialty:   { type: 'string' },
+        location:    { type: 'string' },
+        tagline:     { type: 'string', description: 'Six to eight words. No exclamation marks.' },
+        description: { type: 'string', description: 'Eighty words, present tense, plain English. No marketing slop.' },
+        voice:       { type: 'string', description: 'One of: Clinical, Warm, Premium, Direct.' },
+        accent:      { type: 'string', description: 'Hex color from the allowed palette set.' },
+        services: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              name:         { type: 'string' },
+              category:     { type: 'string' },
+              description:  { type: 'string' },
+              duration_min: { type: 'integer' },
+              price_cents:  { type: 'integer' },
+            },
+            required: ['name', 'category', 'duration_min'],
+          },
+        },
+        products: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              name:        { type: 'string' },
+              category:    { type: 'string' },
+              description: { type: 'string' },
+              price_cents: { type: 'integer' },
+            },
+            required: ['name', 'category'],
+          },
+        },
+        slugs: { type: 'array', items: { type: 'string' }, minItems: 1, maxItems: 5 },
+      },
+      required: ['tagline', 'description', 'voice', 'accent', 'services', 'slugs'],
+    },
+  },
 };
 
-async function callGeminiJson({ kind, text, clinicName }) {
-  const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) throw new Error('Gemini key not configured');
+// Try Anthropic Claude Sonnet first (better for design tasks), fall back
+// to Google Gemini if no Anthropic key is configured. Both go through a
+// strict JSON-mode contract so the wizard can rely on the schema.
+async function callAIJson({ kind, text, clinicName }) {
   const conf = EXTRACT_SCHEMAS[kind];
   if (!conf) throw new Error('Unsupported extract kind');
 
-  const prompt = [
-    `You are an onboarding assistant for Acuros Health, a Canadian clinic platform.`,
+  const systemPrompt = [
+    `You are the onboarding designer for Acuros Health, a Canadian clinic platform.`,
+    `Tone: measured medical, premium-but-restrained. Never use breathless marketing copy or em-dashes. Never invent statistics.`,
     `${conf.description}`,
-    clinicName ? `Clinic name: "${clinicName}".` : '',
-    `Free-text input from the clinic owner:`,
-    `"""${text}"""`,
-    `Return ONLY JSON matching the provided schema. Do not include commentary.`,
+    clinicName ? `Clinic context: "${clinicName}".` : '',
   ].filter(Boolean).join('\n\n');
 
+  const userPrompt = `Owner-provided text:\n"""${text}"""\n\nReturn ONLY a JSON object that conforms to the agreed schema. No prose, no markdown.`;
+
+  // Prefer Anthropic if available. Their JSON-mode behaviour is sturdier
+  // for nested schemas and the Sonnet model writes better design copy.
+  if (process.env.ANTHROPIC_API_KEY) {
+    return await callAnthropicJson({ systemPrompt, userPrompt, schema: conf.schema });
+  }
+  if (process.env.GEMINI_API_KEY) {
+    return await callGeminiJson({ systemPrompt, userPrompt, schema: conf.schema });
+  }
+  throw new Error('No AI provider configured (set ANTHROPIC_API_KEY or GEMINI_API_KEY).');
+}
+
+async function callAnthropicJson({ systemPrompt, userPrompt, schema }) {
+  const ctrl = new AbortController();
+  const timeout = setTimeout(() => ctrl.abort(), 28000);
+  try {
+    // Claude does structured output via the `tools` parameter. We define a
+    // single tool whose input is the schema we want, then force-use it.
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      signal: ctrl.signal,
+      headers: {
+        'content-type': 'application/json',
+        'x-api-key': process.env.ANTHROPIC_API_KEY,
+        'anthropic-version': '2023-06-01',
+      },
+      body: JSON.stringify({
+        model: process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-5',
+        max_tokens: 2048,
+        system: systemPrompt,
+        tools: [{
+          name: 'emit_result',
+          description: 'Emit the structured result for the wizard.',
+          input_schema: schema,
+        }],
+        tool_choice: { type: 'tool', name: 'emit_result' },
+        messages: [{ role: 'user', content: userPrompt }],
+      }),
+    });
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({}));
+      throw new Error(err?.error?.message || `Anthropic ${resp.status}`);
+    }
+    const data = await resp.json();
+    const tool = (data.content || []).find((c) => c.type === 'tool_use');
+    if (!tool || !tool.input) throw new Error('Claude returned no tool result');
+    return tool.input;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+async function callGeminiJson({ systemPrompt, userPrompt, schema }) {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) throw new Error('Gemini key not configured');
   const model = process.env.GEMINI_MODEL || 'gemini-2.0-flash';
   const ctrl = new AbortController();
-  const timeout = setTimeout(() => ctrl.abort(), 18000);
+  const timeout = setTimeout(() => ctrl.abort(), 22000);
   try {
     const resp = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
@@ -178,12 +290,13 @@ async function callGeminiJson({ kind, text, clinicName }) {
         headers: { 'Content-Type': 'application/json' },
         signal: ctrl.signal,
         body: JSON.stringify({
-          contents: [{ role: 'user', parts: [{ text: prompt }] }],
+          systemInstruction: { parts: [{ text: systemPrompt }] },
+          contents: [{ role: 'user', parts: [{ text: userPrompt }] }],
           generationConfig: {
             temperature: 0.3,
-            maxOutputTokens: 1500,
+            maxOutputTokens: 2048,
             responseMimeType: 'application/json',
-            responseSchema: conf.schema,
+            responseSchema: schema,
           },
         }),
       }
@@ -293,29 +406,33 @@ export default async function handler(req, res) {
     }
 
     // ── POST ?action=extract ─────────────────────────────────────────
-    // body: { kind: 'services'|'products'|'brand'|'slug', text }
+    // body: { kind: 'services'|'products'|'brand'|'slug'|'design', text }
     if (req.method === 'POST' && action === 'extract') {
       const body = req.body || {};
       const kind = String(body.kind || '').trim();
-      const text = String(body.text || '').trim().slice(0, 4000);
+      const text = String(body.text || '').trim().slice(0, 6000);
       if (!ALLOWED_EXTRACT_KINDS.has(kind)) return res.status(400).json({ error: 'Unknown kind' });
       if (!text) return res.status(400).json({ error: 'Empty input' });
       const org = await getOrCreateOwnerOrg(admin, user);
-      const out = await callGeminiJson({ kind, text, clinicName: org?.name });
+      const out = await callAIJson({ kind, text, clinicName: org?.name });
 
-      // For slug suggestions, scrub against reserved + taken so the UI
-      // never surfaces a slug the user can't actually use.
-      if (kind === 'slug' && Array.isArray(out.candidates)) {
-        const cleaned = out.candidates.map(slugify).filter((s) => s.length >= 3);
-        const { data: reserved } = await admin.from('reserved_slugs').select('slug');
-        const reservedSet = new Set((reserved || []).map((r) => r.slug));
-        const { data: taken } = await admin
-          .from('organizations')
-          .select('slug')
-          .neq('owner_id', user.id)
-          .not('slug', 'is', null);
-        const takenSet = new Set((taken || []).map((r) => r.slug));
-        out.candidates = cleaned.filter((s) => !reservedSet.has(s) && !takenSet.has(s));
+      // For slug suggestions (either standalone or inside `design`),
+      // scrub against reserved + taken so the UI only surfaces usable
+      // candidates.
+      if (kind === 'slug' || kind === 'design') {
+        const arrKey = kind === 'slug' ? 'candidates' : 'slugs';
+        if (Array.isArray(out[arrKey])) {
+          const cleaned = out[arrKey].map(slugify).filter((s) => s.length >= 3);
+          const { data: reserved } = await admin.from('reserved_slugs').select('slug');
+          const reservedSet = new Set((reserved || []).map((r) => r.slug));
+          const { data: taken } = await admin
+            .from('organizations')
+            .select('slug')
+            .neq('owner_id', user.id)
+            .not('slug', 'is', null);
+          const takenSet = new Set((taken || []).map((r) => r.slug));
+          out[arrKey] = cleaned.filter((s) => !reservedSet.has(s) && !takenSet.has(s));
+        }
       }
 
       return res.status(200).json(out);
@@ -328,8 +445,9 @@ export default async function handler(req, res) {
     // so we do it in a single owner-scoped transaction-equivalent.
     if (req.method === 'POST' && action === 'publish') {
       const body = req.body || {};
-      const org = await getOrCreateOwnerOrg(admin, user);
-      if (!org) return res.status(404).json({ error: 'No organization to publish.' });
+      // Be defensive — even if save somehow didn't run, create the row.
+      const org = await getOrCreateOwnerOrg(admin, user, { create: true });
+      if (!org) return res.status(500).json({ error: 'Could not load or create your clinic record.' });
       if (!org.slug) return res.status(400).json({ error: 'Pick a slug before publishing.' });
       if (!org.name || org.name.length < 2) return res.status(400).json({ error: 'Clinic name is required.' });
 

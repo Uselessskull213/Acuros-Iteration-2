@@ -220,6 +220,20 @@
       <h1 class="hd">Tell us about your <em>practice.</em></h1>
       <p class="sub">The basics. Two minutes. You can edit any of this later from your dashboard.</p>
 
+      <!-- Auto-design shortcut: one paragraph in, full portal out. -->
+      <div style="background:var(--bg2);border:1px solid var(--border);padding:1.5rem 1.5rem 1.25rem;margin-bottom:2rem">
+        <div class="ai-helper-h" style="margin-bottom:.625rem"><span class="dot"></span>AI quickstart — design my whole portal</div>
+        <p style="font-size:.82rem;color:var(--sub);line-height:1.65;margin-bottom:.875rem">Paste one or two sentences about your clinic. Claude will name your services, polish your tagline, pick an accent palette, and pre-fill every step of this wizard. You can edit anything afterwards.</p>
+        <textarea id="f-design-text" class="txa" placeholder="We're a family-run aesthetics clinic in midtown Toronto. We focus on natural results, conservative dosing, and long-term skin health — botox, fillers, microneedling, and IV vitamin therapy."></textarea>
+        <div class="ai-helper" style="display:none;margin-top:.625rem" id="ai-design">
+          <div class="ai-helper-status" id="ai-design-status"><span class="typing-dots"><span></span><span></span><span></span></span></div>
+        </div>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.875rem">
+          <button class="btn btn-solid" id="btn-design-ai">Design my portal with AI →</button>
+          <button class="btn btn-ghost" id="btn-design-skip" type="button">I'll fill it in manually</button>
+        </div>
+      </div>
+
       <div class="field">
         <label class="field-lbl" for="f-name">Clinic name</label>
         <input id="f-name" class="inp" type="text" placeholder="Wellspring Family Clinic" maxlength="120"/>
@@ -760,6 +774,74 @@ $('#btn-products-ai').addEventListener('click', async () => {
     scheduleSave();
   } catch(err){
     $('#ai-products-status').textContent = 'AI structure failed: ' + err.message;
+  }
+});
+
+// Step 1 quickstart — Claude designs the entire portal from one paragraph,
+// then fans the result out across every wizard field. The owner can still
+// edit anything before publishing.
+$('#btn-design-skip').addEventListener('click', () => {
+  $('#f-name').focus();
+});
+$('#btn-design-ai').addEventListener('click', async () => {
+  const txt = $('#f-design-text').value.trim();
+  if (!txt) { toast('Describe your clinic first — even one sentence is fine.', 'error'); return; }
+  const btn = $('#btn-design-ai'); const helper = $('#ai-design'); const stat = $('#ai-design-status');
+  helper.style.display = ''; stat.innerHTML = '<span class="typing-dots"><span></span><span></span><span></span></span> Designing your portal…';
+  btn.disabled = true;
+  try {
+    const out = await aiExtract('design', txt);
+
+    // Spray the result across every step's fields.
+    if (out.name && !$('#f-name').value) $('#f-name').value = out.name;
+    if (out.specialty && !$('#f-specialty').value) $('#f-specialty').value = out.specialty;
+    if (out.location && !$('#f-location').value)   $('#f-location').value   = out.location;
+    if (out.tagline) $('#f-tagline').value         = out.tagline;
+    if (out.description) $('#f-description').value = out.description;
+    if (out.voice) $('#f-voice').value             = out.voice;
+    if (out.accent) {
+      $$('.palette-chip').forEach(c => c.classList.toggle('active', c.dataset.accent === out.accent));
+    }
+
+    if (Array.isArray(out.services) && out.services.length) {
+      services = out.services.map(s => ({
+        name: s.name || '', category: s.category || 'Consultation',
+        duration_min: +s.duration_min || 60, price_cents: +s.price_cents || 0,
+        description: s.description || '',
+      }));
+      renderServices();
+      $('#f-services-text').value = txt;
+    }
+    if (Array.isArray(out.products) && out.products.length) {
+      products = out.products.map(p => ({
+        name: p.name || '', category: p.category || 'Skincare',
+        price_cents: +p.price_cents || 0, description: p.description || '',
+      }));
+      renderProducts();
+      $('#f-products-text').value = txt;
+    }
+    $('#f-brand-text').value = txt;
+
+    // Suggest a slug — render chips for the user to pick.
+    if (Array.isArray(out.slugs) && out.slugs.length) {
+      const row = $('#slug-suggest'); row.innerHTML = '';
+      out.slugs.slice(0, 5).forEach(s => {
+        const chip = document.createElement('button');
+        chip.className = 'slug-chip'; chip.type = 'button'; chip.textContent = s;
+        chip.addEventListener('click', () => { $('#f-slug').value = s; $('#f-slug').dispatchEvent(new Event('input')); });
+        row.appendChild(chip);
+      });
+      // Auto-pick the first available candidate as the default.
+      $('#f-slug').value = out.slugs[0];
+      $('#f-slug').dispatchEvent(new Event('input'));
+    }
+
+    stat.innerHTML = 'Done. Review each step — anything you don\'t like, edit before publishing.';
+    scheduleSave();
+  } catch (err) {
+    stat.textContent = 'AI design failed: ' + err.message;
+  } finally {
+    btn.disabled = false;
   }
 });
 
