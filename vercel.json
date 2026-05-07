@@ -9,7 +9,11 @@
     { "source": "/privacy",           "destination": "/privacy.html" },
     { "source": "/terms",             "destination": "/terms.html" },
     { "source": "/aaaclinics-portal", "destination": "/portal-aaaclinics.html" },
-    { "source": "/settings",          "destination": "/settings.html" }
+    { "source": "/settings",          "destination": "/settings.html" },
+    { "source": "/onboarding",        "destination": "/onboarding.html" },
+    { "source": "/dashboard",         "destination": "/dashboard.html" },
+    { "source": "/c/:slug",           "destination": "/api/clinic-page?slug=:slug" },
+    { "source": "/sitemap.xml",       "destination": "/api/sitemap" }
   ],
   "headers": [
     {

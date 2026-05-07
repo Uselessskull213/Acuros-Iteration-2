@@ -1,5 +1,11 @@
 User-agent: *
 Allow: /
+Allow: /c/
 Disallow: /api/
+Disallow: /onboarding
+Disallow: /dashboard
+Disallow: /settings
+Disallow: /patient-portal
+Disallow: /aaaclinics-portal
 
 Sitemap: https://acuros.ca/sitemap.xml

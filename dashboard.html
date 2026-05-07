@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-80K00SEBQK"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-80K00SEBQK');</script>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Clinic dashboard - Acuros Health</title>
+  <link rel="icon" type="image/png" href="/favicon-32.png"/>
+  <link rel="manifest" href="/site.webmanifest"/>
+  <meta name="theme-color" content="#c9a96e"/>
+  <meta name="robots" content="noindex"/>
+  <meta property="og:image" content="https://acuros.ca/hero-bg.jpg"/>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,200;0,300;0,400;0,500;1,200;1,300&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
+
+  <style>
+    :root{
+      --bg:#f0ebe1;--bg2:#f8f4ec;--bg3:#e6e0d4;
+      --border:#d4cdb8;--text:#1c1a14;--sub:#5c5346;--mute:#a09480;
+      --ac:#c9922a;--nav:rgba(240,235,225,.97);
+      --ok:#3b7a3b;--err:#b73838
+    }
+    html.dark{
+      --bg:#0c0c0a;--bg2:#111110;--bg3:#161614;
+      --border:#1e1e1b;--text:#f0ede8;--sub:#8c8880;--mute:#4e4c48;
+      --ac:#c9a96e;--nav:rgba(12,12,10,.97)
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100dvh}
+    h1,h2,h3{font-family:'Cormorant Garamond',serif;line-height:1.04;letter-spacing:-.02em}
+    a{color:inherit;text-decoration:none}
+
+    .topbar{height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;border-bottom:1px solid var(--border);background:var(--nav);position:sticky;top:0;z-index:50;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+    .topbar-logo{font-family:'Cormorant Garamond',serif;font-size:.9rem;letter-spacing:.22em;color:var(--text)}
+    .topbar-tabs{display:flex;gap:1.5rem}
+    .topbar-tab{font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--sub);background:none;border:none;cursor:pointer;padding:.4rem 0;border-bottom:1px solid transparent;transition:color .2s,border-color .2s}
+    .topbar-tab:hover{color:var(--text)}
+    .topbar-tab.active{color:var(--text);border-bottom-color:var(--ac)}
+    .topbar-actions{display:flex;gap:.625rem;align-items:center}
+    .icon-link{width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--border);color:var(--sub);transition:border-color .2s,color .2s}
+    .icon-link:hover{border-color:var(--ac);color:var(--ac)}
+    .out-btn{font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--sub);background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif}
+
+    .canvas{max-width:1280px;margin:0 auto;padding:3rem 2rem 5rem}
+    @media(max-width:880px){.canvas{padding:2rem 1.25rem 4rem}}
+
+    .pill{display:inline-flex;align-items:center;gap:.5rem;padding:.32rem .7rem;font-size:.55rem;letter-spacing:.18em;text-transform:uppercase;color:var(--mute);background:var(--bg3);border:1px solid var(--border);font-weight:500}
+    .pill .dot{width:5px;height:5px;border-radius:50%;background:var(--ac)}
+    .pill.live{color:var(--ok);border-color:rgba(59,122,59,.3);background:rgba(59,122,59,.06)}
+    .pill.live .dot{background:var(--ok)}
+
+    .header-row{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:2.5rem}
+    .header-h{font-size:clamp(1.85rem,3.5vw,2.6rem);font-weight:200;letter-spacing:-.025em;line-height:1.05;margin-top:.625rem}
+    .header-h em{color:var(--ac);font-style:italic}
+    .header-meta{font-size:.78rem;color:var(--sub);line-height:1.55}
+    .header-meta a{color:var(--ac)}
+
+    /* Stats row */
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:2.5rem}
+    @media(max-width:880px){.stats{grid-template-columns:1fr 1fr}}
+    .stat{padding:1.25rem 1.5rem;background:var(--bg2)}
+    .stat-lbl{font-size:.55rem;letter-spacing:.22em;text-transform:uppercase;color:var(--mute);margin-bottom:.5rem}
+    .stat-val{font-family:'Cormorant Garamond',serif;font-size:2.1rem;font-weight:200;color:var(--text);line-height:1;letter-spacing:-.03em}
+    .stat-sub{font-size:.65rem;color:var(--sub);margin-top:.3rem}
+
+    /* View body */
+    .view{display:none}
+    .view.active{display:block}
+
+    /* Live preview */
+    .preview-wrap{position:relative;border:1px solid var(--border);background:var(--bg2);min-height:520px}
+    .preview-iframe{width:100%;height:720px;border:0;background:var(--bg)}
+    .preview-bar{display:flex;align-items:center;justify-content:space-between;padding:.6rem 1rem;background:var(--bg3);border-bottom:1px solid var(--border);font-size:.7rem;color:var(--sub)}
+    .preview-bar a{color:var(--ac)}
+
+    /* Cards / lists */
+    .card{background:var(--bg2);border:1px solid var(--border);padding:1.25rem 1.5rem;margin-bottom:1rem}
+    .card h3{font-size:1.25rem;font-weight:300;letter-spacing:-.02em;margin-bottom:.4rem}
+    .card .lbl{font-size:.55rem;letter-spacing:.22em;text-transform:uppercase;color:var(--mute);margin-bottom:.4rem}
+
+    /* Bookings table */
+    .bk-row{display:grid;grid-template-columns:90px 1fr auto auto;gap:1rem;align-items:center;padding:.75rem 1rem;border-bottom:1px solid var(--border);background:var(--bg2);transition:background .2s}
+    .bk-row:hover{background:var(--bg3)}
+    .bk-row:last-child{border-bottom:none}
+    .bk-date-d{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:200;color:var(--text);line-height:1}
+    .bk-date-m{font-size:.55rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ac);margin-top:.25rem}
+    .bk-meta-name{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:300;color:var(--text)}
+    .bk-meta-sub{font-size:.7rem;color:var(--sub);margin-top:.2rem}
+    .bk-status{font-size:.55rem;letter-spacing:.2em;text-transform:uppercase;padding:.25rem .65rem;border:1px solid var(--border);color:var(--mute);white-space:nowrap}
+    .bk-status.confirmed{border-color:rgba(201,146,42,.4);color:var(--ac);background:rgba(201,146,42,.05)}
+
+    /* Empty */
+    .empty{padding:2.5rem 1.5rem;text-align:center;color:var(--mute);font-style:italic;background:var(--bg2);border:1px dashed var(--border)}
+
+    /* Banner */
+    .banner{padding:.8rem 1rem;font-size:.78rem;color:var(--err);background:rgba(183,56,56,.06);border:1px solid rgba(183,56,56,.25);margin-bottom:1.5rem}
+    .banner.success{color:var(--ok);background:rgba(59,122,59,.06);border-color:rgba(59,122,59,.25)}
+
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.7rem 1.4rem;font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;font-weight:500;font-family:'DM Sans',sans-serif;border:1px solid transparent;cursor:pointer;text-decoration:none;transition:background .25s,color .25s,border-color .25s}
+    .btn-solid{background:var(--text);color:var(--bg);border-color:var(--text)}
+    .btn-solid:hover{background:var(--ac);border-color:var(--ac);color:#fff}
+    .btn-outline{background:transparent;color:var(--text);border-color:var(--border)}
+    .btn-outline:hover{border-color:var(--ac);color:var(--ac)}
+
+    /* Gate */
+    #gate{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:calc(100dvh - 62px);padding:2rem;text-align:center;gap:.75rem}
+  </style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="/" class="topbar-logo">ACUROS HEALTH</a>
+  <nav class="topbar-tabs">
+    <button class="topbar-tab active" data-view="overview">Overview</button>
+    <button class="topbar-tab" data-view="bookings">Bookings</button>
+    <button class="topbar-tab" data-view="content">Content</button>
+  </nav>
+  <div class="topbar-actions">
+    <a class="icon-link" id="view-public" target="_blank" rel="noopener" title="Open public portal">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6M10 14L21 3"/></svg>
+    </a>
+    <button class="out-btn" onclick="signOut()">Sign out</button>
+  </div>
+</header>
+
+<section id="gate">
+  <h1 style="font-size:2.4rem;font-weight:200">Sign in to your dashboard.</h1>
+  <p style="color:var(--sub);max-width:42ch;line-height:1.65">This dashboard is for clinic owners. Sign in to manage your portal.</p>
+  <a class="btn btn-solid" href="/patient-portal?role=owner">Sign in</a>
+</section>
+
+<main class="canvas" id="canvas" style="display:none">
+  <div class="banner success" id="banner-success" style="display:none"></div>
+
+  <!-- Header -->
+  <div class="header-row">
+    <div>
+      <span class="pill" id="status-pill"><span class="dot"></span><span id="status-text">Draft</span></span>
+      <h1 class="header-h">Welcome back, <em id="dash-name">owner</em></h1>
+    </div>
+    <p class="header-meta" id="dash-url">—</p>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-lbl">Status</div>
+      <div class="stat-val" id="stat-status">—</div>
+      <div class="stat-sub" id="stat-status-sub">&nbsp;</div>
+    </div>
+    <div class="stat">
+      <div class="stat-lbl">Services</div>
+      <div class="stat-val" id="stat-services">0</div>
+      <div class="stat-sub">Listed on your portal</div>
+    </div>
+    <div class="stat">
+      <div class="stat-lbl">Products</div>
+      <div class="stat-val" id="stat-products">0</div>
+      <div class="stat-sub">In your shop</div>
+    </div>
+    <div class="stat">
+      <div class="stat-lbl">Pending bookings</div>
+      <div class="stat-val" id="stat-pending">0</div>
+      <div class="stat-sub">Awaiting confirmation</div>
+    </div>
+  </div>
+
+  <!-- Overview view: live preview -->
+  <section class="view active" data-view="overview">
+    <div class="preview-wrap">
+      <div class="preview-bar">
+        <span>Live preview · <a id="public-link" href="#" target="_blank" rel="noopener">open in new tab</a></span>
+        <a class="btn btn-outline" href="/onboarding">Edit content</a>
+      </div>
+      <iframe id="preview-iframe" class="preview-iframe" title="Live preview" loading="lazy"></iframe>
+    </div>
+  </section>
+
+  <!-- Bookings view -->
+  <section class="view" data-view="bookings">
+    <div id="bookings-list"></div>
+  </section>
+
+  <!-- Content view -->
+  <section class="view" data-view="content">
+    <div class="card">
+      <div class="lbl">Brand</div>
+      <h3 id="content-name">—</h3>
+      <p style="color:var(--sub);font-size:.85rem;line-height:1.65;margin-top:.5rem" id="content-tagline">No tagline yet.</p>
+    </div>
+    <div class="card">
+      <div class="lbl">Services</div>
+      <div id="content-services" class="empty">Loading…</div>
+    </div>
+    <div class="card">
+      <div class="lbl">Products</div>
+      <div id="content-products" class="empty">Loading…</div>
+    </div>
+    <div style="display:flex;gap:.625rem;margin-top:.5rem">
+      <a class="btn btn-solid" href="/onboarding">Edit content with the wizard</a>
+    </div>
+  </section>
+</main>
+
+<script>
+const SB_URL = 'https://pyexkdoupqzbnrybiubo.supabase.co';
+const SB_KEY = 'sb_publishable_ywcyXTqGzRTik8YJfTTHiw_B-pmj2w-';
+
+(function(){ if(localStorage.getItem('ah-theme')==='dark') document.documentElement.classList.add('dark'); })();
+
+let sb = null;
+try { sb = window.supabase.createClient(SB_URL, SB_KEY); } catch(_e){}
+let session = null;
+let token = null;
+let org = null;
+
+const $  = (s) => document.querySelector(s);
+const $$ = (s) => Array.from(document.querySelectorAll(s));
+
+async function signOut(){ try { if(sb) await sb.auth.signOut(); } catch(_e){} window.location.href = '/'; }
+window.signOut = signOut;
+
+async function api(path, opts){
+  const headers = { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token };
+  const resp = await fetch('/api/onboarding?action=' + path, { ...opts, headers: { ...headers, ...(opts?.headers || {}) } });
+  if (!resp.ok) {
+    const err = await resp.json().catch(() => ({}));
+    throw new Error(err?.error || ('Request failed: ' + resp.status));
+  }
+  return resp.json();
+}
+
+function fmtPrice(c){ return (c==null||!Number.isFinite(+c)||+c<=0)?'On request':'$'+(Math.round(+c)/100).toFixed(0); }
+function escapeHtml(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+async function boot(){
+  if (!sb) { showGate(); return; }
+  const { data } = await sb.auth.getSession();
+  session = data?.session || null;
+  if (!session) { showGate(); return; }
+  token = session.access_token;
+
+  try {
+    const stateResp = await api('state', { method: 'GET' });
+    if (!stateResp.org) { window.location.replace('/onboarding'); return; }
+    org = stateResp.org;
+    if (!org.is_published) {
+      // Owner is mid-onboarding — bounce back to the wizard.
+      window.location.replace('/onboarding');
+      return;
+    }
+  } catch (err) {
+    showGate('Could not load your dashboard: ' + err.message);
+    return;
+  }
+
+  $('#canvas').style.display = '';
+  hydrateChrome();
+  await Promise.all([loadCounts(), loadBookings(), loadContent()]);
+}
+
+function showGate(msg){
+  $('#gate').style.display = 'flex';
+  $('#canvas').style.display = 'none';
+  if (msg) {
+    const p = $('#gate').querySelector('p'); if (p) p.textContent = msg;
+  }
+}
+
+function hydrateChrome(){
+  $('#dash-name').textContent = session.user.user_metadata?.full_name || (session.user.email || '').split('@')[0] || 'owner';
+  const url = '/c/' + (org.slug || '');
+  $('#dash-url').innerHTML = 'Public portal: <a href="' + escapeHtml(url) + '" target="_blank" rel="noopener">acuros.ca' + escapeHtml(url) + '</a>';
+  $('#view-public').href = url;
+  $('#public-link').href = url;
+  $('#preview-iframe').src = url;
+  if (org.is_published) {
+    const pill = $('#status-pill'); pill.classList.add('live');
+    $('#status-text').textContent = 'Live';
+    $('#stat-status').textContent = 'Live';
+    $('#stat-status-sub').textContent = org.published_at ? ('Since ' + new Date(org.published_at).toLocaleDateString('en-CA',{month:'short',day:'numeric',year:'numeric'})) : '';
+  }
+}
+
+async function loadCounts(){
+  try {
+    const [svcRes, prodRes, bkRes] = await Promise.all([
+      sb.from('clinic_services').select('id', { count: 'exact', head: true }).eq('org_id', org.id),
+      sb.from('products').select('id', { count: 'exact', head: true }).eq('org_id', org.id),
+      sb.from('bookings').select('id', { count: 'exact', head: true }).eq('org_id', org.id).eq('status', 'requested'),
+    ]);
+    $('#stat-services').textContent = svcRes.count ?? 0;
+    $('#stat-products').textContent = prodRes.count ?? 0;
+    $('#stat-pending').textContent  = bkRes.count ?? 0;
+  } catch(_e){}
+}
+
+async function loadBookings(){
+  const root = $('#bookings-list');
+  try {
+    const { data, error } = await sb
+      .from('bookings')
+      .select('id, procedure_name, patient_first_name, patient_last_name, patient_email, patient_phone, appointment_date, appointment_time_label, status, notes')
+      .eq('org_id', org.id)
+      .order('appointment_date', { ascending: true })
+      .limit(50);
+    if (error) throw error;
+    if (!data?.length) { root.innerHTML = '<div class="empty">No bookings yet. Patients will appear here once they book.</div>'; return; }
+    const M = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    root.innerHTML = data.map(b => {
+      const d = new Date((b.appointment_date || '') + 'T12:00:00');
+      const valid = !isNaN(d.getTime());
+      const day = valid ? d.getDate() : '?';
+      const mon = valid ? M[d.getMonth()] : '';
+      const fullName = [b.patient_first_name, b.patient_last_name].filter(Boolean).join(' ') || 'Patient';
+      const status = (b.status || 'requested').toLowerCase();
+      return ''+
+        '<div class="bk-row">'+
+          '<div><div class="bk-date-d">'+day+'</div><div class="bk-date-m">'+mon+'</div></div>'+
+          '<div>'+
+            '<div class="bk-meta-name">'+escapeHtml(b.procedure_name || 'Appointment')+'</div>'+
+            '<div class="bk-meta-sub">'+escapeHtml(fullName)+(b.appointment_time_label ? ' · ' + escapeHtml(b.appointment_time_label) : '')+'</div>'+
+          '</div>'+
+          '<a href="mailto:'+escapeHtml(b.patient_email || '')+'" style="font-size:.7rem;color:var(--ac)">'+escapeHtml(b.patient_email || '')+'</a>'+
+          '<span class="bk-status '+status+'">'+(status==='confirmed'?'Confirmed':status==='cancelled'?'Cancelled':status==='completed'?'Completed':'Requested')+'</span>'+
+        '</div>';
+    }).join('');
+  } catch(err){
+    root.innerHTML = '<div class="empty">Could not load bookings: ' + escapeHtml(err.message) + '</div>';
+  }
+}
+
+async function loadContent(){
+  $('#content-name').textContent = org.name || '—';
+  $('#content-tagline').textContent = org.brand?.tagline || org.description || 'No tagline yet.';
+  try {
+    const [svc, prod] = await Promise.all([
+      sb.from('clinic_services').select('id, name, category, duration_min, price_cents').eq('org_id', org.id).order('sort_order'),
+      sb.from('products').select('id, name, category, price').eq('org_id', org.id).order('name'),
+    ]);
+    const sEl = $('#content-services');
+    if (svc.data?.length) {
+      sEl.classList.remove('empty');
+      sEl.innerHTML = svc.data.map(s =>
+        '<div style="display:flex;justify-content:space-between;padding:.5rem 0;border-bottom:1px solid var(--border);font-size:.82rem">'+
+          '<span><strong>'+escapeHtml(s.name||'')+'</strong> <span style="color:var(--mute);font-size:.7rem;margin-left:.4rem">'+escapeHtml(s.category||'')+'</span></span>'+
+          '<span style="color:var(--sub)">'+(s.duration_min?(s.duration_min+' min · '):'')+fmtPrice(s.price_cents)+'</span>'+
+        '</div>'
+      ).join('');
+    } else { sEl.textContent = 'No services listed yet.'; }
+
+    const pEl = $('#content-products');
+    if (prod.data?.length) {
+      pEl.classList.remove('empty');
+      pEl.innerHTML = prod.data.map(p =>
+        '<div style="display:flex;justify-content:space-between;padding:.5rem 0;border-bottom:1px solid var(--border);font-size:.82rem">'+
+          '<span><strong>'+escapeHtml(p.name||'')+'</strong> <span style="color:var(--mute);font-size:.7rem;margin-left:.4rem">'+escapeHtml(p.category||'')+'</span></span>'+
+          '<span style="color:var(--sub)">'+fmtPrice(p.price)+'</span>'+
+        '</div>'
+      ).join('');
+    } else { pEl.textContent = 'No products listed yet.'; }
+  } catch(_e){}
+}
+
+// Tab switching
+$$('.topbar-tab').forEach(b => b.addEventListener('click', () => {
+  const v = b.dataset.view;
+  $$('.topbar-tab').forEach(t => t.classList.toggle('active', t === b));
+  $$('.view').forEach(s => s.classList.toggle('active', s.dataset.view === v));
+}));
+
+boot();
+</script>
+</body>
+</html>

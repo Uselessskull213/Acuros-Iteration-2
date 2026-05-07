@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-80K00SEBQK"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-80K00SEBQK');</script>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Set up your clinic - Acuros Health</title>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico"/>
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png"/>
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png"/>
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon-180.png"/>
+  <link rel="manifest" href="/site.webmanifest"/>
+  <meta name="theme-color" content="#c9a96e"/>
+  <meta name="robots" content="noindex"/>
+  <meta name="description" content="Set up your clinic on Acuros. Six questions, five minutes, fully live."/>
+  <meta property="og:image" content="https://acuros.ca/hero-bg.jpg"/>
+  <meta property="og:image:width" content="1400"/>
+  <meta property="og:image:height" content="900"/>
+  <meta name="twitter:image" content="https://acuros.ca/hero-bg.jpg"/>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,200;0,300;0,400;0,500;1,200;1,300&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
+
+  <style>
+    :root{
+      --bg:#f0ebe1;--bg2:#f8f4ec;--bg3:#e6e0d4;
+      --border:#d4cdb8;--text:#1c1a14;--sub:#5c5346;--mute:#a09480;
+      --ac:#c9922a;--nav:rgba(240,235,225,.97);
+      --ok:#3b7a3b;--err:#b73838
+    }
+    html.dark{
+      --bg:#0c0c0a;--bg2:#111110;--bg3:#161614;
+      --border:#1e1e1b;--text:#f0ede8;--sub:#8c8880;--mute:#4e4c48;
+      --ac:#c9a96e;--nav:rgba(12,12,10,.97);
+      --ok:#7ec27e;--err:#e58a8a
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100dvh}
+    h1,h2,h3{font-family:'Cormorant Garamond',serif;line-height:1.06;letter-spacing:-.02em}
+
+    /* ── Top bar ── */
+    .topbar{height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;border-bottom:1px solid var(--border);background:var(--nav);position:sticky;top:0;z-index:50;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+    .topbar-logo{font-family:'Cormorant Garamond',serif;font-size:.95rem;font-weight:300;letter-spacing:.22em;color:var(--text);text-decoration:none}
+    .topbar-meta{font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--mute)}
+    .topbar-out{font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--sub);background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif}
+    .topbar-out:hover{color:var(--text)}
+
+    /* ── Layout ── */
+    .shell{display:grid;grid-template-columns:280px 1fr;min-height:calc(100dvh - 64px)}
+    @media(max-width:880px){.shell{grid-template-columns:1fr}.sidebar{display:none}}
+    .sidebar{padding:3rem 2rem;border-right:1px solid var(--border);background:var(--bg2)}
+    .step-list{list-style:none;display:flex;flex-direction:column;gap:.25rem}
+    .step-list li{display:flex;align-items:center;gap:.875rem;padding:.625rem .25rem;font-size:.82rem;color:var(--mute);cursor:pointer;border-left:2px solid transparent;padding-left:.875rem;transition:color .2s,border-color .2s}
+    .step-list li:hover{color:var(--sub)}
+    .step-list li.active{color:var(--text);border-left-color:var(--ac);font-weight:500}
+    .step-list li.done{color:var(--sub)}
+    .step-list .step-num{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:300;width:1.25rem;color:var(--mute)}
+    .step-list .step-num.done{color:var(--ac)}
+    .step-list li.active .step-num{color:var(--text)}
+
+    .canvas{padding:4rem 5rem 6rem;max-width:780px;width:100%;margin:0 auto}
+    @media(max-width:880px){.canvas{padding:2.5rem 1.5rem 4rem}}
+
+    .pill{display:inline-flex;align-items:center;gap:.5rem;padding:.35rem .75rem;font-size:.55rem;letter-spacing:.18em;text-transform:uppercase;color:var(--mute);background:var(--bg3);border:1px solid var(--border);font-weight:500}
+    .pill .dot{width:5px;height:5px;border-radius:50%;background:var(--ac)}
+
+    .hd{font-size:clamp(2rem,4vw,2.85rem);font-weight:200;letter-spacing:-.025em;line-height:1.04;margin-top:1.25rem;margin-bottom:.75rem}
+    .hd em{color:var(--ac);font-style:italic}
+    .sub{font-size:.95rem;color:var(--sub);line-height:1.7;max-width:55ch;font-weight:300;margin-bottom:2.5rem}
+
+    /* Field primitives */
+    .field{display:flex;flex-direction:column;gap:.5rem;margin-bottom:1.25rem}
+    .field-lbl{font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--mute);font-weight:500}
+    .field-help{font-size:.72rem;color:var(--mute);line-height:1.55;margin-top:.35rem}
+    .inp,.txa{width:100%;background:var(--bg2);border:1px solid var(--border);padding:.875rem 1rem;font-size:.92rem;color:var(--text);font-family:inherit;transition:border-color .22s,box-shadow .22s,background .22s}
+    .inp:focus,.txa:focus{outline:none;border-color:var(--ac);background:var(--bg3);box-shadow:0 0 0 3px rgba(201,146,42,.1)}
+    .inp::placeholder,.txa::placeholder{color:var(--mute)}
+    .txa{resize:vertical;line-height:1.6;min-height:120px}
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    @media(max-width:600px){.grid-2{grid-template-columns:1fr}}
+
+    /* Buttons */
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.78rem 1.6rem;font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;font-weight:500;font-family:'DM Sans',sans-serif;border:1px solid transparent;text-decoration:none;cursor:pointer;transition:background .25s,color .25s,border-color .25s,transform .15s}
+    .btn:not([disabled]):active{transform:scale(.97)}
+    .btn[disabled]{opacity:.45;cursor:not-allowed}
+    .btn-solid{background:var(--text);color:var(--bg);border-color:var(--text)}
+    .btn-solid:hover:not([disabled]){background:var(--ac);border-color:var(--ac);color:#fff}
+    .btn-outline{background:transparent;color:var(--text);border-color:var(--border)}
+    .btn-outline:hover:not([disabled]){border-color:var(--ac);color:var(--ac)}
+    .btn-ghost{background:transparent;color:var(--sub);border-color:transparent;padding-left:.5rem;padding-right:.5rem}
+    .btn-ghost:hover:not([disabled]){color:var(--text)}
+    .btn-ai{background:transparent;color:var(--ac);border-color:rgba(201,146,42,.4)}
+    .btn-ai:hover:not([disabled]){background:rgba(201,146,42,.08);border-color:var(--ac)}
+
+    .nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border)}
+    .save-state{font-size:.62rem;letter-spacing:.04em;color:var(--mute)}
+    .save-state.saving{color:var(--sub)}
+    .save-state.saved{color:var(--ok)}
+    .save-state.error{color:var(--err)}
+
+    /* Editable list of services / products */
+    .row-list{display:flex;flex-direction:column;gap:.5rem;margin-top:1rem}
+    .row-card{display:grid;grid-template-columns:1fr auto;gap:1rem;align-items:center;padding:.875rem 1rem;background:var(--bg2);border:1px solid var(--border);transition:border-color .2s}
+    .row-card:hover{border-color:var(--ac)}
+    .row-card-meta{display:flex;flex-direction:column;gap:.25rem;min-width:0}
+    .row-card-name{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:400;color:var(--text);letter-spacing:-.01em}
+    .row-card-sub{font-size:.7rem;color:var(--sub);line-height:1.5}
+    .row-card-edit{display:none;flex-direction:column;gap:.5rem;width:100%}
+    .row-card.editing .row-card-meta{display:none}
+    .row-card.editing{grid-template-columns:1fr;gap:.5rem}
+    .row-card.editing .row-card-edit{display:flex}
+    .row-card-actions{display:flex;gap:.5rem;align-items:center}
+    .icon-btn{width:30px;height:30px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--border);background:none;cursor:pointer;color:var(--sub);transition:border-color .2s,color .2s}
+    .icon-btn:hover{border-color:var(--ac);color:var(--ac)}
+    .icon-btn.danger:hover{border-color:var(--err);color:var(--err)}
+
+    /* Slug field */
+    .slug-row{display:grid;grid-template-columns:auto 1fr auto;gap:.5rem;align-items:center}
+    .slug-prefix{font-size:.92rem;color:var(--mute);font-family:'DM Sans',sans-serif}
+    .slug-suggest-row{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.625rem}
+    .slug-chip{padding:.32rem .7rem;border:1px solid var(--border);background:var(--bg2);font-size:.72rem;color:var(--sub);cursor:pointer;font-family:'DM Sans',sans-serif;transition:border-color .2s,color .2s,background .2s}
+    .slug-chip:hover{border-color:var(--ac);color:var(--ac)}
+    .slug-status{font-size:.68rem;letter-spacing:.06em;display:inline-flex;align-items:center;gap:.4rem;height:1rem}
+    .slug-status.ok{color:var(--ok)}
+    .slug-status.bad{color:var(--err)}
+
+    /* AI helper card */
+    .ai-helper{display:flex;flex-direction:column;gap:.625rem;background:var(--bg2);border:1px dashed var(--border);padding:1rem 1.25rem;margin-top:.625rem}
+    .ai-helper-h{font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ac);display:flex;align-items:center;gap:.5rem}
+    .ai-helper-h .dot{width:5px;height:5px;border-radius:50%;background:var(--ac)}
+    .ai-helper-status{font-size:.7rem;color:var(--sub)}
+    .typing-dots{display:inline-flex;align-items:center;gap:4px}
+    .typing-dots span{width:5px;height:5px;border-radius:50%;background:var(--ac);opacity:.45;animation:tdPulse 1.2s ease-in-out infinite}
+    .typing-dots span:nth-child(2){animation-delay:.15s}
+    .typing-dots span:nth-child(3){animation-delay:.3s}
+    @keyframes tdPulse{0%,100%{opacity:.3;transform:scale(.85)}50%{opacity:1;transform:scale(1.1)}}
+    @media(prefers-reduced-motion:reduce){.typing-dots span{animation:none;opacity:.7}}
+
+    /* Toast */
+    .toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(20px);padding:.8rem 1.25rem;background:var(--text);color:var(--bg);font-size:.72rem;letter-spacing:.06em;opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;z-index:200;max-width:90vw;text-align:center}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+    .toast.error{background:var(--err);color:#fff}
+
+    /* Auth gate */
+    #gate{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:calc(100dvh - 64px);padding:2rem;text-align:center;gap:1rem}
+    #gate-h{font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:200;letter-spacing:-.025em;color:var(--text)}
+    #gate-p{font-size:.92rem;color:var(--sub);max-width:46ch;line-height:1.7}
+
+    /* Review summary */
+    .review-card{padding:1.5rem;background:var(--bg2);border:1px solid var(--border);margin-bottom:1rem}
+    .review-card h4{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:300;letter-spacing:-.02em;margin-bottom:.5rem}
+    .review-card p{font-size:.82rem;color:var(--sub);line-height:1.65}
+    .review-meta{display:grid;grid-template-columns:auto 1fr;gap:.5rem 1rem;margin-top:.875rem;font-size:.78rem}
+    .review-meta dt{color:var(--mute);font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;align-self:center}
+    .review-meta dd{color:var(--text)}
+
+    /* Upload */
+    .upload-zone{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem;border:1px dashed var(--border);background:var(--bg2);cursor:pointer;transition:border-color .2s,background .2s}
+    .upload-zone:hover{border-color:var(--ac);background:var(--bg3)}
+    .upload-zone img{max-width:160px;max-height:120px;object-fit:contain;margin-bottom:.5rem}
+    .upload-zone-text{font-size:.78rem;color:var(--sub)}
+
+    /* Theme palette swatches */
+    .palette-row{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.5rem}
+    .palette-chip{display:flex;align-items:center;gap:.5rem;padding:.35rem .75rem;border:1px solid var(--border);background:var(--bg2);cursor:pointer;font-size:.7rem;color:var(--sub);font-family:'DM Sans',sans-serif;transition:border-color .2s,color .2s}
+    .palette-chip.active{border-color:var(--ac);color:var(--ac)}
+    .palette-swatch{width:14px;height:14px;border-radius:50%;border:1px solid rgba(0,0,0,.1)}
+
+    /* Step transitions */
+    .step{display:none;animation:stepIn .4s cubic-bezier(.22,1,.36,1)}
+    .step.active{display:block}
+    @keyframes stepIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+    @media(prefers-reduced-motion:reduce){.step{animation:none}}
+
+    /* Banner */
+    .banner{padding:.75rem 1rem;font-size:.78rem;color:var(--err);background:rgba(183,56,56,.06);border:1px solid rgba(183,56,56,.25);margin-bottom:1.25rem;display:none}
+    .banner.show{display:block}
+    .banner.success{color:var(--ok);background:rgba(59,122,59,.06);border-color:rgba(59,122,59,.25)}
+  </style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="/" class="topbar-logo">ACUROS HEALTH</a>
+  <span class="topbar-meta" id="topbar-meta">CLINIC ONBOARDING</span>
+  <button class="topbar-out" onclick="signOut()">Sign out</button>
+</header>
+
+<!-- Auth gate, shown until session resolves. -->
+<section id="gate" style="display:none">
+  <h1 id="gate-h">Sign in to set up your clinic.</h1>
+  <p id="gate-p">Onboarding requires a registered clinic-owner account. Use your sign-in link or password to continue, then we'll walk you through the setup.</p>
+  <a class="btn btn-solid" href="/patient-portal?role=owner">Sign in</a>
+</section>
+
+<!-- Wizard, shown once authed -->
+<main class="shell" id="shell" style="display:none">
+  <aside class="sidebar">
+    <div class="pill" style="margin-bottom:1.5rem"><span class="dot"></span>Setup</div>
+    <ol class="step-list" id="step-nav">
+      <li data-step="1"><span class="step-num">1</span><span>Basics</span></li>
+      <li data-step="2"><span class="step-num">2</span><span>Services</span></li>
+      <li data-step="3"><span class="step-num">3</span><span>Products</span></li>
+      <li data-step="4"><span class="step-num">4</span><span>Brand</span></li>
+      <li data-step="5"><span class="step-num">5</span><span>URL</span></li>
+      <li data-step="6"><span class="step-num">6</span><span>Review &amp; publish</span></li>
+    </ol>
+    <p style="font-size:.7rem;color:var(--mute);margin-top:2rem;line-height:1.6">Your progress saves automatically. You can pick this up anywhere.</p>
+  </aside>
+
+  <section class="canvas">
+    <div class="banner" id="banner"></div>
+
+    <!-- ── Step 1: Basics ───────────────────────────────────────────── -->
+    <div class="step" data-step="1">
+      <div class="pill"><span class="dot"></span>Step 1 of 6</div>
+      <h1 class="hd">Tell us about your <em>practice.</em></h1>
+      <p class="sub">The basics. Two minutes. You can edit any of this later from your dashboard.</p>
+
+      <div class="field">
+        <label class="field-lbl" for="f-name">Clinic name</label>
+        <input id="f-name" class="inp" type="text" placeholder="Wellspring Family Clinic" maxlength="120"/>
+      </div>
+      <div class="grid-2">
+        <div class="field">
+          <label class="field-lbl" for="f-location">Location</label>
+          <input id="f-location" class="inp" type="text" placeholder="Toronto, ON" maxlength="120"/>
+        </div>
+        <div class="field">
+          <label class="field-lbl" for="f-specialty">Speciality</label>
+          <input id="f-specialty" class="inp" type="text" placeholder="Family medicine, aesthetics, wellness" maxlength="120"/>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="field">
+          <label class="field-lbl" for="f-email">Contact email</label>
+          <input id="f-email" class="inp" type="email" placeholder="info@yourclinic.com" maxlength="160"/>
+        </div>
+        <div class="field">
+          <label class="field-lbl" for="f-phone">Phone (optional)</label>
+          <input id="f-phone" class="inp" type="tel" placeholder="(416) 555-0140" maxlength="40"/>
+        </div>
+      </div>
+
+      <div class="nav-row">
+        <span class="save-state" id="save-1"></span>
+        <button class="btn btn-solid" data-next="2">Continue →</button>
+      </div>
+    </div>
+
+    <!-- ── Step 2: Services ─────────────────────────────────────────── -->
+    <div class="step" data-step="2">
+      <div class="pill"><span class="dot"></span>Step 2 of 6</div>
+      <h1 class="hd">What do you <em>offer?</em></h1>
+      <p class="sub">Type your service list however you'd describe it on a phone call. We'll structure it.</p>
+
+      <div class="field">
+        <label class="field-lbl" for="f-services-text">Free-text description</label>
+        <textarea id="f-services-text" class="txa" placeholder="We offer botox and dermal fillers, microneedling, chemical peels, IV vitamin therapy, and consultations…"></textarea>
+        <div class="field-help">Mention rough durations or prices if you know them. We'll fill in sensible defaults if not.</div>
+      </div>
+
+      <div class="ai-helper" style="display:none" id="ai-services">
+        <div class="ai-helper-h"><span class="dot"></span>AI structuring</div>
+        <div class="ai-helper-status" id="ai-services-status"><span class="typing-dots"><span></span><span></span><span></span></span></div>
+      </div>
+
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+        <button class="btn btn-ai" id="btn-services-ai">Structure with AI</button>
+        <button class="btn btn-outline" id="btn-services-add">+ Add manually</button>
+      </div>
+
+      <div class="row-list" id="services-list"></div>
+
+      <div class="nav-row">
+        <button class="btn btn-ghost" data-prev="1">← Back</button>
+        <div style="display:flex;align-items:center;gap:1rem">
+          <span class="save-state" id="save-2"></span>
+          <button class="btn btn-solid" data-next="3">Continue →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Step 3: Products ─────────────────────────────────────────── -->
+    <div class="step" data-step="3">
+      <div class="pill"><span class="dot"></span>Step 3 of 6</div>
+      <h1 class="hd">Anything you <em>sell?</em></h1>
+      <p class="sub">Skincare, supplements, recovery products. Skip if you don't sell physical products yet.</p>
+
+      <div class="field">
+        <label class="field-lbl" for="f-products-text">Free-text description</label>
+        <textarea id="f-products-text" class="txa" placeholder="SPF 50 mineral sunscreen, vitamin C serum, post-treatment recovery balm, collagen peptides…"></textarea>
+      </div>
+
+      <div class="ai-helper" style="display:none" id="ai-products">
+        <div class="ai-helper-h"><span class="dot"></span>AI structuring</div>
+        <div class="ai-helper-status" id="ai-products-status"><span class="typing-dots"><span></span><span></span><span></span></span></div>
+      </div>
+
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+        <button class="btn btn-ai" id="btn-products-ai">Structure with AI</button>
+        <button class="btn btn-outline" id="btn-products-add">+ Add manually</button>
+      </div>
+
+      <div class="row-list" id="products-list"></div>
+
+      <div class="nav-row">
+        <button class="btn btn-ghost" data-prev="2">← Back</button>
+        <div style="display:flex;align-items:center;gap:1rem">
+          <span class="save-state" id="save-3"></span>
+          <button class="btn btn-solid" data-next="4">Continue →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Step 4: Brand ────────────────────────────────────────────── -->
+    <div class="step" data-step="4">
+      <div class="pill"><span class="dot"></span>Step 4 of 6</div>
+      <h1 class="hd">Find your <em>voice.</em></h1>
+      <p class="sub">Describe your clinic in two or three sentences. We'll polish it into a tagline and a homepage paragraph.</p>
+
+      <div class="field">
+        <label class="field-lbl" for="f-brand-text">Describe your clinic</label>
+        <textarea id="f-brand-text" class="txa" placeholder="We're a family-run aesthetics clinic in midtown Toronto. We focus on natural results, conservative dosing, and long-term skin health rather than dramatic transformations…"></textarea>
+      </div>
+
+      <div class="ai-helper" style="display:none" id="ai-brand">
+        <div class="ai-helper-h"><span class="dot"></span>AI polishing</div>
+        <div class="ai-helper-status" id="ai-brand-status"><span class="typing-dots"><span></span><span></span><span></span></span></div>
+      </div>
+
+      <button class="btn btn-ai" id="btn-brand-ai" style="margin-bottom:1.25rem">Polish with AI</button>
+
+      <div class="grid-2">
+        <div class="field">
+          <label class="field-lbl" for="f-tagline">Tagline (6–8 words)</label>
+          <input id="f-tagline" class="inp" type="text" maxlength="160" placeholder="Considered care, in midtown Toronto."/>
+        </div>
+        <div class="field">
+          <label class="field-lbl" for="f-voice">Tone</label>
+          <select id="f-voice" class="inp">
+            <option value="">Default — measured medical</option>
+            <option value="Clinical">Clinical</option>
+            <option value="Warm">Warm</option>
+            <option value="Premium">Premium</option>
+            <option value="Direct">Direct</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-lbl" for="f-description">Public description (about 80 words)</label>
+        <textarea id="f-description" class="txa" maxlength="800" placeholder="Two-paragraph blurb shown on your portal hero…"></textarea>
+      </div>
+
+      <div class="field">
+        <label class="field-lbl">Accent palette</label>
+        <div class="palette-row" id="palette-row">
+          <button class="palette-chip active" data-accent="#c9922a"><span class="palette-swatch" style="background:#c9922a"></span>Heritage gold</button>
+          <button class="palette-chip" data-accent="#2f6b5e"><span class="palette-swatch" style="background:#2f6b5e"></span>Sage</button>
+          <button class="palette-chip" data-accent="#7a3b2a"><span class="palette-swatch" style="background:#7a3b2a"></span>Terracotta</button>
+          <button class="palette-chip" data-accent="#3a4f7a"><span class="palette-swatch" style="background:#3a4f7a"></span>Indigo</button>
+          <button class="palette-chip" data-accent="#262626"><span class="palette-swatch" style="background:#262626"></span>Charcoal</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-lbl">Logo (optional)</label>
+        <label class="upload-zone" for="f-logo-input" id="logo-zone">
+          <img id="logo-preview" alt="" style="display:none"/>
+          <span class="upload-zone-text" id="logo-zone-text">Click to upload PNG or SVG · up to 2MB</span>
+        </label>
+        <input id="f-logo-input" type="file" accept="image/png,image/svg+xml,image/jpeg" style="display:none"/>
+      </div>
+
+      <div class="nav-row">
+        <button class="btn btn-ghost" data-prev="3">← Back</button>
+        <div style="display:flex;align-items:center;gap:1rem">
+          <span class="save-state" id="save-4"></span>
+          <button class="btn btn-solid" data-next="5">Continue →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Step 5: Slug ─────────────────────────────────────────────── -->
+    <div class="step" data-step="5">
+      <div class="pill"><span class="dot"></span>Step 5 of 6</div>
+      <h1 class="hd">Pick your <em>address.</em></h1>
+      <p class="sub">This is the public URL where patients find your portal. You can change it later.</p>
+
+      <div class="field">
+        <label class="field-lbl" for="f-slug">Your portal URL</label>
+        <div class="slug-row">
+          <span class="slug-prefix">acuros.ca/c/</span>
+          <input id="f-slug" class="inp" type="text" placeholder="your-clinic" maxlength="32"/>
+          <span class="slug-status" id="slug-status"></span>
+        </div>
+        <div class="field-help">3–32 characters · lowercase letters, numbers, and hyphens only.</div>
+        <div class="slug-suggest-row" id="slug-suggest"></div>
+        <button class="btn btn-ai" id="btn-slug-suggest" style="margin-top:.625rem;align-self:flex-start">Suggest with AI</button>
+      </div>
+
+      <div class="nav-row">
+        <button class="btn btn-ghost" data-prev="4">← Back</button>
+        <div style="display:flex;align-items:center;gap:1rem">
+          <span class="save-state" id="save-5"></span>
+          <button class="btn btn-solid" data-next="6" id="btn-step5-next">Continue →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Step 6: Review & Publish ─────────────────────────────────── -->
+    <div class="step" data-step="6">
+      <div class="pill"><span class="dot"></span>Step 6 of 6</div>
+      <h1 class="hd">Ready to <em>publish.</em></h1>
+      <p class="sub">Quick review. After you publish, your portal goes live and starts accepting bookings.</p>
+
+      <div id="review-summary"></div>
+
+      <div class="nav-row">
+        <button class="btn btn-ghost" data-prev="5">← Back</button>
+        <button class="btn btn-solid" id="btn-publish">Publish my clinic</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SB_URL = 'https://pyexkdoupqzbnrybiubo.supabase.co';
+const SB_KEY = 'sb_publishable_ywcyXTqGzRTik8YJfTTHiw_B-pmj2w-';
+
+// ── Theme bootstrap ──
+(function(){ if(localStorage.getItem('ah-theme')==='dark') document.documentElement.classList.add('dark'); })();
+
+// ── State ──
+let sb = null;
+try { sb = window.supabase.createClient(SB_URL, SB_KEY); } catch(_e) {}
+let session = null;
+let token   = null;
+let org     = null;          // organizations row for the signed-in owner
+let services = [];           // [{id?, name, category, duration_min, price_cents, description}]
+let products = [];           // [{id?, name, category, price_cents, description}]
+let currentStep = 1;
+let saveTimer = null;
+
+// ── DOM helpers ──
+const $  = (s) => document.querySelector(s);
+const $$ = (s) => Array.from(document.querySelectorAll(s));
+function toast(msg, kind){
+  const t = $('#toast'); t.textContent = msg; t.classList.toggle('error', kind === 'error'); t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2400);
+}
+function showBanner(msg, kind){
+  const b = $('#banner'); b.textContent = msg; b.classList.toggle('success', kind === 'success'); b.classList.add('show');
+  setTimeout(() => b.classList.remove('show'), 5000);
+}
+function escapeHtml(s){
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function fmtPrice(cents){
+  if (!cents || !Number.isFinite(+cents)) return '—';
+  return '$' + (Math.round(+cents) / 100).toFixed(0);
+}
+
+// ── Auth ──
+async function bootAuth(){
+  if (!sb) { showGate('Auth not configured.'); return; }
+  const { data } = await sb.auth.getSession();
+  session = data?.session || null;
+  if (!session) { showGate(); return; }
+  token = session.access_token;
+  $('#shell').style.display = '';
+  $('#gate').style.display = 'none';
+  await loadState();
+}
+function showGate(msg){
+  $('#gate').style.display = '';
+  $('#shell').style.display = 'none';
+  if (msg) $('#gate-p').textContent = msg;
+}
+async function signOut(){
+  try { if (sb) await sb.auth.signOut(); } catch(_e){}
+  window.location.href = '/';
+}
+window.signOut = signOut;
+
+// ── Load state from server ──
+async function api(path, opts){
+  const headers = { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token };
+  const resp = await fetch('/api/onboarding?action=' + path, { ...opts, headers: { ...headers, ...(opts?.headers || {}) } });
+  if (!resp.ok) {
+    const err = await resp.json().catch(() => ({}));
+    throw new Error(err?.error || ('Request failed: ' + resp.status));
+  }
+  return resp.json();
+}
+async function loadState(){
+  try {
+    const data = await api('state', { method: 'GET' });
+    org = data.org || null;
+    if (!org) {
+      // First run — server creates a draft on first save. Use defaults.
+      org = { name: '', specialty: '', location: '', contact_email: '', logo_url: '', slug: '',
+              theme: {}, brand: {}, onboarding_state: { step: 1 } };
+    }
+    hydrateForm();
+    const startStep = Math.max(1, Math.min(6, +(org?.onboarding_state?.step) || 1));
+    goStep(startStep, true);
+  } catch(err){
+    showBanner(err.message, 'error');
+  }
+}
+function hydrateForm(){
+  $('#f-name').value      = org.name      || '';
+  $('#f-specialty').value = org.specialty || '';
+  $('#f-location').value  = org.location  || '';
+  $('#f-email').value     = org.contact_email || '';
+  $('#f-phone').value     = org.brand?.phone || '';
+
+  $('#f-services-text').value = org.onboarding_state?.servicesText || '';
+  services = Array.isArray(org.onboarding_state?.services) ? org.onboarding_state.services : [];
+  renderServices();
+
+  $('#f-products-text').value = org.onboarding_state?.productsText || '';
+  products = Array.isArray(org.onboarding_state?.products) ? org.onboarding_state.products : [];
+  renderProducts();
+
+  $('#f-brand-text').value   = org.onboarding_state?.brandText || '';
+  $('#f-tagline').value      = org.brand?.tagline || '';
+  $('#f-voice').value        = org.brand?.voice   || '';
+  $('#f-description').value  = org.description    || '';
+
+  const accent = org.theme?.accent || '#c9922a';
+  $$('.palette-chip').forEach((c) => c.classList.toggle('active', c.dataset.accent === accent));
+  if (org.logo_url) {
+    $('#logo-preview').src = org.logo_url; $('#logo-preview').style.display = '';
+    $('#logo-zone-text').textContent = 'Click to replace';
+  }
+
+  $('#f-slug').value = org.slug || '';
+}
+
+// ── Save (debounced auto-save) ──
+function markSaving(step){
+  const el = $('#save-' + step); if (el) { el.textContent = 'Saving…'; el.className = 'save-state saving'; }
+}
+function markSaved(step){
+  const el = $('#save-' + step); if (el) { el.textContent = 'Saved'; el.className = 'save-state saved';
+    setTimeout(() => { if (el.classList.contains('saved')) { el.textContent = ''; el.className = 'save-state'; } }, 1500); }
+}
+function markError(step, msg){
+  const el = $('#save-' + step); if (el) { el.textContent = msg || 'Save error'; el.className = 'save-state error'; }
+}
+function collectPatch(){
+  const patch = {
+    name:        $('#f-name').value.trim(),
+    specialty:   $('#f-specialty').value.trim() || null,
+    location:    $('#f-location').value.trim() || null,
+    contact_email: $('#f-email').value.trim() || null,
+    description: $('#f-description').value.trim() || null,
+    theme: {
+      ...(org?.theme || {}),
+      accent: $$('.palette-chip.active')[0]?.dataset.accent || '#c9922a',
+    },
+    brand: {
+      ...(org?.brand || {}),
+      tagline: $('#f-tagline').value.trim() || null,
+      voice:   $('#f-voice').value || null,
+      phone:   $('#f-phone').value.trim() || null,
+    },
+    onboarding_state: {
+      ...(org?.onboarding_state || {}),
+      step: currentStep,
+      servicesText: $('#f-services-text').value || '',
+      services,
+      productsText: $('#f-products-text').value || '',
+      products,
+      brandText:    $('#f-brand-text').value || '',
+    },
+  };
+  if (org?.logo_url) patch.logo_url = org.logo_url;
+  if (org?.slug)     patch.slug     = org.slug;
+  return patch;
+}
+async function saveProgress(silent){
+  if (!silent) markSaving(currentStep);
+  try {
+    const data = await api('save', { method: 'POST', body: JSON.stringify({ patch: collectPatch() }) });
+    org = data.org;
+    if (!silent) markSaved(currentStep);
+  } catch(err){
+    markError(currentStep, err.message.slice(0, 40));
+  }
+}
+function scheduleSave(){
+  if (saveTimer) clearTimeout(saveTimer);
+  saveTimer = setTimeout(saveProgress, 700);
+}
+$$('#f-name, #f-specialty, #f-location, #f-email, #f-phone, #f-services-text, #f-products-text, #f-brand-text, #f-tagline, #f-voice, #f-description')
+  .forEach((el) => el && el.addEventListener('input', scheduleSave));
+$$('.palette-chip').forEach((c) => c.addEventListener('click', (e) => {
+  e.preventDefault();
+  $$('.palette-chip').forEach((x) => x.classList.remove('active'));
+  c.classList.add('active');
+  scheduleSave();
+}));
+
+// ── Step navigation ──
+function goStep(n, fromLoad){
+  n = Math.max(1, Math.min(6, n));
+  $$('.step').forEach((s) => s.classList.toggle('active', +s.dataset.step === n));
+  $$('#step-nav li').forEach((li) => {
+    const s = +li.dataset.step;
+    li.classList.toggle('active', s === n);
+    li.classList.toggle('done', s < n);
+    li.querySelector('.step-num').classList.toggle('done', s < n);
+  });
+  $('#topbar-meta').textContent = ['BASICS','SERVICES','PRODUCTS','BRAND','URL','REVIEW'][n - 1] || 'CLINIC ONBOARDING';
+  currentStep = n;
+  if (n === 6) renderReview();
+  if (!fromLoad) saveProgress(true);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+$$('button[data-next]').forEach((b) => b.addEventListener('click', (e) => {
+  e.preventDefault();
+  const n = +b.dataset.next;
+  // Step-specific validation before advancing
+  if (n === 2 && !$('#f-name').value.trim()) { toast('Clinic name is required.', 'error'); return; }
+  if (n === 6 && !($('#f-slug').value.trim())) { toast('Pick a URL slug first.', 'error'); return; }
+  goStep(n);
+}));
+$$('button[data-prev]').forEach((b) => b.addEventListener('click', (e) => { e.preventDefault(); goStep(+b.dataset.prev); }));
+$$('#step-nav li').forEach((li) => li.addEventListener('click', () => goStep(+li.dataset.step)));
+
+// ── Step 2/3: services + products list editor ──
+function renderServices(){ renderRowList('#services-list', services, 'service'); }
+function renderProducts(){ renderRowList('#products-list', products, 'product'); }
+function renderRowList(sel, arr, kind){
+  const root = $(sel); root.innerHTML = '';
+  if (!arr.length) {
+    root.innerHTML = '<div style="font-size:.78rem;color:var(--mute);padding:.875rem;border:1px dashed var(--border);background:var(--bg2);text-align:center">No '+kind+'s yet. Use AI to extract from your description, or add them manually.</div>';
+    return;
+  }
+  arr.forEach((row, idx) => {
+    const card = document.createElement('div'); card.className = 'row-card';
+    const meta = [row.category, kind === 'service' ? (row.duration_min ? row.duration_min + ' min' : '') : '', fmtPrice(row.price_cents)].filter(Boolean).join(' · ');
+    card.innerHTML = ''+
+      '<div class="row-card-meta">'+
+        '<div class="row-card-name">'+escapeHtml(row.name||'(untitled)')+'</div>'+
+        '<div class="row-card-sub">'+escapeHtml(meta || ' ')+'</div>'+
+      '</div>'+
+      '<div class="row-card-edit">'+
+        '<input class="inp" data-f="name" value="'+escapeHtml(row.name||'')+'" placeholder="Name"/>'+
+        '<div class="grid-2">'+
+          '<input class="inp" data-f="category" value="'+escapeHtml(row.category||'')+'" placeholder="Category"/>'+
+          (kind === 'service'
+            ? '<input class="inp" data-f="duration_min" type="number" min="5" value="'+(row.duration_min||60)+'" placeholder="Minutes"/>'
+            : ''
+          )+
+        '</div>'+
+        '<input class="inp" data-f="price_cents" type="number" min="0" value="'+(row.price_cents||0)+'" placeholder="Price in cents (e.g. 18000 = $180)"/>'+
+        '<textarea class="txa" data-f="description" placeholder="Optional description">'+escapeHtml(row.description||'')+'</textarea>'+
+      '</div>'+
+      '<div class="row-card-actions">'+
+        '<button class="icon-btn" title="Edit" data-act="edit"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>'+
+        '<button class="icon-btn danger" title="Remove" data-act="del"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg></button>'+
+      '</div>';
+    root.appendChild(card);
+
+    card.querySelector('[data-act=edit]').addEventListener('click', () => {
+      card.classList.toggle('editing');
+      // On collapse, write fields back into the row object
+      if (!card.classList.contains('editing')) {
+        card.querySelectorAll('[data-f]').forEach((inp) => {
+          const f = inp.dataset.f;
+          row[f] = (f === 'duration_min' || f === 'price_cents') ? +inp.value : inp.value;
+        });
+        kind === 'service' ? renderServices() : renderProducts();
+        scheduleSave();
+      }
+    });
+    card.querySelector('[data-act=del]').addEventListener('click', () => {
+      arr.splice(idx, 1);
+      kind === 'service' ? renderServices() : renderProducts();
+      scheduleSave();
+    });
+    // Live-update name/category as user types in edit mode
+    card.querySelectorAll('[data-f]').forEach((inp) => inp.addEventListener('input', () => {
+      const f = inp.dataset.f;
+      row[f] = (f === 'duration_min' || f === 'price_cents') ? +inp.value : inp.value;
+      scheduleSave();
+    }));
+  });
+}
+
+$('#btn-services-add').addEventListener('click', () => {
+  services.push({ name: '', category: 'Consultation', duration_min: 60, price_cents: 0, description: '' });
+  renderServices();
+  // Open the new card in edit mode
+  const cards = $$('#services-list .row-card');
+  if (cards.length) cards[cards.length - 1].classList.add('editing');
+  scheduleSave();
+});
+$('#btn-products-add').addEventListener('click', () => {
+  products.push({ name: '', category: 'Skincare', price_cents: 0, description: '' });
+  renderProducts();
+  const cards = $$('#products-list .row-card');
+  if (cards.length) cards[cards.length - 1].classList.add('editing');
+  scheduleSave();
+});
+
+// ── AI extraction (services / products / brand / slug) ──
+async function aiExtract(kind, text, statusEl){
+  const resp = await api('extract', { method: 'POST', body: JSON.stringify({ kind, text }) });
+  return resp;
+}
+
+$('#btn-services-ai').addEventListener('click', async () => {
+  const txt = $('#f-services-text').value.trim();
+  if (!txt) { toast('Type your service list first.', 'error'); return; }
+  $('#ai-services').style.display = '';
+  $('#ai-services-status').innerHTML = '<span class="typing-dots"><span></span><span></span><span></span></span>';
+  try {
+    const out = await aiExtract('services', txt);
+    const incoming = (out.services || []).map((s) => ({
+      name: s.name || '',
+      category: s.category || 'Consultation',
+      duration_min: +s.duration_min || 60,
+      price_cents: +s.price_cents || 0,
+      description: s.description || '',
+    }));
+    services = incoming;
+    renderServices();
+    $('#ai-services-status').textContent = 'Extracted ' + incoming.length + ' service' + (incoming.length === 1 ? '' : 's') + '. Tap any to edit.';
+    scheduleSave();
+  } catch(err){
+    $('#ai-services-status').textContent = 'AI structure failed: ' + err.message;
+  }
+});
+$('#btn-products-ai').addEventListener('click', async () => {
+  const txt = $('#f-products-text').value.trim();
+  if (!txt) { toast('Type a product list first.', 'error'); return; }
+  $('#ai-products').style.display = '';
+  $('#ai-products-status').innerHTML = '<span class="typing-dots"><span></span><span></span><span></span></span>';
+  try {
+    const out = await aiExtract('products', txt);
+    const incoming = (out.products || []).map((p) => ({
+      name: p.name || '',
+      category: p.category || 'Skincare',
+      price_cents: +p.price_cents || 0,
+      description: p.description || '',
+    }));
+    products = incoming;
+    renderProducts();
+    $('#ai-products-status').textContent = 'Extracted ' + incoming.length + ' product' + (incoming.length === 1 ? '' : 's') + '.';
+    scheduleSave();
+  } catch(err){
+    $('#ai-products-status').textContent = 'AI structure failed: ' + err.message;
+  }
+});
+
+// Step 4 — brand polish
+$('#btn-brand-ai').addEventListener('click', async () => {
+  const txt = $('#f-brand-text').value.trim();
+  if (!txt) { toast('Describe your clinic first.', 'error'); return; }
+  $('#ai-brand').style.display = '';
+  $('#ai-brand-status').innerHTML = '<span class="typing-dots"><span></span><span></span><span></span></span>';
+  try {
+    const out = await aiExtract('brand', txt);
+    if (out.tagline) $('#f-tagline').value = out.tagline;
+    if (out.description) $('#f-description').value = out.description;
+    if (out.voice) $('#f-voice').value = out.voice;
+    $('#ai-brand-status').textContent = 'Polished. Edit anything you want to adjust.';
+    scheduleSave();
+  } catch(err){
+    $('#ai-brand-status').textContent = 'AI polish failed: ' + err.message;
+  }
+});
+
+// Step 5 — slug
+let slugCheckTimer = null;
+async function checkSlug(slug){
+  if (!slug || slug.length < 3) {
+    $('#slug-status').textContent = ''; $('#slug-status').className = 'slug-status';
+    $('#btn-step5-next').disabled = true; return;
+  }
+  $('#slug-status').textContent = 'Checking…'; $('#slug-status').className = 'slug-status';
+  try {
+    const out = await api('check-slug', { method: 'POST', body: JSON.stringify({ slug }) });
+    if (out.available) {
+      $('#slug-status').textContent = '✓ Available'; $('#slug-status').className = 'slug-status ok';
+      $('#btn-step5-next').disabled = false;
+    } else {
+      const reason = out.reason === 'reserved' ? 'reserved'
+                   : out.reason === 'taken'    ? 'already taken'
+                   : out.reason === 'too-short'? 'too short'
+                   : 'invalid';
+      $('#slug-status').textContent = '✗ ' + reason; $('#slug-status').className = 'slug-status bad';
+      $('#btn-step5-next').disabled = true;
+    }
+  } catch(err){
+    $('#slug-status').textContent = 'Check failed';
+    $('#slug-status').className = 'slug-status bad';
+    $('#btn-step5-next').disabled = true;
+  }
+}
+$('#f-slug').addEventListener('input', (e) => {
+  const v = e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 32);
+  e.target.value = v;
+  if (slugCheckTimer) clearTimeout(slugCheckTimer);
+  slugCheckTimer = setTimeout(() => {
+    checkSlug(v);
+    org.slug = v; scheduleSave();
+  }, 350);
+});
+$('#btn-slug-suggest').addEventListener('click', async () => {
+  const name = $('#f-name').value.trim();
+  if (!name) { toast('Set your clinic name first.', 'error'); return; }
+  $('#btn-slug-suggest').disabled = true;
+  try {
+    const out = await aiExtract('slug', name);
+    const row = $('#slug-suggest'); row.innerHTML = '';
+    (out.candidates || []).slice(0, 5).forEach((s) => {
+      const chip = document.createElement('button'); chip.className = 'slug-chip'; chip.type = 'button';
+      chip.textContent = s; chip.addEventListener('click', () => { $('#f-slug').value = s; $('#f-slug').dispatchEvent(new Event('input')); });
+      row.appendChild(chip);
+    });
+  } catch(err){ toast('Suggestions failed: ' + err.message, 'error'); }
+  finally { $('#btn-slug-suggest').disabled = false; }
+});
+
+// ── Logo upload ──
+$('#f-logo-input').addEventListener('change', async (e) => {
+  const file = e.target.files?.[0]; if (!file) return;
+  if (file.size > 2 * 1024 * 1024) { toast('Max 2 MB.', 'error'); return; }
+  if (!org?.id) { toast('Save the basics first so we know where to store your logo.', 'error'); return; }
+  const path = 'org_' + org.id + '/logo.' + (file.name.split('.').pop() || 'png').toLowerCase();
+  $('#logo-zone-text').textContent = 'Uploading…';
+  try {
+    const { error } = await sb.storage.from('clinic-assets').upload(path, file, { upsert: true, cacheControl: '3600', contentType: file.type });
+    if (error) throw error;
+    const { data } = sb.storage.from('clinic-assets').getPublicUrl(path);
+    org.logo_url = data.publicUrl + '?v=' + Date.now();
+    $('#logo-preview').src = org.logo_url; $('#logo-preview').style.display = '';
+    $('#logo-zone-text').textContent = 'Click to replace';
+    scheduleSave();
+  } catch(err){
+    $('#logo-zone-text').textContent = 'Upload failed: ' + err.message;
+  }
+});
+
+// ── Step 6: review + publish ──
+function renderReview(){
+  const accent = collectPatch().theme.accent;
+  $('#review-summary').innerHTML = ''+
+    '<div class="review-card">'+
+      '<div style="display:flex;align-items:center;gap:.875rem;margin-bottom:.5rem">'+
+        (org?.logo_url ? '<img src="'+escapeHtml(org.logo_url)+'" alt="" style="width:48px;height:48px;object-fit:contain;background:var(--bg3);padding:6px"/>' : '')+
+        '<h4 style="flex:1">'+escapeHtml(org?.name || $('#f-name').value || '(unnamed clinic)')+'</h4>'+
+        '<span style="display:inline-block;width:18px;height:18px;border-radius:50%;background:'+accent+'"></span>'+
+      '</div>'+
+      '<p>'+escapeHtml($('#f-tagline').value || $('#f-description').value || $('#f-brand-text').value || 'No description yet.')+'</p>'+
+      '<dl class="review-meta">'+
+        '<dt>URL</dt><dd>acuros.ca/c/'+escapeHtml($('#f-slug').value || '—')+'</dd>'+
+        '<dt>Speciality</dt><dd>'+escapeHtml($('#f-specialty').value || '—')+'</dd>'+
+        '<dt>Location</dt><dd>'+escapeHtml($('#f-location').value || '—')+'</dd>'+
+        '<dt>Contact</dt><dd>'+escapeHtml($('#f-email').value || '—')+'</dd>'+
+        '<dt>Services</dt><dd>'+services.length+'</dd>'+
+        '<dt>Products</dt><dd>'+products.length+'</dd>'+
+      '</dl>'+
+    '</div>';
+}
+$('#btn-publish').addEventListener('click', async () => {
+  const btn = $('#btn-publish');
+  if (!$('#f-slug').value.trim()) { toast('Pick a slug first.', 'error'); goStep(5); return; }
+  if (!$('#f-name').value.trim()) { toast('Clinic name is required.', 'error'); goStep(1); return; }
+
+  btn.disabled = true; btn.textContent = 'Publishing…';
+  try {
+    await saveProgress(true); // flush latest
+    const out = await api('publish', { method: 'POST', body: JSON.stringify({ services, products }) });
+    showBanner('Your clinic is live.', 'success');
+    setTimeout(() => { window.location.href = out.url || '/'; }, 1200);
+  } catch(err){
+    btn.disabled = false; btn.textContent = 'Publish my clinic';
+    showBanner('Publish failed: ' + err.message);
+  }
+});
+
+// ── Boot ──
+bootAuth();
+</script>
+
+</body>
+</html>

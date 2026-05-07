@@ -1263,9 +1263,37 @@ function syncPortal(){
   setupReveal();
 }
 
+// Owner-first router: if the signed-in user owns an organization, send
+// them to /onboarding (if mid-setup) or /dashboard (if already
+// published). Patients land on this page as before. The ?role=owner
+// query opts users out of patient-only auto-redirects (e.g. AAA users
+// signing in to onboard a *different* clinic).
+async function ownerRedirectIfApplicable(userId){
+  if (!sb || !userId) return false;
+  try {
+    const { data, error } = await sb
+      .from('organizations')
+      .select('id, slug, is_published, onboarding_state')
+      .eq('owner_id', userId)
+      .maybeSingle();
+    if (error || !data) return false;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('role') === 'patient') return false; // explicit override
+    if (data.is_published && data.slug) {
+      window.location.replace('/dashboard');
+      return true;
+    }
+    window.location.replace('/onboarding');
+    return true;
+  } catch (_e) { return false; }
+}
+
 if(sb?.auth?.onAuthStateChange){
   sb.auth.onAuthStateChange(async(event,session)=>{
     if(session?.user){
+      // Owners get redirected before any patient-portal hydration runs.
+      if (await ownerRedirectIfApplicable(session.user.id)) return;
+
       currentUser = {
         id:session.user.id, email:session.user.email,
         name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'User',
