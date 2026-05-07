@@ -276,6 +276,56 @@
     .ws-action svg{width:11px;height:11px}
 
     /* Bento grid */
+    /* ── Upcoming Appointments widget ── */
+    .upcoming-card{padding:1.5rem 1.5rem 1.25rem;display:flex;flex-direction:column;gap:1.125rem;background:var(--bg2);border:1px solid var(--border);border-radius:.5rem}
+    .upcoming-head{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+    .upcoming-h{font-family:'Cormorant Garamond',serif;font-size:1.45rem;font-weight:300;color:var(--text);letter-spacing:-.02em;line-height:1.1;margin-top:.35rem}
+    .upcoming-link{font-family:'JetBrains Mono','DM Sans',monospace;font-size:.62rem;color:var(--ac);letter-spacing:.04em;text-decoration:none;display:inline-flex;align-items:center;gap:.45rem;transition:gap .25s cubic-bezier(.22,1,.36,1)}
+    .upcoming-link:hover{gap:.75rem}
+    .upcoming-body{display:grid;grid-template-columns:1.1fr 1fr;gap:1.25rem;align-items:stretch}
+    @media(max-width:900px){.upcoming-body{grid-template-columns:1fr;gap:1rem}}
+
+    .upcoming-list{display:flex;flex-direction:column;gap:.5rem}
+    .upcoming-row{display:grid;grid-template-columns:64px 1fr auto;gap:.875rem;align-items:center;padding:.75rem .875rem;border:1px solid var(--border);border-radius:.5rem;background:var(--bg);transition:border-color .22s,transform .22s,background .22s;text-decoration:none}
+    .upcoming-row:hover{border-color:var(--ac);background:var(--bg3)}
+    .upcoming-date{display:flex;flex-direction:column;align-items:center;justify-content:center;border-right:1px solid var(--border);padding-right:.875rem;min-width:0}
+    .upcoming-date-mon{font-size:.55rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ac);font-weight:600;font-family:'DM Sans',sans-serif}
+    .upcoming-date-day{font-family:'Cormorant Garamond',serif;font-size:1.65rem;font-weight:200;color:var(--text);line-height:1;font-variant-numeric:tabular-nums}
+    .upcoming-date-dow{font-size:.6rem;color:var(--mute);letter-spacing:.04em;margin-top:.15rem}
+    .upcoming-meta{min-width:0}
+    .upcoming-proc{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:300;color:var(--text);letter-spacing:-.01em;line-height:1.25;margin-bottom:.18rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .upcoming-sub{font-size:.7rem;color:var(--sub);line-height:1.5;font-weight:400}
+    .upcoming-status{font-family:'DM Sans',sans-serif;font-size:.55rem;letter-spacing:.18em;text-transform:uppercase;padding:.25rem .55rem;border:1px solid var(--border);border-radius:999px;color:var(--mute);white-space:nowrap}
+    .upcoming-status.confirmed{border-color:rgba(184,138,42,.4);color:var(--ac)}
+    .upcoming-status.requested{border-color:var(--border);color:var(--mute)}
+    .upcoming-status.cancelled{border-color:rgba(220,38,38,.35);color:#dc2626}
+
+    .upcoming-empty{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding:1.5rem 1rem;border:1px dashed var(--border);border-radius:.5rem;color:var(--sub)}
+    .upcoming-empty-h{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:300;color:var(--text);margin-bottom:.4rem}
+    .upcoming-empty-p{font-size:.78rem;color:var(--sub);line-height:1.6;margin-bottom:.75rem}
+
+    .upcoming-skel{height:74px;border-radius:.5rem;background:linear-gradient(90deg,var(--bg) 0%,var(--bg3) 50%,var(--bg) 100%);background-size:200% 100%;animation:upskShim 1.4s ease-in-out infinite}
+    @keyframes upskShim{0%{background-position:200% 0}100%{background-position:-200% 0}}
+    @media(prefers-reduced-motion:reduce){.upcoming-skel{animation:none;background:var(--bg3)}}
+
+    .mini-cal{display:flex;flex-direction:column;gap:.625rem;padding:1rem;border:1px solid var(--border);border-radius:.5rem;background:var(--bg);min-height:100%}
+    .mini-cal-h{display:flex;align-items:center;justify-content:space-between}
+    .mini-cal-month{font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:300;color:var(--text);letter-spacing:.01em}
+    .mini-cal-legend{display:inline-flex;align-items:center;gap:.4rem;font-size:.6rem;color:var(--mute);letter-spacing:.04em}
+    .mini-cal-legend-dot{width:5px;height:5px;border-radius:50%;background:var(--ac)}
+    .mini-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:.4rem;margin-top:.25rem}
+    .mc-cell{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;height:42px;border:1px solid var(--border);border-radius:.4rem;background:var(--bg2);color:var(--sub);font-family:'DM Sans',sans-serif;cursor:pointer;transition:border-color .22s,background .22s,color .22s,transform .22s}
+    .mc-cell:hover{border-color:var(--ac);color:var(--text)}
+    .mc-cell:focus-visible{outline:2px solid rgba(184,138,42,.5);outline-offset:1px}
+    .mc-cell:active{transform:scale(.97)}
+    .mc-cell-dow{font-size:.5rem;letter-spacing:.12em;color:var(--mute);text-transform:uppercase;line-height:1}
+    .mc-cell-day{font-family:'Cormorant Garamond',serif;font-size:.95rem;font-weight:300;color:var(--text);line-height:1;margin-top:.2rem;font-variant-numeric:tabular-nums}
+    .mc-cell.today{background:var(--bg3);border-color:var(--text)}
+    .mc-cell.today .mc-cell-dow{color:var(--text)}
+    .mc-cell.has-event::after{content:'';position:absolute;bottom:5px;width:5px;height:5px;border-radius:50%;background:var(--ac)}
+    .mc-cell.has-event{border-color:rgba(184,138,42,.4);color:var(--ac)}
+    .mini-cal-footnote{font-size:.65rem;color:var(--mute);line-height:1.5;letter-spacing:.01em;margin-top:.25rem}
+
     .bento{display:grid;grid-template-columns:repeat(12,1fr);gap:1rem}
     @media(max-width:900px){.bento{grid-template-columns:1fr 1fr;gap:.75rem}}
     @media(max-width:520px){.bento{grid-template-columns:1fr}}
@@ -724,6 +774,36 @@
             <p class="bx-tool-p">Direct to your clinic. Confirmed in 1 day.</p>
           </div>
           <span class="bx-tool-cta">Book <span>→</span></span>
+        </div>
+
+        <!-- ── Upcoming Appointments widget (reads /api/bookings?action=mine) ── -->
+        <div class="bx bx-12 upcoming-card" id="upcoming-card">
+          <div class="upcoming-head">
+            <div>
+              <div class="bx-tool-cat">Upcoming</div>
+              <h3 class="upcoming-h">Your next appointments</h3>
+            </div>
+            <a href="/bookings" class="upcoming-link">Book a procedure <span>→</span></a>
+          </div>
+
+          <div class="upcoming-body">
+            <!-- Left: appointment list -->
+            <div class="upcoming-list" id="upcoming-list" aria-live="polite" aria-busy="true">
+              <div class="upcoming-skel"></div>
+              <div class="upcoming-skel"></div>
+              <div class="upcoming-skel"></div>
+            </div>
+
+            <!-- Right: 14-day mini calendar strip -->
+            <div class="mini-cal" aria-label="Next 14 days">
+              <div class="mini-cal-h">
+                <span class="mini-cal-month" id="mini-cal-month"></span>
+                <span class="mini-cal-legend"><span class="mini-cal-legend-dot"></span>booked</span>
+              </div>
+              <div class="mini-cal-grid" id="mini-cal-grid" role="list"></div>
+              <p class="mini-cal-footnote">Real-time clinic availability — coming soon.</p>
+            </div>
+          </div>
         </div>
 
         <!-- Activity feed -->
@@ -1212,6 +1292,151 @@ if(sb?.auth?.onAuthStateChange){
     }
   });
 } else { syncPortal(); }
+
+// ── Upcoming Appointments widget ──
+// Reads /api/bookings?action=mine, renders the next 3 + a 14-day strip.
+(function initUpcoming(){
+  const listEl  = document.getElementById('upcoming-list');
+  const gridEl  = document.getElementById('mini-cal-grid');
+  const monthEl = document.getElementById('mini-cal-month');
+  if(!listEl || !gridEl || !monthEl) return;
+
+  const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const DOW    = ['S','M','T','W','T','F','S'];
+
+  function startOfDay(d){ const x=new Date(d); x.setHours(0,0,0,0); return x; }
+  function ymd(d){ return d.toISOString().slice(0,10); }
+
+  // Build the static 14-day strip every render so the widget is useful pre-auth too.
+  function paintStrip(eventDates /* Set<string YYYY-MM-DD> */){
+    const today = startOfDay(new Date());
+    const cells = [];
+    let monthLabel = '';
+    for(let i=0;i<14;i++){
+      const d = new Date(today); d.setDate(today.getDate()+i);
+      const iso = ymd(d);
+      const isToday = i===0;
+      const has = eventDates.has(iso);
+      if(i===0 || d.getDate()===1) monthLabel = (monthLabel ? monthLabel + ' / ' : '') + MONTHS[d.getMonth()] + ' ' + d.getFullYear();
+      cells.push(
+        '<button class="mc-cell '+(isToday?'today':'')+' '+(has?'has-event':'')+'" '+
+          'role="listitem" type="button" '+
+          'aria-label="'+d.toDateString()+(has?' (has appointments)':'')+'" '+
+          'onclick="window.location.href=\'/bookings\'">'+
+          '<span class="mc-cell-dow">'+DOW[d.getDay()]+'</span>'+
+          '<span class="mc-cell-day">'+d.getDate()+'</span>'+
+        '</button>'
+      );
+    }
+    monthEl.textContent = monthLabel;
+    gridEl.innerHTML = cells.join('');
+  }
+
+  function renderEmpty(reason){
+    listEl.removeAttribute('aria-busy');
+    listEl.innerHTML =
+      '<div class="upcoming-empty">'+
+        '<div class="upcoming-empty-h">No upcoming appointments.</div>'+
+        '<p class="upcoming-empty-p">'+reason+'</p>'+
+        '<a href="/bookings" class="upcoming-link">Book a procedure <span>→</span></a>'+
+      '</div>';
+  }
+
+  function renderList(items){
+    listEl.removeAttribute('aria-busy');
+    if(!items.length){ renderEmpty('When you book a procedure, it will appear here.'); return; }
+    listEl.innerHTML = items.slice(0,3).map(b => {
+      const d = new Date((b.appointment_date || '') + 'T12:00:00');
+      const valid = !isNaN(d.getTime());
+      const mon  = valid ? MONTHS[d.getMonth()].toUpperCase() : '';
+      const day  = valid ? d.getDate() : '—';
+      const dow  = valid ? d.toLocaleDateString('en-CA',{weekday:'short'}) : '';
+      const time = b.appointment_time_label || '';
+      const proc = b.procedure_name || 'Appointment';
+      const status = (b.status || 'requested').toLowerCase();
+      const stLabel = status==='confirmed' ? 'Confirmed' : status==='cancelled' ? 'Cancelled' : 'Requested';
+      return ''+
+        '<a href="/bookings" class="upcoming-row">'+
+          '<div class="upcoming-date">'+
+            '<span class="upcoming-date-mon">'+mon+'</span>'+
+            '<span class="upcoming-date-day">'+day+'</span>'+
+            '<span class="upcoming-date-dow">'+dow+'</span>'+
+          '</div>'+
+          '<div class="upcoming-meta">'+
+            '<div class="upcoming-proc">'+escapeHtml(proc)+'</div>'+
+            '<div class="upcoming-sub">'+(time?escapeHtml(time):'Time confirmed by clinic')+'</div>'+
+          '</div>'+
+          '<span class="upcoming-status '+status+'">'+stLabel+'</span>'+
+        '</a>';
+    }).join('');
+  }
+
+  function escapeHtml(s){
+    return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  async function loadBookings(){
+    paintStrip(new Set()); // paint strip immediately so it's never blank
+    if(!sb){
+      renderEmpty('Sign in to view and manage your bookings.');
+      return;
+    }
+    let token=null;
+    try{
+      const { data } = await sb.auth.getSession();
+      token = data?.session?.access_token || null;
+    } catch(_e){}
+
+    if(!token){
+      renderEmpty('Sign in to view and manage your bookings.');
+      return;
+    }
+
+    try{
+      const resp = await fetch('/api/bookings?action=mine', {
+        headers: { 'Authorization': 'Bearer ' + token }
+      });
+      if(!resp.ok){
+        renderEmpty('We could not load your bookings just now. Please try again later.');
+        return;
+      }
+      const data = await resp.json();
+      const all  = (data.bookings || []).filter(b => b && b.appointment_date);
+      const today = startOfDay(new Date());
+      const upcoming = all
+        .filter(b => {
+          const d = new Date(b.appointment_date + 'T12:00:00');
+          return !isNaN(d.getTime()) && startOfDay(d) >= today && (b.status||'').toLowerCase() !== 'cancelled';
+        })
+        .sort((a,b)=> new Date(a.appointment_date) - new Date(b.appointment_date));
+
+      // Paint strip with all upcoming dates within the next 14 days.
+      const horizon = new Date(today); horizon.setDate(today.getDate()+13);
+      const eventDates = new Set(
+        upcoming
+          .filter(b => { const d=new Date(b.appointment_date+'T12:00:00'); return startOfDay(d) <= horizon; })
+          .map(b => b.appointment_date.slice(0,10))
+      );
+      paintStrip(eventDates);
+      renderList(upcoming);
+    } catch(_e){
+      renderEmpty('We could not load your bookings just now. Please try again later.');
+    }
+  }
+
+  // Initial paint of strip so it never looks empty.
+  paintStrip(new Set());
+
+  // Load now if we already know who the user is, otherwise wait briefly for auth.
+  let attempts=0;
+  function tryLoad(){
+    if(typeof currentUser !== 'undefined' && currentUser){ loadBookings(); return; }
+    if(++attempts < 10) setTimeout(tryLoad, 350);
+    else renderEmpty('Sign in to view and manage your bookings.');
+  }
+  if(document.readyState !== 'loading') tryLoad();
+  else document.addEventListener('DOMContentLoaded', tryLoad);
+})();
 </script>
 </body>
 </html>

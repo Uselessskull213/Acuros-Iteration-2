@@ -111,6 +111,10 @@
     .bubble{max-width:84%;padding:.875rem 1.125rem;font-size:.855rem;line-height:1.72;animation:pgIn .3s ease}
     .bubble.ai{background:var(--bg2);border:1px solid var(--border);color:var(--text);align-self:flex-start}
     .bubble.user{background:var(--text);color:var(--bg);align-self:flex-end}
+    .bubble.thinking{display:inline-flex;align-items:center;gap:5px;padding:1rem 1.125rem;align-self:flex-start;background:var(--bg2);border:1px solid var(--border)}
+    .bubble.thinking span{width:6px;height:6px;border-radius:50%;background:var(--ac);opacity:.4;animation:tdPulse 1.2s ease-in-out infinite;display:inline-block}
+    .bubble.thinking span:nth-child(2){animation-delay:.15s}
+    .bubble.thinking span:nth-child(3){animation-delay:.3s}
     .thinking span{display:inline-block;width:5px;height:5px;background:var(--ac);border-radius:50%;margin:0 2px;animation:dot 1.4s infinite}
     .thinking span:nth-child(2){animation-delay:.2s}
     .thinking span:nth-child(3){animation-delay:.4s}
@@ -183,6 +187,112 @@
       background:var(--bg2)!important;border-color:var(--border)!important;
       box-shadow:0 4px 24px rgba(0,0,0,.06)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important
     }
+
+    /* ── Animated AI Chat — input dock (adapted from 21st.dev/jatin-yadav05) ── */
+    .chat-dock{
+      position:relative;padding:.875rem 1.25rem 1rem;border-top:1px solid var(--border);
+      background:linear-gradient(to top,rgba(0,0,0,.05),transparent);
+    }
+    html.dark .chat-dock{background:linear-gradient(to top,rgba(255,255,255,.012),transparent);border-top-color:rgba(255,255,255,.06)}
+    .chat-dock-inner{
+      position:relative;border:1px solid rgba(0,0,0,.08);border-radius:14px;
+      background:rgba(255,255,255,.55);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+      transition:border-color .25s,box-shadow .25s,background .25s;
+      box-shadow:0 1px 0 rgba(255,255,255,.6) inset
+    }
+    html.dark .chat-dock-inner{
+      background:rgba(255,255,255,.018);border-color:rgba(255,255,255,.07);
+      box-shadow:0 1px 0 rgba(255,255,255,.04) inset
+    }
+    .chat-dock-inner:focus-within{
+      border-color:rgba(201,146,42,.45);
+      box-shadow:0 0 0 3px rgba(201,146,42,.10),0 1px 0 rgba(255,255,255,.6) inset
+    }
+    html.dark .chat-dock-inner:focus-within{
+      border-color:rgba(201,169,110,.45);
+      box-shadow:0 0 0 3px rgba(201,169,110,.10),0 1px 0 rgba(255,255,255,.04) inset
+    }
+    .chat-dock-textarea{
+      width:100%;min-height:56px;max-height:200px;resize:none;border:0;outline:none;background:transparent;
+      padding:14px 16px 6px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.95rem;line-height:1.55;
+      caret-color:var(--ac);
+    }
+    .chat-dock-textarea::placeholder{color:var(--mute)}
+    .chat-dock-toolbar{
+      display:flex;align-items:center;justify-content:space-between;gap:.5rem;
+      padding:.45rem .55rem .55rem;border-top:1px solid rgba(0,0,0,.05)
+    }
+    html.dark .chat-dock-toolbar{border-top-color:rgba(255,255,255,.05)}
+    .chat-dock-tools-left{display:flex;align-items:center;gap:.25rem}
+    .icon-btn{
+      width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center;
+      border:0;border-radius:8px;background:transparent;color:var(--mute);cursor:pointer;
+      transition:background .2s,color .2s,transform .2s;
+    }
+    .icon-btn:hover{background:rgba(0,0,0,.04);color:var(--text)}
+    html.dark .icon-btn:hover{background:rgba(255,255,255,.05)}
+    .icon-btn:active{transform:scale(.94)}
+    .icon-btn:focus-visible{outline:2px solid rgba(201,146,42,.5);outline-offset:1px}
+    .cmd-hint{
+      display:inline-flex;align-items:center;gap:.25rem;padding:.18rem .42rem;border-radius:6px;
+      font-size:.6rem;letter-spacing:.06em;color:var(--mute);background:rgba(0,0,0,.04);
+      font-family:'DM Sans',sans-serif;font-weight:500;user-select:none
+    }
+    html.dark .cmd-hint{background:rgba(255,255,255,.04)}
+    .cmd-hint kbd{font-family:inherit;background:transparent;padding:0}
+    .send-circle{
+      width:36px;height:36px;border-radius:50%;border:0;cursor:pointer;
+      display:inline-flex;align-items:center;justify-content:center;
+      background:var(--text);color:var(--bg);
+      transition:background .22s,transform .22s,opacity .22s,box-shadow .22s;
+      box-shadow:0 6px 18px -8px rgba(0,0,0,.35)
+    }
+    html:not(.dark) .send-circle{background:#1c1a14;color:#fff}
+    .send-circle:hover{background:var(--ac);box-shadow:0 8px 22px -8px rgba(201,146,42,.6)}
+    .send-circle:active{transform:scale(.94)}
+    .send-circle[disabled]{opacity:.45;cursor:not-allowed;box-shadow:none}
+    .send-circle:focus-visible{outline:2px solid rgba(201,146,42,.5);outline-offset:2px}
+
+    /* Suggestion chips below the dock */
+    .suggest-row{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.875rem}
+    .suggest-chip{
+      display:inline-flex;align-items:center;gap:.4rem;
+      padding:.42rem .75rem;border:1px solid var(--border);border-radius:999px;
+      background:transparent;color:var(--sub);cursor:pointer;
+      font-family:'DM Sans',sans-serif;font-size:.7rem;letter-spacing:.02em;
+      transition:border-color .22s,color .22s,background .22s,transform .22s;
+    }
+    .suggest-chip:hover{border-color:var(--ac);color:var(--ac);background:rgba(201,146,42,.05)}
+    html.dark .suggest-chip:hover{background:rgba(201,169,110,.05)}
+    .suggest-chip:active{transform:scale(.97)}
+    .suggest-chip:focus-visible{outline:2px solid rgba(201,146,42,.5);outline-offset:2px}
+    .suggest-chip-dot{width:5px;height:5px;border-radius:50%;background:var(--ac);opacity:.55}
+    .suggest-chip:hover .suggest-chip-dot{opacity:1}
+
+    /* Typing dots while AI is thinking */
+    .typing-dots{display:inline-flex;align-items:center;gap:5px;padding:.85rem 1.05rem}
+    .typing-dots span{width:6px;height:6px;border-radius:50%;background:var(--ac);opacity:.4;animation:tdPulse 1.2s ease-in-out infinite}
+    .typing-dots span:nth-child(2){animation-delay:.15s}
+    .typing-dots span:nth-child(3){animation-delay:.3s}
+    @keyframes tdPulse{
+      0%,100%{opacity:.3;transform:scale(.85)}
+      50%{opacity:1;transform:scale(1.1)}
+    }
+    @media (prefers-reduced-motion:reduce){
+      .typing-dots span{animation:none;opacity:.7}
+    }
+
+    /* Ambient gradient blob behind the chat (mouse-following on focus) */
+    .chat-blob{
+      position:absolute;inset:auto;width:420px;height:420px;border-radius:50%;
+      background:radial-gradient(circle,rgba(201,146,42,.18) 0%,transparent 65%);
+      filter:blur(60px);pointer-events:none;z-index:0;opacity:0;
+      transition:opacity .55s cubic-bezier(.22,1,.36,1)
+    }
+    html.dark .chat-blob{background:radial-gradient(circle,rgba(201,169,110,.16) 0%,transparent 65%)}
+    .card.glass-chat:focus-within .chat-blob,
+    .card.glass-chat.focused .chat-blob{opacity:.85}
+    @media (prefers-reduced-motion:reduce){.chat-blob{transition:none}}
 
     /* Glass use-case cards */
     .use-card{
@@ -319,30 +429,56 @@
         <div id="guest-notice" style="display:none;margin-bottom:.875rem" class="warn-box">
           You're using Acuros AI as a guest - <strong>1 free message</strong> per session. <a href="/patient-portal" style="color:inherit;font-weight:600;text-decoration:underline">Sign in</a> or join an organization for unlimited access.
         </div>
-        <div class="card glass-chat" style="display:flex;flex-direction:column;height:560px;position:relative">
-          <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.625rem">
+        <div class="card glass-chat" style="display:flex;flex-direction:column;height:580px;position:relative">
+          <!-- Ambient gradient blob behind the chat (revealed on focus) -->
+          <div class="chat-blob" id="chat-blob" aria-hidden="true"></div>
+
+          <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.625rem;position:relative;z-index:1">
             <div class="glow-dot" style="width:7px;height:7px;border-radius:50%;background:var(--ac);flex-shrink:0"></div>
             <span class="lbl">Acuros AI · Gemini-Powered</span>
             <span id="ai-status" style="margin-left:auto;font-size:.63rem;color:var(--mute)"></span>
           </div>
-          <div id="chat-msgs" style="flex:1;overflow-y:auto;padding:1.25rem;display:flex;flex-direction:column;gap:.875rem">
+
+          <div id="chat-msgs" style="flex:1;overflow-y:auto;padding:1.25rem;display:flex;flex-direction:column;gap:.875rem;position:relative;z-index:1">
             <div class="bubble ai">Hello - I'm the Acuros AI health assistant. I provide evidence-based health education and information. What would you like to explore today?</div>
           </div>
-          <div style="padding:.875rem 1.25rem;border-top:1px solid var(--border);display:flex;gap:.625rem">
-            <input id="chat-in" type="text" class="inp" placeholder="Ask a health question…" style="flex:1" onkeydown="if(event.key==='Enter'&&!event.shiftKey)sendChat()"/>
-            <button onclick="sendChat()" class="btn btn-solid mag" style="padding:.625rem 1.25rem;font-size:.7rem;flex-shrink:0" id="chat-send-btn">Send</button>
+
+          <!-- Luxe input dock — adapted from 21st.dev "Animated AI Chat" by @jatin-yadav05 -->
+          <div class="chat-dock" style="position:relative;z-index:1">
+            <div class="chat-dock-inner">
+              <textarea
+                id="chat-in"
+                class="chat-dock-textarea"
+                placeholder="Ask a health question…"
+                rows="1"
+                aria-label="Ask the Acuros AI assistant a question"
+              ></textarea>
+              <div class="chat-dock-toolbar">
+                <div class="chat-dock-tools-left">
+                  <button type="button" class="icon-btn" id="chat-attach-btn" aria-label="Attach file (coming soon)" title="Attach file">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 17.93 8.81l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+                  </button>
+                  <span class="cmd-hint" aria-hidden="true"><kbd>⌘</kbd><kbd>K</kbd></span>
+                </div>
+                <button type="button" class="send-circle" id="chat-send-btn" onclick="sendChat()" aria-label="Send message" disabled>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                </button>
+              </div>
+            </div>
           </div>
+
           <div id="limit-overlay">
             <div style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:200;color:var(--text);margin-bottom:.25rem">You've used your free message.</div>
             <p style="font-size:.83rem;color:var(--sub);max-width:34ch;line-height:1.82;margin-bottom:1.5rem">Join an organization or sign in to continue unlimited conversations with Acuros AI.</p>
             <a href="/patient-portal" class="btn btn-solid">Sign In / Join Org</a>
           </div>
         </div>
-        <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.875rem">
-          <button onclick="preChat('What are common side effects of metformin?')" class="btn btn-outline" style="padding:.4rem .875rem;font-size:.66rem">Metformin effects</button>
-          <button onclick="preChat('How do I read my CBC blood test?')" class="btn btn-outline" style="padding:.4rem .875rem;font-size:.66rem">Read CBC results</button>
-          <button onclick="preChat('What questions should I ask my cardiologist?')" class="btn btn-outline" style="padding:.4rem .875rem;font-size:.66rem">Cardiology prep</button>
-          <button onclick="preChat('What does elevated CRP indicate?')" class="btn btn-outline" style="padding:.4rem .875rem;font-size:.66rem">Elevated CRP</button>
+
+        <div class="suggest-row">
+          <button onclick="preChat('What are common side effects of metformin?')" class="suggest-chip" type="button"><span class="suggest-chip-dot"></span>Metformin effects</button>
+          <button onclick="preChat('How do I read my CBC blood test?')" class="suggest-chip" type="button"><span class="suggest-chip-dot"></span>Read CBC results</button>
+          <button onclick="preChat('What questions should I ask my cardiologist?')" class="suggest-chip" type="button"><span class="suggest-chip-dot"></span>Cardiology prep</button>
+          <button onclick="preChat('What does elevated CRP indicate?')" class="suggest-chip" type="button"><span class="suggest-chip-dot"></span>Elevated CRP</button>
         </div>
         <p style="font-size:.7rem;color:var(--mute);margin-top:.75rem">Educational information only. Not a substitute for professional medical advice.</p>
       </div>
@@ -545,16 +681,25 @@ function showLimitOverlay() {
   if(btn) btn.disabled=true;
 }
 
+function _setSendBtn(loading){
+  // Send-circle is icon-only; never replace innerHTML, just toggle disabled.
+  const b=document.getElementById('chat-send-btn'); if(!b) return;
+  b.disabled = loading || !(document.getElementById('chat-in')?.value || '').trim();
+}
+function _resetTextarea(){
+  const inp=document.getElementById('chat-in'); if(!inp) return;
+  inp.value=''; inp.style.height='auto'; inp.style.height='56px';
+}
 async function sendChat() {
-  const inp=document.getElementById('chat-in'), msg=inp.value.trim(); if(!msg) return;
+  const inp=document.getElementById('chat-in'), msg=(inp.value||'').trim(); if(!msg) return;
   if(!currentUser&&guestMessageUsed()){showLimitOverlay();return;}
-  ensureChatHistoryLoaded(); addBubble(msg,'user'); inp.value='';
+  ensureChatHistoryLoaded(); addBubble(msg,'user'); _resetTextarea();
   chatHistory.push({role:'user',text:msg}); chatHistory=chatHistory.slice(-MAX_CHAT_MESSAGES); saveChatHistory();
   if(!currentUser) markGuestMessageUsed();
   const thinking=document.createElement('div'); thinking.className='bubble ai thinking'; thinking.innerHTML='<span></span><span></span><span></span>';
   document.getElementById('chat-msgs').appendChild(thinking); document.getElementById('chat-msgs').scrollTop=999999;
   const status=document.getElementById('ai-status'); if(status) status.textContent='Thinking…';
-  setBtn('chat-send-btn',true,'Send');
+  _setSendBtn(true);
   try {
     const resp=await fetch(CONFIG.aiApiUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type:inferChatType(msg),messages:chatHistory})});
     thinking.remove(); if(!resp.ok){const err=await resp.json().catch(()=>({}));throw new Error(err.error||`API ${resp.status}`);}
@@ -565,12 +710,19 @@ async function sendChat() {
   } catch(err) {
     thinking.remove(); const fallback=localAIResponse(msg); chatHistory.push({role:'model',text:fallback}); chatHistory=chatHistory.slice(-MAX_CHAT_MESSAGES); saveChatHistory(); addBubble(fallback+'\n\n⚠ AI unavailable - showing cached response.','ai'); if(status) status.textContent='Offline mode';
   } finally {
-    setBtn('chat-send-btn',false,'Send'); document.getElementById('chat-msgs').scrollTop=999999;
+    _setSendBtn(false); document.getElementById('chat-msgs').scrollTop=999999;
     if(!currentUser&&guestMessageUsed()) setTimeout(showLimitOverlay,1200);
   }
 }
 
-function preChat(q) { if(!currentUser&&guestMessageUsed()){showLimitOverlay();return;} const inp=document.getElementById('chat-in'); inp.value=q; inp.focus(); sendChat(); }
+function preChat(q) {
+  if(!currentUser&&guestMessageUsed()){showLimitOverlay();return;}
+  const inp=document.getElementById('chat-in'); if(!inp) return;
+  inp.value=q;
+  inp.dispatchEvent(new Event('input',{bubbles:true}));
+  inp.focus();
+  sendChat();
+}
 function inferChatType(msg) { const l=msg.toLowerCase(); if(/\b(study|trial|meta-analysis|systematic review|journal|evidence)\b/.test(l)) return 'research'; if(/\b(side effect|dosage|dose|interaction|drug|medication|prescription)\b/.test(l)) return 'medication'; if(/\b(symptom|pain|fever|nausea|headache|fatigue|cough)\b/.test(l)) return 'symptom'; return 'general'; }
 function addBubble(txt,type,scroll=true) { const msgs=document.getElementById('chat-msgs'); const d=document.createElement('div'); d.className='bubble '+type; d.style.whiteSpace='pre-line'; d.textContent=txt; msgs.appendChild(d); if(scroll) msgs.scrollTop=msgs.scrollHeight; return d; }
 function localAIResponse(msg) {
@@ -583,6 +735,73 @@ function localAIResponse(msg) {
 }
 function setBtn(id,loading,label) { const b=document.getElementById(id); if(!b) return; b.disabled=loading; b.innerHTML=loading?'<span class="spin"></span>':label; }
 document.addEventListener('DOMContentLoaded', () => { if(authReady){ensureChatHistoryLoaded(true);if(!currentUser&&guestMessageUsed())showLimitOverlay();} });
+
+// ── Animated chat dock — auto-resize, send-state, ⌘K focus, Enter to send ──
+(function initChatDock(){
+  const inp=document.getElementById('chat-in');
+  const send=document.getElementById('chat-send-btn');
+  const blob=document.getElementById('chat-blob');
+  const card=document.querySelector('.card.glass-chat');
+  if(!inp||!send) return;
+
+  const minH=56, maxH=200;
+  function autoResize(){
+    inp.style.height='auto';
+    const h=Math.max(minH, Math.min(inp.scrollHeight, maxH));
+    inp.style.height=h+'px';
+    inp.style.overflowY=(inp.scrollHeight>maxH)?'auto':'hidden';
+  }
+  function updateSendState(){
+    const has=(inp.value||'').trim().length>0;
+    send.disabled=!has;
+  }
+  inp.style.height=minH+'px';
+  inp.style.overflowY='hidden';
+  inp.addEventListener('input',()=>{ autoResize(); updateSendState(); });
+  inp.addEventListener('keydown',(e)=>{
+    if(e.key==='Enter' && !e.shiftKey){
+      e.preventDefault();
+      if(!send.disabled) sendChat();
+    }
+  });
+  // ⌘K / Ctrl+K to focus the chat input from anywhere on the page.
+  document.addEventListener('keydown',(e)=>{
+    if((e.metaKey||e.ctrlKey) && (e.key==='k' || e.key==='K')){
+      e.preventDefault();
+      inp.focus();
+      inp.scrollIntoView({behavior:'smooth',block:'center'});
+    }
+  });
+  // Attach button — placeholder until file uploads land. Surface a hint.
+  const attach=document.getElementById('chat-attach-btn');
+  if(attach) attach.addEventListener('click',()=>{
+    const status=document.getElementById('ai-status');
+    if(status){ const prev=status.textContent; status.textContent='File attachments coming soon'; setTimeout(()=>{ status.textContent=prev; }, 1800); }
+  });
+
+  // Mouse-tracked ambient blob behind the chat (fades in on focus).
+  if(blob && card){
+    let raf=0, tx=0, ty=0, x=0, y=0;
+    const lerp=(a,b,t)=>a+(b-a)*t;
+    function onMove(e){
+      const r=card.getBoundingClientRect();
+      tx=e.clientX-r.left-210;  // 420px blob, centred on cursor
+      ty=e.clientY-r.top-210;
+      if(!raf) raf=requestAnimationFrame(loop);
+    }
+    function loop(){
+      x=lerp(x,tx,.12); y=lerp(y,ty,.12);
+      blob.style.transform=`translate(${x}px,${y}px)`;
+      if(Math.abs(tx-x)>.5 || Math.abs(ty-y)>.5){ raf=requestAnimationFrame(loop); } else { raf=0; }
+    }
+    card.addEventListener('mousemove', onMove);
+    if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+      card.removeEventListener('mousemove', onMove);
+    }
+  }
+
+  updateSendState();
+})();
 
 // ── Ambient star field ────────────────────────────────────────────────────────
 (function(){
