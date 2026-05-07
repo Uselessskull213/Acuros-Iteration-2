@@ -144,6 +144,19 @@
     <p class="header-meta" id="dash-url">—</p>
   </div>
 
+  <!-- Patient join code — what owners share with their patients to let
+       them join via /patient-portal → My clinics. -->
+  <div class="card" style="display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;background:linear-gradient(120deg,var(--bg2),var(--bg3));margin-bottom:2rem">
+    <div>
+      <div class="lbl" style="margin-bottom:.4rem">Patient join code</div>
+      <div style="display:flex;align-items:center;gap:.875rem;flex-wrap:wrap">
+        <code id="dash-code" style="font-family:'JetBrains Mono','SF Mono',monospace;font-size:1.4rem;letter-spacing:.06em;color:var(--ac);font-weight:500">—</code>
+        <button id="dash-code-copy" class="btn btn-outline" type="button" style="padding:.5rem 1rem;font-size:.55rem">Copy</button>
+      </div>
+      <p style="font-size:.7rem;color:var(--sub);margin-top:.5rem;line-height:1.5;max-width:60ch">Share this code with your patients. They enter it on <code>/patient-portal</code> to join your clinic and unlock bookings, your shop, and the AI assistant tied to your portal.</p>
+    </div>
+  </div>
+
   <!-- Stats -->
   <div class="stats">
     <div class="stat">
@@ -152,14 +165,14 @@
       <div class="stat-sub" id="stat-status-sub">&nbsp;</div>
     </div>
     <div class="stat">
+      <div class="stat-lbl">Patients</div>
+      <div class="stat-val" id="stat-patients">0</div>
+      <div class="stat-sub">Joined via your code</div>
+    </div>
+    <div class="stat">
       <div class="stat-lbl">Services</div>
       <div class="stat-val" id="stat-services">0</div>
       <div class="stat-sub">Listed on your portal</div>
-    </div>
-    <div class="stat">
-      <div class="stat-lbl">Products</div>
-      <div class="stat-val" id="stat-products">0</div>
-      <div class="stat-sub">In your shop</div>
     </div>
     <div class="stat">
       <div class="stat-lbl">Pending bookings</div>
@@ -283,18 +296,33 @@ function hydrateChrome(){
     $('#stat-status').textContent = 'Live';
     $('#stat-status-sub').textContent = org.published_at ? ('Since ' + new Date(org.published_at).toLocaleDateString('en-CA',{month:'short',day:'numeric',year:'numeric'})) : '';
   }
+
+  // Patient join code — owners share this with their patients.
+  const codeEl = document.getElementById('dash-code');
+  if (codeEl && org.code) codeEl.textContent = org.code;
+  const copyBtn = document.getElementById('dash-code-copy');
+  if (copyBtn) copyBtn.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(org.code || '');
+      const prev = copyBtn.textContent; copyBtn.textContent = 'Copied';
+      setTimeout(() => { copyBtn.textContent = prev; }, 1400);
+    } catch (_e) {
+      copyBtn.textContent = 'Copy failed';
+    }
+  });
 }
 
 async function loadCounts(){
   try {
-    const [svcRes, prodRes, bkRes] = await Promise.all([
+    const [svcRes, bkRes, memRes] = await Promise.all([
       sb.from('clinic_services').select('id', { count: 'exact', head: true }).eq('org_id', org.id),
-      sb.from('products').select('id', { count: 'exact', head: true }).eq('org_id', org.id),
       sb.from('bookings').select('id', { count: 'exact', head: true }).eq('org_id', org.id).eq('status', 'requested'),
+      sb.from('clinic_memberships').select('id', { count: 'exact', head: true }).eq('org_id', org.id),
     ]);
     $('#stat-services').textContent = svcRes.count ?? 0;
-    $('#stat-products').textContent = prodRes.count ?? 0;
     $('#stat-pending').textContent  = bkRes.count ?? 0;
+    const patientsEl = document.getElementById('stat-patients');
+    if (patientsEl) patientsEl.textContent = memRes.count ?? 0;
   } catch(_e){}
 }
 

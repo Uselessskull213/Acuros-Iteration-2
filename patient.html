@@ -576,11 +576,33 @@
       </form>
 
       <form id="pt-register" onsubmit="ptRegister(event)" style="display:none;flex-direction:column;gap:1rem">
+
+        <!-- Account type — patients vs clinic owners take different paths
+             after sign-up. Clinic owners go to /onboarding to build their
+             portal; patients land on the patient workspace. -->
+        <div class="field">
+          <label class="field-lbl">I'm registering as</label>
+          <div role="radiogroup" aria-label="Account type" style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem">
+            <button type="button" class="acct-type active" data-role="patient" id="pt-role-patient" aria-pressed="true"
+                    style="padding:.7rem .8rem;border:1px solid var(--ac);background:rgba(201,146,42,.06);font-family:'DM Sans',sans-serif;font-size:.78rem;cursor:pointer;text-align:left;color:var(--text);transition:border-color .2s,background .2s">
+              <div style="font-weight:500;letter-spacing:.02em">Patient</div>
+              <div style="font-size:.66rem;color:var(--sub);margin-top:.2rem">Access bookings, AI assistant, your records.</div>
+            </button>
+            <button type="button" class="acct-type" data-role="clinic_owner" id="pt-role-clinic" aria-pressed="false"
+                    style="padding:.7rem .8rem;border:1px solid var(--border);background:transparent;font-family:'DM Sans',sans-serif;font-size:.78rem;cursor:pointer;text-align:left;color:var(--text);transition:border-color .2s,background .2s">
+              <div style="font-weight:500;letter-spacing:.02em">Clinic owner</div>
+              <div style="font-size:.66rem;color:var(--sub);margin-top:.2rem">Build your branded patient portal.</div>
+            </button>
+          </div>
+        </div>
+
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
           <div class="field"><label class="field-lbl" for="pt-first">First name</label><input type="text" id="pt-first" class="inp" placeholder="Jane" required/></div>
           <div class="field"><label class="field-lbl" for="pt-last">Last name</label><input type="text" id="pt-last" class="inp" placeholder="Doe" required/></div>
         </div>
-        <div class="field"><label class="field-lbl" for="pt-code">Patient code <span style="color:var(--mute);text-transform:none;letter-spacing:0;font-size:.7rem;font-weight:400">(optional)</span></label><input type="text" id="pt-code" class="inp" placeholder="AH-XXXX"/></div>
+        <!-- Patient-only field: clinic join code at signup. Clinic owners
+             skip this; they get their own code generated on publish. -->
+        <div class="field" id="pt-code-field"><label class="field-lbl" for="pt-code">Clinic code <span style="color:var(--mute);text-transform:none;letter-spacing:0;font-size:.7rem;font-weight:400">(optional, you can join later)</span></label><input type="text" id="pt-code" class="inp" placeholder="CLINIC-XXXXXXXX"/></div>
         <div class="field"><label class="field-lbl" for="pt-remail">Email</label><input type="email" id="pt-remail" class="inp" placeholder="name@email.com" required/></div>
         <div class="field"><label class="field-lbl" for="pt-rpass">Password</label><input type="password" id="pt-rpass" class="inp" placeholder="Min. 8 characters" minlength="8" required/></div>
         <button type="submit" class="btn btn-solid mag" style="width:100%;padding:.85rem;border-radius:5px;margin-top:.5rem" id="pt-r-btn">Create Account</button>
@@ -778,6 +800,29 @@
             <p class="bx-tool-p">Direct to your clinic. Confirmed in 1 day.</p>
           </div>
           <span class="bx-tool-cta">Book <span>→</span></span>
+        </div>
+
+        <!-- ── My Clinics widget (reads /api/memberships?action=mine) ── -->
+        <div class="bx bx-12 upcoming-card" id="clinics-card">
+          <div class="upcoming-head">
+            <div>
+              <div class="bx-tool-cat">My clinics</div>
+              <h3 class="upcoming-h">Clinics you've joined</h3>
+            </div>
+            <span style="font-size:.65rem;color:var(--mute);letter-spacing:.04em">Add as many as you like</span>
+          </div>
+
+          <!-- Join-by-code row, always visible -->
+          <form id="clinic-join-form" style="display:flex;gap:.625rem;flex-wrap:wrap;align-items:center;padding:.875rem 1rem;background:var(--bg);border:1px solid var(--border);border-radius:.5rem">
+            <input id="clinic-join-code" class="inp" placeholder="Enter a clinic code (e.g. CLINIC-7A8B9C12)" style="flex:1;min-width:240px;text-transform:uppercase;letter-spacing:.04em" maxlength="32" autocomplete="off"/>
+            <button type="submit" class="btn btn-solid mag" style="padding:.7rem 1.4rem;font-size:.62rem" id="clinic-join-btn">Join clinic</button>
+          </form>
+          <div id="clinic-join-msg" style="display:none;margin-top:.5rem;font-size:.78rem;line-height:1.5;padding:.6rem .8rem"></div>
+
+          <!-- Joined-clinics list -->
+          <div class="upcoming-list" id="clinics-list" aria-live="polite" aria-busy="true" style="margin-top:1rem">
+            <div class="upcoming-skel"></div>
+          </div>
         </div>
 
         <!-- ── Upcoming Appointments widget (reads /api/bookings?action=mine) ── -->
@@ -1123,27 +1168,79 @@ async function ptLogin(e){
   finally{ setBtn('pt-li-btn',false,'Sign In'); }
 }
 
+// Account-type toggle. Driven by the two .acct-type buttons above the
+// signup form. Hides the clinic-code field for clinic owners and stashes
+// the chosen role for ptRegister to send to Supabase.
+let ptSelectedRole = 'patient';
+(function initAcctTypeToggle(){
+  const setRole = (role) => {
+    ptSelectedRole = role;
+    document.querySelectorAll('.acct-type').forEach((b) => {
+      const isActive = b.dataset.role === role;
+      b.classList.toggle('active', isActive);
+      b.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+      b.style.borderColor = isActive ? 'var(--ac)' : 'var(--border)';
+      b.style.background  = isActive ? 'rgba(201,146,42,.06)' : 'transparent';
+    });
+    // Clinic owners never enter a clinic code at signup — they generate
+    // their own on publish. Hide the field to remove confusion.
+    const codeField = document.getElementById('pt-code-field');
+    if (codeField) codeField.style.display = role === 'clinic_owner' ? 'none' : '';
+    const btn = document.getElementById('pt-r-btn');
+    if (btn) btn.textContent = role === 'clinic_owner' ? 'Create clinic account' : 'Create Account';
+  };
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.acct-type').forEach((b) => b.addEventListener('click', () => setRole(b.dataset.role)));
+  });
+})();
+
 async function ptRegister(e){
-  e.preventDefault(); hideMsg('pt-err','pt-ok'); setBtn('pt-r-btn',true,'Create Account');
+  e.preventDefault(); hideMsg('pt-err','pt-ok'); setBtn('pt-r-btn',true,ptSelectedRole==='clinic_owner'?'Create clinic account':'Create Account');
   const first=document.getElementById('pt-first').value.trim(),
         last =document.getElementById('pt-last').value.trim(),
         code =document.getElementById('pt-code').value.trim(),
         email=document.getElementById('pt-remail').value,
         pass =document.getElementById('pt-rpass').value,
         name =(first+' '+last).trim();
+  const role = (ptSelectedRole === 'clinic_owner') ? 'clinic_owner' : 'patient';
   try{
     if(sb){
-      const{data,error}=await sb.auth.signUp({email,password:pass,options:{data:{full_name:name}}});
+      // Pass role in user_metadata. The handle_new_user() trigger we
+      // installed reads metadata.role and seeds profiles.role from it.
+      const{data,error}=await sb.auth.signUp({
+        email,
+        password:pass,
+        options:{ data:{ full_name:name, role } }
+      });
       if(error)throw error;
       if(!data.session){
-        showMsg('pt-ok','Account created. Check your email to confirm, then sign in.','ok');
-        setBtn('pt-r-btn',false,'Create Account'); return;
+        // Email confirmation required. Tell them what to expect after
+        // confirming based on their chosen role.
+        const msg = role === 'clinic_owner'
+          ? 'Account created. Confirm your email, then sign in to start building your portal.'
+          : 'Account created. Check your email to confirm, then sign in.';
+        showMsg('pt-ok', msg, 'ok');
+        setBtn('pt-r-btn',false,role==='clinic_owner'?'Create clinic account':'Create Account'); return;
       }
-      let regOrgId='', regOrgName='', safeCode = code ? code.toUpperCase() : '';
+
+      // Patients: optionally pre-join a clinic via the code at signup.
+      let regOrgId='', regOrgName='', safeCode = (role === 'patient' && code) ? code.toUpperCase() : '';
       if(safeCode){
-        const{data:org}=await sb.from('organizations').select('id, name').eq('code',safeCode).eq('active',true).maybeSingle().catch(()=>({data:null}));
-        if(org){ regOrgId=org.id; regOrgName=org.name; } else safeCode='';
+        try{
+          const resp = await fetch('/api/memberships?action=join', {
+            method:'POST',
+            headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer ' + data.session.access_token },
+            body: JSON.stringify({ code: safeCode }),
+          });
+          const out = await resp.json().catch(() => ({}));
+          if (resp.ok && out.clinic) { regOrgId = out.clinic.id; regOrgName = out.clinic.name; }
+          else { safeCode = ''; }
+        } catch(_){ safeCode = ''; }
       }
+
+      // Best-effort upsert into the legacy profiles fields the patient
+      // workspace already reads. The trigger has already created the row
+      // with the right role; this just fills in the optional bits.
       try{
         await sb.from('profiles').upsert({
           id:data.user.id, name, first_name:first, last_name:last,
@@ -1151,19 +1248,27 @@ async function ptRegister(e){
           tier:'free', usage_count:0
         });
       }catch(_){}
+
+      // Clinic owners get bounced straight to the wizard.
+      if (role === 'clinic_owner') {
+        window.location.replace('/onboarding');
+        return;
+      }
+
       currentUser={id:data.user.id,email,name,first,last,code:safeCode,org_id:regOrgId,org_name:regOrgName,tier:'free',created_at:new Date().toISOString()};
     } else {
       currentUser={id:'demo',email,name,first,last,code:'',org_id:'',org_name:'',tier:'free',created_at:new Date().toISOString()};
     }
     syncPortal();
   } catch(err){ showMsg('pt-err',err.message||'Registration failed.','err'); }
-  finally{ setBtn('pt-r-btn',false,'Create Account'); }
+  finally{ setBtn('pt-r-btn',false,role==='clinic_owner'?'Create clinic account':'Create Account'); }
 }
 
 async function ptLogout(){
   if(sb){try{await sb.auth.signOut();}catch(e){}}
   currentUser=null;
   localStorage.removeItem('ah-user-initial');
+  localStorage.removeItem('ah-user-role');
   syncPortal();
 }
 
@@ -1191,6 +1296,9 @@ function syncPortal(){
     const initial = (currentUser.first||currentUser.name||'?').charAt(0).toUpperCase();
     const meInit = document.getElementById('me-initial'); if(meInit) meInit.textContent = initial;
     localStorage.setItem('ah-user-initial', initial);
+    // Stash the role so the homepage can render the right CTA. Default to
+    // 'patient' until the role-aware redirect (owner-router) confirms otherwise.
+    localStorage.setItem('ah-user-role', currentUser.role || 'patient');
 
     const meName = document.getElementById('me-name');
     if(meName) meName.textContent = (currentUser.first && currentUser.last) ? currentUser.first+' '+currentUser.last : (currentUser.name||'-');
@@ -1279,6 +1387,8 @@ async function ownerRedirectIfApplicable(userId){
     if (error || !data) return false;
     const params = new URLSearchParams(window.location.search);
     if (params.get('role') === 'patient') return false; // explicit override
+    // Tag the role so the homepage / nav surfaces the dashboard CTA.
+    try { localStorage.setItem('ah-user-role', 'clinic_owner'); } catch(_e){}
     if (data.is_published && data.slug) {
       window.location.replace('/dashboard');
       return true;
@@ -1467,6 +1577,151 @@ if(sb?.auth?.onAuthStateChange){
     else renderEmpty('Sign in to view and manage your bookings.');
   }
   if(document.readyState !== 'loading') tryLoad();
+  else document.addEventListener('DOMContentLoaded', tryLoad);
+})();
+
+// ── My Clinics widget (join-by-code, list, leave) ──
+// Reads /api/memberships?action=mine for the joined list, and POSTs
+// to ?action=join | ?action=leave for membership changes.
+(function initClinicsCard(){
+  const listEl   = document.getElementById('clinics-list');
+  const formEl   = document.getElementById('clinic-join-form');
+  const codeInp  = document.getElementById('clinic-join-code');
+  const btnEl    = document.getElementById('clinic-join-btn');
+  const msgEl    = document.getElementById('clinic-join-msg');
+  if (!listEl || !formEl) return;
+
+  function escapeHtml(s){
+    return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+  function setMsg(text, kind){
+    if (!msgEl) return;
+    if (!text) { msgEl.style.display = 'none'; msgEl.textContent = ''; return; }
+    msgEl.textContent = text;
+    msgEl.style.display = 'block';
+    msgEl.style.color = kind === 'error' ? 'var(--err)' : 'var(--ok)';
+    msgEl.style.background = kind === 'error' ? 'rgba(183,56,56,.06)' : 'rgba(59,122,59,.06)';
+    msgEl.style.border = '1px solid ' + (kind === 'error' ? 'rgba(183,56,56,.25)' : 'rgba(59,122,59,.25)');
+  }
+
+  async function authToken(){
+    if (typeof sb === 'undefined' || !sb) return null;
+    try {
+      const { data } = await sb.auth.getSession();
+      return data?.session?.access_token || null;
+    } catch { return null; }
+  }
+
+  function renderEmpty(reason){
+    listEl.removeAttribute('aria-busy');
+    listEl.innerHTML =
+      '<div class="upcoming-empty">'+
+        '<div class="upcoming-empty-h">No clinics joined yet.</div>'+
+        '<p class="upcoming-empty-p">'+escapeHtml(reason)+'</p>'+
+      '</div>';
+  }
+  function renderList(memberships){
+    listEl.removeAttribute('aria-busy');
+    if (!memberships.length) {
+      renderEmpty('Enter a clinic code above to join your first clinic.');
+      return;
+    }
+    listEl.innerHTML = memberships.map((m) => {
+      const o = m.org || {};
+      const accent = (o.theme && o.theme.accent) || 'var(--ac)';
+      return ''+
+        '<div class="upcoming-row" style="grid-template-columns:auto 1fr auto auto;gap:.875rem">'+
+          '<span style="display:inline-block;width:10px;height:36px;background:'+escapeHtml(accent)+';border-radius:2px;flex-shrink:0"></span>'+
+          '<div class="upcoming-meta">'+
+            '<div class="upcoming-proc">'+escapeHtml(o.name||'Clinic')+'</div>'+
+            '<div class="upcoming-sub">'+escapeHtml(o.specialty || o.location || 'Member')+(o.code ? ' · code '+escapeHtml(o.code) : '')+'</div>'+
+          '</div>'+
+          (o.slug ? '<a href="/c/'+escapeHtml(o.slug)+'" target="_blank" rel="noopener" class="upcoming-link" style="font-size:.6rem">Open <span>→</span></a>' : '<span></span>')+
+          '<button type="button" class="upcoming-status" data-leave-id="'+escapeHtml(o.id||'')+'" style="cursor:pointer;background:none">Leave</button>'+
+        '</div>';
+    }).join('');
+    // Wire each Leave button
+    listEl.querySelectorAll('[data-leave-id]').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        const orgId = btn.getAttribute('data-leave-id');
+        if (!orgId) return;
+        if (!confirm('Leave this clinic? Your bookings stay on file but you\'ll no longer see this clinic in your portal.')) return;
+        btn.disabled = true; btn.textContent = 'Leaving…';
+        try {
+          const token = await authToken();
+          if (!token) { setMsg('Sign in expired. Please refresh.', 'error'); return; }
+          const resp = await fetch('/api/memberships?action=leave', {
+            method:'POST',
+            headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer ' + token },
+            body: JSON.stringify({ org_id: orgId }),
+          });
+          if (!resp.ok) {
+            const err = await resp.json().catch(() => ({}));
+            throw new Error(err?.error || 'Could not leave the clinic.');
+          }
+          await loadMemberships();
+        } catch(err){
+          setMsg(err.message, 'error');
+          btn.disabled = false; btn.textContent = 'Leave';
+        }
+      });
+    });
+  }
+
+  async function loadMemberships(){
+    listEl.setAttribute('aria-busy', 'true');
+    listEl.innerHTML = '<div class="upcoming-skel"></div>';
+    const token = await authToken();
+    if (!token) { renderEmpty('Sign in to view your joined clinics.'); return; }
+    try {
+      const resp = await fetch('/api/memberships?action=mine', {
+        headers:{ 'Authorization':'Bearer ' + token }
+      });
+      if (!resp.ok) {
+        const err = await resp.json().catch(() => ({}));
+        throw new Error(err?.error || 'Could not load your clinics.');
+      }
+      const data = await resp.json();
+      renderList(Array.isArray(data.memberships) ? data.memberships : []);
+    } catch (err) {
+      renderEmpty('We could not load your clinics: ' + err.message);
+    }
+  }
+
+  formEl.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    setMsg('', null);
+    const code = (codeInp.value || '').trim().toUpperCase();
+    if (code.length < 4) { setMsg('That code looks too short.', 'error'); return; }
+    btnEl.disabled = true; const prev = btnEl.textContent; btnEl.textContent = 'Joining…';
+    try {
+      const token = await authToken();
+      if (!token) { setMsg('Sign in expired. Please refresh.', 'error'); return; }
+      const resp = await fetch('/api/memberships?action=join', {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer ' + token },
+        body: JSON.stringify({ code }),
+      });
+      const out = await resp.json().catch(() => ({}));
+      if (!resp.ok) throw new Error(out?.error || ('Could not join (HTTP ' + resp.status + ').'));
+      setMsg('Joined ' + (out.clinic?.name || 'clinic') + '.', 'ok');
+      codeInp.value = '';
+      await loadMemberships();
+    } catch (err) {
+      setMsg(err.message, 'error');
+    } finally {
+      btnEl.disabled = false; btnEl.textContent = prev;
+    }
+  });
+
+  // Wait briefly for currentUser, then fetch.
+  let attempts = 0;
+  function tryLoad(){
+    if (typeof currentUser !== 'undefined' && currentUser) { loadMemberships(); return; }
+    if (++attempts < 14) setTimeout(tryLoad, 350);
+    else renderEmpty('Sign in to view your joined clinics.');
+  }
+  if (document.readyState !== 'loading') tryLoad();
   else document.addEventListener('DOMContentLoaded', tryLoad);
 })();
 </script>

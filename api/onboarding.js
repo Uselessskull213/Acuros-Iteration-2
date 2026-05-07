@@ -341,14 +341,43 @@ export default async function handler(req, res) {
 
   const admin = getSupabaseAdmin();
 
+  // Resolve the caller's role. Patients are not allowed to use the
+  // onboarding wizard at all — they get a 403 with a clear message.
+  // The trigger we installed in supabase-roles.sql defaults role to
+  // 'patient' for any new auth user, so role here is always present.
+  let profileRole = 'patient';
+  try {
+    const { data: profile } = await admin
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .maybeSingle();
+    if (profile?.role) profileRole = profile.role;
+  } catch (_e) { /* non-fatal */ }
+
+  // Read-only state introspection is OK regardless of role — it lets the
+  // UI make role-aware decisions (e.g. show a "request clinic access"
+  // page) without an extra round trip.
+  const isReadOnlyState = req.method === 'GET' && action === 'state';
+  if (!isReadOnlyState && profileRole !== 'clinic_owner' && profileRole !== 'admin') {
+    return res.status(403).json({
+      error: 'Onboarding is for clinic-owner accounts. Patients can join existing clinics with a code instead.',
+      role: profileRole,
+    });
+  }
+
   try {
     // ── GET ?action=state ─────────────────────────────────────────────
     if (req.method === 'GET' && action === 'state') {
-      const org = await getOrCreateOwnerOrg(admin, user);
-      const role = org ? 'owner' : 'patient';
+      // For owners, lazily create their draft org row. For patients,
+      // never create — just return their role so the UI can route them
+      // to the patient portal instead.
+      const org = (profileRole === 'clinic_owner' || profileRole === 'admin')
+        ? await getOrCreateOwnerOrg(admin, user, { create: true })
+        : null;
       const reservedRes = await admin.from('reserved_slugs').select('slug');
       return res.status(200).json({
-        role,
+        role: profileRole,
         org,
         reservedSlugs: (reservedRes.data || []).map((r) => r.slug),
       });

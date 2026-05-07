@@ -936,15 +936,39 @@ function renderThemeToggle() {
     : '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
 }
 /* ── Nav profile pill (reads localStorage set by patient portal) ── */
+/* Owners get a different CTA pointing at /dashboard rather than the
+   "Set up your clinic" wizard, so they can find the dashboard from the
+   homepage without hunting. The role flag is set by patient.html on
+   sign-in (ah-user-role). */
 (function initNavProfile() {
   document.addEventListener('DOMContentLoaded', function() {
     const initial = localStorage.getItem('ah-user-initial');
-    if (!initial) return;
+    const role    = localStorage.getItem('ah-user-role'); // 'patient' | 'clinic_owner'
     const pill  = document.getElementById('nav-profile');
     const initEl = document.getElementById('nav-profile-initial');
     const cta   = document.getElementById('nav-cta');
-    if (pill && initEl) { initEl.textContent = initial; pill.style.display = 'flex'; }
-    if (cta) cta.style.display = 'none';
+
+    if (initial) {
+      if (pill && initEl) { initEl.textContent = initial; pill.style.display = 'flex'; }
+    }
+
+    // Owners see a "Dashboard" CTA; everyone else sees "Set up your clinic".
+    if (cta) {
+      if (role === 'clinic_owner') {
+        cta.textContent = 'Dashboard';
+        cta.setAttribute('href', '/dashboard');
+        cta.style.display = '';
+      } else if (initial) {
+        // Logged-in patient → swap CTA to point at their portal.
+        cta.textContent = 'My portal';
+        cta.setAttribute('href', '/patient-portal');
+      }
+    }
+
+    // Pill click also routes by role.
+    if (pill) pill.onclick = () => {
+      window.location.href = role === 'clinic_owner' ? '/dashboard' : '/patient-portal';
+    };
   });
 })();
 
