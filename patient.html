@@ -1528,9 +1528,11 @@ async function ensureRoleConfirmed(userId, userEmail, userName){
     async function pick(role){
       btnP.disabled = true; btnC.disabled = true;
       try {
+        // The legacy profiles table on this project doesn't have an
+        // email column — we read it off auth.users via the session
+        // when we need it. Stick to columns that definitely exist.
         const { error } = await sb.from('profiles').upsert({
           id: userId,
-          email: userEmail,
           name: userName || (userEmail || '').split('@')[0],
           role,
           role_confirmed: true,
