@@ -447,6 +447,32 @@
 <div id="grain" aria-hidden="true"></div>
 <div id="scroll-prog" aria-hidden="true"></div>
 
+<!-- ── Role-categorisation modal ──
+     Fires the first time any signed-in user reaches this page if they
+     haven't yet confirmed whether they're a patient or a clinic owner.
+     Covers: existing accounts created before the toggle existed, Google
+     OAuth signups, and email signups that somehow skipped the toggle. -->
+<div id="role-prompt" style="display:none;position:fixed;inset:0;z-index:9000;background:rgba(8,7,6,.75);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);align-items:center;justify-content:center;padding:1.5rem">
+  <div style="background:var(--bg);border:1px solid var(--border);max-width:520px;width:100%;padding:2.25rem 2rem 1.75rem;box-shadow:0 30px 80px rgba(0,0,0,.4)">
+    <div class="lbl" style="color:var(--ac);margin-bottom:.625rem">One quick question</div>
+    <h3 style="font-family:'Cormorant Garamond',serif;font-size:1.85rem;font-weight:300;letter-spacing:-.025em;line-height:1.05;margin-bottom:.625rem">How will you be using <em style="color:var(--ac);font-style:italic">Acuros?</em></h3>
+    <p style="font-size:.85rem;color:var(--sub);line-height:1.65;margin-bottom:1.5rem">This helps us route you to the right experience. You can change this later from your account settings.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
+      <button type="button" id="role-prompt-patient"
+              style="text-align:left;padding:1rem;border:1px solid var(--border);background:var(--bg2);cursor:pointer;font-family:'DM Sans',sans-serif;color:var(--text);transition:border-color .2s,background .2s">
+        <div style="font-weight:500;font-size:.92rem;margin-bottom:.25rem">I'm a patient</div>
+        <div style="font-size:.72rem;color:var(--sub);line-height:1.5">Book appointments, join clinics with a code, use the AI assistant.</div>
+      </button>
+      <button type="button" id="role-prompt-clinic"
+              style="text-align:left;padding:1rem;border:1px solid var(--border);background:var(--bg2);cursor:pointer;font-family:'DM Sans',sans-serif;color:var(--text);transition:border-color .2s,background .2s">
+        <div style="font-weight:500;font-size:.92rem;margin-bottom:.25rem">I'm a clinic owner</div>
+        <div style="font-size:.72rem;color:var(--sub);line-height:1.5">Build a branded patient portal. Get a code patients use to join.</div>
+      </button>
+    </div>
+    <p id="role-prompt-err" style="display:none;font-size:.75rem;color:var(--err);margin-top:.875rem">Could not save your choice. Please try again.</p>
+  </div>
+</div>
+
 
 <!-- ══════════════════════════════════════════════════════════════════════
      CANONICAL NAV (matches every other page)
@@ -468,7 +494,7 @@
     </div>
 
     <div style="display:flex;align-items:center;gap:.875rem">
-      <div id="nav-profile" style="display:none;width:32px;height:32px;border-radius:50%;background:var(--ac);align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:opacity .2s,transform .2s" onclick="window.location.href='/patient-portal'" title="My Portal">
+      <div id="nav-profile" style="display:none;width:32px;height:32px;border-radius:50%;background:var(--ac);align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:opacity .2s,transform .2s" onclick="window.location.href='/settings'" title="Account settings">
         <span id="nav-profile-initial" style="font-size:.72rem;font-weight:500;color:#fff;font-family:'DM Sans',sans-serif;line-height:1"></span>
       </div>
 <button id="nav-theme-toggle" onclick="toggleTheme()" style="width:34px;height:34px;border:1px solid var(--border);background:none;color:var(--sub);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .22s,color .22s" title="Toggle theme" aria-label="Toggle theme">
@@ -1235,12 +1261,15 @@ async function ptRegister(e){
 
       // Best-effort upsert into the legacy profiles fields the patient
       // workspace already reads. The trigger has already created the row
-      // with the right role; this just fills in the optional bits.
+      // with the right role; this just fills in the optional bits and
+      // marks role_confirmed=true so we don't re-prompt the user with
+      // the modal on their first sign-in.
       try{
         await sb.from('profiles').upsert({
           id:data.user.id, name, first_name:first, last_name:last,
           patient_code:safeCode||null, org_id:regOrgId||null,
-          tier:'free', usage_count:0
+          tier:'free', usage_count:0,
+          role, role_confirmed:true,
         });
       }catch(_){}
 
@@ -1393,9 +1422,78 @@ async function ownerRedirectIfApplicable(userId){
   } catch (_e) { return false; }
 }
 
+// ── Role-confirmation modal ──
+// Fires after sign-in for any user whose profiles.role_confirmed is
+// false. That covers: pre-existing accounts, Google OAuth signups,
+// and any email signup that somehow bypassed the toggle. The modal
+// blocks routing decisions (including ownerRedirectIfApplicable) so
+// we don't bounce a freshly-onboarded clinic owner straight to
+// /onboarding before they've categorised themselves.
+async function ensureRoleConfirmed(userId, userEmail, userName){
+  if (!sb || !userId) return true;
+  try {
+    const { data: profile } = await sb.from('profiles')
+      .select('role, role_confirmed')
+      .eq('id', userId).maybeSingle();
+    // Already confirmed (or row missing entirely — let the trigger
+    // create it and treat as confirmed default 'patient'). We treat
+    // missing rows as confirmed because that means the trigger is yet
+    // to fire, and prompting them now would race the insert.
+    if (!profile || profile.role_confirmed) return true;
+  } catch (_e) { return true; }
+
+  return new Promise((resolve) => {
+    const modal = document.getElementById('role-prompt');
+    const errEl = document.getElementById('role-prompt-err');
+    const btnP  = document.getElementById('role-prompt-patient');
+    const btnC  = document.getElementById('role-prompt-clinic');
+    if (!modal || !btnP || !btnC) { resolve(true); return; }
+
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    if (errEl) errEl.style.display = 'none';
+
+    async function pick(role){
+      btnP.disabled = true; btnC.disabled = true;
+      try {
+        const { error } = await sb.from('profiles').upsert({
+          id: userId,
+          email: userEmail,
+          name: userName || (userEmail || '').split('@')[0],
+          role,
+          role_confirmed: true,
+        }, { onConflict: 'id' });
+        if (error) throw error;
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+        try { localStorage.setItem('ah-user-role', role); } catch(_e){}
+        // Clinic owners go straight to onboarding from here, so the
+        // redirect chain below picks them up correctly.
+        resolve(true);
+      } catch (err) {
+        if (errEl) {
+          errEl.textContent = 'Could not save: ' + (err.message || 'unknown error');
+          errEl.style.display = 'block';
+        }
+        btnP.disabled = false; btnC.disabled = false;
+      }
+    }
+    btnP.onclick = () => pick('patient');
+    btnC.onclick = () => pick('clinic_owner');
+  });
+}
+
 if(sb?.auth?.onAuthStateChange){
   sb.auth.onAuthStateChange(async(event,session)=>{
     if(session?.user){
+      // Make sure the user has chosen patient vs clinic_owner before
+      // any further redirect logic runs.
+      await ensureRoleConfirmed(
+        session.user.id,
+        session.user.email,
+        session.user.user_metadata?.full_name
+      );
+
       // Owners get redirected before any patient-portal hydration runs.
       if (await ownerRedirectIfApplicable(session.user.id)) return;
 
