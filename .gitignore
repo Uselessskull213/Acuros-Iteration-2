@@ -1,10 +1,6 @@
-.env
+.DS_Store
+**/.DS_Store
+.vscode/
+node_modules/
 .env.local
 .env.*.local
-node_modules/
-.vercel/
-*.bak
-test.txt
-DEPLOY.md
-*.bak2
-hero-bg.jpg
