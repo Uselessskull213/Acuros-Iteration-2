@@ -232,7 +232,11 @@ a:hover{color:var(--ac-hi)}
 <script>
 (() => {
   const SB_URL = 'https://pyexkdoupqzbnrybiubo.supabase.co';
-  const SB_KEY = 'sb_publishable_ywcyXTqGzRTik8YJfTTHiw_B-pmj2w-';
+  // Use the legacy JWT anon key so this page shares the same localStorage
+  // namespace as patient.html / dashboard.html / settings.html. The
+  // publishable-key client writes to a different namespace and would make
+  // signed-in users appear signed-out when they navigate to /editor.
+  const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB5ZXhrZG91cHF6Ym5yeWJpdWJvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4Mzg4MzYsImV4cCI6MjA4NzQxNDgzNn0.3_dLQEJfmC08A2-hlgOfwlu4ngx7hslUR3Dun4BoXLU';
   const sb = window.supabase.createClient(SB_URL, SB_KEY);
 
   const DRAFT_KEY = 'acuros-portal-draft';
