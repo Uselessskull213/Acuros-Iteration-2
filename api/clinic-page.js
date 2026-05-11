@@ -78,7 +78,7 @@ export default async function handler(req, res){
   try {
     const { data, error } = await admin
       .from('organizations')
-      .select('id, name, slug, specialty, description, location, logo_url, contact_email, theme, brand, tags, is_published, published_at')
+      .select('id, name, slug, specialty, description, location, logo_url, contact_email, theme, brand, tags, is_published, published_at, portal_html, portal_updated_at')
       .eq('slug', slug)
       .eq('is_published', true)
       .maybeSingle();
@@ -120,6 +120,29 @@ export default async function handler(req, res){
   // window so changes from /onboarding go live within 60s.
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
   res.setHeader('Cache-Control', 'public, max-age=60, s-maxage=60, stale-while-revalidate=300');
+
+  // If the owner has saved AI-generated portal HTML, serve that instead
+  // of the default shell. We still inject the SEO meta + analytics + the
+  // JSON-LD block into <head> so Google sees the same per-clinic schema.
+  if (typeof org.portal_html === 'string' && /<!doctype\s+html/i.test(org.portal_html) && /<\/html>/i.test(org.portal_html)) {
+    const seoHead = `<title>${escapeHtml(titleText)}</title>
+<meta name="description" content="${escapeAttr(desc)}"/>
+<link rel="canonical" href="${url}"/>
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="${url}"/>
+<meta property="og:title" content="${escapeAttr(titleText)}"/>
+<meta property="og:description" content="${escapeAttr(desc)}"/>
+<meta property="og:image" content="${escapeAttr(ogImg)}"/>
+<meta property="og:site_name" content="Acuros Health"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="${escapeAttr(ogImg)}"/>
+<meta name="theme-color" content="${accent}"/>
+<script type="application/ld+json">${safeJsonLd(jsonld)}</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-80K00SEBQK"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-80K00SEBQK');</script>`;
+    const injected = org.portal_html.replace(/<head([^>]*)>/i, `<head$1>\n${seoHead}\n`);
+    return res.end(injected);
+  }
 
   res.end(`<!DOCTYPE html>
 <html lang="en">

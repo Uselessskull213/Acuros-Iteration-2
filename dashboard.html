@@ -186,7 +186,10 @@
     <div class="preview-wrap">
       <div class="preview-bar">
         <span>Live preview · <a id="public-link" href="#" target="_blank" rel="noopener">open in new tab</a></span>
-        <a class="btn btn-outline" href="/onboarding">Edit content</a>
+        <div style="display:flex;gap:.5rem">
+          <a class="btn btn-outline" href="/onboarding">Wizard</a>
+          <a class="btn btn-solid" href="/editor" title="AI-powered portal editor">AI editor</a>
+        </div>
       </div>
       <iframe id="preview-iframe" class="preview-iframe" title="Live preview" loading="lazy"></iframe>
     </div>
@@ -212,8 +215,9 @@
       <div class="lbl">Products</div>
       <div id="content-products" class="empty">Loading…</div>
     </div>
-    <div style="display:flex;gap:.625rem;margin-top:.5rem">
-      <a class="btn btn-solid" href="/onboarding">Edit content with the wizard</a>
+    <div style="display:flex;gap:.625rem;margin-top:.5rem;flex-wrap:wrap">
+      <a class="btn btn-solid" href="/editor">Open the AI editor</a>
+      <a class="btn btn-outline" href="/onboarding">Edit content with the wizard</a>
     </div>
   </section>
 </main>
