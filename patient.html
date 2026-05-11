@@ -22,6 +22,11 @@
   <meta name="twitter:image" content="https://acuros.ca/hero-bg.jpg"/>
 <meta name="robots" content="noindex"/>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <!-- Apple Sign In JS SDK. Loads asynchronously; ptAppleAuth() guards
+       against early invocation. We use popup mode + signInWithIdToken so
+       the token never leaves the browser, sidestepping the redirect-URL
+       allowlist problems that come with signInWithOAuth({provider:'apple'}). -->
+  <script type="text/javascript" src="https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js" defer></script>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
@@ -1144,13 +1149,12 @@ let sb = null;
 try { if (CONFIG.supabaseKey) sb = window.supabase.createClient(CONFIG.supabaseUrl, CONFIG.supabaseKey); } catch(e) {}
 let currentUser = null, ptMode = 'login';
 const ORG_BANNER_DISMISSED_KEY = 'ah-org-banner-dismissed';
-const KNOWN_CLINIC_CODES = { 'AAACLINICS-001': { name: 'Anti-Aging Academic Clinic', active: true } };
-
-function getClinicPortalUrl(code){
-  const c = String(code||'').toUpperCase();
-  if (c.startsWith('AAACLINICS')) return '/aaaclinics-portal';
-  return null;
-}
+// Legacy hard-coded clinic codes used to point at static /aaaclinics-portal,
+// which was removed when portals moved to the AI editor + /c/<slug> shell.
+// Keep the function around so call sites work, but always return null so
+// patients land on this dashboard instead of a 404.
+const KNOWN_CLINIC_CODES = {};
+function getClinicPortalUrl(_code){ return null; }
 function userHasOrg(){ return !!(currentUser?.org_id || currentUser?.code); }
 
 function handleBookClick(){
@@ -1322,15 +1326,64 @@ async function ptGoogleAuth(){
   } catch(err){ showMsg('pt-err',err.message||'Google sign-in failed.','err'); }
 }
 
-// Apple sign-in (web). Uses the same OAuth flow as Google. Requires the
-// 'apple' provider to be enabled in Supabase Auth → Providers. If it
-// isn't, Supabase returns a clear "provider is not enabled" error.
+// Apple sign-in (web) — JS SDK + signInWithIdToken.
+//
+// Why not signInWithOAuth({provider:'apple'})? That uses the redirect
+// flow: Supabase sends users to Apple with redirect_uri pointing at
+// the Supabase project (…supabase.co/auth/v1/callback). Apple requires
+// that exact redirect_uri be whitelisted in the Services ID's Return
+// URLs. In practice that allowlist is finicky (exact-match, slow to
+// propagate) and breaks easily.
+//
+// This SDK flow keeps the redirect inside Apple's popup, lets Apple
+// post back to a URL on our verified domain (acuros.ca), and gives us
+// the identity_token directly in JS. We then exchange that with
+// Supabase via signInWithIdToken — no Supabase redirect involved.
+//
+// Apple Services ID requirements:
+//   • Domains list includes  acuros.ca         (already configured)
+//   • Return URLs includes   https://acuros.ca/patient-portal
 async function ptAppleAuth(){
-  if(!sb){showMsg('pt-err','Auth not configured.','err');return;}
+  if(!sb){ showMsg('pt-err','Auth not configured.','err'); return; }
+  hideMsg('pt-err','pt-ok');
   try{
-    const{error}=await sb.auth.signInWithOAuth({provider:'apple',options:{redirectTo:window.location.origin+'/patient-portal?portal=1'}});
-    if(error)throw error;
-  } catch(err){ showMsg('pt-err',err.message||'Apple sign-in failed.','err'); }
+    if(typeof window.AppleID === 'undefined' || !AppleID?.auth){
+      throw new Error('Apple Sign In is still loading. Try again in a moment.');
+    }
+    // Random nonce — Apple hashes it into the id_token; Supabase
+    // verifies the hash matches. Prevents replay attacks.
+    const rawNonce = crypto.getRandomValues(new Uint8Array(32))
+      .reduce((s,b)=>s+b.toString(16).padStart(2,'0'),'');
+    const hashedNonce = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(rawNonce))
+      .then(buf => Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join(''));
+
+    AppleID.auth.init({
+      clientId: 'ca.appleacuros.app',
+      scope: 'name email',
+      redirectURI: window.location.origin + '/patient-portal',
+      state: 'acuros-' + Math.random().toString(36).slice(2,10),
+      nonce: hashedNonce,
+      usePopup: true,
+    });
+
+    const result = await AppleID.auth.signIn();
+    const id_token = result?.authorization?.id_token;
+    if(!id_token) throw new Error('Apple did not return an identity token.');
+
+    const { error } = await sb.auth.signInWithIdToken({
+      provider: 'apple',
+      token: id_token,
+      nonce: rawNonce,
+    });
+    if(error) throw error;
+    // onAuthStateChange takes it from here.
+  } catch(err){
+    // Apple's SDK rejects with { error: 'popup_closed_by_user', ... }
+    // when the user dismisses the popup — that's not really an error.
+    if(err?.error === 'popup_closed_by_user') return;
+    const msg = err?.error || err?.message || 'Apple sign-in failed.';
+    showMsg('pt-err', msg, 'err');
+  }
 }
 
 // Send (or re-send) an OTP to the current ptOTPState.email.
@@ -1805,47 +1858,74 @@ async function ensureRoleConfirmed(userId, userEmail, userName){
   });
 }
 
+// Single-pass auth handler.
+//
+// Previously this fired off two syncPortal() calls — once with a stub
+// currentUser (no profile data, "friend" greeting, no clinic) and a
+// second time after fetchProfile resolved. The intermediate render
+// caused a visible flicker that made the dashboard feel laggy.
+//
+// Now: we run all required pre-render work in parallel where possible,
+// AWAIT all of it, then sync once with the merged user object.
+// Worst-case latency is bounded by the slowest of the three queries
+// instead of being their sum.
+let _ptAuthInFlight = false;
 if(sb?.auth?.onAuthStateChange){
   sb.auth.onAuthStateChange(async(event,session)=>{
-    if(session?.user){
-      // Make sure the user has chosen patient vs clinic_owner before
-      // any further redirect logic runs.
+    if(window.location.hash?.includes('access_token')){
+      window.history.replaceState(null,'',window.location.pathname+window.location.search);
+    }
+
+    if(!session?.user){
+      if(event === 'SIGNED_OUT' || event === 'INITIAL_SESSION'){
+        currentUser = null;
+        syncPortal();
+      }
+      return;
+    }
+
+    // Skip if another handler is mid-flight, or if the same user is
+    // already hydrated (TOKEN_REFRESHED can fire repeatedly; ptLogin /
+    // ptVerifyOTP already build currentUser inline so we skip the
+    // duplicate handler firing afterwards).
+    if(_ptAuthInFlight) return;
+    if(currentUser?.id === session.user.id && event !== 'SIGNED_IN') return;
+    _ptAuthInFlight = true;
+
+    try{
+      // Role gate runs first because it can show a blocking modal.
       await ensureRoleConfirmed(
         session.user.id,
         session.user.email,
         session.user.user_metadata?.full_name
       );
 
-      // Owners get redirected before any patient-portal hydration runs.
-      if (await ownerRedirectIfApplicable(session.user.id)) return;
+      // Owner redirect + profile fetch in parallel. ownerRedirectIfApplicable
+      // will window.location.replace() before this promise resolves, so
+      // the profile result only gets used when the user stays on this page.
+      const [redirected, profile] = await Promise.all([
+        ownerRedirectIfApplicable(session.user.id),
+        fetchProfile(session.user.id).catch(()=>null),
+      ]);
+      if (redirected) return;
 
       currentUser = {
-        id:session.user.id, email:session.user.email,
-        name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'User',
-        first:'', last:'', code:'', org_id:'', org_name:'',
-        tier:'free', created_at:session.user.created_at
+        id: session.user.id,
+        email: session.user.email,
+        name:  profile?.name || session.user.user_metadata?.full_name || (session.user.email||'').split('@')[0] || 'User',
+        first: profile?.first_name || '',
+        last:  profile?.last_name  || '',
+        code:  profile?.patient_code || '',
+        org_id:profile?.org_id || '',
+        org_name: profile?.org?.name || '',
+        tier:  profile?.tier || 'free',
+        account_code: profile?.account_code || '',
+        role:  profile?.role || 'patient',
+        created_at: profile?.created_at || session.user.created_at,
       };
       syncPortal();
-      try{
-        const p = await fetchProfile(session.user.id);
-        if(p && currentUser){
-          currentUser.name = p.name || currentUser.name;
-          currentUser.first = p.first_name || '';
-          currentUser.last = p.last_name || '';
-          currentUser.code = p.patient_code || '';
-          currentUser.org_id = p.org_id || '';
-          currentUser.org_name = p.org?.name || '';
-          currentUser.tier = p.tier || 'free';
-          if(p.created_at) currentUser.created_at = p.created_at;
-          syncPortal();
-        }
-      } catch(_e){}
-    } else if(event==='SIGNED_OUT'){
-      currentUser = null;
-      syncPortal();
-    }
-    if(window.location.hash?.includes('access_token')){
-      window.history.replaceState(null,'',window.location.pathname+window.location.search);
+    } finally {
+      _ptAuthInFlight = false;
     }
   });
 } else { syncPortal(); }
