@@ -1357,10 +1357,16 @@ async function ptAppleAuth(){
     const hashedNonce = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(rawNonce))
       .then(buf => Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join(''));
 
+    // Pin to the apex domain (acuros.ca). Apple's Services ID Domains
+    // list only contains `acuros.ca` — pinning here means the user only
+    // needs ONE Return URL registered, regardless of whether they're
+    // visiting acuros.ca or www.acuros.ca. response_mode=web_message
+    // delivers Apple's reply via postMessage to the opener, so the
+    // popup-opener origin doesn't need to match the redirect URI.
     AppleID.auth.init({
       clientId: 'ca.appleacuros.app',
       scope: 'name email',
-      redirectURI: window.location.origin + '/patient-portal',
+      redirectURI: 'https://acuros.ca/patient-portal',
       state: 'acuros-' + Math.random().toString(36).slice(2,10),
       nonce: hashedNonce,
       usePopup: true,
