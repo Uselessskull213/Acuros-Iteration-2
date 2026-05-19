@@ -13,8 +13,8 @@
   <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png"/>
   <link rel="icon" type="image/png" sizes="512x512" href="/favicon-512.png"/>
   <link rel="manifest" href="/site.webmanifest"/>
-  <meta name="theme-color" content="#c9a96e"/>
-  <meta name="description" content="Ask medical questions with confidence. Powered by Gemini with evidence-based reasoning."/>
+  <meta name="theme-color" content="#2a6dc9"/>
+  <meta name="description" content="Ask medical questions with confidence. Powered by Claude with evidence-based reasoning."/>
   <link rel="canonical" href="https://acuros.ca/ai-assistant"/>
   <meta property="og:type" content="website"/>
   <meta property="og:url" content="https://acuros.ca/ai-assistant"/>
@@ -23,7 +23,7 @@
   <meta property="og:image:width" content="1400"/>
   <meta property="og:image:height" content="900"/>
   <meta name="twitter:image" content="https://acuros.ca/hero-bg.jpg"/>
-<meta property="og:description" content="Ask medical questions with confidence. Powered by Gemini with evidence-based reasoning."/>
+<meta property="og:description" content="Ask medical questions with confidence. Powered by Claude with evidence-based reasoning."/>
   <meta property="og:site_name" content="Acuros Health"/>
   <meta name="twitter:card" content="summary"/>
   <script src="https://cdn.tailwindcss.com"></script>
@@ -41,7 +41,7 @@
     html.dark{
       --bg:#0c0c0a;--bg2:#111110;--bg3:#161614;
       --border:#1e1e1b;--text:#f0ede8;--sub:#8c8880;--mute:#4e4c48;
-      --ac:#c9a96e;--nav:rgba(12,12,10,.97);--shadow:0 4px 60px rgba(0,0,0,.6)
+      --ac:#4990d4;--nav:rgba(12,12,10,.97);--shadow:0 4px 60px rgba(0,0,0,.6)
     }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     html{scroll-behavior:smooth}
@@ -81,19 +81,19 @@
     .btn:not([disabled]):active{transform:scale(.97);transition-duration:80ms}
     .btn-pill{border-radius:100px}
     .btn-solid{background:var(--text);color:var(--bg);border-color:var(--text)}
-    .btn-solid:hover{background:var(--ac);color:#fff;border-color:var(--ac);box-shadow:0 10px 28px -10px rgba(201,169,110,.55)}
+    .btn-solid:hover{background:var(--ac);color:#fff;border-color:var(--ac);box-shadow:0 10px 28px -10px rgba(73,144,212,.55)}
     .btn-outline{background:transparent;color:var(--text);border-color:var(--border)}
     .btn-outline:hover{border-color:var(--ac);color:var(--ac);background:rgba(201,146,42,.06)}
-    html.dark .btn-outline:hover{background:rgba(201,169,110,.06)}
+    html.dark .btn-outline:hover{background:rgba(73,144,212,.06)}
     html:not(.dark) .btn-solid{background:#1c1a14;color:#fff;border-color:#1c1a14}
     html:not(.dark) .btn-solid:hover{background:var(--ac);color:#fff;border-color:var(--ac)}
     .btn-ac{background:var(--ac);color:#fff;border-color:var(--ac)}
-    .btn-ac:hover{filter:brightness(1.08);box-shadow:0 10px 28px -10px rgba(201,169,110,.5)}
+    .btn-ac:hover{filter:brightness(1.08);box-shadow:0 10px 28px -10px rgba(73,144,212,.5)}
     .mag{display:inline-flex;transition:transform .38s cubic-bezier(.22,1,.36,1)}
 
     .card{background:var(--bg2);border:1px solid var(--border);transition:border-color .28s}
     .inp{width:100%;background:var(--bg3);border:1px solid var(--border);padding:.78rem 1rem;font-size:.875rem;color:var(--text);font-family:inherit;outline:none;transition:border-color .22s,box-shadow .22s}
-    .inp:focus{border-color:var(--ac);box-shadow:0 0 0 3px rgba(201,169,110,.1);background:var(--bg2)}
+    .inp:focus{border-color:var(--ac);box-shadow:0 0 0 3px rgba(73,144,212,.1);background:var(--bg2)}
     .inp::placeholder{color:var(--mute)}
     .lbl{font-family:'DM Sans',sans-serif;font-size:.58rem;letter-spacing:.26em;text-transform:uppercase;color:var(--mute);font-weight:500}
     .hr{height:1px;background:var(--border)}
@@ -123,7 +123,7 @@
     .thinking span:nth-child(2){animation-delay:.2s}
     .thinking span:nth-child(3){animation-delay:.4s}
 
-    @keyframes glow{0%,100%{box-shadow:0 0 4px 1px rgba(201,169,110,.2)}50%{box-shadow:0 0 14px 5px rgba(201,169,110,.4)}}
+    @keyframes glow{0%,100%{box-shadow:0 0 4px 1px rgba(73,144,212,.2)}50%{box-shadow:0 0 14px 5px rgba(73,144,212,.4)}}
     .glow-dot{animation:glow 2.2s ease infinite}
 
     /* ── Bgs ── */
@@ -132,7 +132,7 @@
     /* ── Use case cards ── */
     .use-card{background:var(--bg2);padding:2rem;border:1px solid var(--border);transition:border-color .28s,transform .35s cubic-bezier(.22,1,.36,1);will-change:transform;position:relative;overflow:hidden}
     .use-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:var(--ac);transform:scaleX(0);transform-origin:left;transition:transform .38s cubic-bezier(.22,1,.36,1)}
-    .use-card:hover{border-color:rgba(201,169,110,.3);transform:translateY(-3px)}
+    .use-card:hover{border-color:rgba(73,144,212,.3);transform:translateY(-3px)}
     .use-card:hover::before{transform:scaleX(1)}
 
     /* ── Hero stat chips ── */
@@ -166,7 +166,7 @@
     .g-card:hover{
       transform:translateY(-6px);
       background:rgba(255,255,255,.068);
-      box-shadow:0 24px 72px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.13),0 0 0 1px rgba(201,169,110,.12)
+      box-shadow:0 24px 72px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.13),0 0 0 1px rgba(73,144,212,.12)
     }
     html:not(.dark) .g-card{
       background:var(--bg2);border-color:var(--border);
@@ -175,7 +175,7 @@
     }
     html:not(.dark) .g-card:hover{
       background:var(--bg2);
-      box-shadow:0 8px 40px rgba(0,0,0,.1),0 0 0 1px rgba(201,169,110,.22)
+      box-shadow:0 8px 40px rgba(0,0,0,.1),0 0 0 1px rgba(73,144,212,.22)
     }
     .orb{position:absolute;border-radius:50%;pointer-events:none}
 
@@ -213,8 +213,8 @@
       box-shadow:0 0 0 3px rgba(201,146,42,.10),0 1px 0 rgba(255,255,255,.6) inset
     }
     html.dark .chat-dock-inner:focus-within{
-      border-color:rgba(201,169,110,.45);
-      box-shadow:0 0 0 3px rgba(201,169,110,.10),0 1px 0 rgba(255,255,255,.04) inset
+      border-color:rgba(73,144,212,.45);
+      box-shadow:0 0 0 3px rgba(73,144,212,.10),0 1px 0 rgba(255,255,255,.04) inset
     }
     .chat-dock-textarea{
       width:100%;min-height:56px;max-height:200px;resize:none;border:0;outline:none;background:transparent;
@@ -267,7 +267,7 @@
       transition:border-color .22s,color .22s,background .22s,transform .22s;
     }
     .suggest-chip:hover{border-color:var(--ac);color:var(--ac);background:rgba(201,146,42,.05)}
-    html.dark .suggest-chip:hover{background:rgba(201,169,110,.05)}
+    html.dark .suggest-chip:hover{background:rgba(73,144,212,.05)}
     .suggest-chip:active{transform:scale(.97)}
     .suggest-chip:focus-visible{outline:2px solid rgba(201,146,42,.5);outline-offset:2px}
     .suggest-chip-dot{width:5px;height:5px;border-radius:50%;background:var(--ac);opacity:.55}
@@ -293,7 +293,7 @@
       filter:blur(60px);pointer-events:none;z-index:0;opacity:0;
       transition:opacity .55s cubic-bezier(.22,1,.36,1)
     }
-    html.dark .chat-blob{background:radial-gradient(circle,rgba(201,169,110,.16) 0%,transparent 65%)}
+    html.dark .chat-blob{background:radial-gradient(circle,rgba(73,144,212,.16) 0%,transparent 65%)}
     .card.glass-chat:focus-within .chat-blob,
     .card.glass-chat.focused .chat-blob{opacity:.85}
     @media (prefers-reduced-motion:reduce){.chat-blob{transition:none}}
@@ -310,7 +310,7 @@
     .use-card:hover{
       transform:translateY(-7px)!important;
       background:rgba(255,255,255,.062)!important;
-      box-shadow:0 20px 60px rgba(0,0,0,.46),inset 0 1px 0 rgba(255,255,255,.12),0 0 0 1px rgba(201,169,110,.12)!important
+      box-shadow:0 20px 60px rgba(0,0,0,.46),inset 0 1px 0 rgba(255,255,255,.12),0 0 0 1px rgba(73,144,212,.12)!important
     }
     html:not(.dark) .use-card{
       background:var(--bg2)!important;border-color:var(--border)!important;
@@ -318,7 +318,7 @@
     }
     html:not(.dark) .use-card:hover{
       background:var(--bg2)!important;
-      box-shadow:0 8px 40px rgba(0,0,0,.1),0 0 0 1px rgba(201,169,110,.22)!important
+      box-shadow:0 8px 40px rgba(0,0,0,.1),0 0 0 1px rgba(73,144,212,.22)!important
     }
 
     /* Glass how-it-works panel */
@@ -519,14 +519,14 @@
     <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,7,6,.4) 0%,rgba(8,7,6,.6) 60%,rgba(8,7,6,.92) 100%)"></div>
     <div class="mesh" style="position:absolute;inset:0;opacity:.06"></div>
     <!-- Ambient orbs -->
-    <div class="orb" style="top:-10%;right:-5%;width:50vw;height:50vw;background:radial-gradient(circle,rgba(201,169,110,.12) 0%,transparent 65%)"></div>
-    <div class="orb" style="bottom:0%;left:10%;width:30vw;height:30vw;background:radial-gradient(circle,rgba(201,169,110,.07) 0%,transparent 65%)"></div>
+    <div class="orb" style="top:-10%;right:-5%;width:50vw;height:50vw;background:radial-gradient(circle,rgba(73,144,212,.12) 0%,transparent 65%)"></div>
+    <div class="orb" style="bottom:0%;left:10%;width:30vw;height:30vw;background:radial-gradient(circle,rgba(73,144,212,.07) 0%,transparent 65%)"></div>
     <div style="position:relative;max-width:1320px;margin:0 auto;width:100%">
       <h1 class="rv d1" style="font-size:clamp(3rem,7.5vw,6rem);font-weight:200;color:#f4efe7;margin-bottom:1.5rem;letter-spacing:-.035em;line-height:.95">Intelligent Health<br/><em style="color:var(--ac);font-style:italic">Dialogue.</em></h1>
-      <p class="rv d2" style="font-size:.93rem;color:rgba(244,239,231,.65);max-width:46ch;line-height:1.9;margin-bottom:2.5rem">Ask medical questions with confidence. Powered by Gemini with evidence-based reasoning, structured logic, and safety governance.</p>
+      <p class="rv d2" style="font-size:.93rem;color:rgba(244,239,231,.65);max-width:46ch;line-height:1.9;margin-bottom:2.5rem">Ask medical questions with confidence. Powered by Claude with evidence-based reasoning, structured logic, and safety governance.</p>
       <!-- Mellow text-only signals (no boxes, no backgrounds). -->
       <div class="rv d3" style="display:flex;flex-wrap:wrap;gap:1.5rem;align-items:center;font-family:'DM Sans',sans-serif">
-        <span style="font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(244,239,231,.32)">Gemini-powered</span>
+        <span style="font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(244,239,231,.32)">Claude-powered</span>
         <span style="width:3px;height:3px;border-radius:50%;background:rgba(244,239,231,.18)"></span>
         <span style="font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(244,239,231,.32)">Evidence-based</span>
         <span style="width:3px;height:3px;border-radius:50%;background:rgba(244,239,231,.18)"></span>
@@ -551,7 +551,7 @@
 
           <div style="padding:.875rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.625rem;position:relative;z-index:1">
             <div class="glow-dot" style="width:7px;height:7px;border-radius:50%;background:var(--ac);flex-shrink:0"></div>
-            <span class="lbl">Acuros AI · Gemini-Powered</span>
+            <span class="lbl">Acuros AI · Claude-Powered</span>
             <span id="ai-status" style="margin-left:auto;font-size:.63rem;color:var(--mute)"></span>
           </div>
 
@@ -633,8 +633,8 @@
 
   <!-- Use cases -->
   <section style="border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--bg2);position:relative;overflow:hidden">
-    <div class="orb" style="top:-20%;right:-10%;width:44vw;height:44vw;background:radial-gradient(circle,rgba(201,169,110,.05) 0%,transparent 65%)"></div>
-    <div class="orb" style="bottom:-10%;left:-5%;width:28vw;height:28vw;background:radial-gradient(circle,rgba(201,169,110,.04) 0%,transparent 65%)"></div>
+    <div class="orb" style="top:-20%;right:-10%;width:44vw;height:44vw;background:radial-gradient(circle,rgba(73,144,212,.05) 0%,transparent 65%)"></div>
+    <div class="orb" style="bottom:-10%;left:-5%;width:28vw;height:28vw;background:radial-gradient(circle,rgba(73,144,212,.04) 0%,transparent 65%)"></div>
     <div style="max-width:1320px;margin:0 auto;padding:5rem 2rem;position:relative;z-index:1">
       <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:3rem;flex-wrap:wrap;gap:1.5rem">
         <div>

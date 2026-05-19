@@ -13,7 +13,7 @@
   <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png"/>
   <link rel="icon" type="image/png" sizes="512x512" href="/favicon-512.png"/>
   <link rel="manifest" href="/site.webmanifest"/>
-  <meta name="theme-color" content="#c9a96e"/>
+  <meta name="theme-color" content="#2a6dc9"/>
   <meta name="description" content="Give your clinic a branded patient portal with AI health support, loyalty rewards, and secure records. Built for Canadian healthcare providers."/>
   <link rel="canonical" href="https://acuros.ca/"/>
   <meta property="og:type" content="website"/>
@@ -40,7 +40,7 @@
     html.dark{
       --bg:#0a0a09;--bg2:#111110;--bg3:#161614;
       --border:#1e1e1b;--text:#f0ede8;--sub:#8c8880;--mute:#4e4c48;
-      --ac:#c9a96e;--nav:rgba(10,10,9,.96)
+      --ac:#4990d4;--nav:rgba(10,10,9,.96)
     }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     html{scroll-behavior:smooth}
@@ -104,8 +104,8 @@
 
     /* Solid CTA, primary action, always high-contrast both themes */
     .btn-solid{background:var(--text);color:var(--bg);border-color:var(--text)}
-    .btn-solid:hover{background:var(--ac);color:#fff;border-color:var(--ac);box-shadow:0 10px 28px -10px rgba(201,169,110,.55)}
-    html.dark .btn-solid:hover{box-shadow:0 10px 32px -8px rgba(201,169,110,.45)}
+    .btn-solid:hover{background:var(--ac);color:#fff;border-color:var(--ac);box-shadow:0 10px 28px -10px rgba(73,144,212,.55)}
+    html.dark .btn-solid:hover{box-shadow:0 10px 32px -8px rgba(73,144,212,.45)}
 
     /* Outline / ghost, for secondary, theme aware over light bg */
     .btn-outline{background:transparent;color:var(--text);border-color:var(--border)}
@@ -113,7 +113,7 @@
     .hero-ctas .btn-outline{color:rgba(255,255,255,.92);border-color:rgba(255,255,255,.28);background:rgba(255,255,255,.03);backdrop-filter:blur(8px) saturate(160%);-webkit-backdrop-filter:blur(8px) saturate(160%)}
     .hero-ctas .btn-outline:hover{background:rgba(255,255,255,.1);border-color:#fff;color:#fff}
     .btn-outline:hover{border-color:var(--ac);color:var(--ac);background:rgba(201,146,42,.06)}
-    html.dark .btn-outline:hover{background:rgba(201,169,110,.06)}
+    html.dark .btn-outline:hover{background:rgba(73,144,212,.06)}
 
     /* Light mode tightening, primary should never go invisible */
     html:not(.dark) .btn-solid{background:#1c1a14;color:#fff;border-color:#1c1a14}
@@ -194,7 +194,7 @@
     .ai-headline em{color:var(--ac);font-style:italic}
     .bubble{padding:1.125rem 1.5rem;font-size:.8rem;line-height:1.78;position:relative;font-family:'DM Sans',sans-serif}
     .bubble-q{background:var(--bg3);border:1px solid var(--border);color:var(--sub);align-self:flex-end;max-width:32ch}
-    .bubble-a{background:rgba(201,169,110,.06);border:1px solid rgba(201,169,110,.18);color:var(--text);max-width:40ch}
+    .bubble-a{background:rgba(73,144,212,.06);border:1px solid rgba(73,144,212,.18);color:var(--text);max-width:40ch}
     html.dark .bubble-a{color:rgba(240,237,232,.8)}
     .bubble-a::before{content:'AI';position:absolute;top:-1px;left:-1px;font-family:'DM Sans',sans-serif;font-size:.44rem;letter-spacing:.22em;padding:.22rem .55rem;background:var(--ac);color:var(--bg);font-weight:500}
 
@@ -238,7 +238,7 @@
     .inp-wrap.in{opacity:1;transform:none}
     .inp-wrap.d1{transition-delay:.06s}.inp-wrap.d2{transition-delay:.12s}.inp-wrap.d3{transition-delay:.18s}.inp-wrap.d4{transition-delay:.24s}.inp-wrap.d5{transition-delay:.30s}
     #ct-submit-btn{transition:background .22s,transform .22s,box-shadow .22s}
-    #ct-submit-btn:hover{box-shadow:0 8px 32px rgba(201,169,110,.28)}
+    #ct-submit-btn:hover{box-shadow:0 8px 32px rgba(73,144,212,.28)}
     #ct-submit-btn:active{transform:scale(0.97)}
     .ct-stat{display:flex;flex-direction:column;gap:.2rem;position:relative}
     .ct-stat-num{font-family:'Cormorant Garamond',serif;font-size:2.75rem;font-weight:200;color:rgba(240,237,232,.9);line-height:1;letter-spacing:-.04em}
@@ -271,7 +271,7 @@
     }
     .g-card:hover{
       background:rgba(255,255,255,.07);
-      box-shadow:0 28px 80px rgba(0,0,0,.52),inset 0 1px 0 rgba(255,255,255,.13),0 0 0 1px rgba(201,169,110,.14)
+      box-shadow:0 28px 80px rgba(0,0,0,.52),inset 0 1px 0 rgba(255,255,255,.13),0 0 0 1px rgba(73,144,212,.14)
     }
     html:not(.dark) .g-card{
       background:var(--bg2);
@@ -281,7 +281,7 @@
     }
     html:not(.dark) .g-card:hover{
       background:var(--bg2);
-      box-shadow:0 8px 40px rgba(0,0,0,.1),0 0 0 1px rgba(201,169,110,.22)
+      box-shadow:0 8px 40px rgba(0,0,0,.1),0 0 0 1px rgba(73,144,212,.22)
     }
     html:not(.dark) .g-card div[style*="height:1px"]{background:var(--border)!important}
 
@@ -526,8 +526,8 @@
   <div id="hero-tint" style="position:absolute;inset:0;pointer-events:none"></div>
 
   <!-- Ambient orbs (subtle parallax drift) -->
-  <div class="orb px" data-px=".05" style="top:-8%;right:-4%;width:56vw;height:56vw;background:radial-gradient(circle,rgba(201,169,110,.07) 0%,transparent 65%)"></div>
-  <div class="orb px" data-px=".035" style="bottom:-12%;left:-8%;width:38vw;height:38vw;background:radial-gradient(circle,rgba(201,169,110,.04) 0%,transparent 65%)"></div>
+  <div class="orb px" data-px=".05" style="top:-8%;right:-4%;width:56vw;height:56vw;background:radial-gradient(circle,rgba(73,144,212,.07) 0%,transparent 65%)"></div>
+  <div class="orb px" data-px=".035" style="bottom:-12%;left:-8%;width:38vw;height:38vw;background:radial-gradient(circle,rgba(73,144,212,.04) 0%,transparent 65%)"></div>
 
   <div style="position:relative;z-index:10;max-width:1440px;margin:0 auto;padding:0 3rem;width:100%">
     <h1 class="hero-title" style="margin-bottom:2.75rem">
@@ -587,7 +587,7 @@
      FEATURE CARDS, image-led, FoundersCard-style
 ════════════════════════════════════ -->
 <section style="background:var(--bg);position:relative;z-index:4;padding:6rem 3rem 8rem;overflow:visible">
-  <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 70% 40%,rgba(201,169,110,.04) 0%,transparent 65%);pointer-events:none"></div>
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 70% 40%,rgba(73,144,212,.04) 0%,transparent 65%);pointer-events:none"></div>
   <div style="max-width:1440px;margin:0 auto;position:relative;z-index:1">
 
     <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1.5rem;margin-bottom:4rem">
@@ -605,7 +605,7 @@
         <div class="bcard-body">
           <div class="bcard-tag">AI Assistant</div>
           <h3 class="bcard-h">Evidence-based <em>answers.</em></h3>
-          <p class="bcard-p">Lab interpretation, diagnosis clarity, and appointment prep - 24/7, powered by Gemini.</p>
+          <p class="bcard-p">Lab interpretation, diagnosis clarity, and appointment prep - 24/7, powered by Claude.</p>
           <span class="bcard-cta">Try it free <span>→</span></span>
         </div>
       </a>
@@ -783,7 +783,7 @@
 ════════════════════════════════════ -->
 <section style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);position:relative;overflow:hidden">
   <!-- Ambient orb -->
-  <div style="position:absolute;top:-12%;right:-8%;width:55vw;height:55vw;background:radial-gradient(circle,rgba(201,169,110,.05) 0%,transparent 68%);pointer-events:none;border-radius:50%"></div>
+  <div style="position:absolute;top:-12%;right:-8%;width:55vw;height:55vw;background:radial-gradient(circle,rgba(73,144,212,.05) 0%,transparent 68%);pointer-events:none;border-radius:50%"></div>
 
   <div style="max-width:1440px;margin:0 auto;padding:6rem 3rem;display:grid;grid-template-columns:1fr 1fr;gap:7rem;align-items:center" class="g1m">
     <div>
@@ -797,7 +797,7 @@
       <div style="margin-top:3.5rem;padding-top:2.5rem;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:1rem" class="rv d4">
         <div style="display:flex;align-items:center;gap:1rem">
           <span style="width:5px;height:5px;background:var(--ac);border-radius:50%;flex-shrink:0"></span>
-          <span style="font-size:.78rem;color:var(--sub)">Powered by Gemini - evidence-based, not generic</span>
+          <span style="font-size:.78rem;color:var(--sub)">Powered by Claude - evidence-based, not generic</span>
         </div>
         <div style="display:flex;align-items:center;gap:1rem">
           <span style="width:5px;height:5px;background:var(--ac);border-radius:50%;flex-shrink:0"></span>
@@ -821,9 +821,9 @@
       </div>
       <div class="g-card" style="padding:2rem;display:flex;flex-direction:column;gap:1rem;border-radius:0 0 1rem 1rem;border-top:none">
         <div class="bubble bubble-q" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:.5rem">"What does my ferritin level of 12 ng/mL mean?"</div>
-        <div class="bubble bubble-a" style="background:rgba(201,169,110,.05);border:1px solid rgba(201,169,110,.16);border-radius:.5rem">A ferritin of 12 ng/mL is at the low end of the normal range and may indicate early iron depletion. Your doctor may recommend dietary adjustments or supplementation.</div>
+        <div class="bubble bubble-a" style="background:rgba(73,144,212,.05);border:1px solid rgba(73,144,212,.16);border-radius:.5rem">A ferritin of 12 ng/mL is at the low end of the normal range and may indicate early iron depletion. Your doctor may recommend dietary adjustments or supplementation.</div>
         <div class="bubble bubble-q" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:.5rem">"Can you help me prepare questions for my checkup?"</div>
-        <div class="bubble bubble-a" style="background:rgba(201,169,110,.05);border:1px solid rgba(201,169,110,.16);border-radius:.5rem">Absolutely. Based on your profile, here are three questions worth discussing with your care team - tailored to your current health record.</div>
+        <div class="bubble bubble-a" style="background:rgba(73,144,212,.05);border:1px solid rgba(73,144,212,.16);border-radius:.5rem">Absolutely. Based on your profile, here are three questions worth discussing with your care team - tailored to your current health record.</div>
         <div style="display:flex;align-items:center;gap:.625rem;padding-left:.25rem">
           <div style="width:4px;height:4px;background:var(--ac);animation:pulse 1.8s ease-in-out infinite;border-radius:50%"></div>
           <span style="font-size:.58rem;letter-spacing:.16em;color:var(--mute);font-family:'DM Sans',sans-serif">AI is typing…</span>
@@ -840,7 +840,7 @@
      CTA BANNER, full-width dark strip before contact
 ════════════════════════════════════ -->
 <div style="background:var(--bg2);border-bottom:1px solid var(--border);padding:5rem 3rem;text-align:center;position:relative;overflow:hidden">
-  <div style="position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(201,169,110,.04) 0%,transparent 70%);pointer-events:none"></div>
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(73,144,212,.04) 0%,transparent 70%);pointer-events:none"></div>
   <div style="position:relative;z-index:1">
     <h2 class="rv d1" style="font-family:'Cormorant Garamond',serif;font-size:clamp(2.75rem,6vw,5.5rem);font-weight:200;letter-spacing:-.035em;line-height:.96;margin-bottom:2.5rem;max-width:22ch;margin-left:auto;margin-right:auto">
       The patient portal your clinic<br/><em style="color:var(--ac);font-style:italic">deserves.</em>
@@ -861,7 +861,7 @@
   <!-- Left: always-dark accent panel -->
   <div style="background:#0c0b09;padding:7rem 5rem;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden">
     <!-- Ambient orb -->
-    <div style="position:absolute;top:50%;left:50%;width:70%;height:70%;background:radial-gradient(circle,rgba(201,169,110,.06) 0%,transparent 65%);border-radius:50%;transform:translate(-50%,-50%);pointer-events:none;animation:ctaOrb 8s ease-in-out infinite"></div>
+    <div style="position:absolute;top:50%;left:50%;width:70%;height:70%;background:radial-gradient(circle,rgba(73,144,212,.06) 0%,transparent 65%);border-radius:50%;transform:translate(-50%,-50%);pointer-events:none;animation:ctaOrb 8s ease-in-out infinite"></div>
 
     <!-- Label + animated gold bar -->
     <div class="rv" style="margin-bottom:1.75rem">
