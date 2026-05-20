@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <meta name="robots" content="noindex"/>
-<title>Portal Editor — Acuros Health</title>
+<title>Portal Editor · Acuros Health</title>
 <link rel="icon" type="image/png" href="/favicon-32.png"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -156,7 +156,7 @@ a:hover{color:var(--ac-hi)}
 <header class="topbar" id="topbar" hidden>
   <div class="topbar-l">
     <span class="topbar-logo">Acuros <em>Editor</em></span>
-    <span class="topbar-crumb" id="clinicCrumb">— Loading…</span>
+    <span class="topbar-crumb" id="clinicCrumb">Loading…</span>
   </div>
   <div class="topbar-r">
     <span class="status-pill" id="status"><span class="dot"></span><span id="statusLabel">Loading</span></span>
@@ -400,7 +400,7 @@ a:hover{color:var(--ac-hi)}
 
   // ── Seed initial state ─────────────────────────────────
   function seedFromOrg(){
-    $.crumb.textContent = '— ' + (state.org.name || 'Untitled clinic');
+    $.crumb.textContent = state.org.name || 'Untitled clinic';
     state.publishedHtml = state.org.portal_html || '';
 
     // Restore a local draft if it's different from the persisted version.
@@ -443,7 +443,7 @@ a:hover{color:var(--ac-hi)}
   function renderChips(){
     const hasPortal = !!state.html;
     const chips = hasPortal ? [
-      'Make the hero feel more editorial — bigger serif, more whitespace',
+      'Make the hero feel more editorial, bigger serif, more whitespace',
       'Add a doctor bios section under the hero with placeholder names',
       'Switch to a dark mode palette with cream accents',
       'Add a testimonials marquee strip',
@@ -451,7 +451,7 @@ a:hover{color:var(--ac-hi)}
     ] : [
       'Generate a premium portal for my clinic',
       'Build a portal with a hero, services grid, and contact section',
-      'Generate something editorial and minimal — lots of whitespace',
+      'Generate something editorial and minimal, lots of whitespace',
       'Build a dark, moody portal with a full-bleed hero image',
     ];
     $.chipRow.innerHTML = '';
@@ -537,7 +537,7 @@ a:hover{color:var(--ac-hi)}
     try {
       const { data: { session } } = await sb.auth.getSession();
       const token = session?.access_token;
-      if (!token) throw new Error('Session expired — please sign in again.');
+      if (!token) throw new Error('Session expired. Please sign in again.');
 
       const history = state.history
         .filter(m => m.role === 'user' || m.role === 'assistant')
@@ -585,7 +585,7 @@ a:hover{color:var(--ac-hi)}
     try {
       const { data: { session } } = await sb.auth.getSession();
       const token = session?.access_token;
-      if (!token) throw new Error('Session expired — please sign in again.');
+      if (!token) throw new Error('Session expired. Please sign in again.');
 
       const body = { html: state.html, publish: !!publish };
       if (publish && $.slugInput.value) body.slug = $.slugInput.value.toLowerCase().trim();

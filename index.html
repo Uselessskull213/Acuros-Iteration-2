@@ -119,7 +119,7 @@
     html:not(.dark) .btn-solid{background:#1c1a14;color:#fff;border-color:#1c1a14}
     html:not(.dark) .btn-solid:hover{background:var(--ac);color:#fff;border-color:var(--ac)}
 
-    .mag{display:inline-flex;transition:transform .38s cubic-bezier(.22,1,.36,1)}
+    .mag{display:inline-flex;transition:transform .55s cubic-bezier(.22,1,.36,1)}
 
     /* ── Atoms ── */
     .lbl{font-family:'DM Sans',sans-serif;font-size:.56rem;letter-spacing:.26em;text-transform:uppercase;color:var(--mute);font-weight:400}
@@ -535,11 +535,7 @@
       <span class="hl"><span class="hl-inner" id="hl2" style="color:rgba(255,255,255,.22);font-style:italic">Practice.</span></span>
     </h1>
 
-    <p class="hero-desc hero-sub" style="font-size:.92rem;color:rgba(255,255,255,.46);line-height:2.05;font-weight:300;max-width:38ch;margin:0 0 3rem">
-      Sign up. Tell our AI about your practice. Your branded patient portal is live in minutes. No sales call. No setup fee.
-    </p>
-
-    <div class="hero-ctas" style="display:flex;gap:1rem;flex-wrap:wrap">
+    <div class="hero-ctas" style="display:flex;gap:1rem;flex-wrap:wrap;margin-top:.5rem">
       <a href="/onboarding" class="btn btn-solid btn-pill mag" style="padding:.875rem 2.25rem">Set up your clinic</a>
       <a href="/patient-portal" class="btn btn-outline btn-pill mag" style="padding:.875rem 2.25rem;backdrop-filter:blur(10px)" onmouseover="this.style.background='rgba(255,255,255,.08)'" onmouseout="this.style.background=''">Patient Login</a>
     </div>
@@ -564,7 +560,6 @@
     <img src="https://images.unsplash.com/photo-1519682337058-a94d519337bc?w=1200&q=80&auto=format&fit=crop" alt="Clinical environment" loading="lazy"/>
     <div class="pp-overlay"></div>
     <div class="pp-body">
-      <span class="pp-tag">For Clinics</span>
       <h2>Strengthen every<br/><em style="font-style:italic">patient relationship.</em></h2>
       <p>Tell our AI about your clinic in six questions. Your branded patient portal goes live at acuros.ca/c/your-slug. No EMR migration, no setup fee.</p>
       <span class="pp-cta">Set up your clinic <span>→</span></span>
@@ -574,7 +569,6 @@
     <img src="https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=1200&q=80&auto=format&fit=crop" alt="Patient using health app" loading="lazy"/>
     <div class="pp-overlay"></div>
     <div class="pp-body">
-      <span class="pp-tag">For Patients</span>
       <h2>Your health,<br/><em style="font-style:italic">at your fingertips.</em></h2>
       <p>Ask health questions, prepare for appointments, earn loyalty rewards, and access clinic-curated products - all in one secure portal.</p>
       <span class="pp-cta">Patient Login <span>→</span></span>
@@ -594,7 +588,6 @@
       <div>
         <h2 class="rv d1" style="font-family:'Cormorant Garamond',serif;font-size:clamp(2.25rem,5vw,4.5rem);font-weight:200;letter-spacing:-.035em;line-height:.96">Three tools.<br/><em style="color:var(--ac);font-style:italic">One platform.</em></h2>
       </div>
-      <div class="rv d2" style="font-size:.55rem;letter-spacing:.32em;text-transform:uppercase;color:var(--mute);padding-bottom:.6rem">Featured · Always included</div>
     </div>
 
     <div class="bcard-grid stagger rv">
@@ -603,9 +596,8 @@
         <div class="bcard-img"><img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=1100&q=80&auto=format&fit=crop" alt=""/></div>
         <div class="bcard-veil"></div>
         <div class="bcard-body">
-          <div class="bcard-tag">AI Assistant</div>
           <h3 class="bcard-h">Evidence-based <em>answers.</em></h3>
-          <p class="bcard-p">Lab interpretation, diagnosis clarity, and appointment prep - 24/7, powered by Claude.</p>
+          <p class="bcard-p">Lab interpretation, diagnosis clarity, and appointment prep, 24/7, powered by Claude.</p>
           <span class="bcard-cta">Try it free <span>→</span></span>
         </div>
       </a>
@@ -614,9 +606,8 @@
         <div class="bcard-img"><img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1100&q=80&auto=format&fit=crop" alt=""/></div>
         <div class="bcard-veil"></div>
         <div class="bcard-body">
-          <div class="bcard-tag">Loyalty &amp; Rewards</div>
           <h3 class="bcard-h">Retention <em>by design.</em></h3>
-          <p class="bcard-p">Patients earn points for activity, check-ins, referrals - redeemable for clinic credits. Engagement that compounds.</p>
+          <p class="bcard-p">Patients earn points for activity, check-ins, and referrals, redeemable for clinic credits. Engagement that compounds.</p>
           <span class="bcard-cta">See how it works <span>→</span></span>
         </div>
       </a>
@@ -625,9 +616,8 @@
         <div class="bcard-img"><img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=1100&q=80&auto=format&fit=crop" alt=""/></div>
         <div class="bcard-veil"></div>
         <div class="bcard-body">
-          <div class="bcard-tag">Patient Portal</div>
           <h3 class="bcard-h">Your clinic, <em>branded.</em></h3>
-          <p class="bcard-p">Records, bookings, shop, and AI in one white-labelled portal - same day, no EMR migration.</p>
+          <p class="bcard-p">Records, bookings, shop, and AI in one white-labelled portal, same day, no EMR migration.</p>
           <span class="bcard-cta">Patient login <span>→</span></span>
         </div>
       </a>
@@ -752,7 +742,6 @@
     <div class="proc-row rv">
       <div class="proc-ghost-num">01</div>
       <div style="padding:.5rem 0">
-        <span class="proc-row-tag">Step one</span>
         <h4>Onboarding call</h4>
         <p>A 20-minute guided session with our team. We configure your clinic code, branding, product catalogue, and feature set - no technical effort on your side.</p>
       </div>
@@ -760,7 +749,6 @@
     <div class="proc-row rv d1">
       <div class="proc-ghost-num">02</div>
       <div style="padding:.5rem 0">
-        <span class="proc-row-tag">Step two</span>
         <h4>Portal goes live</h4>
         <p>The wizard structures your services, polishes your brand copy, and publishes your portal at acuros.ca/c/your-slug. Patients access it without an app install.</p>
       </div>
@@ -768,7 +756,6 @@
     <div class="proc-row rv d2" style="border-bottom:none">
       <div class="proc-ghost-num">03</div>
       <div style="padding:.5rem 0">
-        <span class="proc-row-tag">Step three</span>
         <h4>Patients stay engaged</h4>
         <p>AI guidance, loyalty rewards, and clinic-curated products keep your patients connected and returning between every visit.</p>
       </div>
@@ -817,7 +804,6 @@
         <span style="width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.14)"></span>
         <span style="width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.14)"></span>
         <span style="width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.14)"></span>
-        <span style="margin-left:auto;font-size:.5rem;letter-spacing:.22em;text-transform:uppercase;color:var(--mute)">Acuros AI</span>
       </div>
       <div class="g-card" style="padding:2rem;display:flex;flex-direction:column;gap:1rem;border-radius:0 0 1rem 1rem;border-top:none">
         <div class="bubble bubble-q" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:.5rem">"What does my ferritin level of 12 ng/mL mean?"</div>
@@ -863,12 +849,6 @@
     <!-- Ambient orb -->
     <div style="position:absolute;top:50%;left:50%;width:70%;height:70%;background:radial-gradient(circle,rgba(73,144,212,.06) 0%,transparent 65%);border-radius:50%;transform:translate(-50%,-50%);pointer-events:none;animation:ctaOrb 8s ease-in-out infinite"></div>
 
-    <!-- Label + animated gold bar -->
-    <div class="rv" style="margin-bottom:1.75rem">
-      <div style="font-size:.52rem;letter-spacing:.3em;text-transform:uppercase;color:var(--ac);font-family:'DM Sans',sans-serif;margin-bottom:.875rem">Contact &amp; Demo</div>
-      <span class="ct-line"></span>
-    </div>
-
     <!-- Headline -->
     <h3 class="rv d1" style="font-family:'Cormorant Garamond',serif;font-size:clamp(2.25rem,4vw,3.75rem);font-weight:200;line-height:1.04;margin-bottom:1.25rem;letter-spacing:-.03em;color:rgba(240,237,232,.95)">Let's set up<br/>your clinic.</h3>
     <p class="rv d2" style="font-size:.83rem;line-height:1.95;color:rgba(240,237,232,.48);max-width:32ch;margin-bottom:2.5rem">Our team will walk you through the platform and configure your clinic from day one - no commitment required.</p>
@@ -896,7 +876,6 @@
 
     <!-- Compliance tags (mellow, no boxes) -->
     <div class="rv d4" style="padding-top:1rem">
-      <div style="font-size:.5rem;letter-spacing:.28em;text-transform:uppercase;color:rgba(240,237,232,.28);font-family:'DM Sans',sans-serif;margin-bottom:.75rem">Compliance standards</div>
       <div style="display:flex;gap:1.5rem;flex-wrap:wrap;font-family:'DM Sans',sans-serif">
         <span style="font-size:.7rem;color:rgba(240,237,232,.4);letter-spacing:.05em">PIPEDA</span>
         <span style="font-size:.7rem;color:rgba(240,237,232,.4);letter-spacing:.05em">PHIPA</span>
@@ -1129,12 +1108,12 @@ window.addEventListener('scroll', () => {
   if (heroVid) heroVid.style.transform = `scaleX(-1) translateY(${sy*.22}px)`;
 }, { passive:true });
 
-/* ── Magnetic ── */
+/* ── Magnetic (subtle) ── */
 document.querySelectorAll('.mag').forEach(el => {
   el.addEventListener('mousemove', e => {
     const r  = el.getBoundingClientRect();
-    const dx = (e.clientX-(r.left+r.width/2))*.3;
-    const dy = (e.clientY-(r.top+r.height/2))*.3;
+    const dx = (e.clientX-(r.left+r.width/2))*.08;
+    const dy = (e.clientY-(r.top+r.height/2))*.08;
     el.style.transform = `translate(${dx}px,${dy}px)`;
   });
   el.addEventListener('mouseleave', () => { el.style.transform=''; });

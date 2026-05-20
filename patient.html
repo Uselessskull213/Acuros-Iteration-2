@@ -1437,7 +1437,7 @@ async function ptVerifyOTP(e){
   try{
     const{data,error}=await sb.auth.verifyOtp({ email: ptOTPState.email, token, type:'email' });
     if(error) throw error;
-    if(!data?.user) throw new Error('Verification failed — please try again.');
+    if(!data?.user) throw new Error('Verification failed. Please try again.');
 
     if(ptOTPState.purpose === 'reset'){
       const newPass = document.getElementById('pt-otp-newpass').value;
@@ -1514,7 +1514,7 @@ async function ptLogin(e){
         document.getElementById('pt-otp-newpass-field').style.display = 'none';
         document.getElementById('pt-otp-newpass').required = false;
         ptSetMode('otp');
-        showMsg('pt-ok','Two-factor is on — we sent you a 6-digit code.','ok');
+        showMsg('pt-ok','Two-factor is on. We sent you a 6-digit code.','ok');
         setBtn('pt-li-btn',false,'Sign In');
         return;
       }

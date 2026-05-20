@@ -141,7 +141,7 @@
       <span class="pill" id="status-pill"><span class="dot"></span><span id="status-text">Draft</span></span>
       <h1 class="header-h">Welcome back, <em id="dash-name">owner</em></h1>
     </div>
-    <p class="header-meta" id="dash-url">—</p>
+    <p class="header-meta" id="dash-url"></p>
   </div>
 
   <!-- Patient join code — what owners share with their patients to let
@@ -150,7 +150,7 @@
     <div>
       <div class="lbl" style="margin-bottom:.4rem">Patient join code</div>
       <div style="display:flex;align-items:center;gap:.875rem;flex-wrap:wrap">
-        <code id="dash-code" style="font-family:'JetBrains Mono','SF Mono',monospace;font-size:1.4rem;letter-spacing:.06em;color:var(--ac);font-weight:500">—</code>
+        <code id="dash-code" style="font-family:'JetBrains Mono','SF Mono',monospace;font-size:1.4rem;letter-spacing:.06em;color:var(--ac);font-weight:500">...</code>
         <button id="dash-code-copy" class="btn btn-outline" type="button" style="padding:.5rem 1rem;font-size:.55rem">Copy</button>
       </div>
       <p style="font-size:.7rem;color:var(--sub);margin-top:.5rem;line-height:1.5;max-width:60ch">Share this code with your patients. They enter it on <code>/patient-portal</code> to join your clinic and unlock bookings, your shop, and the AI assistant tied to your portal.</p>
@@ -161,7 +161,7 @@
   <div class="stats">
     <div class="stat">
       <div class="stat-lbl">Status</div>
-      <div class="stat-val" id="stat-status">—</div>
+      <div class="stat-val" id="stat-status">...</div>
       <div class="stat-sub" id="stat-status-sub">&nbsp;</div>
     </div>
     <div class="stat">
@@ -204,7 +204,7 @@
   <section class="view" data-view="content">
     <div class="card">
       <div class="lbl">Brand</div>
-      <h3 id="content-name">—</h3>
+      <h3 id="content-name"></h3>
       <p style="color:var(--sub);font-size:.85rem;line-height:1.65;margin-top:.5rem" id="content-tagline">No tagline yet.</p>
     </div>
     <div class="card">
@@ -371,7 +371,7 @@ async function loadBookings(){
 }
 
 async function loadContent(){
-  $('#content-name').textContent = org.name || '—';
+  $('#content-name').textContent = org.name || '';
   $('#content-tagline').textContent = org.brand?.tagline || org.description || 'No tagline yet.';
   try {
     const [svc, prod] = await Promise.all([

@@ -112,9 +112,22 @@
 
     /* ── Chat bubbles ── */
     @keyframes dot{0%,80%,100%{opacity:.2}40%{opacity:1}}
-    .bubble{max-width:84%;padding:.875rem 1.125rem;font-size:.855rem;line-height:1.72;animation:pgIn .3s ease}
+    .bubble{max-width:84%;padding:.875rem 1.125rem;font-size:.855rem;line-height:1.72;animation:pgIn .3s ease;word-wrap:break-word;overflow-wrap:break-word}
     .bubble.ai{background:var(--bg2);border:1px solid var(--border);color:var(--text);align-self:flex-start}
     .bubble.user{background:var(--text);color:var(--bg);align-self:flex-end}
+    .bubble.ai p{margin:0 0 .55rem 0}
+    .bubble.ai p:last-child{margin-bottom:0}
+    .bubble.ai strong{font-weight:600;color:var(--text)}
+    .bubble.ai em{font-style:italic}
+    .bubble.ai h3,.bubble.ai h4{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:1.05rem;line-height:1.3;margin:.85rem 0 .35rem;letter-spacing:-.01em;color:var(--text)}
+    .bubble.ai h3:first-child,.bubble.ai h4:first-child{margin-top:0}
+    .bubble.ai ul,.bubble.ai ol{margin:.4rem 0 .65rem 1.1rem;padding:0}
+    .bubble.ai li{margin:.18rem 0;line-height:1.6}
+    .bubble.ai blockquote{margin:.5rem 0;padding:.35rem .85rem;border-left:2px solid var(--ac);color:var(--sub);font-style:italic;background:rgba(73,144,212,.05)}
+    .bubble.ai code{font-family:'JetBrains Mono','SF Mono',monospace;font-size:.8em;background:rgba(127,127,127,.12);padding:.08rem .32rem;border-radius:.25rem}
+    .bubble.ai pre{margin:.55rem 0;padding:.75rem .9rem;background:rgba(127,127,127,.1);border:1px solid var(--border);border-radius:.45rem;overflow-x:auto}
+    .bubble.ai pre code{background:none;padding:0;font-size:.78rem;line-height:1.55}
+    .bubble.ai a{color:var(--ac);text-decoration:underline;text-underline-offset:2px}
     .bubble.thinking{display:inline-flex;align-items:center;gap:5px;padding:1rem 1.125rem;align-self:flex-start;background:var(--bg2);border:1px solid var(--border)}
     .bubble.thinking span{width:6px;height:6px;border-radius:50%;background:var(--ac);opacity:.4;animation:tdPulse 1.2s ease-in-out infinite;display:inline-block}
     .bubble.thinking span:nth-child(2){animation-delay:.15s}
@@ -817,7 +830,7 @@ async function sendChat() {
   const status=document.getElementById('ai-status'); if(status) status.textContent='Thinking…';
   _setSendBtn(true);
   try {
-    const resp=await fetch(CONFIG.aiApiUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type:inferChatType(msg),messages:chatHistory})});
+    const resp=await fetch(CONFIG.aiApiUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type:inferChatType(msg),messages:chatHistory,userName:(currentUser&&currentUser.name)||''})});
     thinking.remove(); if(!resp.ok){const err=await resp.json().catch(()=>({}));throw new Error(err.error||`API ${resp.status}`);}
     const data=await resp.json(); const text=data.text||'No response received.';
     chatHistory.push({role:'model',text}); chatHistory=chatHistory.slice(-MAX_CHAT_MESSAGES); addBubble(text,'ai'); saveChatHistory();
@@ -840,7 +853,66 @@ function preChat(q) {
   sendChat();
 }
 function inferChatType(msg) { const l=msg.toLowerCase(); if(/\b(study|trial|meta-analysis|systematic review|journal|evidence)\b/.test(l)) return 'research'; if(/\b(side effect|dosage|dose|interaction|drug|medication|prescription)\b/.test(l)) return 'medication'; if(/\b(symptom|pain|fever|nausea|headache|fatigue|cough)\b/.test(l)) return 'symptom'; return 'general'; }
-function addBubble(txt,type,scroll=true) { const msgs=document.getElementById('chat-msgs'); const d=document.createElement('div'); d.className='bubble '+type; d.style.whiteSpace='pre-line'; d.textContent=txt; msgs.appendChild(d); if(scroll) msgs.scrollTop=msgs.scrollHeight; return d; }
+function escapeHtmlChat(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function renderMarkdown(src){
+  // Escape first so any user/AI text cannot inject raw HTML.
+  let s = escapeHtmlChat(src || '');
+  const blocks = [];
+  // Fenced code blocks ``` ... ```
+  s = s.replace(/```([a-zA-Z0-9_-]*)\n?([\s\S]*?)```/g,(_,lang,code)=>{
+    const i = blocks.push(`<pre><code>${code.replace(/\n+$/,'')}</code></pre>`)-1;
+    return ` B${i} `;
+  });
+  // Inline code `...`
+  s = s.replace(/`([^`\n]+)`/g,'<code>$1</code>');
+  // Headers ### (treat both ### and ## and # as h3/h4 for chat scale)
+  s = s.replace(/^###\s+(.+?)\s*$/gm,'<h4>$1</h4>\n');
+  s = s.replace(/^##\s+(.+?)\s*$/gm,'<h3>$1</h3>\n');
+  s = s.replace(/^#\s+(.+?)\s*$/gm,'<h3>$1</h3>\n');
+  // Blockquotes (consecutive lines)
+  s = s.replace(/(?:^&gt;\s?.*(?:\n|$))+/gm,m=>{
+    const inner = m.split('\n').filter(Boolean).map(l=>l.replace(/^&gt;\s?/,'')).join('<br>');
+    return `<blockquote>${inner}</blockquote>\n`;
+  });
+  // Bold **x** and italic *x* (bold first to avoid greedy clash)
+  s = s.replace(/\*\*([^*\n]+?)\*\*/g,'<strong>$1</strong>');
+  s = s.replace(/(^|[^\*\w])\*([^*\n]+?)\*(?!\w)/g,'$1<em>$2</em>');
+  // Unordered lists: consecutive lines starting with "- " or "• "
+  s = s.replace(/(?:^[ \t]*(?:-|•)\s+.+(?:\n|$))+/gm,m=>{
+    const items = m.trim().split('\n').map(l=>'<li>'+l.replace(/^[ \t]*(?:-|•)\s+/,'')+'</li>').join('');
+    return `<ul>${items}</ul>\n`;
+  });
+  // Ordered lists: consecutive lines starting with "1. "
+  s = s.replace(/(?:^[ \t]*\d+\.\s+.+(?:\n|$))+/gm,m=>{
+    const items = m.trim().split('\n').map(l=>'<li>'+l.replace(/^[ \t]*\d+\.\s+/,'')+'</li>').join('');
+    return `<ol>${items}</ol>\n`;
+  });
+  // Autolink bare URLs (already-escaped)
+  s = s.replace(/(https?:\/\/[^\s<]+)/g,'<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>');
+  // Paragraphs from blank lines, single newlines → <br>
+  s = s.split(/\n{2,}/).map(chunk=>{
+    if(/^\s*<(ul|ol|h3|h4|blockquote|pre)/i.test(chunk.trim())) return chunk.trim();
+    const t = chunk.trim();
+    return t ? `<p>${t.replace(/\n/g,'<br>')}</p>` : '';
+  }).join('');
+  // Restore code blocks
+  s = s.replace(/ B(\d+) /g,(_,i)=>blocks[+i]||'');
+  return s;
+}
+function addBubble(txt,type,scroll=true) {
+  const msgs=document.getElementById('chat-msgs');
+  const d=document.createElement('div');
+  d.className='bubble '+type;
+  if(type==='ai'){
+    d.innerHTML = renderMarkdown(txt);
+  } else {
+    d.style.whiteSpace='pre-line';
+    d.textContent=txt;
+  }
+  msgs.appendChild(d);
+  if(scroll) msgs.scrollTop=msgs.scrollHeight;
+  return d;
+}
 function localAIResponse(msg) {
   const l=msg.toLowerCase();
   if(l.includes('metformin')) return "Metformin is generally well-tolerated. Common side effects include gastrointestinal symptoms - nausea, diarrhea, abdominal discomfort - particularly when starting. Always take with food. Lactic acidosis is a rare but serious risk in patients with renal impairment.\n\n⚠ Educational information only - consult your healthcare provider.";
