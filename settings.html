@@ -21,7 +21,7 @@
     :root{
       --bg:#f0ebe1;--bg2:#f8f4ec;--bg3:#e6e0d4;
       --border:#d4cdb8;--text:#1c1a14;--sub:#5c5346;--mute:#a09480;
-      --ac:#2a6dc9;--nav:rgba(240,235,225,.97);
+      --ac:#c9922a;--nav:rgba(240,235,225,.97);
       --card:#fff;--input:#fff;--input-border:#d4cdb8
     }
     html.dark{
@@ -706,6 +706,23 @@ function showToast(msg,duration=3000){
 // ════════════════════════════════════════════════════════════════════
 showView('view-loading');
 
+// ── Auth-aware nav: hide "Patient Login" link when signed in. Reads the
+// same ah-user-initial flag the patient portal writes on sign-in.
+function applyAuthAwareNav(isIn){
+  document.querySelectorAll('a[href^="/patient-portal"]').forEach(el => {
+    const txt = (el.textContent || '').trim();
+    if (!/Patient\s*Login|Sign\s*In|Log\s*In/i.test(txt)) return;
+    if (el.closest('nav, header, footer, #mob-menu, .mob-menu')) {
+      el.style.display = isIn ? 'none' : '';
+    }
+  });
+  const cta = document.getElementById('nav-cta');
+  if (cta && !isIn) cta.style.display='';
+}
+document.addEventListener('DOMContentLoaded', () => {
+  applyAuthAwareNav(!!localStorage.getItem('ah-user-initial'));
+});
+
 async function initAuth(){
   if(!sb){ showView('view-signedout'); return; }
   try{
@@ -729,11 +746,13 @@ async function initAuth(){
     try{
       if(event==='SIGNED_OUT'||!session?.user){
         currentUser=null; profile=null;
+        applyAuthAwareNav(false);
         showView('view-signedout');
       } else if(event==='SIGNED_IN'||event==='TOKEN_REFRESHED'){
         currentUser=session.user;
         await loadProfile();
         try{ renderMain(); }catch(e){ console.error('[Acuros] renderMain error',e); }
+        applyAuthAwareNav(true);
         showView('view-main');
       }
     }catch(e){ console.error('[Acuros] onAuthStateChange error',e); }

@@ -34,7 +34,7 @@
     :root{
       --bg:#f0ebe1;--bg2:#f8f4ec;--bg3:#e6e0d4;
       --border:#d4cdb8;--text:#1c1a14;--sub:#5c5346;--mute:#a09480;
-      --ac:#2a6dc9;--nav:rgba(240,235,225,.97);--shadow:0 4px 60px rgba(0,0,0,.15)
+      --ac:#c9922a;--nav:rgba(240,235,225,.97);--shadow:0 4px 60px rgba(0,0,0,.15)
     }
     html.dark{
       --bg:#0c0c0a;--bg2:#111110;--bg3:#161614;
@@ -609,12 +609,19 @@ function renderThemeToggle() {
 (function initNavProfile() {
   document.addEventListener('DOMContentLoaded', function() {
     const initial = localStorage.getItem('ah-user-initial');
-    if (!initial) return;
+    const isIn = !!initial;
     const pill  = document.getElementById('nav-profile-wrap');
     const initEl = document.getElementById('nav-profile-initial');
     const cta   = document.getElementById('nav-cta');
-    if (pill && initEl) { initEl.textContent = initial; pill.style.display = 'flex'; }
-    if (cta) cta.style.display = 'none';
+    if (isIn && pill && initEl) { initEl.textContent = initial; pill.style.display = 'flex'; }
+    if (isIn && cta) cta.style.display = 'none';
+    document.querySelectorAll('a[href^="/patient-portal"]').forEach(el => {
+      const txt = (el.textContent || '').trim();
+      if (!/Patient\s*Login|Sign\s*In|Log\s*In/i.test(txt)) return;
+      if (el.closest('nav, header, footer, #mob-menu, .mob-menu')) {
+        el.style.display = isIn ? 'none' : '';
+      }
+    });
   });
 })();
 
@@ -963,7 +970,7 @@ function initMagnetic() {
   document.querySelectorAll('.mag').forEach(el => {
     el.addEventListener('mousemove', e => {
       const r = el.getBoundingClientRect();
-      el.style.transform = `translate(${(e.clientX-(r.left+r.width/2))*.3}px,${(e.clientY-(r.top+r.height/2))*.3}px)`;
+      el.style.transform = `translate(${(e.clientX-(r.left+r.width/2))*.08}px,${(e.clientY-(r.top+r.height/2))*.08}px)`;
     });
     el.addEventListener('mouseleave', () => { el.style.transform = ''; });
   });

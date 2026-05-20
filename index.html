@@ -35,7 +35,7 @@
     :root{
       --bg:#f0ebe1;--bg2:#f8f4ec;--bg3:#e6e0d4;
       --border:#d4cdb8;--text:#1c1a14;--sub:#5c5346;--mute:#a09480;
-      --ac:#2a6dc9;--nav:rgba(240,235,225,.97)
+      --ac:#c9922a;--nav:rgba(240,235,225,.97)
     }
     html.dark{
       --bg:#0a0a09;--bg2:#111110;--bg3:#161614;
@@ -1032,13 +1032,25 @@ function renderThemeToggle() {
   document.addEventListener('DOMContentLoaded', function() {
     const initial = localStorage.getItem('ah-user-initial');
     const role    = localStorage.getItem('ah-user-role'); // 'patient' | 'clinic_owner'
-    const pill  = document.getElementById('nav-profile-wrap');
-    const initEl = document.getElementById('nav-profile-initial');
-    const cta   = document.getElementById('nav-cta');
+    const isIn    = !!initial;
+    const pill    = document.getElementById('nav-profile-wrap');
+    const initEl  = document.getElementById('nav-profile-initial');
+    const cta     = document.getElementById('nav-cta');
 
-    if (initial) {
+    if (isIn) {
       if (pill && initEl) { initEl.textContent = initial; pill.style.display = 'flex'; }
     }
+
+    // Hide any in-chrome "Patient Login" / "Sign in" prompts when signed in.
+    // Covers nav, header, footer, mobile menu, and the hero CTAs — the user
+    // pill + CTA in the nav are enough to reach the portal.
+    document.querySelectorAll('a[href^="/patient-portal"], a[href="/patient-portal?role=owner"]').forEach(el => {
+      const txt = (el.textContent || '').trim();
+      if (!/Patient\s*Login|Sign\s*In|Log\s*In/i.test(txt)) return;
+      if (el.closest('nav, header, footer, #mob-menu, .mob-menu, .hero-ctas')) {
+        el.style.display = isIn ? 'none' : '';
+      }
+    });
 
     // Owners see a "Dashboard" CTA; everyone else sees "Set up your clinic".
     if (cta) {
@@ -1046,7 +1058,7 @@ function renderThemeToggle() {
         cta.textContent = 'Dashboard';
         cta.setAttribute('href', '/dashboard');
         cta.style.display = '';
-      } else if (initial) {
+      } else if (isIn) {
         // Logged-in patient → swap CTA to point at their portal.
         cta.textContent = 'My portal';
         cta.setAttribute('href', '/patient-portal');
@@ -1054,8 +1066,6 @@ function renderThemeToggle() {
     }
 
     // Pill click always lands in /settings — the user's account hub.
-    // From there they can navigate to /dashboard, /onboarding, or
-    // /patient-portal depending on role and progress.
     if (pill) pill.onclick = () => { window.location.href = '/settings'; };
   });
 })();

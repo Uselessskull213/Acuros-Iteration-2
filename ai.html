@@ -36,7 +36,7 @@
     :root{
       --bg:#f0ebe1;--bg2:#f8f4ec;--bg3:#e6e0d4;
       --border:#d4cdb8;--text:#1c1a14;--sub:#5c5346;--mute:#a09480;
-      --ac:#2a6dc9;--nav:rgba(240,235,225,.97);--shadow:0 4px 60px rgba(0,0,0,.15)
+      --ac:#c9922a;--nav:rgba(240,235,225,.97);--shadow:0 4px 60px rgba(0,0,0,.15)
     }
     html.dark{
       --bg:#0c0c0a;--bg2:#111110;--bg3:#161614;
@@ -733,16 +733,24 @@ function renderThemeToggle() {
     ? '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>'
     : '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
 }
-/* ── Nav profile pill (reads localStorage set by patient portal) ── */
+/* ── Nav profile pill + auth-aware nav (reads localStorage from patient portal) ── */
 (function initNavProfile() {
   document.addEventListener('DOMContentLoaded', function() {
     const initial = localStorage.getItem('ah-user-initial');
-    if (!initial) return;
+    const isIn = !!initial;
     const pill  = document.getElementById('nav-profile-wrap');
     const initEl = document.getElementById('nav-profile-initial');
     const cta   = document.getElementById('nav-cta');
-    if (pill && initEl) { initEl.textContent = initial; pill.style.display = 'flex'; }
-    if (cta) cta.style.display = 'none';
+    if (isIn && pill && initEl) { initEl.textContent = initial; pill.style.display = 'flex'; }
+    if (isIn && cta) cta.style.display = 'none';
+    // Hide chrome "Patient Login" / "Sign in" links when signed in.
+    document.querySelectorAll('a[href^="/patient-portal"]').forEach(el => {
+      const txt = (el.textContent || '').trim();
+      if (!/Patient\s*Login|Sign\s*In|Log\s*In/i.test(txt)) return;
+      if (el.closest('nav, header, footer, #mob-menu, .mob-menu')) {
+        el.style.display = isIn ? 'none' : '';
+      }
+    });
   });
 })();
 function openMob()  { document.getElementById('mob-menu').classList.add('open'); document.body.style.overflow='hidden'; }
@@ -759,7 +767,7 @@ window.addEventListener('scroll', () => {
 
 /* ─── Magnetic Buttons ─── */
 document.querySelectorAll('.mag').forEach(el => {
-  el.addEventListener('mousemove', e => { const r=el.getBoundingClientRect(); el.style.transform=`translate(${(e.clientX-(r.left+r.width/2))*.32}px,${(e.clientY-(r.top+r.height/2))*.32}px)`; });
+  el.addEventListener('mousemove', e => { const r=el.getBoundingClientRect(); el.style.transform=`translate(${(e.clientX-(r.left+r.width/2))*.08}px,${(e.clientY-(r.top+r.height/2))*.08}px)`; });
   el.addEventListener('mouseleave', () => { el.style.transform=''; });
 });
 
