@@ -1,11 +1,22 @@
 User-agent: *
 Allow: /
 Allow: /c/
+Allow: /ai-assistant
+Allow: /bookings
+Allow: /shop
+Allow: /privacy
+Allow: /terms
 Disallow: /api/
+Disallow: /editor
 Disallow: /onboarding
 Disallow: /dashboard
 Disallow: /settings
 Disallow: /patient-portal
 Disallow: /aaaclinics-portal
+
+# Tracking / auth query strings produce duplicate URLs in crawl reports.
+Disallow: /*?from=*
+Disallow: /*?portal=*
+Disallow: /*?role=*
 
 Sitemap: https://acuros.ca/sitemap.xml

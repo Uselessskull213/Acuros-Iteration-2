@@ -10,14 +10,16 @@ import { getSupabaseAdmin, isSupabaseConfigured } from './_lib/supabase-admin.js
 const ORIGIN = 'https://acuros.ca';
 
 // Static surface area we always advertise. Order matches priority.
+// Pages with `<meta name="robots" content="noindex">` (patient-portal,
+// onboarding, dashboard, settings, editor) are intentionally omitted so
+// we don't tell Google about URLs we're also telling it to skip.
 const STATIC_URLS = [
-  { loc: '/',                priority: '1.0', changefreq: 'weekly'  },
-  { loc: '/ai-assistant',    priority: '0.8', changefreq: 'monthly' },
-  { loc: '/bookings',        priority: '0.7', changefreq: 'monthly' },
-  { loc: '/shop',            priority: '0.6', changefreq: 'monthly' },
-  { loc: '/patient-portal',  priority: '0.5', changefreq: 'monthly' },
-  { loc: '/privacy',         priority: '0.3', changefreq: 'yearly'  },
-  { loc: '/terms',           priority: '0.3', changefreq: 'yearly'  },
+  { loc: '/',             priority: '1.0', changefreq: 'weekly',  image: '/hero-bg.jpg', imageTitle: 'Acuros Health - patient engagement platform for Canadian clinics' },
+  { loc: '/ai-assistant', priority: '0.9', changefreq: 'weekly',  image: '/hero-bg.jpg', imageTitle: 'Acuros AI - evidence-based health education assistant' },
+  { loc: '/bookings',     priority: '0.7', changefreq: 'monthly' },
+  { loc: '/shop',         priority: '0.6', changefreq: 'monthly' },
+  { loc: '/privacy',      priority: '0.3', changefreq: 'yearly'  },
+  { loc: '/terms',        priority: '0.3', changefreq: 'yearly'  },
 ];
 
 function escapeXml(s){
@@ -41,7 +43,7 @@ export default async function handler(req, res) {
       const admin = getSupabaseAdmin();
       const { data, error } = await admin
         .from('organizations')
-        .select('slug, published_at')
+        .select('slug, published_at, name, hero_image_url')
         .eq('is_published', true)
         .not('slug', 'is', null)
         .order('published_at', { ascending: false })
@@ -53,8 +55,11 @@ export default async function handler(req, res) {
   }
 
   const today = new Date().toISOString().slice(0, 10);
-  const lines = ['<?xml version="1.0" encoding="UTF-8"?>',
-                 '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'];
+  const lines = [
+    '<?xml version="1.0" encoding="UTF-8"?>',
+    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"',
+    '        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">'
+  ];
 
   for (const u of STATIC_URLS) {
     lines.push('  <url>');
@@ -62,6 +67,12 @@ export default async function handler(req, res) {
     lines.push(`    <lastmod>${today}</lastmod>`);
     lines.push(`    <changefreq>${u.changefreq}</changefreq>`);
     lines.push(`    <priority>${u.priority}</priority>`);
+    if (u.image) {
+      lines.push('    <image:image>');
+      lines.push(`      <image:loc>${ORIGIN}${u.image}</image:loc>`);
+      if (u.imageTitle) lines.push(`      <image:title>${escapeXml(u.imageTitle)}</image:title>`);
+      lines.push('    </image:image>');
+    }
     lines.push('  </url>');
   }
 
@@ -72,6 +83,12 @@ export default async function handler(req, res) {
     lines.push(`    <lastmod>${lastmod}</lastmod>`);
     lines.push('    <changefreq>weekly</changefreq>');
     lines.push('    <priority>0.8</priority>');
+    if (c.hero_image_url) {
+      lines.push('    <image:image>');
+      lines.push(`      <image:loc>${escapeXml(c.hero_image_url)}</image:loc>`);
+      if (c.name) lines.push(`      <image:title>${escapeXml(c.name)}</image:title>`);
+      lines.push('    </image:image>');
+    }
     lines.push('  </url>');
   }
 
