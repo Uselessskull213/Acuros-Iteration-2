@@ -43,7 +43,7 @@ export default async function handler(req, res) {
       const admin = getSupabaseAdmin();
       const { data, error } = await admin
         .from('organizations')
-        .select('slug, published_at, name, hero_image_url')
+        .select('slug, published_at, name, logo_url, theme')
         .eq('is_published', true)
         .not('slug', 'is', null)
         .order('published_at', { ascending: false })
@@ -83,9 +83,10 @@ export default async function handler(req, res) {
     lines.push(`    <lastmod>${lastmod}</lastmod>`);
     lines.push('    <changefreq>weekly</changefreq>');
     lines.push('    <priority>0.8</priority>');
-    if (c.hero_image_url) {
+    const heroImage = c.theme?.heroImage || c.logo_url || null;
+    if (heroImage) {
       lines.push('    <image:image>');
-      lines.push(`      <image:loc>${escapeXml(c.hero_image_url)}</image:loc>`);
+      lines.push(`      <image:loc>${escapeXml(heroImage)}</image:loc>`);
       if (c.name) lines.push(`      <image:title>${escapeXml(c.name)}</image:title>`);
       lines.push('    </image:image>');
     }
