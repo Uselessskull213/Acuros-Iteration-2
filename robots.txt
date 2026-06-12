@@ -8,6 +8,7 @@ Allow: /privacy
 Allow: /terms
 Disallow: /api/
 Disallow: /editor
+Disallow: /developer
 Disallow: /onboarding
 Disallow: /dashboard
 Disallow: /settings

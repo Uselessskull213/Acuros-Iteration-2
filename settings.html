@@ -14,6 +14,7 @@
   <meta name="theme-color" content="#2a6dc9"/>
   <meta name="robots" content="noindex"/>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,200;0,300;0,400;0,500;1,200;1,300&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
@@ -397,7 +398,10 @@
             <div class="s-value" id="tier-value">Standard access</div>
           </div>
         </div>
-        <span class="tier-badge" id="tier-badge">FREE</span>
+        <div style="display:flex;align-items:center;gap:.625rem;flex-shrink:0">
+          <span class="tier-badge" id="tier-badge">FREE</span>
+          <a class="edit-name-btn" id="upgrade-plus-btn" href="#" target="_blank" rel="noopener" style="display:none;text-decoration:none;border-color:var(--ac);color:var(--ac)">Upgrade</a>
+        </div>
       </div>
       <div class="s-row">
         <div class="s-left">
@@ -453,6 +457,7 @@
             <div class="s-value" id="acc-code">-</div>
           </div>
         </div>
+        <div id="acc-qr" title="Your account code as a QR code" style="background:#fff;padding:6px;border:1px solid var(--border);line-height:0;display:none"></div>
       </div>
       <div class="s-row">
         <div class="s-left">
@@ -797,14 +802,23 @@ function renderMain(){
   document.getElementById('pf-since').style.display=since?'':'none';
 
   // Membership
+  const upBtn=document.getElementById('upgrade-plus-btn');
   if(tier==='plus'){
     setText('tier-label','Acuros Plus');
     setText('tier-value','Full access to all features');
     setText('tier-badge','PLUS');
+    if(upBtn)upBtn.style.display='none';
   } else {
     setText('tier-label','Free Plan');
     setText('tier-value','Standard access');
     setText('tier-badge','FREE');
+    if(upBtn){
+      const params=new URLSearchParams();
+      if(email)params.set('prefilled_email',email);
+      params.set('client_reference_id',currentUser.id);
+      upBtn.href='https://buy.stripe.com/fZu9AM1f89Wz2DjbWA4ko05?'+params.toString();
+      upBtn.style.display='';
+    }
   }
   setText('usage-value',usage+' AI interactions used');
 
@@ -818,6 +832,17 @@ function renderMain(){
 
   // Account
   setText('acc-code',code);
+  const qrHost=document.getElementById('acc-qr');
+  if(qrHost&&window.qrcode&&code&&code!=='-'){
+    try{
+      const qr=window.qrcode(0,'M');
+      qr.addData(code);qr.make();
+      qrHost.innerHTML=qr.createSvgTag({cellSize:2,margin:0,scalable:true});
+      const svg=qrHost.querySelector('svg');
+      if(svg){svg.style.width='64px';svg.style.height='64px';svg.style.display='block';}
+      qrHost.style.display='';
+    }catch(_e){}
+  }
 
   // Pre-fill edit name
   const ni=document.getElementById('name-input');

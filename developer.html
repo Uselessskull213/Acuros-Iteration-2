@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-80K00SEBQK"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-80K00SEBQK');</script>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Developer console - Acuros Health</title>
+  <link rel="icon" type="image/png" href="/favicon-32.png"/>
+  <link rel="manifest" href="/site.webmanifest"/>
+  <meta name="theme-color" content="#c9922a"/>
+  <meta name="robots" content="noindex"/>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,200;0,300;0,400;0,500;1,200;1,300&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+
+  <style>
+    :root{
+      --bg:#f0ebe1;--bg2:#f8f4ec;--bg3:#e6e0d4;
+      --border:#d4cdb8;--text:#1c1a14;--sub:#5c5346;--mute:#a09480;
+      --ac:#c9922a;--nav:rgba(240,235,225,.97);
+      --ok:#3b7a3b;--err:#b73838
+    }
+    html.dark{
+      --bg:#0c0c0a;--bg2:#111110;--bg3:#161614;
+      --border:#1e1e1b;--text:#f0ede8;--sub:#8c8880;--mute:#4e4c48;
+      --ac:#4990d4;--nav:rgba(12,12,10,.97)
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100dvh}
+    h1,h2,h3{font-family:'Cormorant Garamond',serif;line-height:1.04;letter-spacing:-.02em}
+    a{color:inherit;text-decoration:none}
+
+    .topbar{height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;border-bottom:1px solid var(--border);background:var(--nav);position:sticky;top:0;z-index:50;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+    .topbar-logo{font-family:'Cormorant Garamond',serif;font-size:.9rem;letter-spacing:.22em;color:var(--text)}
+    .topbar-links{display:flex;gap:1.5rem}
+    .topbar-link{font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--sub);padding:.4rem 0;border-bottom:1px solid transparent;transition:color .2s}
+    .topbar-link:hover{color:var(--text)}
+    .topbar-link.active{color:var(--text);border-bottom-color:var(--ac)}
+    .out-btn{font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--sub);background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif}
+
+    .canvas{max-width:1100px;margin:0 auto;padding:3rem 2rem 5rem}
+    @media(max-width:880px){.canvas{padding:2rem 1.25rem 4rem}}
+
+    .pill{display:inline-flex;align-items:center;gap:.5rem;padding:.32rem .7rem;font-size:.55rem;letter-spacing:.18em;text-transform:uppercase;color:var(--mute);background:var(--bg3);border:1px solid var(--border);font-weight:500}
+    .pill .dot{width:5px;height:5px;border-radius:50%;background:var(--mute)}
+    .pill.live{color:var(--ok);border-color:rgba(59,122,59,.3);background:rgba(59,122,59,.06)}
+    .pill.live .dot{background:var(--ok)}
+    .pill.off{color:var(--err);border-color:rgba(183,56,56,.3);background:rgba(183,56,56,.06)}
+    .pill.off .dot{background:var(--err)}
+
+    .header-row{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:2.25rem}
+    .header-h{font-size:clamp(1.85rem,3.5vw,2.6rem);font-weight:200;letter-spacing:-.025em;line-height:1.05;margin-top:.625rem}
+    .header-h em{color:var(--ac);font-style:italic}
+    .header-meta{font-size:.78rem;color:var(--sub);line-height:1.55}
+    .header-meta a{color:var(--ac)}
+
+    .banner{padding:.8rem 1rem;font-size:.78rem;color:var(--err);background:rgba(183,56,56,.06);border:1px solid rgba(183,56,56,.25);margin-bottom:1.5rem;display:none}
+    .banner.success{color:var(--ok);background:rgba(59,122,59,.06);border-color:rgba(59,122,59,.25)}
+
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
+    @media(max-width:880px){.grid{grid-template-columns:1fr}}
+    .card{background:var(--bg2);border:1px solid var(--border);padding:1.5rem 1.625rem;display:flex;flex-direction:column;gap:.875rem}
+    .card.span2{grid-column:1/-1}
+    .card .lbl{font-size:.55rem;letter-spacing:.22em;text-transform:uppercase;color:var(--mute)}
+    .card h3{font-size:1.35rem;font-weight:300;letter-spacing:-.02em}
+    .card p{font-size:.78rem;color:var(--sub);line-height:1.6}
+    .card code{font-family:'JetBrains Mono','SF Mono',monospace}
+
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.7rem 1.4rem;font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;font-weight:500;font-family:'DM Sans',sans-serif;border:1px solid transparent;cursor:pointer;text-decoration:none;transition:background .25s,color .25s,border-color .25s}
+    .btn-solid{background:var(--text);color:var(--bg);border-color:var(--text)}
+    .btn-solid:hover{background:var(--ac);border-color:var(--ac);color:#fff}
+    .btn-outline{background:transparent;color:var(--text);border-color:var(--border)}
+    .btn-outline:hover{border-color:var(--ac);color:var(--ac)}
+    .btn-gold{background:var(--ac);border-color:var(--ac);color:#fff}
+    .btn-gold:hover{filter:brightness(1.08)}
+    .btn[disabled]{opacity:.45;cursor:not-allowed;pointer-events:none}
+
+    /* Switch */
+    .switch-row{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1rem 1.125rem;background:var(--bg3);border:1px solid var(--border)}
+    .switch-info b{display:block;font-size:.85rem;font-weight:500}
+    .switch-info span{font-size:.7rem;color:var(--sub)}
+    .switch{position:relative;width:52px;height:28px;flex:none;background:var(--border);border:none;cursor:pointer;transition:background .25s;border-radius:999px}
+    .switch::after{content:'';position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:var(--bg2);transition:left .25s;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+    .switch.on{background:var(--ok)}
+    .switch.on::after{left:27px}
+    .switch[disabled]{opacity:.5;cursor:not-allowed}
+    .switch.busy{opacity:.6;pointer-events:none}
+
+    /* Codes + QR */
+    .code-big{font-family:'JetBrains Mono','SF Mono',monospace;font-size:1.35rem;letter-spacing:.06em;color:var(--ac);font-weight:500;word-break:break-all}
+    .code-row{display:flex;align-items:center;gap:.875rem;flex-wrap:wrap}
+    .qr-wrap{display:flex;gap:1.25rem;align-items:flex-start;flex-wrap:wrap}
+    .qr-box{background:#fff;padding:10px;border:1px solid var(--border);line-height:0;flex:none}
+    .qr-box svg{display:block;width:148px;height:148px}
+    .qr-side{flex:1;min-width:200px;display:flex;flex-direction:column;gap:.75rem}
+
+    .meta-list{display:flex;flex-direction:column;gap:.45rem;font-size:.78rem;color:var(--sub)}
+    .meta-list b{color:var(--text);font-weight:500}
+
+    .tier-badge{display:inline-block;font-size:.55rem;letter-spacing:.2em;text-transform:uppercase;padding:.25rem .6rem;border:1px solid var(--ac);color:var(--ac);font-weight:500}
+
+    #gate{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:calc(100dvh - 62px);padding:2rem;text-align:center;gap:.75rem}
+  </style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="/" class="topbar-logo">ACUROS HEALTH</a>
+  <nav class="topbar-links">
+    <a class="topbar-link" href="/dashboard">Dashboard</a>
+    <a class="topbar-link" href="/editor">AI editor</a>
+    <a class="topbar-link active" href="/developer">Developer</a>
+  </nav>
+  <div class="topbar-actions">
+    <button class="out-btn" onclick="signOut()">Sign out</button>
+  </div>
+</header>
+
+<section id="gate">
+  <h1 style="font-size:2.4rem;font-weight:200">Developer console.</h1>
+  <p id="gate-msg" style="color:var(--sub);max-width:46ch;line-height:1.65">This console is for clinic owners. Sign in to manage your portal, codes, and billing.</p>
+  <a class="btn btn-solid" id="gate-cta" href="/patient-portal?role=owner">Sign in</a>
+</section>
+
+<main class="canvas" id="canvas" style="display:none">
+  <div class="banner" id="banner"></div>
+
+  <div class="header-row">
+    <div>
+      <span class="pill" id="status-pill"><span class="dot"></span><span id="status-text">Loading</span></span>
+      <h1 class="header-h">Developer <em>console</em></h1>
+    </div>
+    <p class="header-meta" id="dev-url"></p>
+  </div>
+
+  <div class="grid">
+
+    <!-- Portal status -->
+    <div class="card">
+      <div class="lbl">Portal status</div>
+      <h3 id="ps-name">Your clinic</h3>
+      <p>Take your public page online or offline instantly. While offline, <code id="ps-url-code">/c/…</code> returns a "not found" page and is hidden from search engines and the sitemap.</p>
+      <div class="switch-row">
+        <div class="switch-info">
+          <b id="sw-label">Page is offline</b>
+          <span id="sw-sub">Flip the switch to go live.</span>
+        </div>
+        <button class="switch" id="live-switch" role="switch" aria-checked="false" aria-label="Portal live toggle"></button>
+      </div>
+      <div class="meta-list">
+        <span id="ps-published-line"></span>
+        <span id="ps-updated-line"></span>
+      </div>
+    </div>
+
+    <!-- AI assistant -->
+    <div class="card">
+      <div class="lbl">AI design studio</div>
+      <h3>Design your page with AI.</h3>
+      <p>Describe the page you want — hero, services, palette, typography — and the Acuros AI assistant builds and rewrites your portal live. Preview on desktop, tablet, and mobile, then save a draft or publish.</p>
+      <div style="display:flex;gap:.625rem;flex-wrap:wrap;margin-top:auto">
+        <a class="btn btn-solid" href="/editor">Open AI editor</a>
+        <a class="btn btn-outline" href="/onboarding">Content wizard</a>
+      </div>
+    </div>
+
+    <!-- Clinic code + QR -->
+    <div class="card">
+      <div class="lbl">Clinic code &amp; QR</div>
+      <h3>Your clinic code.</h3>
+      <div class="code-row">
+        <code class="code-big" id="clinic-code">…</code>
+        <button class="btn btn-outline" id="clinic-code-copy" type="button" style="padding:.5rem 1rem;font-size:.55rem">Copy</button>
+      </div>
+      <p>Patients enter this code on <a href="/patient-portal" style="color:var(--ac)">/patient-portal</a> to join your clinic. The QR code opens your public page — print it for your front desk or window.</p>
+      <div class="qr-wrap">
+        <div class="qr-box" id="clinic-qr" aria-label="QR code linking to your clinic page"></div>
+        <div class="qr-side">
+          <div class="meta-list">
+            <span>Links to <b id="clinic-qr-target">your portal</b></span>
+          </div>
+          <button class="btn btn-outline" id="clinic-qr-dl" type="button" style="align-self:flex-start">Download QR</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Personal code + billing -->
+    <div class="card">
+      <div class="lbl">Your account</div>
+      <h3>Personal code &amp; plan.</h3>
+      <div class="code-row">
+        <code class="code-big" id="acct-code" style="font-size:1.1rem">…</code>
+        <button class="btn btn-outline" id="acct-code-copy" type="button" style="padding:.5rem 1rem;font-size:.55rem">Copy</button>
+      </div>
+      <p>Your personal account code identifies you across Acuros web and mobile. Scan the QR below to share it.</p>
+      <div class="qr-wrap">
+        <div class="qr-box" id="acct-qr" aria-label="QR code of your personal account code"><!-- qr --></div>
+        <div class="qr-side">
+          <div class="meta-list">
+            <span>Plan: <span class="tier-badge" id="tier-badge">FREE</span></span>
+            <span id="tier-sub">Standard access.</span>
+          </div>
+          <a class="btn btn-gold" id="upgrade-btn" href="#" target="_blank" rel="noopener" style="align-self:flex-start">Upgrade to Acuros Plus</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script>
+const SB_URL = 'https://pyexkdoupqzbnrybiubo.supabase.co';
+// Same legacy JWT anon key as the rest of the site so sessions persist
+// across pages (the publishable-key client uses a different localStorage
+// namespace and would make signed-in users look signed-out here).
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB5ZXhrZG91cHF6Ym5yeWJpdWJvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4Mzg4MzYsImV4cCI6MjA4NzQxNDgzNn0.3_dLQEJfmC08A2-hlgOfwlu4ngx7hslUR3Dun4BoXLU';
+const STRIPE_PLUS_LINK = 'https://buy.stripe.com/fZu9AM1f89Wz2DjbWA4ko05';
+
+(function(){ if(localStorage.getItem('ah-theme')==='dark') document.documentElement.classList.add('dark'); })();
+
+let sb = null;
+try { sb = window.supabase.createClient(SB_URL, SB_KEY); } catch(_e){}
+let session = null, token = null, org = null, profile = null;
+
+const $ = (s) => document.querySelector(s);
+
+async function signOut(){ try { if(sb) await sb.auth.signOut(); } catch(_e){} window.location.href = '/'; }
+window.signOut = signOut;
+
+function flash(msg, ok){
+  const b = $('#banner');
+  b.textContent = msg;
+  b.classList.toggle('success', !!ok);
+  b.style.display = 'block';
+  clearTimeout(flash._t);
+  flash._t = setTimeout(() => { b.style.display = 'none'; }, 5000);
+}
+
+function showGate(msg, cta, href){
+  $('#gate').style.display = 'flex';
+  $('#canvas').style.display = 'none';
+  if (msg) $('#gate-msg').textContent = msg;
+  if (cta) { $('#gate-cta').textContent = cta; $('#gate-cta').href = href || '/patient-portal?role=owner'; }
+}
+
+// ── QR helpers (qrcode-generator) ─────────────────────────────────────
+function renderQr(elId, text){
+  const host = document.getElementById(elId);
+  if (!host || !window.qrcode || !text) return null;
+  try {
+    const qr = window.qrcode(0, 'M');
+    qr.addData(text);
+    qr.make();
+    host.innerHTML = qr.createSvgTag({ cellSize: 4, margin: 0, scalable: true });
+    return qr;
+  } catch (_e) { host.innerHTML = '<span style="font-size:.65rem;color:#888;line-height:1.4">QR unavailable</span>'; return null; }
+}
+function downloadQr(qr, filename){
+  if (!qr) return;
+  // Render crisp PNG via canvas from the module matrix.
+  const count = qr.getModuleCount();
+  const cell = 16, margin = 4 * cell;
+  const size = count * cell + margin * 2;
+  const cv = document.createElement('canvas');
+  cv.width = size; cv.height = size;
+  const ctx = cv.getContext('2d');
+  ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, size, size);
+  ctx.fillStyle = '#000000';
+  for (let r = 0; r < count; r++)
+    for (let c = 0; c < count; c++)
+      if (qr.isDark(r, c)) ctx.fillRect(margin + c * cell, margin + r * cell, cell, cell);
+  const a = document.createElement('a');
+  a.href = cv.toDataURL('image/png');
+  a.download = filename;
+  a.click();
+}
+function bindCopy(btnId, getText){
+  const btn = document.getElementById(btnId);
+  if (!btn) return;
+  btn.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(getText() || '');
+      const prev = btn.textContent; btn.textContent = 'Copied';
+      setTimeout(() => { btn.textContent = prev; }, 1400);
+    } catch (_e) { btn.textContent = 'Copy failed'; }
+  });
+}
+
+// ── Status toggle ──────────────────────────────────────────────────────
+function paintStatus(){
+  const live = !!org.is_published;
+  const pill = $('#status-pill');
+  pill.classList.toggle('live', live);
+  pill.classList.toggle('off', !live);
+  $('#status-text').textContent = live ? 'Live' : 'Offline';
+  const sw = $('#live-switch');
+  sw.classList.toggle('on', live);
+  sw.setAttribute('aria-checked', String(live));
+  $('#sw-label').textContent = live ? 'Page is live' : 'Page is offline';
+  $('#sw-sub').textContent = live
+    ? 'Visitors can see your portal right now.'
+    : (org.slug ? 'Flip the switch to go live.' : 'Publish once from the AI editor to enable this.');
+  if (!org.slug) sw.setAttribute('disabled', '');
+
+  const url = org.slug ? ('/c/' + org.slug) : null;
+  $('#ps-url-code').textContent = url || '/c/…';
+  $('#dev-url').innerHTML = url
+    ? ('Public portal: <a href="' + url + '" target="_blank" rel="noopener">acuros.ca' + url + '</a>')
+    : 'No public URL yet — publish from the <a href="/editor">AI editor</a> first.';
+  $('#ps-published-line').innerHTML = org.published_at
+    ? ('First published <b>' + new Date(org.published_at).toLocaleDateString('en-CA',{month:'short',day:'numeric',year:'numeric'}) + '</b>')
+    : 'Never published yet.';
+  $('#ps-updated-line').innerHTML = org.portal_updated_at
+    ? ('Design last updated <b>' + new Date(org.portal_updated_at).toLocaleDateString('en-CA',{month:'short',day:'numeric',year:'numeric'}) + '</b>')
+    : '';
+}
+
+async function toggleLive(){
+  const sw = $('#live-switch');
+  if (sw.hasAttribute('disabled') || sw.classList.contains('busy')) return;
+  const goLive = !org.is_published;
+  sw.classList.add('busy');
+  try {
+    const resp = await fetch('/api/portal-save', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({ action: 'set_live', live: goLive }),
+    });
+    const data = await resp.json().catch(() => ({}));
+    if (!resp.ok) throw new Error(data?.error || ('Request failed: ' + resp.status));
+    org.is_published = !!data.is_published;
+    if (org.is_published && !org.published_at) org.published_at = new Date().toISOString();
+    paintStatus();
+    flash(org.is_published ? 'Your portal is live. Changes can take up to a minute to propagate.' : 'Your portal is now offline.', true);
+  } catch (err) {
+    flash('Could not update status: ' + err.message, false);
+  } finally {
+    sw.classList.remove('busy');
+  }
+}
+
+// ── Boot ───────────────────────────────────────────────────────────────
+async function boot(){
+  if (!sb) { showGate(); return; }
+  const { data } = await sb.auth.getSession();
+  session = data?.session || null;
+  if (!session) { showGate(); return; }
+  token = session.access_token;
+
+  const [profileRes, orgRes] = await Promise.all([
+    sb.from('profiles').select('role,name,account_code,tier').eq('id', session.user.id).maybeSingle(),
+    sb.from('organizations').select('id,name,slug,code,is_published,published_at,portal_updated_at').eq('owner_id', session.user.id).maybeSingle(),
+  ]);
+  profile = profileRes.data;
+  if (!profile || (profile.role !== 'clinic_owner' && profile.role !== 'admin')) {
+    showGate('The developer console is only for clinic owners. If you should have owner access, contact support.', 'Open settings', '/settings');
+    return;
+  }
+  if (!orgRes.data) {
+    showGate("You haven't set up your clinic yet. Complete onboarding first.", 'Start onboarding', '/onboarding');
+    return;
+  }
+  org = orgRes.data;
+
+  $('#canvas').style.display = '';
+  $('#ps-name').textContent = org.name || 'Your clinic';
+  paintStatus();
+  $('#live-switch').addEventListener('click', toggleLive);
+
+  // Clinic code + QR
+  $('#clinic-code').textContent = org.code || '—';
+  bindCopy('clinic-code-copy', () => org.code);
+  const portalUrl = org.slug ? ('https://acuros.ca/c/' + org.slug) : '';
+  const clinicQrText = portalUrl || (org.code || '');
+  $('#clinic-qr-target').textContent = portalUrl ? portalUrl.replace('https://','') : 'your clinic code';
+  const clinicQr = renderQr('clinic-qr', clinicQrText);
+  $('#clinic-qr-dl').addEventListener('click', () => downloadQr(clinicQr, (org.slug || 'acuros-clinic') + '-qr.png'));
+
+  // Personal code + QR
+  $('#acct-code').textContent = profile.account_code || '—';
+  bindCopy('acct-code-copy', () => profile.account_code);
+  renderQr('acct-qr', profile.account_code || 'ACUROS');
+
+  // Billing
+  const tier = profile.tier || 'free';
+  $('#tier-badge').textContent = tier === 'plus' ? 'PLUS' : 'FREE';
+  $('#tier-sub').textContent = tier === 'plus' ? 'Full access to all features.' : 'Standard access. Upgrade for full features.';
+  const up = $('#upgrade-btn');
+  if (tier === 'plus') {
+    up.textContent = 'Plus active';
+    up.classList.remove('btn-gold');
+    up.classList.add('btn-outline');
+    up.removeAttribute('href');
+    up.style.pointerEvents = 'none';
+  } else {
+    const params = new URLSearchParams();
+    if (session.user.email) params.set('prefilled_email', session.user.email);
+    params.set('client_reference_id', session.user.id);
+    up.href = STRIPE_PLUS_LINK + '?' + params.toString();
+  }
+
+  sb.auth.onAuthStateChange((event) => { if (event === 'SIGNED_OUT') location.reload(); });
+}
+
+boot().catch(err => { console.error(err); showGate('Something went wrong loading the console: ' + (err?.message || err)); });
+</script>
+</body>
+</html>

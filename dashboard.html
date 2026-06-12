@@ -119,6 +119,7 @@
     <button class="topbar-tab" data-view="content">Content</button>
   </nav>
   <div class="topbar-actions">
+    <a class="out-btn" href="/developer" title="Developer console" style="text-decoration:none">Developer</a>
     <a class="icon-link" id="view-public" target="_blank" rel="noopener" title="Open public portal">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6M10 14L21 3"/></svg>
     </a>
@@ -269,8 +270,10 @@ async function boot(){
     const stateResp = await api('state', { method: 'GET' });
     if (!stateResp.org) { window.location.replace('/onboarding'); return; }
     org = stateResp.org;
-    if (!org.is_published) {
-      // Owner is mid-onboarding — bounce back to the wizard.
+    if (!org.is_published && !org.published_at) {
+      // Owner never finished onboarding — bounce back to the wizard.
+      // (Owners who published once but took their page offline from
+      // /developer still need their dashboard.)
       window.location.replace('/onboarding');
       return;
     }
@@ -304,6 +307,10 @@ function hydrateChrome(){
     $('#status-text').textContent = 'Live';
     $('#stat-status').textContent = 'Live';
     $('#stat-status-sub').textContent = org.published_at ? ('Since ' + new Date(org.published_at).toLocaleDateString('en-CA',{month:'short',day:'numeric',year:'numeric'})) : '';
+  } else {
+    $('#status-text').textContent = 'Offline';
+    $('#stat-status').textContent = 'Offline';
+    $('#stat-status-sub').innerHTML = 'Bring it back from the <a href="/developer" style="color:var(--ac)">developer console</a>';
   }
 
   // Patient join code — owners share this with their patients.

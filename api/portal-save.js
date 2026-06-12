@@ -1,12 +1,15 @@
 // api/portal-save.js — persist AI-generated portal HTML to organizations.portal_html.
 //
 // POST body: { html: string, publish?: boolean, slug?: string }
+//        or: { action: 'set_live', live: boolean }   (status-only toggle)
 //
 // Behaviour:
 //   • Writes html → organizations.portal_html (must already own a row).
 //   • If publish === true: also sets is_published = true, published_at = now(),
 //     and (optionally) updates slug if provided + available.
 //   • If publish === false (default): saves as draft only.
+//   • action 'set_live' flips is_published/active without touching the HTML,
+//     so the developer page can take a portal up or down instantly.
 //
 // Auth: Bearer Supabase access token; caller must be the org's owner_id
 // and have role clinic_owner or admin.
@@ -74,8 +77,9 @@ export default async function handler(req, res) {
   });
   if (!rl.allowed) return res.status(429).json({ error: 'Too many saves — try again in a minute.' });
 
-  const { html, publish = false, slug: rawSlug = null } = req.body || {};
-  if (!looksLikeHtmlDoc(html)) {
+  const { html, publish = false, slug: rawSlug = null, action = null, live = null } = req.body || {};
+  const isStatusToggle = action === 'set_live';
+  if (!isStatusToggle && !looksLikeHtmlDoc(html)) {
     return res.status(400).json({ error: 'HTML is not a complete document.' });
   }
 
@@ -86,10 +90,38 @@ export default async function handler(req, res) {
   }
 
   const { data: org } = await admin.from('organizations')
-    .select('id, slug, name, is_published')
+    .select('id, slug, name, is_published, published_at')
     .eq('owner_id', user.id)
     .maybeSingle();
   if (!org) return res.status(404).json({ error: 'Finish onboarding before saving a portal.' });
+
+  // ── Status-only toggle (developer page "up / down" switch) ──────────
+  if (isStatusToggle) {
+    const goLive = live === true;
+    if (goLive && !org.slug) {
+      return res.status(400).json({ error: 'Set a portal slug (publish once from the editor or wizard) before going live.' });
+    }
+    if (goLive && !org.name) {
+      return res.status(400).json({ error: 'Set a clinic name in onboarding before going live.' });
+    }
+    const now = new Date().toISOString();
+    const patch = goLive
+      ? { is_published: true, active: true, published_at: org.published_at || now }
+      : { is_published: false, active: false };
+    const { error: toggleErr } = await admin.from('organizations')
+      .update(patch)
+      .eq('owner_id', user.id);
+    if (toggleErr) {
+      console.error('[portal-save] status toggle failed:', toggleErr);
+      return res.status(500).json({ error: 'Failed to update portal status.' });
+    }
+    return res.status(200).json({
+      ok: true,
+      is_published: goLive,
+      slug: org.slug || null,
+      public_url: org.slug ? `/c/${org.slug}` : null,
+    });
+  }
 
   // Optional slug update during publish.
   let finalSlug = org.slug || null;
