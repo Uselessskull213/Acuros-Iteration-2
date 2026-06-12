@@ -16,6 +16,7 @@
 
 import { checkRateLimit } from './_lib/rate-limit.js';
 import { getSupabaseAdmin, isSupabaseConfigured } from './_lib/supabase-admin.js';
+import { sanitizePortalHtml } from './_lib/sanitize.js';
 
 const MAX_HTML_CHARS         = 200000;
 const RATE_LIMIT_WINDOW_S    = 60;
@@ -146,7 +147,9 @@ export default async function handler(req, res) {
 
   const now = new Date().toISOString();
   const update = {
-    portal_html: html,
+    // Strip script/handler vectors before persisting — the portal is
+    // served on our auth origin at /c/<slug>. See _lib/sanitize.js.
+    portal_html: sanitizePortalHtml(html),
     portal_updated_at: now,
   };
   if (publish) {

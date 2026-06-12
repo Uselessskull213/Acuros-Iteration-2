@@ -12,6 +12,7 @@
 // key — we explicitly do *not* expose a service-role key here.
 
 import { getSupabaseAdmin, isSupabaseConfigured } from './_lib/supabase-admin.js';
+import { sanitizePortalHtml } from './_lib/sanitize.js';
 
 const PUBLISHABLE_KEY = 'sb_publishable_ywcyXTqGzRTik8YJfTTHiw_B-pmj2w-';
 const SUPABASE_URL    = 'https://pyexkdoupqzbnrybiubo.supabase.co';
@@ -140,7 +141,10 @@ export default async function handler(req, res){
 <script type="application/ld+json">${safeJsonLd(jsonld)}</script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-80K00SEBQK"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-80K00SEBQK');</script>`;
-    const injected = org.portal_html.replace(/<head([^>]*)>/i, `<head$1>\n${seoHead}\n`);
+    // Strip any owner-injected script/handler vectors before serving on
+    // our auth origin, then inject our own trusted SEO + analytics head.
+    const safeHtml = sanitizePortalHtml(org.portal_html);
+    const injected = safeHtml.replace(/<head([^>]*)>/i, `<head$1>\n${seoHead}\n`);
     return res.end(injected);
   }
 
