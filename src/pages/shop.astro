@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-80K00SEBQK"></script>
-  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-80K00SEBQK');</script>
+  <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-80K00SEBQK"></script>
+  <script is:inline>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-80K00SEBQK');</script>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <title>Clinic-curated Health Shop | Acuros Health</title>
@@ -34,12 +34,12 @@
   <meta name="twitter:title" content="Clinic-curated Health Shop | Acuros Health"/>
   <meta name="twitter:description" content="Clinic-curated health and wellness products, selected and approved by your care team."/>
   <meta name="twitter:image" content="https://acuros.ca/hero-bg.jpg"/>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <script is:inline src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,200;0,300;0,400;0,500;1,200;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
-  <script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{display:['Cormorant Garamond','Georgia','serif'],sans:['DM Sans','sans-serif']}}}}</script>
-  <style>
+  <script is:inline>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{display:['Cormorant Garamond','Georgia','serif'],sans:['DM Sans','sans-serif']}}}}</script>
+  <style is:inline>
     :root{
       --bg:#f0ebe1;--bg2:#f8f4ec;--bg3:#e6e0d4;
       --border:#d4cdb8;--text:#1c1a14;--sub:#5c5346;--mute:#a09480;
@@ -248,7 +248,7 @@
     .nav-logo-text{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:.9rem;letter-spacing:.22em;color:var(--text);line-height:1}
     .nav-logo-sub{font-size:.42rem;letter-spacing:.42em;text-transform:uppercase;color:var(--mute);font-family:'DM Sans',sans-serif;font-weight:400}
   </style>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script is:inline src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 </head>
 <body>
 
@@ -371,7 +371,7 @@
           </button>
         </div>
       </div>
-      <style>
+      <style is:inline>
         #nav-profile-btn:hover{border-color:var(--ac);color:var(--ac);background:var(--bg3)}
         #nav-profile-btn[aria-expanded="true"]{border-color:var(--ac);color:var(--ac);background:var(--bg3)}
         #nav-profile-menu.open{opacity:1!important;transform:translateY(0) scale(1)!important;pointer-events:auto!important}
@@ -381,7 +381,7 @@
           #nav-profile-menu{transition:none}
         }
       </style>
-      <script>
+      <script is:inline>
       (function initProfileMenu(){
         const wrap = document.getElementById('nav-profile-wrap');
         const btn  = document.getElementById('nav-profile-btn');
@@ -595,7 +595,7 @@
   </footer>
 </div>
 
-<script>
+<script is:inline>
 /* ── Theme (light default) ── */
 (function initTheme() {
   if (localStorage.getItem('ah-theme') === 'dark') document.documentElement.classList.add('dark');

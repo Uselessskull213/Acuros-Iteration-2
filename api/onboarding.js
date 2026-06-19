@@ -15,6 +15,8 @@
 
 import { checkRateLimit } from './_lib/rate-limit.js';
 import { getSupabaseAdmin, isSupabaseConfigured } from './_lib/supabase-admin.js';
+import { sanitizePortalHtml } from './_lib/sanitize.js';
+import { generatePortal } from './_lib/portal-generator.js';
 
 const RATE_LIMIT_WINDOW_S = 60;
 const RATE_LIMIT_MAX_REQUESTS = 30;
@@ -212,15 +214,26 @@ const EXTRACT_SCHEMAS = {
 // Try Anthropic Claude Sonnet first (better for design tasks), fall back
 // to Google Gemini if no Anthropic key is configured. Both go through a
 // strict JSON-mode contract so the wizard can rely on the schema.
-async function callAIJson({ kind, text, clinicName }) {
+async function callAIJson({ kind, text, org }) {
   const conf = EXTRACT_SCHEMAS[kind];
   if (!conf) throw new Error('Unsupported extract kind');
+
+  // Ground the model in whatever the clinic has already told us. For the
+  // one-shot `design` kind these are usually still empty (it infers them from
+  // the paragraph), but for services/products/brand extraction this context is
+  // what makes the output specific to the clinic instead of generic boilerplate.
+  const facts = [
+    org?.name ? `Clinic name: "${org.name}".` : '',
+    org?.specialty ? `Speciality: ${org.specialty}.` : '',
+    org?.location ? `Location: ${org.location}.` : '',
+    org?.brand?.voice ? `Preferred brand voice: ${org.brand.voice}.` : '',
+  ].filter(Boolean).join(' ');
 
   const systemPrompt = [
     `You are the onboarding designer for Acuros Health, a Canadian clinic platform.`,
     `Tone: measured medical, premium-but-restrained. Never use breathless marketing copy or em-dashes. Never invent statistics.`,
     `${conf.description}`,
-    clinicName ? `Clinic context: "${clinicName}".` : '',
+    facts ? `Clinic context: ${facts}` : '',
   ].filter(Boolean).join('\n\n');
 
   const userPrompt = `Owner-provided text:\n"""${text}"""\n\nReturn ONLY a JSON object that conforms to the agreed schema. No prose, no markdown.`;
@@ -443,7 +456,7 @@ export default async function handler(req, res) {
       if (!ALLOWED_EXTRACT_KINDS.has(kind)) return res.status(400).json({ error: 'Unknown kind' });
       if (!text) return res.status(400).json({ error: 'Empty input' });
       const org = await getOrCreateOwnerOrg(admin, user);
-      const out = await callAIJson({ kind, text, clinicName: org?.name });
+      const out = await callAIJson({ kind, text, org });
 
       // For slug suggestions (either standalone or inside `design`),
       // scrub against reserved + taken so the UI only surfaces usable
@@ -516,15 +529,53 @@ export default async function handler(req, res) {
         }
       }
 
-      // Flip publish flags
+      // Auto-generate a bespoke portal so /c/<slug> launches with a real,
+      // clinic-specific AI design instead of the shared fallback template.
+      // Best-effort: if generation fails or times out we publish anyway and
+      // clinic-page.js serves the template (same as before this feature).
+      let generatedPortalHtml = null;
+      try {
+        const servicesForAI = (Array.isArray(body.services) ? body.services : []).map((s) => ({
+          name: s.name, category: s.category, description: s.description,
+          duration_min: Number.isFinite(+s.duration_min) ? +s.duration_min : null,
+          price_cents: Number.isFinite(+s.price_cents) ? +s.price_cents : null,
+        })).filter((s) => s.name);
+        const productsForAI = (Array.isArray(body.products) ? body.products : []).map((p) => ({
+          name: p.name, category: p.category, description: p.description,
+          // generatePortal reads products[].price as cents (it divides by 100).
+          price: Number.isFinite(+p.price_cents) ? +p.price_cents : null,
+        })).filter((p) => p.name);
+        const orgContext = {
+          name: org.name, slug: org.slug, specialty: org.specialty,
+          location: org.location, contact_email: org.contact_email,
+          logo_url: org.logo_url, theme: org.theme, brand: org.brand,
+          services: servicesForAI, products: productsForAI,
+        };
+        const { html } = await generatePortal({
+          org: orgContext,
+          instruction: 'Generate this clinic\'s initial public patient portal from scratch using only the facts provided. Make it distinctive to this specific clinic and speciality — not a generic template.',
+          timeoutMs: 45000,
+        });
+        generatedPortalHtml = sanitizePortalHtml(html);
+      } catch (genErr) {
+        console.error('[onboarding] portal generation failed (publishing with fallback template):', genErr?.message || genErr);
+      }
+
+      // Flip publish flags (+ persist the generated portal if we got one).
+      const nowIso = new Date().toISOString();
+      const pubPatch = {
+        is_published: true,
+        active: true,
+        published_at: nowIso,
+        onboarding_state: { ...(org.onboarding_state || {}), complete: true, published_at: nowIso },
+      };
+      if (generatedPortalHtml) {
+        pubPatch.portal_html = generatedPortalHtml;
+        pubPatch.portal_updated_at = nowIso;
+      }
       const { data: updated, error: pubErr } = await admin
         .from('organizations')
-        .update({
-          is_published: true,
-          active: true,
-          published_at: new Date().toISOString(),
-          onboarding_state: { ...(org.onboarding_state || {}), complete: true, published_at: new Date().toISOString() },
-        })
+        .update(pubPatch)
         .eq('id', org.id)
         .select()
         .single();

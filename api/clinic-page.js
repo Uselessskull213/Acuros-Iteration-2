@@ -13,6 +13,7 @@
 
 import { getSupabaseAdmin, isSupabaseConfigured } from './_lib/supabase-admin.js';
 import { sanitizePortalHtml } from './_lib/sanitize.js';
+import { DEFAULT_ACCENT } from './_lib/portal-generator.js';
 
 const PUBLISHABLE_KEY = 'sb_publishable_ywcyXTqGzRTik8YJfTTHiw_B-pmj2w-';
 const SUPABASE_URL    = 'https://pyexkdoupqzbnrybiubo.supabase.co';
@@ -94,7 +95,7 @@ export default async function handler(req, res){
 
   if (!org) return notFound(res, slug);
 
-  const accent  = safeHex(org.theme?.accent, '#c9a96e');
+  const accent  = safeHex(org.theme?.accent, DEFAULT_ACCENT);
   const tagline = (org.brand?.tagline || '').toString().slice(0, 200);
   const desc    = (org.description || tagline || `${org.name} — patient portal on Acuros Health.`).toString().slice(0, 280);
   const hero    = (org.theme?.heroImage || org.logo_url || FALLBACK_HERO).toString();

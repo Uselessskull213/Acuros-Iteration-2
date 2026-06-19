@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-80K00SEBQK"></script>
-  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-80K00SEBQK');</script>
+  <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-80K00SEBQK"></script>
+  <script is:inline>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-80K00SEBQK');</script>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <title>Set up your clinic - Acuros Health</title>
@@ -18,12 +18,12 @@
   <meta property="og:image:width" content="1400"/>
   <meta property="og:image:height" content="900"/>
   <meta name="twitter:image" content="https://acuros.ca/hero-bg.jpg"/>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script is:inline src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,200;0,300;0,400;0,500;1,200;1,300&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
 
-  <style>
+  <style is:inline>
     :root{
       --bg:#f0ebe1;--bg2:#f8f4ec;--bg3:#e6e0d4;
       --border:#d4cdb8;--text:#1c1a14;--sub:#5c5346;--mute:#a09480;
@@ -443,7 +443,7 @@
 
 <div class="toast" id="toast"></div>
 
-<script>
+<script is:inline>
 const SB_URL = 'https://pyexkdoupqzbnrybiubo.supabase.co';
 // Match the legacy JWT anon key used by patient.html / settings.html /
 // ai.html / portal-aaaclinics.html so all pages share one supabase-js
@@ -812,7 +812,7 @@ $('#btn-design-ai').addEventListener('click', async () => {
         name: s.name || '', category: s.category || 'Consultation',
         duration_min: +s.duration_min || 60, price_cents: +s.price_cents || 0,
         description: s.description || '',
-      }));
+      })).filter(s => s.name.trim());
       renderServices();
       $('#f-services-text').value = txt;
     }
@@ -820,7 +820,7 @@ $('#btn-design-ai').addEventListener('click', async () => {
       products = out.products.map(p => ({
         name: p.name || '', category: p.category || 'Skincare',
         price_cents: +p.price_cents || 0, description: p.description || '',
-      }));
+      })).filter(p => p.name.trim());
       renderProducts();
       $('#f-products-text').value = txt;
     }
@@ -859,7 +859,7 @@ $('#btn-brand-ai').addEventListener('click', async () => {
     const out = await aiExtract('brand', txt);
     if (out.tagline) $('#f-tagline').value = out.tagline;
     if (out.description) $('#f-description').value = out.description;
-    if (out.voice) $('#f-voice').value = out.voice;
+    if (out.voice && ['Clinical','Warm','Premium','Direct'].includes(out.voice)) $('#f-voice').value = out.voice;
     $('#ai-brand-status').textContent = 'Polished. Edit anything you want to adjust.';
     scheduleSave();
   } catch(err){
@@ -965,7 +965,7 @@ $('#btn-publish').addEventListener('click', async () => {
   if (!$('#f-slug').value.trim()) { toast('Pick a slug first.', 'error'); goStep(5); return; }
   if (!$('#f-name').value.trim()) { toast('Clinic name is required.', 'error'); goStep(1); return; }
 
-  btn.disabled = true; btn.textContent = 'Publishing…';
+  btn.disabled = true; btn.textContent = 'Designing your portal…';
   try {
     await saveProgress(true); // flush latest
     const out = await api('publish', { method: 'POST', body: JSON.stringify({ services, products }) });
