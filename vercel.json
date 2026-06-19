@@ -1,5 +1,9 @@
 {
   "version": 2,
+  "framework": "astro",
+  "buildCommand": "astro build",
+  "installCommand": "npm install",
+  "outputDirectory": "dist",
   "cleanUrls": true,
   "functions": {
     "api/onboarding.js": { "maxDuration": 60 },
