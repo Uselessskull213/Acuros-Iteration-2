@@ -11,9 +11,8 @@
     "api/chat.js": { "maxDuration": 60 }
   },
   "redirects": [
-    { "source": "/",          "has": [{ "type": "host", "value": "dev.acuros.ca" }], "destination": "/developer",                       "permanent": false },
-    { "source": "/developer", "has": [{ "type": "host", "value": "acuros.ca" }],     "destination": "https://dev.acuros.ca/developer", "permanent": false },
-    { "source": "/developer", "has": [{ "type": "host", "value": "www.acuros.ca" }], "destination": "https://dev.acuros.ca/developer", "permanent": false }
+    { "source": "/developer", "has": [{ "type": "host", "value": "acuros.ca" }],     "destination": "https://dev.acuros.ca/", "permanent": false },
+    { "source": "/developer", "has": [{ "type": "host", "value": "www.acuros.ca" }], "destination": "https://dev.acuros.ca/", "permanent": false }
   ],
   "rewrites": [
     { "source": "/c/:slug",     "destination": "/api/clinic-page?slug=:slug" },
