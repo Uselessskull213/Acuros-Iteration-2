@@ -14,6 +14,7 @@
   <meta name="theme-color" content="#2a6dc9"/>
   <meta name="robots" content="noindex"/>
   <script is:inline src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script is:inline src="/js/acuros-auth.js"></script>
   <script is:inline src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -644,7 +645,7 @@
 const SB_URL  = 'https://pyexkdoupqzbnrybiubo.supabase.co';
 const SB_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB5ZXhrZG91cHF6Ym5yeWJpdWJvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4Mzg4MzYsImV4cCI6MjA4NzQxNDgzNn0.3_dLQEJfmC08A2-hlgOfwlu4ngx7hslUR3Dun4BoXLU';
 let sb = null;
-try { sb = window.supabase.createClient(SB_URL, SB_KEY); } catch(e) {}
+try { sb = window.createAcurosClient(SB_URL, SB_KEY); } catch(e) {}
 
 // ════════════════════════════════════════════════════════════════════
 // STATE

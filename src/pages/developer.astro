@@ -11,6 +11,7 @@
   <meta name="theme-color" content="#c9922a"/>
   <meta name="robots" content="noindex"/>
   <script is:inline src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script is:inline src="/js/acuros-auth.js"></script>
   <script is:inline src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -222,7 +223,7 @@ const STRIPE_PLUS_LINK = 'https://buy.stripe.com/fZu9AM1f89Wz2DjbWA4ko05';
 (function(){ if(localStorage.getItem('ah-theme')==='dark') document.documentElement.classList.add('dark'); })();
 
 let sb = null;
-try { sb = window.supabase.createClient(SB_URL, SB_KEY); } catch(_e){}
+try { sb = window.createAcurosClient(SB_URL, SB_KEY); } catch(_e){}
 let session = null, token = null, org = null, profile = null;
 
 const $ = (s) => document.querySelector(s);

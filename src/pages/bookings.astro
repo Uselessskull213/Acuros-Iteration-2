@@ -3,6 +3,7 @@
 <head>
   <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-80K00SEBQK"></script>
   <script is:inline>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-80K00SEBQK');</script>
+  <script is:inline src="/js/acuros-auth.js"></script>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <title>Book a Consultation or Procedure | Acuros Health</title>
@@ -649,8 +650,7 @@ function fireHeroAnims() {
   script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js';
   script.onload = async () => {
     try {
-      const { createClient } = supabase;
-      const sb = createClient(SB_URL, SB_KEY);
+      const sb = window.createAcurosClient(SB_URL, SB_KEY);
       const { data: { session } } = await sb.auth.getSession();
       clearTimeout(timeout);
       if (!session) { denyAccess(); return; }
