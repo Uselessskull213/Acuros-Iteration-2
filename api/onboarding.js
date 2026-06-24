@@ -43,11 +43,17 @@ async function authedUser(req) {
 
 // Lookup the owner's organization row, lazily creating one on first save.
 async function getOrCreateOwnerOrg(admin, user, opts = {}) {
-  const { data: existing, error: readErr } = await admin
+  // Deterministic single-row read. A partial unique index on owner_id keeps
+  // this to one row; order+limit additionally defends against any legacy
+  // duplicates so .maybeSingle() can never throw PGRST116 ("multiple rows").
+  const readOwnerOrg = () => admin
     .from('organizations')
     .select('*')
     .eq('owner_id', user.id)
+    .order('created_at', { ascending: true })
+    .limit(1)
     .maybeSingle();
+  const { data: existing, error: readErr } = await readOwnerOrg();
   if (readErr && readErr.code !== 'PGRST116') throw readErr;
   if (existing) return existing;
   if (!opts.create) return null;
@@ -76,6 +82,12 @@ async function getOrCreateOwnerOrg(admin, user, opts = {}) {
     .select()
     .single();
   if (createErr) {
+    // A concurrent wizard request may have created the row first (unique
+    // owner_id). Fall back to reading that row instead of failing the wizard.
+    if (createErr.code === '23505') {
+      const { data: raced } = await readOwnerOrg();
+      if (raced) return raced;
+    }
     console.error('[onboarding] org insert failed:', createErr);
     throw createErr;
   }
@@ -330,9 +342,12 @@ export default async function handler(req, res) {
   // CORS: pin to ALLOWED_ORIGINS when configured (falls back to * only if unset,
   // for backward-compat). Native mobile clients don't enforce CORS, so this only
   // tightens browser callers.
-  const _allow = (process.env.ALLOWED_ORIGINS || '').split(',').map((s) => s.trim()).filter(Boolean);
-  const _o = req.headers.origin;
-  res.setHeader('Access-Control-Allow-Origin', _allow.length === 0 ? '*' : (_o && _allow.includes(_o) ? _o : _allow[0]));
+  const _configured = (process.env.ALLOWED_ORIGINS || '').split(',').map((s) => s.trim()).filter(Boolean);
+  const _allow = _configured.length ? _configured : ['https://acuros.ca', 'https://www.acuros.ca', 'https://dev.acuros.ca'];
+  const _o = req.headers.origin || '';
+  res.setHeader('Access-Control-Allow-Origin',
+    (_o && _allow.includes(_o)) ? _o
+    : (/^https:\/\/[a-z0-9-]+\.vercel\.app$/i.test(_o) ? _o : _allow[0]));
   res.setHeader('Vary', 'Origin');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
@@ -612,6 +627,6 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Unknown action' });
   } catch (err) {
     console.error('[onboarding] error:', err);
-    return res.status(500).json({ error: err?.message || 'Internal error' });
+    return res.status(500).json({ error: 'Something went wrong. Please try again.' });
   }
 }

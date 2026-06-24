@@ -262,9 +262,11 @@
           if (e.key === 'Escape') setOpen(false);
         });
 
-        // Show the dashboard item only for clinic owners. The role is
-        // stashed in localStorage by patient.html on sign-in.
-        const role = (function(){ try { return localStorage.getItem('ah-user-role'); } catch(_e){ return null; } })();
+        // Show the dashboard item only for clinic owners. Prefer the shared
+        // cross-subdomain role (cookie via acurosAuth) so it also resolves on
+        // dev.acuros.ca, falling back to this origin's localStorage.
+        const role = (window.acurosAuth && window.acurosAuth.getRole && window.acurosAuth.getRole())
+          || (function(){ try { return localStorage.getItem('ah-user-role'); } catch(_e){ return null; } })();
         if (dash && role === 'clinic_owner') dash.style.display = 'flex';
 
         // Sign-out wipes Supabase auth + our local cache then routes home.

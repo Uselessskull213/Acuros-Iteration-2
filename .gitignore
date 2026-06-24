@@ -9,3 +9,12 @@ node_modules/
 dist/
 .astro/
 .vercel/
+
+# Secrets — never commit a bare .env (only *.local was ignored before)
+.env
+
+# Stray local backups / scratch files (never commit)
+*.bak
+*.bak*
+test.txt
+/hero-bg.jpg

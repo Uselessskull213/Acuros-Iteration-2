@@ -13,12 +13,14 @@ function getClientIp(req) {
 }
 
 function buildCorsOrigin(req) {
-  const allow = process.env.ALLOWED_ORIGINS;
-  if (!allow) return '*';
-  const requestOrigin = req.headers.origin;
-  if (!requestOrigin) return '*';
-  const allowed = allow.split(',').map((v) => v.trim()).filter(Boolean);
-  return allowed.includes(requestOrigin) ? requestOrigin : allowed[0] || '*';
+  const requestOrigin = req.headers.origin || '';
+  const configured = (process.env.ALLOWED_ORIGINS || '').split(',').map((v) => v.trim()).filter(Boolean);
+  const allowed = configured.length ? configured
+    : ['https://acuros.ca', 'https://www.acuros.ca', 'https://dev.acuros.ca'];
+  if (requestOrigin && allowed.includes(requestOrigin)) return requestOrigin;
+  // Keep Vercel preview deployments functional without explicit config.
+  if (/^https:\/\/[a-z0-9-]+\.vercel\.app$/i.test(requestOrigin)) return requestOrigin;
+  return allowed[0];
 }
 
 export default async function handler(req, res) {

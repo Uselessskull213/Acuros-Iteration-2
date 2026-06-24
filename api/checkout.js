@@ -17,12 +17,14 @@ function getClientIp(req) {
 }
 
 function buildCorsOrigin(req) {
-  const allow = process.env.ALLOWED_ORIGINS;
-  if (!allow) return '*';
-  const requestOrigin = req.headers.origin;
-  if (!requestOrigin) return '*';
-  const allowed = allow.split(',').map((v) => v.trim()).filter(Boolean);
-  return allowed.includes(requestOrigin) ? requestOrigin : allowed[0] || '*';
+  const requestOrigin = req.headers.origin || '';
+  const configured = (process.env.ALLOWED_ORIGINS || '').split(',').map((v) => v.trim()).filter(Boolean);
+  const allowed = configured.length ? configured
+    : ['https://acuros.ca', 'https://www.acuros.ca', 'https://dev.acuros.ca'];
+  if (requestOrigin && allowed.includes(requestOrigin)) return requestOrigin;
+  // Keep Vercel preview deployments functional without explicit config.
+  if (/^https:\/\/[a-z0-9-]+\.vercel\.app$/i.test(requestOrigin)) return requestOrigin;
+  return allowed[0];
 }
 
 function escapeHtml(str) {
@@ -98,7 +100,9 @@ export default async function handler(req, res) {
     const name = String(raw?.name || '').trim().slice(0, 200);
     const qty = Math.max(1, Math.min(999, Math.floor(Number(raw?.qty || 1))));
     const priceNum = Number(raw?.price || 0);
-    if (!name || !Number.isFinite(priceNum) || priceNum < 0) {
+    // Reject absurd unit prices. Catalog prices are modest; an inflated price
+    // would corrupt the stored order and the loyalty-point ledger (1pt/$10).
+    if (!name || !Number.isFinite(priceNum) || priceNum < 0 || priceNum > 100000) {
       return res.status(400).json({ error: 'Invalid cart item.' });
     }
     const priceCents = Math.round(priceNum * 100);
@@ -111,7 +115,8 @@ export default async function handler(req, res) {
   const customerName = String(body.customerName || '').trim().slice(0, 160);
   const customerEmail = String(body.customerEmail || '').trim().slice(0, 160);
   const customerPhone = String(body.customerPhone || '').trim().slice(0, 30);
-  const orgCode = String(body.orgCode || '').trim().slice(0, 80);
+  // Strip LIKE metacharacters before the ilike() lookup (see bookings.js).
+  const orgCode = String(body.orgCode || '').trim().toUpperCase().replace(/[^A-Z0-9-]/g, '').slice(0, 80);
   const note = String(body.note || '').trim().slice(0, 1000);
 
   if (!customerEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customerEmail)) {

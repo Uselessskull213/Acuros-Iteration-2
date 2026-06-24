@@ -45,9 +45,12 @@ function normaliseCode(raw) {
 
 export default async function handler(req, res) {
   // CORS: pin to ALLOWED_ORIGINS when configured (native mobile is unaffected).
-  const _allow = (process.env.ALLOWED_ORIGINS || '').split(',').map((s) => s.trim()).filter(Boolean);
-  const _o = req.headers.origin;
-  res.setHeader('Access-Control-Allow-Origin', _allow.length === 0 ? '*' : (_o && _allow.includes(_o) ? _o : _allow[0]));
+  const _configured = (process.env.ALLOWED_ORIGINS || '').split(',').map((s) => s.trim()).filter(Boolean);
+  const _allow = _configured.length ? _configured : ['https://acuros.ca', 'https://www.acuros.ca', 'https://dev.acuros.ca'];
+  const _o = req.headers.origin || '';
+  res.setHeader('Access-Control-Allow-Origin',
+    (_o && _allow.includes(_o)) ? _o
+    : (/^https:\/\/[a-z0-9-]+\.vercel\.app$/i.test(_o) ? _o : _allow[0]));
   res.setHeader('Vary', 'Origin');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
@@ -150,6 +153,6 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Unknown action' });
   } catch (err) {
     console.error('[memberships] error:', err);
-    return res.status(500).json({ error: err?.message || 'Internal error' });
+    return res.status(500).json({ error: 'Something went wrong. Please try again.' });
   }
 }

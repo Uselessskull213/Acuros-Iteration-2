@@ -2,6 +2,12 @@
 -- Acuros v2 — Portal Editor + Web Auth Alignment with Mobile
 -- Run once in Supabase Dashboard → SQL Editor → New Query.
 -- Idempotent: safe to re-run.
+--
+-- ⚠ SUPERSEDED: the handle_new_user() definition below INSERTs a
+--   profiles.email column that does NOT exist on this project and would
+--   break every signup if re-run. The account-creation system now lives in
+--   supabase-account-system.sql — use that file. The section below is kept
+--   only for the portal_html / account_code column additions.
 -- ============================================================
 
 -- ── 1. Free-form portal HTML on each organization ───────────

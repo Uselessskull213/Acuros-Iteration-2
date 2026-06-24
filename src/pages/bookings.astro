@@ -634,8 +634,12 @@ function fireHeroAnims() {
   const fastOrg = localStorage.getItem('ah-org-code');
   if (fastOrg) { grantAccess(); return; }
 
-  // Try Supabase session check with 4s timeout
-  const timeout = setTimeout(() => denyAccess(), 4000);
+  // If the config script didn't load, deny gracefully instead of throwing —
+  // a TypeError here would hang the "Verifying access…" overlay forever.
+  if (!window.ACUROS || !window.ACUROS.SUPABASE_URL) { denyAccess(); return; }
+
+  // Session check with a timeout generous enough for cold mobile caches.
+  const timeout = setTimeout(() => denyAccess(), 8000);
 
   const SB_URL = window.ACUROS.SUPABASE_URL;
   const SB_KEY = window.ACUROS.SUPABASE_ANON_KEY;

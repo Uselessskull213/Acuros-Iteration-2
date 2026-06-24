@@ -827,7 +827,7 @@ if (sb?.auth?.onAuthStateChange) {
     if (session?.user) {
       currentUser = { id:session.user.id, email:session.user.email, name:session.user.user_metadata?.full_name||session.user.email?.split('@')[0]||'User', code:'', org_id:'', org_name:'' };
       localStorage.removeItem(GUEST_MSG_KEY); authReady=true; updateGuestUI(); ensureChatHistoryLoaded(true);
-      try { const {data:p} = await sb.from('profiles').select('*, org:org_id(id, name)').eq('id',session.user.id).maybeSingle(); if(p&&currentUser){currentUser.name=p.name||currentUser.name;currentUser.code=p.patient_code||'';currentUser.org_id=p.org_id||'';currentUser.org_name=p.org?.name||'';} } catch(_){}
+      try { const {data:p} = await sb.from('profiles').select('*, org:org_id(id, name)').eq('id',session.user.id).maybeSingle(); if(p&&currentUser){currentUser.name=p.name||currentUser.name;currentUser.code=(localStorage.getItem('ah-org-code')||'');currentUser.org_id=p.org_id||'';currentUser.org_name=p.org?.name||'';} } catch(_){}
     } else if (event==='SIGNED_OUT') { currentUser=null; authReady=true; updateGuestUI(); ensureChatHistoryLoaded(true); }
     if (window.location.hash?.includes('access_token')) window.history.replaceState(null,'',window.location.pathname+window.location.search);
   });

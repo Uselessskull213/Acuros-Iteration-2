@@ -3,6 +3,10 @@
 -- Run once in Supabase Dashboard → SQL Editor → New Query.
 -- Idempotent: safe to re-run.
 --
+-- ⚠ The handle_new_user() defined here is OUTDATED (it INSERTs a
+--   non-existent profiles.email column). The authoritative trigger lives in
+--   supabase-account-system.sql — run that AFTER this file.
+--
 -- Adds:
 --   • profiles.role — 'patient' (default) or 'clinic_owner'.
 --     Only clinic_owner accounts can use /onboarding.

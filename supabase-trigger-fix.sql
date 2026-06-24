@@ -3,6 +3,9 @@
 -- Run once in Supabase Dashboard → SQL Editor → New Query.
 -- Idempotent: safe to re-run.
 --
+-- ⚠ SUPERSEDED by supabase-account-system.sql, which is the current
+--   authoritative definition of handle_new_user() + the account-code system.
+--
 -- The previous version of this trigger inserted INTO public.profiles
 -- (id, email, name, role) but the live profiles table doesn't have an
 -- email column. The trigger therefore raised on every auth signup,

@@ -1148,6 +1148,10 @@ const ORG_BANNER_DISMISSED_KEY = 'ah-org-banner-dismissed';
 const KNOWN_CLINIC_CODES = {};
 function getClinicPortalUrl(_code){ return null; }
 function userHasOrg(){ return !!(currentUser?.org_id || currentUser?.code); }
+// The clinic a patient joined with is persisted as profiles.org_id; the
+// human-readable clinic code lives in localStorage('ah-org-code'). There is
+// NO profiles.patient_code column — reading/writing one 400s the request.
+function storedOrgCode(){ try { return localStorage.getItem('ah-org-code') || ''; } catch(_e){ return ''; } }
 
 function handleBookClick(){
   if (userHasOrg()) window.location.href = '/bookings';
@@ -1280,8 +1284,11 @@ async function joinOrg(e){
     localStorage.setItem('ah-org-name',org.name);
     (async()=>{
       try{
-        const{error:e1}=await sb.from('profiles').update({patient_code:code,org_id:org.id}).eq('id',currentUser.id);
-        if(e1) await sb.from('profiles').update({patient_code:code}).eq('id',currentUser.id).catch(()=>{});
+        // Persist the real clinic linkage (org_id). The clinic code itself is
+        // already stored in localStorage('ah-org-code') above. profiles has no
+        // patient_code column, so writing one would reject the whole update.
+        const{error:e1}=await sb.from('profiles').update({org_id:org.id}).eq('id',currentUser.id);
+        if(e1) console.warn('[Acuros] could not persist clinic link:', e1.message||e1);
       }catch(_){}
     })();
     const portalUrl=getClinicPortalUrl(code);
@@ -1492,7 +1499,7 @@ function buildCurrentUserFromAuth(user, p, override){
     name: (override?.name) || p?.name || user.user_metadata?.full_name || (user.email||'').split('@')[0],
     first: (override?.first_name) || p?.first_name || '',
     last:  (override?.last_name)  || p?.last_name  || '',
-    code:  (override?.patient_code) || p?.patient_code || '',
+    code:  storedOrgCode(),
     org_id:(override?.org_id) || p?.org_id || '',
     org_name: p?.org?.name || '',
     tier: p?.tier || 'free',
@@ -1535,7 +1542,7 @@ async function ptLogin(e){
         id:data.user.id, email:data.user.email,
         name: p?.name || data.user.user_metadata?.full_name || data.user.email.split('@')[0],
         first: p?.first_name||'', last: p?.last_name||'',
-        code: p?.patient_code||'', org_id: p?.org_id||'',
+        code: storedOrgCode(), org_id: p?.org_id||'',
         org_name: p?.org?.name||'',
         tier: p?.tier || 'free',
         created_at: p?.created_at || data.user.created_at
@@ -1597,7 +1604,7 @@ async function ptRegister(e){
 
       // Match the mobile flow: send a 6-digit OTP and switch to the OTP
       // panel for email verification. The profile row (with the user's
-      // chosen name + patient_code + role) is staged in ptOTPState and
+      // chosen name + role) is staged in ptOTPState and
       // upserted after successful verification.
       try {
         const{error:otpErr}=await sb.auth.signInWithOtp({ email, options:{ shouldCreateUser:false } });
@@ -1615,13 +1622,14 @@ async function ptRegister(e){
 
       // Patient-only: stash the clinic code so we can join after verify.
       const safeCodeForLater = (role === 'patient' && code) ? code.toUpperCase() : '';
+      // Keep the clinic code for after verification (no patient_code column).
+      if (safeCodeForLater) { try { localStorage.setItem('ah-org-code', safeCodeForLater); } catch(_e){} }
       ptOTPState = {
         purpose: 'signup',
         email,
         pendingProfile: {
           id: data.user?.id,
           name, first_name:first, last_name:last,
-          patient_code: safeCodeForLater || null,
           tier:'free', usage_count:0,
           role, role_confirmed:true,
         },
@@ -1904,7 +1912,7 @@ if(sb?.auth?.onAuthStateChange){
         name:  profile?.name || session.user.user_metadata?.full_name || (session.user.email||'').split('@')[0] || 'User',
         first: profile?.first_name || '',
         last:  profile?.last_name  || '',
-        code:  profile?.patient_code || '',
+        code:  storedOrgCode(),
         org_id:profile?.org_id || '',
         org_name: profile?.org?.name || '',
         tier:  profile?.tier || 'free',

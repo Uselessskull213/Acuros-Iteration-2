@@ -15,12 +15,14 @@ function getClientIp(req) {
 }
 
 function buildCorsOrigin(req) {
-  const allow = process.env.ALLOWED_ORIGINS;
-  if (!allow) return '*';
-  const requestOrigin = req.headers.origin;
-  if (!requestOrigin) return '*';
-  const allowed = allow.split(',').map((v) => v.trim()).filter(Boolean);
-  return allowed.includes(requestOrigin) ? requestOrigin : allowed[0] || '*';
+  const requestOrigin = req.headers.origin || '';
+  const configured = (process.env.ALLOWED_ORIGINS || '').split(',').map((v) => v.trim()).filter(Boolean);
+  const allowed = configured.length ? configured
+    : ['https://acuros.ca', 'https://www.acuros.ca', 'https://dev.acuros.ca'];
+  if (requestOrigin && allowed.includes(requestOrigin)) return requestOrigin;
+  // Keep Vercel preview deployments functional without explicit config.
+  if (/^https:\/\/[a-z0-9-]+\.vercel\.app$/i.test(requestOrigin)) return requestOrigin;
+  return allowed[0];
 }
 
 function escapeHtml(str) {
@@ -106,7 +108,7 @@ export default async function handler(req, res) {
       return res.status(200).json({ bookings: data || [] });
     } catch (err) {
       console.error('[bookings] list mine error:', err);
-      return res.status(500).json({ error: err.message || 'Internal error' });
+      return res.status(500).json({ error: 'Could not load your bookings. Please try again.' });
     }
   }
 
@@ -135,7 +137,9 @@ export default async function handler(req, res) {
   const date = String(body.date || '').trim().slice(0, 20);
   const time = String(body.time || '').trim().slice(0, 80);
   const notes = String(body.notes || '').trim().slice(0, 2000);
-  const orgCode = String(body.orgCode || '').trim().slice(0, 80);
+  // Strip LIKE metacharacters: this value is used in an ilike() pattern, so a
+  // raw '%' would turn the lookup into a wildcard that matches a stranger's org.
+  const orgCode = String(body.orgCode || '').trim().toUpperCase().replace(/[^A-Z0-9-]/g, '').slice(0, 80);
 
   if (!procedure || !firstName || !lastName || !email || !phone || !date) {
     return res.status(400).json({ error: 'Missing required booking fields.' });
