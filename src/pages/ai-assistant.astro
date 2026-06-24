@@ -396,8 +396,10 @@
     .nav-logo-text{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:.9rem;letter-spacing:.22em;color:var(--text);line-height:1}
     .nav-logo-sub{font-size:.42rem;letter-spacing:.42em;text-transform:uppercase;color:var(--mute);font-family:'DM Sans',sans-serif;font-weight:400}
   </style>
+  <link rel="stylesheet" href="/css/acuros.css"/>
 </head>
 <body>
+<a href="#main" class="skip-link">Skip to content</a>
 
 <div id="grain" aria-hidden="true"></div>
 <div id="scroll-prog"></div>
@@ -549,7 +551,7 @@
 <div id="mob-menu">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3rem">
     <span style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:200;color:var(--text);letter-spacing:.1em">ACUROS</span>
-    <button onclick="closeMob()" style="background:none;border:none;cursor:pointer;color:var(--text)">
+    <button onclick="closeMob()" aria-label="Close menu" style="background:none;border:none;cursor:pointer;color:var(--text)">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
     </button>
   </div>
@@ -560,7 +562,7 @@
   </div>
 </div>
 
-<div style="padding-top:4rem">
+<main id="main" style="padding-top:4rem">
 
   <!-- Hero -->
   <section class="ai-hero" style="position:relative;padding:8rem 2rem 6rem;border-bottom:1px solid var(--border);overflow:hidden;min-height:480px;display:flex;align-items:flex-end;background:#0a0908">
@@ -735,7 +737,7 @@
       </div>
     </div>
   </footer>
-</div>
+</main>
 
 <script is:inline>
 const CONFIG = {

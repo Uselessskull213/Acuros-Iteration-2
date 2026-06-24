@@ -10,6 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <script is:inline src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script is:inline src="/js/acuros-config.js"></script>
 <script is:inline src="/js/acuros-auth.js"></script>
 <style is:inline>
 :root{
@@ -142,15 +143,17 @@ a:hover{color:var(--ac-hi)}
 .gate-card p{color:var(--sub);line-height:1.7;margin-bottom:1.5rem;font-size:.88rem}
 .gate-card .btn{padding:.75rem 1.4rem;font-size:.65rem}
 </style>
+<link rel="stylesheet" href="/css/acuros.css"/>
 </head>
 <body>
+<a href="#app" class="skip-link">Skip to content</a>
 
 <!-- Loading / gate (shown until we know auth state) -->
 <div class="gate" id="gate" hidden>
   <div class="gate-card">
     <h1 id="gateTitle">Sign in to <em>edit</em></h1>
     <p id="gateMsg">Portal editing is for clinic owners. Sign in to continue.</p>
-    <a class="btn btn-pri" id="gateCta" href="/patient-portal?role=owner">Sign in</a>
+    <a class="btn btn-pri" id="gateCta" href="https://acuros.ca/patient-portal?role=owner">Sign in</a>
   </div>
 </div>
 
@@ -201,8 +204,8 @@ a:hover{color:var(--ac-hi)}
     <div class="chip-row" id="chipRow"></div>
     <div class="chat-input">
       <div class="chat-input-wrap">
-        <textarea id="chatInput" placeholder="e.g. add a doctor bios section under the hero…" rows="2"></textarea>
-        <button class="chat-send" id="chatSend" title="Send (⌘↵)" disabled>
+        <textarea id="chatInput" aria-label="Describe a change to your portal" placeholder="e.g. add a doctor bios section under the hero…" rows="2"></textarea>
+        <button class="chat-send" id="chatSend" title="Send (⌘↵)" aria-label="Send message" disabled>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
         </button>
       </div>
@@ -215,9 +218,9 @@ a:hover{color:var(--ac-hi)}
 </main>
 
 <!-- Publish modal -->
-<div class="modal" id="publishModal" hidden>
+<div class="modal" id="publishModal" role="dialog" aria-modal="true" aria-labelledby="publishModalTitle" hidden>
   <div class="modal-card">
-    <h2>Publish portal</h2>
+    <h2 id="publishModalTitle">Publish portal</h2>
     <p>Your draft will go live at <strong style="color:var(--ac)" id="liveUrlPreview">acuros.ca/c/…</strong>. SEO + meta tags auto-update.</p>
     <div class="modal-field">
       <label for="slugInput">Portal URL slug</label>
@@ -233,12 +236,8 @@ a:hover{color:var(--ac-hi)}
 
 <script is:inline>
 (() => {
-  const SB_URL = 'https://pyexkdoupqzbnrybiubo.supabase.co';
-  // Use the legacy JWT anon key so this page shares the same localStorage
-  // namespace as patient.html / dashboard.html / settings.html. The
-  // publishable-key client writes to a different namespace and would make
-  // signed-in users appear signed-out when they navigate to /editor.
-  const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB5ZXhrZG91cHF6Ym5yeWJpdWJvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4Mzg4MzYsImV4cCI6MjA4NzQxNDgzNn0.3_dLQEJfmC08A2-hlgOfwlu4ngx7hslUR3Dun4BoXLU';
+  const SB_URL = window.ACUROS.SUPABASE_URL;
+  const SB_KEY = window.ACUROS.SUPABASE_ANON_KEY;
   const sb = window.createAcurosClient(SB_URL, SB_KEY);
 
   const DRAFT_KEY = 'acuros-portal-draft';
@@ -359,7 +358,7 @@ a:hover{color:var(--ac-hi)}
   // ── Auth gate ──────────────────────────────────────────
   async function bootstrap(){
     const { data: { session } } = await sb.auth.getSession();
-    if (!session?.user) return showGate('Sign in to <em>edit</em>', 'Portal editing is for clinic owners. Sign in to continue.', 'Sign in', '/patient-portal?role=owner');
+    if (!session?.user) return showGate('Sign in to <em>edit</em>', 'Portal editing is for clinic owners. Sign in to continue.', 'Sign in', 'https://acuros.ca/patient-portal?role=owner');
 
     state.user = session.user;
     const [profileRes, orgRes] = await Promise.all([
@@ -629,6 +628,42 @@ a:hover{color:var(--ac-hi)}
   window.addEventListener('beforeunload', (e) => {
     if (state.dirty && state.html) { e.preventDefault(); e.returnValue = ''; }
   });
+
+  // ── Modal accessibility (Escape + focus management) ────
+  (function setupModalA11y(){
+    const modal = document.getElementById('publishModal');
+    if (!modal) return;
+    let opener = null;
+    function focusables(){
+      return Array.from(modal.querySelectorAll('a[href],button:not([disabled]),input:not([disabled]),textarea:not([disabled]),select:not([disabled]),[tabindex]:not([tabindex="-1"])'));
+    }
+    function onKeydown(e){
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        modal.hidden = true; // observer handles focus restore + cleanup
+      } else if (e.key === 'Tab') {
+        const f = focusables();
+        if (!f.length) return;
+        const first = f[0], last = f[f.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+    }
+    function onOpen(){
+      opener = document.activeElement;
+      document.addEventListener('keydown', onKeydown, true);
+      const f = focusables();
+      if (f.length) requestAnimationFrame(() => f[0].focus());
+    }
+    function onClose(){
+      document.removeEventListener('keydown', onKeydown, true);
+      if (opener && typeof opener.focus === 'function') opener.focus();
+      opener = null;
+    }
+    new MutationObserver(() => {
+      if (!modal.hidden) onOpen(); else onClose();
+    }).observe(modal, {attributes:true, attributeFilter:['hidden']});
+  })();
 
   bootstrap().catch(err => {
     console.error(err);

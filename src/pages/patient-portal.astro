@@ -22,6 +22,7 @@
   <meta name="twitter:image" content="https://acuros.ca/hero-bg.jpg"/>
 <meta name="robots" content="noindex"/>
   <script is:inline src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script is:inline src="/js/acuros-config.js"></script>
   <script is:inline src="/js/acuros-auth.js"></script>
   <!-- Apple Sign In JS SDK. Loads asynchronously; ptAppleAuth() guards
        against early invocation. We use popup mode + signInWithIdToken so
@@ -447,8 +448,10 @@
       .side-foot{flex-direction:row;flex-wrap:wrap;gap:1rem}
     }
   </style>
+  <link rel="stylesheet" href="/css/acuros.css"/>
 </head>
 <body>
+<a href="#portal-gate" class="skip-link">Skip to content</a>
 
 <div id="grain" aria-hidden="true"></div>
 <div id="scroll-prog" aria-hidden="true"></div>
@@ -458,10 +461,10 @@
      haven't yet confirmed whether they're a patient or a clinic owner.
      Covers: existing accounts created before the toggle existed, Google
      OAuth signups, and email signups that somehow skipped the toggle. -->
-<div id="role-prompt" style="display:none;position:fixed;inset:0;z-index:9000;background:rgba(8,7,6,.75);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);align-items:center;justify-content:center;padding:1.5rem">
+<div id="role-prompt" role="dialog" aria-modal="true" aria-labelledby="role-prompt-title" style="display:none;position:fixed;inset:0;z-index:9000;background:rgba(8,7,6,.75);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);align-items:center;justify-content:center;padding:1.5rem">
   <div style="background:var(--bg);border:1px solid var(--border);max-width:520px;width:100%;padding:2.25rem 2rem 1.75rem;box-shadow:0 30px 80px rgba(0,0,0,.4)">
     <div class="lbl" style="color:var(--ac);margin-bottom:.625rem">One quick question</div>
-    <h3 style="font-family:'Cormorant Garamond',serif;font-size:1.85rem;font-weight:300;letter-spacing:-.025em;line-height:1.05;margin-bottom:.625rem">How will you be using <em style="color:var(--ac);font-style:italic">Acuros?</em></h3>
+    <h3 id="role-prompt-title" style="font-family:'Cormorant Garamond',serif;font-size:1.85rem;font-weight:300;letter-spacing:-.025em;line-height:1.05;margin-bottom:.625rem">How will you be using <em style="color:var(--ac);font-style:italic">Acuros?</em></h3>
     <p style="font-size:.85rem;color:var(--sub);line-height:1.65;margin-bottom:1.5rem">This helps us route you to the right experience. You can change this later from your account settings.</p>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
       <button type="button" id="role-prompt-patient"
@@ -559,19 +562,14 @@
 
         // Show the dashboard item only for clinic owners. The role is
         // stashed in localStorage by patient.html on sign-in.
-        const role = (function(){ try { return localStorage.getItem('ah-user-role'); } catch(_e){ return null; } })();
+        const role = (window.acurosAuth && window.acurosAuth.getRole()) || null;
         if (dash && role === 'clinic_owner') dash.style.display = 'flex';
 
         // Sign-out wipes Supabase auth + our local cache then routes home.
         if (out) out.addEventListener('click', async () => {
-          try { if (typeof sb !== 'undefined' && sb && sb.auth) await sb.auth.signOut(); } catch(_e){}
-          try {
-            localStorage.removeItem('ah-user-initial');
-            localStorage.removeItem('ah-user-role');
-            localStorage.removeItem('ah-org-code');
-            Object.keys(localStorage).forEach(k => { if (k.startsWith('sb-')) localStorage.removeItem(k); });
-          } catch(_e){}
-          window.location.href = '/';
+          try { if (typeof sb !== 'undefined' && sb && sb.auth) await sb.auth.signOut({ scope: 'global' }); } catch(_e){}
+          try { if (window.acurosAuth) window.acurosAuth.clearAll(); localStorage.removeItem('ah-org-code'); } catch(_e){}
+          window.location.href = ((window.ACUROS && window.ACUROS.APEX_ORIGIN) || '') + '/';
         });
 
         // ── Authoritative visibility (storage-only).
@@ -579,17 +577,12 @@
         // we don't have to instantiate a second client (which would
         // race the page's primary one and cause sign-out loops).
         (function(){
-          const STORAGE_KEY = 'sb-pyexkdoupqzbnrybiubo-auth-token';
+          const STORAGE_KEY = (window.acurosAuth && window.acurosAuth.STORAGE_KEY) || 'sb-pyexkdoupqzbnrybiubo-auth-token';
+          // Cookie-aware: on dev.acuros.ca the session lives ONLY in the shared
+          // .acuros.ca cookie (localStorage is empty there), so we must not read
+          // the raw localStorage key directly or owners look signed-out.
           function hasValidSession(){
-            try {
-              const raw = localStorage.getItem(STORAGE_KEY);
-              if (!raw) return false;
-              const parsed = JSON.parse(raw);
-              const session = parsed && (parsed.currentSession || parsed);
-              const exp = session && session.expires_at;
-              if (typeof exp === 'number') return exp * 1000 > Date.now();
-              return !!(session && session.access_token);
-            } catch(_e) { return false; }
+            return !!(window.acurosAuth && window.acurosAuth.isSignedIn());
           }
           function refresh(){
             if (hasValidSession()) {
@@ -1092,13 +1085,13 @@
 </div>
 
 
-<div id="org-modal">
+<div id="org-modal" role="dialog" aria-modal="true" aria-labelledby="org-modal-title">
   <div class="modal-card">
     <button class="modal-x" onclick="hideOrgPrompt()" aria-label="Close">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
     </button>
     <div class="lbl" style="color:var(--ac);margin-bottom:.875rem">Clinic access</div>
-    <h3 style="font-size:1.4rem;font-weight:500;letter-spacing:-.025em;margin-bottom:.5rem">Join your clinic's network</h3>
+    <h3 id="org-modal-title" style="font-size:1.4rem;font-weight:500;letter-spacing:-.025em;margin-bottom:.5rem">Join your clinic's network</h3>
     <p style="font-size:.78rem;color:var(--sub);line-height:1.6;margin-bottom:1.75rem;font-weight:400">Enter the unique code from your clinic to connect your account.</p>
     <div id="org-err" style="display:none;margin-bottom:1rem"></div>
     <div id="org-ok"  style="display:none;margin-bottom:1rem"></div>
@@ -1142,12 +1135,10 @@ renderThemeToggle();
 /* ═══════════════════════════════════════════════════════════════════════
    SUPABASE (preserved)
 ═══════════════════════════════════════════════════════════════════════ */
-const CONFIG = {
-  supabaseUrl: 'https://pyexkdoupqzbnrybiubo.supabase.co',
-  supabaseKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB5ZXhrZG91cHF6Ym5yeWJpdWJvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4Mzg4MzYsImV4cCI6MjA4NzQxNDgzNn0.3_dLQEJfmC08A2-hlgOfwlu4ngx7hslUR3Dun4BoXLU',
-};
+const CONFIG = { supabaseUrl: window.ACUROS.SUPABASE_URL, supabaseKey: window.ACUROS.SUPABASE_ANON_KEY };
 let sb = null;
-try { if (CONFIG.supabaseKey) sb = window.createAcurosClient(CONFIG.supabaseUrl, CONFIG.supabaseKey); } catch(e) {}
+try { if (CONFIG.supabaseKey) sb = window.createAcurosClient(CONFIG.supabaseUrl, CONFIG.supabaseKey); }
+catch(e) { console.error('[Acuros] auth client failed to initialise', e); }
 let currentUser = null, ptMode = 'login';
 const ORG_BANNER_DISMISSED_KEY = 'ah-org-banner-dismissed';
 // Legacy hard-coded clinic codes used to point at static /aaaclinics-portal,
@@ -1246,8 +1237,20 @@ setInterval(renderGreeting, 30_000);
 function showMsg(id,msg,type){const el=document.getElementById(id);if(!el)return;el.style.display='block';el.className=type==='err'?'err-box':'ok-box';el.textContent=msg;}
 function hideMsg(...ids){ids.forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});}
 function setBtn(id,loading,label){const b=document.getElementById(id);if(!b)return;b.disabled=loading;b.innerHTML=loading?'<span class="spin"></span>':label;}
-function showOrgPrompt(){const m=document.getElementById('org-modal');if(m)m.classList.add('open');hideMsg('org-err','org-ok');}
-function hideOrgPrompt(){const m=document.getElementById('org-modal');if(m)m.classList.remove('open');}
+let _orgKeyHandler=null,_orgOpener=null;
+function showOrgPrompt(){
+  const m=document.getElementById('org-modal'); if(!m) return;
+  _orgOpener=document.activeElement;
+  m.classList.add('open'); hideMsg('org-err','org-ok');
+  const inp=document.getElementById('org-code-inp'); if(inp) setTimeout(()=>inp.focus(),30);
+  _orgKeyHandler=(e)=>{ if(e.key==='Escape') hideOrgPrompt(); };
+  document.addEventListener('keydown',_orgKeyHandler);
+}
+function hideOrgPrompt(){
+  const m=document.getElementById('org-modal'); if(m)m.classList.remove('open');
+  if(_orgKeyHandler){ document.removeEventListener('keydown',_orgKeyHandler); _orgKeyHandler=null; }
+  if(_orgOpener&&_orgOpener.focus){ try{_orgOpener.focus();}catch(_e){} _orgOpener=null; }
+}
 function dismissOrgBanner(){localStorage.setItem(ORG_BANNER_DISMISSED_KEY,'1');const b=document.getElementById('org-banner');if(b)b.style.display='none';}
 
 async function joinOrg(e){
@@ -1260,11 +1263,14 @@ async function joinOrg(e){
     let org = KNOWN_CLINIC_CODES[code]||null;
     if (!org && sb) {
       try {
+        // Resolve the clinic by code via a SECURITY DEFINER RPC — the
+        // organizations table is no longer anon-readable (closed a data leak),
+        // and the RPC returns only the minimal fields needed here.
         const{data,error}=await Promise.race([
-          sb.from('organizations').select('id, name, active').filter('code','ilike',code).maybeSingle(),
+          sb.rpc('org_by_code',{ p_code: code }),
           new Promise((_,rej)=>setTimeout(()=>rej(new Error('Request timed out.')),6000))
         ]);
-        if(!error && data) org=data;
+        if(!error && data && data.length) org=data[0];
       } catch(dbErr){throw dbErr;}
     }
     if(!org) throw new Error('Code not recognized. Please verify the code with your clinic.');
@@ -1322,7 +1328,12 @@ let ptOTPState = { purpose:null, email:'', pendingProfile:null };
 async function ptGoogleAuth(){
   if(!sb){showMsg('pt-err','Auth not configured.','err');return;}
   try{
-    const{error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin+'/patient-portal?portal=1'}});
+    // Pin the OAuth callback to the apex origin (never dev.acuros.ca), and
+    // preserve any role intent (?role=owner) across the Google round-trip.
+    const sp = new URLSearchParams(window.location.search);
+    sp.set('portal','1');
+    const back = ((window.ACUROS && window.ACUROS.APEX_ORIGIN) || window.location.origin) + '/patient-portal?' + sp.toString();
+    const{error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:back}});
     if(error)throw error;
   } catch(err){ showMsg('pt-err',err.message||'Google sign-in failed.','err'); }
 }
@@ -1530,8 +1541,8 @@ async function ptLogin(e){
         created_at: p?.created_at || data.user.created_at
       };
     } else {
-      const email=document.getElementById('pt-email').value;
-      currentUser={id:'demo',email,name:email.split('@')[0],first:'',last:'',code:'',org_id:'',org_name:'',tier:'free',created_at:new Date().toISOString()};
+      showMsg('pt-err','Authentication is temporarily unavailable. Please refresh and try again.','err');
+      return;
     }
     syncPortal();
   } catch(err){ showMsg('pt-err',err.message||'Sign in failed.','err'); }
@@ -1623,45 +1634,9 @@ async function ptRegister(e){
       showMsg('pt-ok','We sent you a 6-digit code. Enter it below to finish.','ok');
       setBtn('pt-r-btn',false,role==='clinic_owner'?'Create clinic account':'Create Account');
       return;
-
-      // Patients: optionally pre-join a clinic via the code at signup.
-      let regOrgId='', regOrgName='', safeCode = (role === 'patient' && code) ? code.toUpperCase() : '';
-      if(safeCode){
-        try{
-          const resp = await fetch('/api/memberships?action=join', {
-            method:'POST',
-            headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer ' + data.session.access_token },
-            body: JSON.stringify({ code: safeCode }),
-          });
-          const out = await resp.json().catch(() => ({}));
-          if (resp.ok && out.clinic) { regOrgId = out.clinic.id; regOrgName = out.clinic.name; }
-          else { safeCode = ''; }
-        } catch(_){ safeCode = ''; }
-      }
-
-      // Best-effort upsert into the legacy profiles fields the patient
-      // workspace already reads. The trigger has already created the row
-      // with the right role; this just fills in the optional bits and
-      // marks role_confirmed=true so we don't re-prompt the user with
-      // the modal on their first sign-in.
-      try{
-        await sb.from('profiles').upsert({
-          id:data.user.id, name, first_name:first, last_name:last,
-          patient_code:safeCode||null, org_id:regOrgId||null,
-          tier:'free', usage_count:0,
-          role, role_confirmed:true,
-        });
-      }catch(_){}
-
-      // Clinic owners get bounced straight to the wizard.
-      if (role === 'clinic_owner') {
-        window.location.replace('/onboarding');
-        return;
-      }
-
-      currentUser={id:data.user.id,email,name,first,last,code:safeCode,org_id:regOrgId,org_name:regOrgName,tier:'free',created_at:new Date().toISOString()};
     } else {
-      currentUser={id:'demo',email,name,first,last,code:'',org_id:'',org_name:'',tier:'free',created_at:new Date().toISOString()};
+      showMsg('pt-err','Authentication is temporarily unavailable. Please refresh and try again.','err');
+      return;
     }
     syncPortal();
   } catch(err){ showMsg('pt-err',err.message||'Registration failed.','err'); }
@@ -1669,10 +1644,9 @@ async function ptRegister(e){
 }
 
 async function ptLogout(){
-  if(sb){try{await sb.auth.signOut();}catch(e){}}
+  if(sb){try{await sb.auth.signOut({ scope:'global' });}catch(e){}}
   currentUser=null;
-  localStorage.removeItem('ah-user-initial');
-  localStorage.removeItem('ah-user-role');
+  if(window.acurosAuth) window.acurosAuth.clearAll();
   syncPortal();
 }
 
@@ -1699,10 +1673,10 @@ function syncPortal(){
 
     const initial = (currentUser.first||currentUser.name||'?').charAt(0).toUpperCase();
     const meInit = document.getElementById('me-initial'); if(meInit) meInit.textContent = initial;
-    localStorage.setItem('ah-user-initial', initial);
-    // Stash the role so the homepage can render the right CTA. Default to
-    // 'patient' until the role-aware redirect (owner-router) confirms otherwise.
-    localStorage.setItem('ah-user-role', currentUser.role || 'patient');
+    if (window.acurosAuth) window.acurosAuth.setInitial(initial);
+    // Stash the role, mirrored to the shared .acuros.ca cookie so dev.acuros.ca
+    // sees it too. Default to 'patient' until owner-router confirms otherwise.
+    if (window.acurosAuth) window.acurosAuth.setRole(currentUser.role || 'patient');
 
     const meName = document.getElementById('me-name');
     if(meName) meName.textContent = (currentUser.first && currentUser.last) ? currentUser.first+' '+currentUser.last : (currentUser.name||'-');
@@ -1782,24 +1756,29 @@ function syncPortal(){
 // signing in to onboard a *different* clinic).
 async function ownerRedirectIfApplicable(userId){
   if (!sb || !userId) return false;
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('role') === 'patient') return false; // explicit patient override
+  const apex = (window.ACUROS && window.ACUROS.APEX_ORIGIN) || '';
+  const wantsOwner = params.get('role') === 'owner';
   try {
     const { data, error } = await sb
       .from('organizations')
-      .select('id, slug, is_published, onboarding_state')
+      .select('id, slug, is_published, published_at')
       .eq('owner_id', userId)
       .maybeSingle();
-    if (error || !data) return false;
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('role') === 'patient') return false; // explicit override
-    // Tag the role so the homepage / nav surfaces the dashboard CTA.
-    try { localStorage.setItem('ah-user-role', 'clinic_owner'); } catch(_e){}
-    if (data.is_published && data.slug) {
-      window.location.replace('/dashboard');
-      return true;
-    }
-    window.location.replace('/onboarding');
+    // Distinguish a query failure from a genuine non-owner: an explicit
+    // owner-intent user (role=owner) is sent to onboarding rather than being
+    // stranded on the patient portal; a plain visitor just stays here.
+    if (error) return wantsOwner ? (window.location.replace(apex + '/onboarding'), true) : false;
+    if (!data)  return wantsOwner ? (window.location.replace(apex + '/onboarding'), true) : false;
+    if (window.acurosAuth) window.acurosAuth.setRole('clinic_owner');
+    // "Completed onboarding" = ever published (matches the dashboard gate), so
+    // an owner who toggled their page offline still lands on the dashboard.
+    window.location.replace(apex + ((data.is_published || data.published_at) ? '/dashboard' : '/onboarding'));
     return true;
-  } catch (_e) { return false; }
+  } catch (_e) {
+    return wantsOwner ? (window.location.replace(apex + '/onboarding'), true) : false;
+  }
 }
 
 // ── Role-confirmation modal ──
@@ -1832,6 +1811,9 @@ async function ensureRoleConfirmed(userId, userEmail, userName){
     modal.style.display = 'flex';
     document.body.style.overflow = 'hidden';
     if (errEl) errEl.style.display = 'none';
+    // Move keyboard focus into the required-choice dialog. (No Escape: the
+    // user must pick a role, so this gate is intentionally non-dismissible.)
+    if (btnP) setTimeout(() => { try { btnP.focus(); } catch (_e) {} }, 30);
 
     async function pick(role){
       btnP.disabled = true; btnC.disabled = true;

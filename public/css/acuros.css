@@ -1,0 +1,117 @@
+/* ============================================================================
+   acuros.css — shared refinement + accessibility layer for the app surfaces.
+
+   Loaded LAST in <head> (after each page's inline <style is:inline>) so it can:
+     • retune design tokens for WCAG AA contrast — because every var(--token)
+       usage, INCLUDING inline style="color:var(--mute)" attributes, resolves
+       to the value defined here;
+     • streamline / quiet the UI (drop pure-decoration overlays, calmer motion);
+     • add the accessibility primitives the pages lack (focus-visible rings,
+       reduced-motion, minimum tap targets, dialog scaffolding).
+
+   It deliberately does NOT restructure markup — the theme is preserved, just
+   tightened and made accessible. Keep changes token- and primitive-level so it
+   stays safe across every page.
+   ========================================================================== */
+
+/* ── 1. Contrast-corrected tokens ──────────────────────────────────────────
+   The originals failed AA: --mute (~2.5:1) and the muted greys were too light
+   on the cream background. These darken the de-emphasised text tokens to clear
+   4.5:1+ while keeping the same hue family, so the look is unchanged but legible.
+   --ac (gold) stays for fills/borders; --ac-ink is the AA-safe gold for TEXT. */
+:root{
+  --mute:#6e6553;        /* was #a09480 — now ~5.0:1 on the cream bg */
+  --sub:#574e41;         /* was #5c5346 — nudged darker for body copy */
+  --ac-ink:#8a6311;      /* AA-safe gold for text/links on light surfaces */
+  --focus:#2a6dc9;       /* visible focus ring (blue reads on gold + cream) */
+  --radius:8px;
+}
+html.dark{
+  --mute:#7e7a70;        /* was #4e4c48/#5a564f — lifted for AA on near-black */
+  --sub:#b4aea4;
+  --ac-ink:var(--ac);    /* dark-mode accent already has enough contrast */
+  --focus:#6fa8e0;
+}
+
+/* ── 2. Visible keyboard focus everywhere ─────────────────────────────────
+   The pages strip outlines without replacements. Restore a clear, consistent
+   focus ring for keyboard users only (mouse clicks stay clean). */
+a:focus-visible,
+button:focus-visible,
+[role="switch"]:focus-visible,
+[role="button"]:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible{
+  outline:2px solid var(--focus);
+  outline-offset:2px;
+  border-radius:4px;
+}
+
+/* ── 3. Minimum tap targets for touch / motor accessibility ────────────────
+   Tiny icon buttons (32px) are fine visually; ensure the hit area is >=40px. */
+.out-btn,.icon-link,.modal-x,.gate-tab,.topbar-tab,.topbar-link{
+  min-height:40px;
+  display:inline-flex;
+  align-items:center;
+}
+
+/* ── 4. Quieter, more minimal chrome ───────────────────────────────────────
+   Drop the film-grain and faux-cursor overlays and the hairline scroll bar —
+   pure decoration that adds noise without function. The scripts that update
+   them keep running harmlessly against hidden nodes. */
+#grain,#scroll-prog,#cursor,#cursor-dot,#cursor-ring{
+  display:none !important;
+}
+
+/* Consistent, calmer elevation + radius across the bento/cards/buttons so the
+   app reads as one quiet system rather than many slightly different ones. */
+.card,.bx,.gate-card,.modal-card,.me-card,.preview-wrap,.stat{
+  border-radius:var(--radius);
+}
+.bx:hover{
+  box-shadow:0 6px 22px -14px rgba(60,42,12,.16) !important;
+}
+html.dark .bx:hover{
+  box-shadow:0 6px 22px -14px rgba(0,0,0,.5) !important;
+}
+
+/* ── 5. Motion: honour prefers-reduced-motion, and calm the default ────────
+   Reveal/stagger choreography is decorative; never let it hide content and cut
+   it entirely for users who ask for reduced motion. */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{
+    animation-duration:.001ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.001ms !important;
+    scroll-behavior:auto !important;
+  }
+  .rv,.stag>*{opacity:1 !important;transform:none !important}
+}
+
+/* ── 6. Forms: clearer invalid + required affordances ──────────────────────*/
+.inp:focus,.inp:focus-visible{outline:none}           /* token ring handles it */
+.field-lbl [aria-hidden="true"],.req-star{color:var(--ac-ink)}
+
+/* ── 7. Accessible dialog scaffolding ──────────────────────────────────────
+   Pages toggle modals with display:flex/none + a .open class. Give [role=dialog]
+   a consistent, theme-correct surface and ensure the backdrop sits above all. */
+[role="dialog"]{outline:none}
+.modal-backdrop,#org-modal,#role-prompt,#publishModal{z-index:9000}
+
+/* ── 8. Links that use the gold token for TEXT get the AA-safe gold ─────────
+   Targeted, low-risk: only elements explicitly coloured with the accent as text
+   (not gold-filled buttons, which keep --ac as background with white text). */
+.header-meta a,.preview-bar a,.tlink,.upcoming-link,.bx-tool-cta,
+a.side-badge,.feed-text a{
+  color:var(--ac-ink);
+}
+
+/* Skip-to-content link (added per page where a #main exists). */
+.skip-link{
+  position:absolute;left:-9999px;top:0;z-index:10000;
+  background:var(--bg2);color:var(--text);border:1px solid var(--ac);
+  padding:.6rem 1rem;border-radius:0 0 var(--radius) 0;font-size:.8rem;
+}
+.skip-link:focus{left:0}

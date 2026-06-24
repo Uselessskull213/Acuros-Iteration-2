@@ -249,20 +249,24 @@
     .nav-logo-sub{font-size:.42rem;letter-spacing:.42em;text-transform:uppercase;color:var(--mute);font-family:'DM Sans',sans-serif;font-weight:400}
   </style>
   <script is:inline src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script is:inline src="/js/acuros-config.js"></script>
+  <script is:inline src="/js/acuros-auth.js"></script>
+  <link rel="stylesheet" href="/css/acuros.css"/>
 </head>
 <body>
 
-<div id="grain" aria-hidden="true"></div>
+<a href="#main" class="skip-link">Skip to content</a>
+
 <div id="scroll-prog" aria-hidden="true"></div>
 
 <!-- ── CART BACKDROP ── -->
 <div id="cart-backdrop" onclick="closeCart()"></div>
 
 <!-- ── CART DRAWER ── -->
-<div id="cart-drawer" role="dialog" aria-label="Shopping cart">
+<div id="cart-drawer" role="dialog" aria-modal="true" aria-labelledby="cart-drawer-heading">
   <div style="padding:1.5rem 1.75rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-shrink:0">
     <div>
-      <div class="lbl" style="margin-bottom:.35rem">Your Cart</div>
+      <div class="lbl" style="margin-bottom:.35rem" id="cart-drawer-heading">Your Cart</div>
       <div style="font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:300;color:var(--text);letter-spacing:-.02em" id="cart-title">0 items</div>
     </div>
     <button onclick="closeCart()" aria-label="Close cart" style="background:none;border:none;cursor:pointer;color:var(--mute);padding:.35rem;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--mute)'">
@@ -286,7 +290,7 @@
 </div>
 
 <!-- ── CHECKOUT MODAL ── -->
-<div id="checkout-modal" role="dialog" aria-label="Checkout">
+<div id="checkout-modal" role="dialog" aria-modal="true" aria-labelledby="checkout-heading">
   <div class="modal-inner checkout-glass" style="width:100%;max-width:480px;padding:2.5rem 2.5rem 2rem;margin:1.5rem;position:relative;border-radius:.75rem;max-height:90vh;overflow-y:auto">
     <button onclick="closeCheckout()" aria-label="Close" style="position:absolute;top:1.125rem;right:1.125rem;background:none;border:none;cursor:pointer;color:var(--mute);transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--mute)'">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
@@ -298,7 +302,7 @@
         <span style="display:inline-block;width:16px;height:1px;background:var(--ac)"></span>
         Checkout
       </div>
-      <h3 style="font-family:'Cormorant Garamond',serif;font-size:1.85rem;font-weight:300;color:var(--text);margin-bottom:.5rem;line-height:1.1;letter-spacing:-.02em">Confirm your order</h3>
+      <h3 id="checkout-heading" style="font-family:'Cormorant Garamond',serif;font-size:1.85rem;font-weight:300;color:var(--text);margin-bottom:.5rem;line-height:1.1;letter-spacing:-.02em">Confirm your order</h3>
       <p style="font-size:.78rem;color:var(--sub);line-height:1.75;margin-bottom:1.25rem;font-weight:300">Your clinic will confirm and arrange pickup or delivery. Payment is collected by the clinic.</p>
 
       <div style="background:var(--bg3);border:1px solid var(--border);padding:1rem 1.125rem;margin-bottom:1.25rem">
@@ -309,10 +313,10 @@
       <div id="checkout-err" style="display:none;background:rgba(220,38,38,.08);border:1px solid rgba(220,38,38,.3);color:#dc2626;font-size:.78rem;padding:.75rem 1rem;margin-bottom:1rem;line-height:1.55"></div>
 
       <form id="checkout-form" onsubmit="return false" style="display:flex;flex-direction:column;gap:.75rem;margin-bottom:1rem">
-        <div><label class="lbl" style="display:block;margin-bottom:.35rem">Full Name *</label><input type="text" id="co-name" class="inp" placeholder="Jane Doe" required maxlength="160"/></div>
-        <div><label class="lbl" style="display:block;margin-bottom:.35rem">Email *</label><input type="email" id="co-email" class="inp" placeholder="name@email.com" required maxlength="160"/></div>
-        <div><label class="lbl" style="display:block;margin-bottom:.35rem">Phone</label><input type="tel" id="co-phone" class="inp" placeholder="(555) 000-0000" maxlength="30"/></div>
-        <div><label class="lbl" style="display:block;margin-bottom:.35rem">Note (optional)</label><textarea id="co-note" class="inp" placeholder="Pickup / delivery preferences, etc." rows="2" maxlength="1000" style="resize:vertical"></textarea></div>
+        <div><label for="co-name" class="lbl" style="display:block;margin-bottom:.35rem">Full Name *</label><input type="text" id="co-name" class="inp" placeholder="Jane Doe" required maxlength="160"/></div>
+        <div><label for="co-email" class="lbl" style="display:block;margin-bottom:.35rem">Email *</label><input type="email" id="co-email" class="inp" placeholder="name@email.com" required maxlength="160"/></div>
+        <div><label for="co-phone" class="lbl" style="display:block;margin-bottom:.35rem">Phone</label><input type="tel" id="co-phone" class="inp" placeholder="(555) 000-0000" maxlength="30"/></div>
+        <div><label for="co-note" class="lbl" style="display:block;margin-bottom:.35rem">Note (optional)</label><textarea id="co-note" class="inp" placeholder="Pickup / delivery preferences, etc." rows="2" maxlength="1000" style="resize:vertical"></textarea></div>
       </form>
 
       <button onclick="submitCheckout()" id="co-submit" class="btn btn-solid mag" style="justify-content:center;width:100%;margin-bottom:.5rem">Place Order Request</button>
@@ -408,7 +412,7 @@
 
         // Show the dashboard item only for clinic owners. The role is
         // stashed in localStorage by patient.html on sign-in.
-        const role = (function(){ try { return localStorage.getItem('ah-user-role'); } catch(_e){ return null; } })();
+        const role = (window.acurosAuth && window.acurosAuth.getRole) ? window.acurosAuth.getRole() : null;
         if (dash && role === 'clinic_owner') dash.style.display = 'flex';
 
         // Sign-out wipes Supabase auth + our local cache then routes home.
@@ -428,17 +432,9 @@
         // we don't have to instantiate a second client (which would
         // race the page's primary one and cause sign-out loops).
         (function(){
-          const STORAGE_KEY = 'sb-pyexkdoupqzbnrybiubo-auth-token';
+          const STORAGE_KEY = (window.acurosAuth && window.acurosAuth.STORAGE_KEY) || 'sb-pyexkdoupqzbnrybiubo-auth-token';
           function hasValidSession(){
-            try {
-              const raw = localStorage.getItem(STORAGE_KEY);
-              if (!raw) return false;
-              const parsed = JSON.parse(raw);
-              const session = parsed && (parsed.currentSession || parsed);
-              const exp = session && session.expires_at;
-              if (typeof exp === 'number') return exp * 1000 > Date.now();
-              return !!(session && session.access_token);
-            } catch(_e) { return false; }
+            return !!(window.acurosAuth && window.acurosAuth.isSignedIn && window.acurosAuth.isSignedIn());
           }
           function refresh(){
             if (hasValidSession()) {
@@ -478,8 +474,8 @@
 <div id="mob-menu">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3rem">
     <span style="font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:300;letter-spacing:.2em;color:var(--text)">ACUROS HEALTH</span>
-    <button onclick="closeMob()" style="background:none;border:none;cursor:pointer;color:var(--text)">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    <button onclick="closeMob()" aria-label="Close menu" style="background:none;border:none;cursor:pointer;color:var(--text)">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg>
     </button>
   </div>
   <div style="display:flex;flex-direction:column;gap:0">
@@ -490,7 +486,7 @@
   </div>
 </div>
 
-<div style="padding-top:4rem">
+<div id="main" style="padding-top:4rem">
 
   <!-- ── HERO ── -->
   <section style="position:relative;padding:8rem 2.5rem 6rem;border-bottom:1px solid var(--border);overflow:hidden;min-height:400px;display:flex;align-items:flex-end">
@@ -1016,6 +1012,61 @@ document.addEventListener('DOMContentLoaded', () => {
   setTimeout(fireHeroAnims, 100);
 });
 setTimeout(() => document.querySelectorAll('.rv').forEach(el => el.classList.add('in')), 3500);
+
+/* ── Modal / drawer accessibility (Esc to close, focus trap entry, focus restore) ── */
+(function initModalA11y(){
+  function focusFirst(container){
+    if (!container) return;
+    var sel = 'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
+    var el = container.querySelector(sel);
+    if (el) { try { el.focus(); } catch(_e){} }
+  }
+  function wire(opts){
+    var node = document.getElementById(opts.id);
+    if (!node) return;
+    var lastOpener = null;
+    var openClassActive = false;
+    // Remember the element that had focus when the modal opens.
+    document.addEventListener('click', function(e){
+      if (opts.openerMatch && opts.openerMatch(e.target)) lastOpener = e.target;
+    }, true);
+    // Escape closes whichever modal is currently open.
+    node.addEventListener('keydown', function(e){
+      if (e.key === 'Escape' && opts.isOpen(node)) { e.stopPropagation(); opts.close(); }
+    });
+    // Observe open/close state to move focus in, and restore on close.
+    var mo = new MutationObserver(function(){
+      var open = opts.isOpen(node);
+      if (open && !openClassActive) { openClassActive = true; focusFirst(node); }
+      else if (!open && openClassActive) {
+        openClassActive = false;
+        if (lastOpener && document.contains(lastOpener)) { try { lastOpener.focus(); } catch(_e){} }
+        lastOpener = null;
+      }
+    });
+    mo.observe(node, { attributes:true, attributeFilter:['class'] });
+  }
+  // Global Escape fallback so it works even before focus is inside the modal.
+  document.addEventListener('keydown', function(e){
+    if (e.key !== 'Escape') return;
+    var cm = document.getElementById('checkout-modal');
+    var cd = document.getElementById('cart-drawer');
+    if (cm && cm.classList.contains('show')) { closeCheckout(); return; }
+    if (cd && cd.classList.contains('open')) { closeCart(); }
+  });
+  wire({
+    id:'cart-drawer',
+    isOpen:function(n){ return n.classList.contains('open'); },
+    close:function(){ if (typeof closeCart === 'function') closeCart(); },
+    openerMatch:function(t){ return t && t.closest && t.closest('[onclick*="openCart"]'); }
+  });
+  wire({
+    id:'checkout-modal',
+    isOpen:function(n){ return n.classList.contains('show'); },
+    close:function(){ if (typeof closeCheckout === 'function') closeCheckout(); },
+    openerMatch:function(t){ return t && t.closest && t.closest('[onclick*="openCheckout"]'); }
+  });
+})();
 
 // ── Ambient star field ────────────────────────────────────────────────────────
 (function(){

@@ -11,6 +11,7 @@
   <meta name="theme-color" content="#c9922a"/>
   <meta name="robots" content="noindex"/>
   <script is:inline src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script is:inline src="/js/acuros-config.js"></script>
   <script is:inline src="/js/acuros-auth.js"></script>
   <script is:inline src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -105,8 +106,11 @@
 
     #gate{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:calc(100dvh - 62px);padding:2rem;text-align:center;gap:.75rem}
   </style>
+  <link rel="stylesheet" href="/css/acuros.css"/>
 </head>
 <body>
+
+<a href="#canvas" class="skip-link">Skip to content</a>
 
 <header class="topbar">
   <a href="/" class="topbar-logo">ACUROS HEALTH</a>
@@ -123,7 +127,7 @@
 <section id="gate">
   <h1 style="font-size:2.4rem;font-weight:200">Developer console.</h1>
   <p id="gate-msg" style="color:var(--sub);max-width:46ch;line-height:1.65">This console is for clinic owners. Sign in to manage your portal, codes, and billing.</p>
-  <a class="btn btn-solid" id="gate-cta" href="/patient-portal?role=owner">Sign in</a>
+  <a class="btn btn-solid" id="gate-cta" href="https://acuros.ca/patient-portal?role=owner">Sign in</a>
 </section>
 
 <main class="canvas" id="canvas" style="display:none">
@@ -213,11 +217,8 @@
 </main>
 
 <script is:inline>
-const SB_URL = 'https://pyexkdoupqzbnrybiubo.supabase.co';
-// Same legacy JWT anon key as the rest of the site so sessions persist
-// across pages (the publishable-key client uses a different localStorage
-// namespace and would make signed-in users look signed-out here).
-const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB5ZXhrZG91cHF6Ym5yeWJpdWJvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4Mzg4MzYsImV4cCI6MjA4NzQxNDgzNn0.3_dLQEJfmC08A2-hlgOfwlu4ngx7hslUR3Dun4BoXLU';
+const SB_URL = window.ACUROS.SUPABASE_URL;
+const SB_KEY = window.ACUROS.SUPABASE_ANON_KEY;
 const STRIPE_PLUS_LINK = 'https://buy.stripe.com/fZu9AM1f89Wz2DjbWA4ko05';
 
 (function(){ if(localStorage.getItem('ah-theme')==='dark') document.documentElement.classList.add('dark'); })();
@@ -228,7 +229,7 @@ let session = null, token = null, org = null, profile = null;
 
 const $ = (s) => document.querySelector(s);
 
-async function signOut(){ try { if(sb) await sb.auth.signOut(); } catch(_e){} window.location.href = '/'; }
+async function signOut(){ try { if(sb) await sb.auth.signOut({ scope:'global' }); } catch(_e){} try { if(window.acurosAuth) window.acurosAuth.clearAll(); } catch(_e){} window.location.href = ((window.ACUROS && window.ACUROS.APEX_ORIGIN) || '') + '/'; }
 window.signOut = signOut;
 
 function flash(msg, ok){
@@ -244,7 +245,7 @@ function showGate(msg, cta, href){
   $('#gate').style.display = 'flex';
   $('#canvas').style.display = 'none';
   if (msg) $('#gate-msg').textContent = msg;
-  if (cta) { $('#gate-cta').textContent = cta; $('#gate-cta').href = href || '/patient-portal?role=owner'; }
+  if (cta) { $('#gate-cta').textContent = cta; $('#gate-cta').href = href || 'https://acuros.ca/patient-portal?role=owner'; }
 }
 
 // ── QR helpers (qrcode-generator) ─────────────────────────────────────
@@ -369,7 +370,11 @@ async function boot(){
   $('#canvas').style.display = '';
   $('#ps-name').textContent = org.name || 'Your clinic';
   paintStatus();
-  $('#live-switch').addEventListener('click', toggleLive);
+  const liveSwitch = $('#live-switch');
+  liveSwitch.addEventListener('click', toggleLive);
+  liveSwitch.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') { e.preventDefault(); toggleLive(); }
+  });
 
   // Clinic code + QR
   $('#clinic-code').textContent = org.code || '—';

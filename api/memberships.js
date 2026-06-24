@@ -44,7 +44,11 @@ function normaliseCode(raw) {
 }
 
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  // CORS: pin to ALLOWED_ORIGINS when configured (native mobile is unaffected).
+  const _allow = (process.env.ALLOWED_ORIGINS || '').split(',').map((s) => s.trim()).filter(Boolean);
+  const _o = req.headers.origin;
+  res.setHeader('Access-Control-Allow-Origin', _allow.length === 0 ? '*' : (_o && _allow.includes(_o) ? _o : _allow[0]));
+  res.setHeader('Vary', 'Origin');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   res.setHeader('X-Content-Type-Options', 'nosniff');

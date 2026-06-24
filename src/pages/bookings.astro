@@ -3,6 +3,7 @@
 <head>
   <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-80K00SEBQK"></script>
   <script is:inline>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-80K00SEBQK');</script>
+  <script is:inline src="/js/acuros-config.js"></script>
   <script is:inline src="/js/acuros-auth.js"></script>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
@@ -35,11 +36,9 @@
   <meta name="twitter:title" content="Book a Consultation or Procedure | Acuros Health"/>
   <meta name="twitter:description" content="Schedule consultations and procedures online through your Acuros patient portal."/>
   <meta name="twitter:image" content="https://acuros.ca/hero-bg.jpg"/>
-  <script is:inline src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500;600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
-  <script is:inline>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{display:['Cormorant Garamond','Georgia','serif'],sans:['Inter','DM Sans','sans-serif']}}}}</script>
   <style is:inline>
     :root{--bg:#f0ebe1;--bg2:#f8f4ec;--bg3:#e6e0d4;--border:#d4cdb8;--text:#1c1a14;--sub:#5c5346;--mute:#a09480;--ac:#c9922a;--nav:rgba(240,235,225,.97)}
     html.dark{--bg:#0c0c0a;--bg2:#111110;--bg3:#161614;--border:#1e1e1b;--text:#f0ede8;--sub:#8c8880;--mute:#4e4c48;--ac:#4990d4;--nav:rgba(12,12,10,.97)}
@@ -167,8 +166,10 @@
     .nav-logo-text{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:.9rem;letter-spacing:.22em;color:var(--text);line-height:1}
     .nav-logo-sub{font-size:.42rem;letter-spacing:.42em;text-transform:uppercase;color:var(--mute);font-family:'DM Sans',sans-serif;font-weight:400}
   </style>
+  <link rel="stylesheet" href="/css/acuros.css"/>
 </head>
 <body>
+<a href="#main" class="skip-link">Skip to content</a>
 
 <div id="scroll-prog"></div>
 
@@ -267,14 +268,9 @@
 
         // Sign-out wipes Supabase auth + our local cache then routes home.
         if (out) out.addEventListener('click', async () => {
-          try { if (typeof sb !== 'undefined' && sb && sb.auth) await sb.auth.signOut(); } catch(_e){}
-          try {
-            localStorage.removeItem('ah-user-initial');
-            localStorage.removeItem('ah-user-role');
-            localStorage.removeItem('ah-org-code');
-            Object.keys(localStorage).forEach(k => { if (k.startsWith('sb-')) localStorage.removeItem(k); });
-          } catch(_e){}
-          window.location.href = '/';
+          try { if (typeof sb !== 'undefined' && sb && sb.auth) await sb.auth.signOut({ scope:'global' }); } catch(_e){}
+          try { if (window.acurosAuth) window.acurosAuth.clearAll(); localStorage.removeItem('ah-org-code'); } catch(_e){}
+          window.location.href = ((window.ACUROS && window.ACUROS.APEX_ORIGIN) || '') + '/';
         });
 
         // ── Authoritative visibility (storage-only).
@@ -332,7 +328,7 @@
 <div id="mob-menu">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3rem">
     <span style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--text)">Acuros Health</span>
-    <button onclick="closeMob()" style="background:none;border:none;cursor:pointer;color:var(--text)">
+    <button onclick="closeMob()" aria-label="Close menu" style="background:none;border:none;cursor:pointer;color:var(--text)">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
     </button>
   </div>
@@ -343,7 +339,7 @@
   </div>
 </div>
 
-<div style="padding-top:4rem" id="page-content">
+<main style="padding-top:4rem" id="main">
 
   <!-- ── Hero ── -->
   <section style="position:relative;padding:7rem 2rem 5.5rem;border-bottom:1px solid var(--border);overflow:hidden;min-height:320px;display:flex;align-items:flex-end">
@@ -394,13 +390,13 @@
             <div id="bk-err" style="display:none;margin-bottom:1.25rem"></div>
             <form id="booking-form" style="display:flex;flex-direction:column;gap:1rem" onsubmit="return false">
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem" class="g1m">
-                <div><label class="lbl" style="display:block;margin-bottom:.4rem">First Name *</label><input type="text" id="bk-first" class="inp" placeholder="Jane" required maxlength="80"/></div>
-                <div><label class="lbl" style="display:block;margin-bottom:.4rem">Last Name *</label><input type="text" id="bk-last" class="inp" placeholder="Doe" required maxlength="80"/></div>
+                <div><label for="bk-first" class="lbl" style="display:block;margin-bottom:.4rem">First Name *</label><input type="text" id="bk-first" class="inp" placeholder="Jane" required maxlength="80"/></div>
+                <div><label for="bk-last" class="lbl" style="display:block;margin-bottom:.4rem">Last Name *</label><input type="text" id="bk-last" class="inp" placeholder="Doe" required maxlength="80"/></div>
               </div>
-              <div><label class="lbl" style="display:block;margin-bottom:.4rem">Email Address *</label><input type="email" id="bk-email" class="inp" placeholder="name@email.com" required maxlength="160"/></div>
-              <div><label class="lbl" style="display:block;margin-bottom:.4rem">Phone Number *</label><input type="tel" id="bk-phone" class="inp" placeholder="(555) 000-0000" required maxlength="20"/></div>
-              <div><label class="lbl" style="display:block;margin-bottom:.4rem">Preferred Date *</label><input type="date" id="bk-date" class="inp" required/></div>
-              <div><label class="lbl" style="display:block;margin-bottom:.4rem">Preferred Time</label>
+              <div><label for="bk-email" class="lbl" style="display:block;margin-bottom:.4rem">Email Address *</label><input type="email" id="bk-email" class="inp" placeholder="name@email.com" required maxlength="160"/></div>
+              <div><label for="bk-phone" class="lbl" style="display:block;margin-bottom:.4rem">Phone Number *</label><input type="tel" id="bk-phone" class="inp" placeholder="(555) 000-0000" required maxlength="20"/></div>
+              <div><label for="bk-date" class="lbl" style="display:block;margin-bottom:.4rem">Preferred Date *</label><input type="date" id="bk-date" class="inp" required/></div>
+              <div><label for="bk-time" class="lbl" style="display:block;margin-bottom:.4rem">Preferred Time</label>
                 <select id="bk-time" class="inp">
                   <option value="">No preference</option>
                   <option value="Morning (9am-12pm)">Morning (9am-12pm)</option>
@@ -408,7 +404,7 @@
                   <option value="Late Afternoon (3pm-6pm)">Late Afternoon (3pm-6pm)</option>
                 </select>
               </div>
-              <div><label class="lbl" style="display:block;margin-bottom:.4rem">Additional Notes</label><textarea id="bk-notes" class="inp" placeholder="Any health history, concerns, or questions relevant to your appointment…" rows="4" maxlength="2000" style="resize:vertical"></textarea></div>
+              <div><label for="bk-notes" class="lbl" style="display:block;margin-bottom:.4rem">Additional Notes</label><textarea id="bk-notes" class="inp" placeholder="Any health history, concerns, or questions relevant to your appointment…" rows="4" maxlength="2000" style="resize:vertical"></textarea></div>
             </form>
             <div style="display:flex;gap:1rem;margin-top:1.75rem">
               <button onclick="goStep(1)" class="btn btn-outline mag">← Back</button>
@@ -523,7 +519,7 @@
       </div>
     </div>
   </footer>
-</div>
+</main>
 
 <script is:inline>
 // Booking page boot timestamp for anti-spam check on the API
@@ -641,10 +637,8 @@ function fireHeroAnims() {
   // Try Supabase session check with 4s timeout
   const timeout = setTimeout(() => denyAccess(), 4000);
 
-  const SB_URL = 'https://pyexkdoupqzbnrybiubo.supabase.co';
-  // Match the JWT anon key used elsewhere on the site so this page sees
-  // the same persisted Supabase session as patient.html / settings.html.
-  const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB5ZXhrZG91cHF6Ym5yeWJpdWJvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4Mzg4MzYsImV4cCI6MjA4NzQxNDgzNn0.3_dLQEJfmC08A2-hlgOfwlu4ngx7hslUR3Dun4BoXLU';
+  const SB_URL = window.ACUROS.SUPABASE_URL;
+  const SB_KEY = window.ACUROS.SUPABASE_ANON_KEY;
 
   const script = document.createElement('script');
   script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js';

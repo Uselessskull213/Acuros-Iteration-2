@@ -19,6 +19,7 @@
   <meta property="og:image:height" content="900"/>
   <meta name="twitter:image" content="https://acuros.ca/hero-bg.jpg"/>
   <script is:inline src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script is:inline src="/js/acuros-config.js"></script>
   <script is:inline src="/js/acuros-auth.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -181,8 +182,10 @@
     .banner.show{display:block}
     .banner.success{color:var(--ok);background:rgba(59,122,59,.06);border-color:rgba(59,122,59,.25)}
   </style>
+  <link rel="stylesheet" href="/css/acuros.css"/>
 </head>
 <body>
+<a href="#main" class="skip-link">Skip to content</a>
 
 <header class="topbar">
   <a href="/" class="topbar-logo">ACUROS HEALTH</a>
@@ -194,7 +197,7 @@
 <section id="gate" style="display:none">
   <h1 id="gate-h">Sign in to set up your clinic.</h1>
   <p id="gate-p">Onboarding requires a registered clinic-owner account. Use your sign-in link or password to continue, then we'll walk you through the setup.</p>
-  <a class="btn btn-solid" href="/patient-portal?role=owner">Sign in</a>
+  <a class="btn btn-solid" href="https://acuros.ca/patient-portal?role=owner">Sign in</a>
 </section>
 
 <!-- Wizard, shown once authed -->
@@ -212,7 +215,7 @@
     <p style="font-size:.7rem;color:var(--mute);margin-top:2rem;line-height:1.6">Your progress saves automatically. You can pick this up anywhere.</p>
   </aside>
 
-  <section class="canvas">
+  <section class="canvas" id="main">
     <div class="banner" id="banner"></div>
 
     <!-- ── Step 1: Basics ───────────────────────────────────────────── -->
@@ -225,7 +228,7 @@
       <div style="background:var(--bg2);border:1px solid var(--border);padding:1.5rem 1.5rem 1.25rem;margin-bottom:2rem">
         <div class="ai-helper-h" style="margin-bottom:.625rem"><span class="dot"></span>AI quickstart, design my whole portal</div>
         <p style="font-size:.82rem;color:var(--sub);line-height:1.65;margin-bottom:.875rem">Paste one or two sentences about your clinic. Claude will name your services, polish your tagline, pick an accent palette, and pre-fill every step of this wizard. You can edit anything afterwards.</p>
-        <textarea id="f-design-text" class="txa" placeholder="We're a family-run aesthetics clinic in midtown Toronto. We focus on natural results, conservative dosing, and long-term skin health, botox, fillers, microneedling, and IV vitamin therapy."></textarea>
+        <textarea id="f-design-text" class="txa" aria-label="Describe your clinic in one or two sentences for AI quickstart" placeholder="We're a family-run aesthetics clinic in midtown Toronto. We focus on natural results, conservative dosing, and long-term skin health, botox, fillers, microneedling, and IV vitamin therapy."></textarea>
         <div class="ai-helper" style="display:none;margin-top:.625rem" id="ai-design">
           <div class="ai-helper-status" id="ai-design-status"><span class="typing-dots"><span></span><span></span><span></span></span></div>
         </div>
@@ -445,12 +448,8 @@
 <div class="toast" id="toast"></div>
 
 <script is:inline>
-const SB_URL = 'https://pyexkdoupqzbnrybiubo.supabase.co';
-// Match the legacy JWT anon key used by patient.html / settings.html /
-// ai.html / portal-aaaclinics.html so all pages share one supabase-js
-// localStorage namespace and the session set on /patient-portal is
-// visible here.
-const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB5ZXhrZG91cHF6Ym5yeWJpdWJvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4Mzg4MzYsImV4cCI6MjA4NzQxNDgzNn0.3_dLQEJfmC08A2-hlgOfwlu4ngx7hslUR3Dun4BoXLU';
+const SB_URL = window.ACUROS.SUPABASE_URL;
+const SB_KEY = window.ACUROS.SUPABASE_ANON_KEY;
 
 // ── Theme bootstrap ──
 (function(){ if(localStorage.getItem('ah-theme')==='dark') document.documentElement.classList.add('dark'); })();
@@ -502,8 +501,9 @@ function showGate(msg){
   if (msg) $('#gate-p').textContent = msg;
 }
 async function signOut(){
-  try { if (sb) await sb.auth.signOut(); } catch(_e){}
-  window.location.href = '/';
+  try { if (sb) await sb.auth.signOut({ scope:'global' }); } catch(_e){}
+  try { if(window.acurosAuth) window.acurosAuth.clearAll(); } catch(_e){}
+  window.location.href = ((window.ACUROS && window.ACUROS.APEX_ORIGIN) || '') + '/';
 }
 window.signOut = signOut;
 

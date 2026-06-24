@@ -14,6 +14,7 @@
   <meta name="theme-color" content="#2a6dc9"/>
   <meta name="robots" content="noindex"/>
   <script is:inline src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script is:inline src="/js/acuros-config.js"></script>
   <script is:inline src="/js/acuros-auth.js"></script>
   <script is:inline src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -179,9 +180,10 @@
   <meta property="og:image:width" content="1400"/>
   <meta property="og:image:height" content="900"/>
   <meta name="twitter:image" content="https://acuros.ca/hero-bg.jpg"/>
+  <link rel="stylesheet" href="/css/acuros.css"/>
 </head>
 <body>
-<div id="grain" aria-hidden="true"></div>
+<a href="#main" class="skip-link">Skip to content</a>
 <div id="scroll-prog" aria-hidden="true"></div>
 <div id="toast" aria-live="polite"></div>
 
@@ -267,14 +269,9 @@
 
         // Sign-out wipes Supabase auth + our local cache then routes home.
         if (out) out.addEventListener('click', async () => {
-          try { if (typeof sb !== 'undefined' && sb && sb.auth) await sb.auth.signOut(); } catch(_e){}
-          try {
-            localStorage.removeItem('ah-user-initial');
-            localStorage.removeItem('ah-user-role');
-            localStorage.removeItem('ah-org-code');
-            Object.keys(localStorage).forEach(k => { if (k.startsWith('sb-')) localStorage.removeItem(k); });
-          } catch(_e){}
-          window.location.href = '/';
+          try { if (typeof sb !== 'undefined' && sb && sb.auth) await sb.auth.signOut({ scope:'global' }); } catch(_e){}
+          try { if (window.acurosAuth) window.acurosAuth.clearAll(); localStorage.removeItem('ah-org-code'); } catch(_e){}
+          window.location.href = ((window.ACUROS && window.ACUROS.APEX_ORIGIN) || '') + '/';
         });
 
         // ── Authoritative visibility (storage-only).
@@ -332,7 +329,7 @@
 <div id="mob-menu">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3.5rem">
     <span style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:300;color:var(--text);letter-spacing:.16em">ACUROS</span>
-    <button onclick="closeMob()" style="background:none;border:none;cursor:pointer;color:var(--text)">
+    <button onclick="closeMob()" style="background:none;border:none;cursor:pointer;color:var(--text)" aria-label="Close menu">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
     </button>
   </div>
@@ -347,7 +344,7 @@
 <!-- ══════════════════════════════════════════════════════
      MAIN CONTENT
 ══════════════════════════════════════════════════════ -->
-<main style="position:relative;z-index:2">
+<main id="main" style="position:relative;z-index:2">
 <div class="page-wrap">
 
   <span class="lbl">Account &amp; Settings</span>
@@ -642,8 +639,8 @@
 // ════════════════════════════════════════════════════════════════════
 // CONFIG & SUPABASE
 // ════════════════════════════════════════════════════════════════════
-const SB_URL  = 'https://pyexkdoupqzbnrybiubo.supabase.co';
-const SB_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB5ZXhrZG91cHF6Ym5yeWJpdWJvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4Mzg4MzYsImV4cCI6MjA4NzQxNDgzNn0.3_dLQEJfmC08A2-hlgOfwlu4ngx7hslUR3Dun4BoXLU';
+const SB_URL  = window.ACUROS.SUPABASE_URL;
+const SB_KEY  = window.ACUROS.SUPABASE_ANON_KEY;
 let sb = null;
 try { sb = window.createAcurosClient(SB_URL, SB_KEY); } catch(e) {}
 
@@ -1001,8 +998,9 @@ async function handleToggle2FA(){
 // ════════════════════════════════════════════════════════════════════
 async function handleSignOut(){
   if(!confirm('Sign out of your Acuros account?'))return;
-  if(sb)await sb.auth.signOut().catch(()=>{});
-  window.location.href='/patient-portal';
+  try { if(sb) await sb.auth.signOut({ scope:'global' }); } catch(_e){}
+  try { if(window.acurosAuth) window.acurosAuth.clearAll(); } catch(_e){}
+  window.location.href = ((window.ACUROS && window.ACUROS.APEX_ORIGIN) || '') + '/patient-portal';
 }
 async function handleDeleteAccount(){
   if(!confirm('Permanently delete your account? This cannot be undone.'))return;
@@ -1020,6 +1018,7 @@ function buildOTPGrid(){
     const b=document.createElement('input');
     b.type='text';b.inputMode='numeric';b.maxLength=1;
     b.className='otp-box';b.autocomplete='one-time-code';
+    b.setAttribute('aria-label','Verification code digit '+(i+1));
     b.addEventListener('input',e=>{
       const v=e.target.value.replace(/[^0-9]/g,'').slice(-1);
       e.target.value=v;
