@@ -22,35 +22,37 @@ export function buildPortalSystemPrompt(org) {
   const services = Array.isArray(org?.services) ? org.services.slice(0, 30) : [];
   const products = Array.isArray(org?.products) ? org.products.slice(0, 30) : [];
   const accent = (org?.theme?.accent && ACCENT_RE.test(org.theme.accent)) ? org.theme.accent : DEFAULT_ACCENT;
+  const slug = org?.slug || '';
   return [
-`You are the in-app portal designer for Acuros Health. You are editing a clinic's public patient portal page. The clinic owner gives you instructions in a chat sidebar; you respond by REWRITING the entire portal as one complete, self-contained HTML document on EVERY turn.`,
+`You are an elite brand & web designer building the public website for ONE specific clinic: ${org?.name || 'this clinic'}. This is THE CLINIC'S OWN site — their brand, their voice, their patients. It runs on the Acuros platform, but Acuros is the plumbing, not the brand: it appears only as a small footer credit, never in the hero or nav. The clinic owner directs you in a chat sidebar; you respond by REWRITING the entire site as one complete, self-contained HTML document on EVERY turn. The owner has full control — honour their instructions precisely, even when they override your defaults.`,
 ``,
 `CRITICAL OUTPUT FORMAT`,
 `• Respond with ONE complete <!doctype html>…</html> document inside a single \`\`\`html fenced code block.`,
 `• Before or after the code block, write at most one short sentence describing what changed (no headers, no bullet lists).`,
 `• Never return partial HTML or diffs. Always emit the full document.`,
-`• Never include external scripts other than Google Fonts and Supabase JS CDN. No analytics, no trackers, no third-party iframes.`,
+`• Never include external scripts other than Google Fonts and the Supabase JS CDN. No analytics, no trackers, no third-party iframes.`,
 `• Inline all CSS inside <style> in <head>. No external stylesheets.`,
 `• Use only static HTML + CSS. Vanilla JS is allowed for tiny interactions (mobile nav, scroll reveal) but no frameworks.`,
 ``,
-`VISUAL DESIGN — premium, distinctive, anti-generic`,
-`This is not a Bootstrap landing page. Aim for the polish of a high-end agency build:`,
-`• Editorial typography: pair a refined display serif (Cormorant Garamond, Fraunces, or Playfair Display) with a quiet humanist sans (DM Sans, Inter, or Söhne). Display headings 4-7rem, light weight (200-300), generous tracking on labels.`,
-`• Asymmetric layouts: 12-col grids, off-center hero copy, hairline rules, oversized section labels rotated or vertically set.`,
-`• Color: respect the clinic accent (${accent}) and use restrained warm-neutral or deep dark palettes. Avoid stock blue + white. Pull from cream, bone, charcoal, espresso.`,
-`• Texture & depth: layered radial-gradient orbs, subtle film grain (SVG noise), thin 1px borders, never drop shadows. Glassmorphism only when it serves the content (cards over a hero image).`,
-`• Motion: tasteful — fade-up on scroll via IntersectionObserver, hover micro-interactions, marquee strips for credentials or services. No bouncing, no auto-rotating carousels.`,
-`• Imagery: when no image is supplied, use carefully chosen Unsplash photos (unsplash.com/photos/<id>) of clinics, hands, plants, architecture — never stock smiling people. Apply filter:saturate(.5) brightness(.55) for cohesion.`,
-`• Section variety: a portal should mix grid layouts, full-bleed image breaks, editorial pull-quotes, services list, and a contact panel. Do NOT repeat the same card grid four times.`,
-`• Make the design specific to THIS clinic and its speciality — the layout, copy, and mood should read differently for a dermatology studio than for a physiotherapy practice. Never produce a layout that would work unchanged for any other clinic.`,
+`MAKE IT UNMISTAKABLY THIS CLINIC — the #1 rule`,
+`The single most important thing: the result must be obviously specific to ${org?.name || 'this clinic'} and its field${org?.specialty?` (${org.specialty})`:''}, never a fill-in-the-blanks template. Before laying anything out, decide a point of view for THIS practice — its specialty, location, services, and brand voice should drive the typography, palette, imagery, section order, and copy. A ${org?.specialty || 'medical'} practice should look and read nothing like a generic clinic site or like any other Acuros portal. If the same layout would work for a different clinic with the text swapped, you have failed — start over.`,
+`• Do NOT fall back to one safe "house style". Avoid the default cream-background + serif-display + amber-accent look unless it genuinely fits this clinic; derive the mood from the accent (${accent}) and specialty instead. A dermatology studio might be clinical and bright; a physiotherapy practice grounded and athletic; a med-spa warm and editorial; a dental office crisp and reassuring.`,
+`• Lead with the clinic's name, tagline, and real services — not lorem-ipsum benefits or stock phrases like "Your health, our priority".`,
+``,
+`VISUAL DESIGN — premium, distinctive`,
+`Aim for the polish of a high-end agency build, tuned to this clinic:`,
+`• Typography: choose a pairing that fits the brand voice — a refined display face (e.g. Fraunces, Playfair Display, Cormorant, or a strong grotesque like Space Grotesk for a modern clinic) with a quiet, legible sans (DM Sans, Inter). Vary weight and scale deliberately; don't make everything one size.`,
+`• Layout: use asymmetry, a real grid, hairline rules, and generous whitespace. Mix section types — a hero, a services section, an about/approach passage, a contact panel — don't repeat the same card grid four times.`,
+`• Color: build the palette around the clinic accent (${accent}). Avoid generic stock-blue-on-white. Ensure ≥4.5:1 contrast on body text.`,
+`• Imagery: when no image is supplied, use tasteful Unsplash photos (unsplash.com/photos/<id>) relevant to this specialty — never stock smiling-people clip art. Treat them cohesively (subtle duotone or desaturation).`,
+`• Motion: restrained — fade-up on scroll via IntersectionObserver, hover micro-interactions. No bouncing, no auto-rotating carousels.`,
 ``,
 `ACCESSIBILITY & RESPONSIVENESS`,
 `• Mobile-first: every layout collapses cleanly under 720px.`,
-`• Color contrast ≥ 4.5:1 for body text.`,
-`• All <img> have alt text. <nav> + landmark roles in place.`,
+`• Color contrast ≥ 4.5:1 for body text. All <img> have meaningful alt text. <nav>/<main>/<footer> landmarks and a logical heading order.`,
 ``,
 `CONTENT — STRICT ANTI-HALLUCINATION`,
-`Use ONLY the clinic facts I'm about to give you. Do NOT invent doctor names, prices, hours, addresses, awards, or "since 1987". If the owner hasn't supplied a fact, omit it gracefully or leave a clear placeholder like "Hours coming soon." For service prices and durations, use the exact data provided.`,
+`Use ONLY the clinic facts below. Do NOT invent doctor names, prices, hours, addresses, awards, or "since 1987". If a fact isn't supplied, omit it gracefully or leave a clear placeholder like "Hours coming soon." For service prices and durations, use the exact data provided.`,
 ``,
 `Clinic facts:`,
 `  name: ${org?.name || '(not set)'}`,
@@ -66,17 +68,16 @@ export function buildPortalSystemPrompt(org) {
 `  hero image url: ${org?.theme?.heroImage || '(not set)'}`,
 `  accent color: ${accent}`,
 ``,
-services.length ? `Services (${services.length}):\n${services.map(s => `  • ${s.name}${s.category?` [${s.category}]`:''}${Number.isFinite(+s.duration_min)?` — ${s.duration_min} min`:''}${Number.isFinite(+s.price_cents)&&+s.price_cents>0?` — $${Math.round(+s.price_cents/100)}`:''}${s.description?` — ${String(s.description).slice(0,140)}`:''}`).join('\n')}` : `Services: none listed yet.`,
+services.length ? `Services (${services.length}) — feature these prominently:\n${services.map(s => `  • ${s.name}${s.category?` [${s.category}]`:''}${Number.isFinite(+s.duration_min)?` — ${s.duration_min} min`:''}${Number.isFinite(+s.price_cents)&&+s.price_cents>0?` — $${Math.round(+s.price_cents/100)}`:''}${s.description?` — ${String(s.description).slice(0,140)}`:''}`).join('\n')}` : `Services: none listed yet — include a short "Services coming soon" placeholder section the owner can fill in.`,
 ``,
 products.length ? `Products (${products.length}):\n${products.map(p => `  • ${p.name}${p.category?` [${p.category}]`:''}${Number.isFinite(+p.price)&&+p.price>0?` — $${Math.round(+p.price/100)}`:''}${p.description?` — ${String(p.description).slice(0,140)}`:''}`).join('\n')}` : ``,
 ``,
-`REQUIRED PORTAL ELEMENTS (must be present in every output)`,
-`• A sticky top nav with the clinic name and a "Powered by Acuros Health" mark linking to "/".`,
-`• A "Book a visit" CTA in the nav linking to /bookings?clinic=${org?.slug || ''}.`,
-`• A footer with the year, the clinic name, "Powered by Acuros", and links to /privacy and /terms.`,
-`• If the clinic has services, include a services section. If it has products, include a shop teaser linking to /shop?clinic=${org?.slug || ''}.`,
+`FUNCTIONAL REQUIREMENTS (keep these, but style them as part of the clinic's brand)`,
+`• Top nav anchored on the clinic's name${org?.logo_url?' and logo':''} — this is the clinic's brand, full stop. Include a primary "Book a visit" button linking to /bookings?clinic=${slug}.`,
+`• A services section when services exist. If products exist, a short shop teaser linking to /shop?clinic=${slug}.`,
+`• A footer with the year and the clinic name, a small unobtrusive "Powered by Acuros" credit (a plain text line or tiny link to https://acuros.ca — NOT a logo lockup, NOT in the hero), and links to /privacy and /terms.`,
 ``,
-`When the owner asks for changes that contradict these rules (e.g. "remove the Acuros footer"), comply with the spirit but keep the legally-required attribution. If they ask for content you don't have facts for, say so in your one-sentence comment and leave a placeholder.`,
+`The owner is in control. If they ask to change colours, fonts, sections, copy, or layout, do exactly that. The only things you must always preserve are: the small "Powered by Acuros" footer credit, the /privacy and /terms links, and a working "Book a visit" path. If they ask for content you don't have facts for, say so in your one-sentence comment and leave a clean placeholder rather than inventing it.`,
   ].filter(Boolean).join('\n');
 }
 
@@ -127,43 +128,62 @@ export async function generatePortal({
     e.status = 500;
     throw e;
   }
-  const useModel = model || process.env.ANTHROPIC_PORTAL_MODEL || process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-5';
+  // Portal design quality matters a lot here, so default to the strongest
+  // model. Override per-deploy with ANTHROPIC_PORTAL_MODEL (e.g. set it to
+  // claude-sonnet-4-6 if this API key doesn't have Opus access).
+  const useModel = model || process.env.ANTHROPIC_PORTAL_MODEL || 'claude-opus-4-8';
   const systemPrompt = buildPortalSystemPrompt(org);
   const messages = [
     ...(Array.isArray(history) ? history : []),
     { role: 'user', content: buildInitialUserMessage(instruction, currentHtml) },
   ];
 
-  const ctrl = new AbortController();
-  const timeout = setTimeout(() => ctrl.abort(), timeoutMs);
+  async function requestOnce(modelId) {
+    const ctrl = new AbortController();
+    const timeout = setTimeout(() => ctrl.abort(), timeoutMs);
+    try {
+      const resp = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        signal: ctrl.signal,
+        headers: {
+          'content-type': 'application/json',
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01',
+        },
+        body: JSON.stringify({ model: modelId, max_tokens: maxTokens, system: systemPrompt, messages }),
+      });
+      if (!resp.ok) {
+        const err = await resp.json().catch(() => ({}));
+        const e = new Error(err?.error?.message || `Anthropic ${resp.status}`);
+        e.httpStatus = resp.status;
+        e.status = 502;
+        throw e;
+      }
+      const data = await resp.json();
+      const text = (data.content || []).filter(c => c.type === 'text').map(c => c.text).join('\n').trim();
+      const html = extractHtmlDoc(text);
+      if (!html) {
+        const e = new Error('AI did not return a complete HTML document.');
+        e.status = 502;
+        e.rawSnippet = text.slice(0, 500);
+        throw e;
+      }
+      return { html, message: extractAssistantMessage(text), modelUsed: modelId };
+    } finally {
+      clearTimeout(timeout);
+    }
+  }
+
+  // If the configured model isn't available on this API key (404 unknown model
+  // or 403 no access), fall back once to a widely-available model so a bad
+  // model default can never break portal generation outright.
+  const FALLBACK_MODEL = 'claude-sonnet-4-6';
   try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      signal: ctrl.signal,
-      headers: {
-        'content-type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
-      },
-      body: JSON.stringify({ model: useModel, max_tokens: maxTokens, system: systemPrompt, messages }),
-    });
-    if (!resp.ok) {
-      const err = await resp.json().catch(() => ({}));
-      const e = new Error(err?.error?.message || `Anthropic ${resp.status}`);
-      e.status = 502;
-      throw e;
+    return await requestOnce(useModel);
+  } catch (e) {
+    if ((e.httpStatus === 404 || e.httpStatus === 403) && useModel !== FALLBACK_MODEL) {
+      return await requestOnce(FALLBACK_MODEL);
     }
-    const data = await resp.json();
-    const text = (data.content || []).filter(c => c.type === 'text').map(c => c.text).join('\n').trim();
-    const html = extractHtmlDoc(text);
-    if (!html) {
-      const e = new Error('AI did not return a complete HTML document.');
-      e.status = 502;
-      e.rawSnippet = text.slice(0, 500);
-      throw e;
-    }
-    return { html, message: extractAssistantMessage(text), modelUsed: useModel };
-  } finally {
-    clearTimeout(timeout);
+    throw e;
   }
 }

@@ -70,6 +70,8 @@ a:hover{color:var(--ac-hi)}
 .viewport iframe{flex:1;border:0;width:100%;background:#fff}
 .viewport.code{padding:0;background:#0d0d0c}
 .viewport.code pre{flex:1;margin:0;padding:1.5rem;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:.72rem;line-height:1.65;color:#cfcab9;background:#0d0d0c;overflow:auto;white-space:pre-wrap;word-break:break-word}
+.viewport.code textarea#codeEditor{flex:1;width:100%;margin:0;padding:1.5rem;border:0;outline:none;resize:none;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:.72rem;line-height:1.65;color:#e8e3d4;background:#0d0d0c;overflow:auto;white-space:pre;tab-size:2}
+.viewport.code textarea#codeEditor:focus{box-shadow:inset 0 0 0 1px var(--accent,#c9922a)}
 .empty-stage{text-align:center;color:var(--mute);max-width:32ch;padding:3rem 2rem}
 .empty-stage h2{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:300;color:var(--sub);margin-bottom:.65rem;letter-spacing:-.02em}
 .empty-stage p{font-size:.78rem;line-height:1.65}
@@ -198,7 +200,8 @@ a:hover{color:var(--ac-hi)}
   <aside class="chat">
     <div class="chat-head">
       <h3>AI <em>Sidebar</em></h3>
-      <p>Describe a change. The AI rewrites your portal, and the preview updates instantly.</p>
+      <p>Describe a change. The AI rewrites your portal, and the preview updates instantly. Switch to the <strong>HTML</strong> tab to hand-edit the code directly.</p>
+      <button class="btn btn-ghost" id="regenBtn" type="button" style="margin-top:.65rem;font-size:.58rem;padding:.45rem .85rem">Start a fresh design</button>
     </div>
     <div class="chat-log" id="chatLog"></div>
     <div class="chip-row" id="chipRow"></div>
@@ -211,7 +214,7 @@ a:hover{color:var(--ac-hi)}
       </div>
       <div class="chat-hint">
         <span>⌘↵ to send</span>
-        <span id="modelInfo">Claude · Sonnet 4.5</span>
+        <span id="modelInfo">Claude</span>
       </div>
     </div>
   </aside>
@@ -285,9 +288,20 @@ a:hover{color:var(--ac-hi)}
   }
   function renderPreview(){
     if (state.tab === 'code') {
+      // Editable source — owners have full, direct control over the HTML.
       $.viewport.classList.add('code');
-      $.viewport.innerHTML = '<pre id="codePre"></pre>';
-      el('codePre').textContent = state.html || '';
+      $.viewport.innerHTML = '<textarea id="codeEditor" spellcheck="false" autocomplete="off" autocapitalize="off" wrap="off" aria-label="Portal HTML source"></textarea>';
+      const ta = el('codeEditor');
+      ta.value = state.html || '';
+      // Update state on edit WITHOUT re-rendering (so the cursor doesn't jump).
+      ta.addEventListener('input', () => {
+        state.html = ta.value;
+        state.dirty = state.html !== state.publishedHtml;
+        $.saveDraft.disabled = !state.dirty || state.busy;
+        $.publishBtn.disabled = !state.html || state.busy;
+        try { localStorage.setItem(DRAFT_KEY, state.html); } catch(_){}
+        setStatus(state.dirty ? 'draft' : (state.org?.is_published ? 'live' : 'draft'), state.dirty ? 'Unsaved changes' : (state.org?.is_published ? 'Live' : 'Draft'));
+      });
     } else {
       if ($.viewport.classList.contains('code')) {
         $.viewport.classList.remove('code');
@@ -494,6 +508,16 @@ a:hover{color:var(--ac-hi)}
     });
     $.chatSend.onclick = sendInstruction;
 
+    // Start-fresh: regenerate a brand-new design from scratch (ignores current HTML).
+    const regen = el('regenBtn');
+    if (regen) regen.onclick = () => {
+      if (state.busy) return;
+      if (state.html && !confirm('Generate a brand-new portal design from scratch?\n\nYour current draft is replaced in the editor — nothing goes live until you Publish.')) return;
+      state._fresh = true;
+      $.chatInput.value = 'Design a brand-new patient portal from scratch for my clinic — a distinct, fresh direction, not a tweak of the current one. Ground it in the clinic facts and services provided.';
+      sendInstruction();
+    };
+
     // Save / publish
     $.saveDraft.onclick = () => save({publish:false});
     $.publishBtn.onclick = () => openPublishModal();
@@ -532,8 +556,9 @@ a:hover{color:var(--ac-hi)}
     state.busy = true;
     setStatus('saving','AI thinking');
     showTyping(true);
-    $.fullloadLabel.textContent = state.html ? 'Updating portal…' : 'Generating portal…';
-    if (!state.html) $.fullload.hidden = false;
+    const fresh = state._fresh === true; state._fresh = false;
+    $.fullloadLabel.textContent = (state.html && !fresh) ? 'Updating portal…' : 'Generating a fresh portal…';
+    if (!state.html || fresh) $.fullload.hidden = false;
 
     try {
       const { data: { session } } = await sb.auth.getSession();
@@ -550,7 +575,7 @@ a:hover{color:var(--ac-hi)}
         headers: {'Content-Type':'application/json','Authorization':'Bearer '+token},
         body: JSON.stringify({
           instruction: text,
-          currentHtml: state.html || null,
+          currentHtml: fresh ? null : (state.html || null),
           history,
           org: { services: state.services, products: state.products },
         }),

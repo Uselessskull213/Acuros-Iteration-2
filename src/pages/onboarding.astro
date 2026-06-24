@@ -217,6 +217,7 @@
 
   <section class="canvas" id="main">
     <div class="banner" id="banner"></div>
+    <div id="existing-portal-note" role="status" style="display:none;padding:.95rem 1.15rem;margin-bottom:1.25rem;border:1px solid rgba(201,146,42,.35);background:rgba(201,146,42,.06);border-radius:8px;font-size:.82rem;line-height:1.6;color:var(--text)"></div>
 
     <!-- ── Step 1: Basics ───────────────────────────────────────────── -->
     <div class="step" data-step="1">
@@ -527,11 +528,26 @@ async function loadState(){
               theme: {}, brand: {}, onboarding_state: { step: 1 } };
     }
     hydrateForm();
+    maybeShowExistingPortalNote();
     const startStep = Math.max(1, Math.min(6, +(org?.onboarding_state?.step) || 1));
     goStep(startStep, true);
   } catch(err){
     showBanner(err.message, 'error');
   }
+}
+// Existing owners shouldn't be silently dropped into a blank wizard — tell them
+// they already have a portal and point them at the editor before they rebuild.
+function maybeShowExistingPortalNote(){
+  const el = document.getElementById('existing-portal-note');
+  if (!el || !org) return;
+  if (!(org.is_published || org.published_at || org.portal_html)) return;
+  const liveUrl = org.slug ? ('/c/' + org.slug) : '';
+  el.innerHTML =
+    '<strong>You already have a portal' + (org.is_published ? " — it's live" : '') + '.</strong> ' +
+    'Edit your existing design in the <a href="/editor" style="color:var(--ac);font-weight:500">AI editor</a>' +
+    (liveUrl ? ' or <a href="' + liveUrl + '" target="_blank" rel="noopener" style="color:var(--ac)">view it live</a>' : '') +
+    '. Continuing this wizard and publishing will <strong>rebuild it from scratch</strong>.';
+  el.style.display = 'block';
 }
 function hydrateForm(){
   $('#f-name').value      = org.name      || '';
