@@ -6,6 +6,7 @@
 import { checkRateLimit } from './_lib/rate-limit.js';
 import { getSupabaseAdmin, isSupabaseConfigured } from './_lib/supabase-admin.js';
 import { addSpend, addTransaction, pointsFromCents } from './_lib/points.js';
+import { validatedPriceCents } from './_lib/catalog.js';
 
 const RATE_LIMIT_MAX_REQUESTS = 10;
 const RATE_LIMIT_WINDOW_SECONDS = 60;
@@ -99,13 +100,12 @@ export default async function handler(req, res) {
     const id = raw?.id ?? null;
     const name = String(raw?.name || '').trim().slice(0, 200);
     const qty = Math.max(1, Math.min(999, Math.floor(Number(raw?.qty || 1))));
-    const priceNum = Number(raw?.price || 0);
-    // Reject absurd unit prices. Catalog prices are modest; an inflated price
-    // would corrupt the stored order and the loyalty-point ledger (1pt/$10).
-    if (!name || !Number.isFinite(priceNum) || priceNum < 0 || priceNum > 100000) {
+    // Never trust the client's price — look up the authoritative catalog price
+    // by name (api/_lib/catalog.js). Unknown name or mismatched price -> reject.
+    const priceCents = validatedPriceCents(name, raw?.price);
+    if (!name || priceCents == null) {
       return res.status(400).json({ error: 'Invalid cart item.' });
     }
-    const priceCents = Math.round(priceNum * 100);
     const lineCents = priceCents * qty;
     subtotalCents += lineCents;
     normalized.push({ id, name, qty, priceCents, lineCents });

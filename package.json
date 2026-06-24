@@ -12,6 +12,7 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.45.4",
     "@vercel/functions": "^3.7.1",
-    "astro": "^6.4.8"
+    "astro": "^6.4.8",
+    "isomorphic-dompurify": "^3.18.0"
   }
 }

@@ -19,6 +19,7 @@
 //     strips ```json fences and JSON.parse()s it).
 
 import { checkRateLimit } from './_lib/rate-limit.js';
+import { getSupabaseAdmin, isSupabaseConfigured } from './_lib/supabase-admin.js';
 
 const ALLOWED_TYPES = new Set(['general', 'research', 'symptom', 'medication']);
 const MAX_MESSAGES = 20;
@@ -436,7 +437,7 @@ export default async function handler(req, res) {
   const corsOrigin = buildCorsOrigin(req);
   res.setHeader('Access-Control-Allow-Origin', corsOrigin);
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   res.setHeader('X-Content-Type-Options', 'nosniff');
 
   if (req.method === 'OPTIONS') return res.status(200).end();
@@ -457,6 +458,22 @@ export default async function handler(req, res) {
 
   const { messages = [], type = 'general', data, prompt, userName } = req.body || {};
   const safeType = ALLOWED_TYPES.has(type) ? type : 'general';
+
+  // 'research' mode enables Anthropic's billable web_search tool. Gate it behind
+  // a valid Supabase session so anonymous traffic can't run up the bill;
+  // unauthenticated callers gracefully fall back to a normal (no-search) reply.
+  let effectiveType = safeType;
+  if (safeType === 'research') {
+    let authed = false;
+    const authHeader = req.headers.authorization || '';
+    if (authHeader.startsWith('Bearer ') && isSupabaseConfigured()) {
+      try {
+        const { data: { user } = {} } = await getSupabaseAdmin().auth.getUser(authHeader.slice(7));
+        authed = !!user?.id;
+      } catch { /* ignore */ }
+    }
+    if (!authed) effectiveType = 'general';
+  }
 
   // Sanitize the supplied name: keep only letters/spaces/hyphens/apostrophes/dots,
   // collapse whitespace, trim, and cap length. Anything that doesn't look like a
@@ -525,10 +542,10 @@ export default async function handler(req, res) {
       model,
       max_tokens: 4096,
       temperature: 0.3,
-      system: systemPromptFor(safeType),
+      system: systemPromptFor(effectiveType),
       messages: convo,
     };
-    if (safeType === 'research') {
+    if (effectiveType === 'research') {
       requestBody.tools = [{ type: 'web_search_20250305', name: 'web_search', max_uses: 5 }];
     }
 

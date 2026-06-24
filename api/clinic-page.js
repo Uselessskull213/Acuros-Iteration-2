@@ -123,6 +123,26 @@ export default async function handler(req, res){
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
   res.setHeader('Cache-Control', 'public, max-age=60, s-maxage=60, stale-while-revalidate=300');
 
+  // Defense-in-depth for owner-authored portal HTML served on the auth origin.
+  // The sanitizer (api/_lib/sanitize.js) removes JS-execution vectors; this CSP
+  // is the backstop: even if something slipped through, connect-src restricts
+  // it to Supabase/GA so a stolen session can't be POSTed to an attacker, and
+  // object-src/base-uri/form-action/frame-ancestors close the other channels.
+  res.setHeader('Content-Security-Policy', [
+    "default-src 'self'",
+    "base-uri 'self'",
+    "object-src 'none'",
+    "frame-ancestors 'self'",
+    "form-action 'self'",
+    "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://cdn.jsdelivr.net",
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+    "font-src 'self' https://fonts.gstatic.com data:",
+    "img-src 'self' https: data:",
+    "connect-src 'self' https://*.supabase.co https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com",
+  ].join('; '));
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+
   // If the owner has saved AI-generated portal HTML, serve that instead
   // of the default shell. We still inject the SEO meta + analytics + the
   // JSON-LD block into <head> so Google sees the same per-clinic schema.
