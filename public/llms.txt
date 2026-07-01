@@ -1,0 +1,26 @@
+# Acuros Health
+
+> Acuros Health (acuros.ca) is a patient engagement platform for Canadian clinics. Each clinic gets a branded, white-labelled patient portal — with an AI health assistant, online bookings, loyalty rewards, a clinic-curated shop, and PIPEDA-compliant records — live at acuros.ca/c/<clinic-slug> within a day, with no EMR migration and no setup fee.
+
+Key facts:
+- Audience: Canadian clinics (owners/clinicians) and their patients.
+- Setup: a 20-minute guided onboarding call; AI structures the clinic's services and brand copy and publishes the portal the same day. No EMR migration, no IT overhead, no setup fee.
+- Patient features: AI health assistant available 24/7 (powered by Claude; educational only, not a substitute for professional medical advice), appointment preparation briefs, procedure bookings confirmed within one business day, loyalty points redeemable for clinic credits, clinic-curated product shop, secure health records.
+- Clinic features: branded patient portal, clinic dashboard (engagement, loyalty, shop revenue), loyalty & rewards engine, clinic-curated shop mapped to treatments.
+- Compliance: PIPEDA-compliant records, PHIPA-aligned, AES-256 encryption, Canadian servers. HL7/FHIR oriented.
+- Access: web-based, no app install. Guests get 1 free AI message; patients get full access after sign-in.
+- Pricing: early access for Canadian clinics — no setup fee; demos and onboarding via the contact form or info@acuros.ca.
+- Company: Acuros Health Inc., Canada. Contact: info@acuros.ca
+
+## Key pages
+
+- [Home](https://acuros.ca/): platform overview, benefits for clinics and patients, FAQ
+- [AI Assistant](https://acuros.ca/ai-assistant): evidence-based health Q&A — lab interpretation, diagnosis clarity, appointment prep
+- [Clinic Shop](https://acuros.ca/shop): clinic-curated products
+- [Bookings](https://acuros.ca/bookings): procedure and consultation scheduling
+- [Privacy Policy](https://acuros.ca/privacy)
+- [Terms of Service](https://acuros.ca/terms)
+
+## Clinic portals
+
+Each onboarded clinic has a public branded portal at `https://acuros.ca/c/<clinic-slug>`. The live list is in the sitemap: https://acuros.ca/sitemap.xml

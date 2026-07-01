@@ -1,0 +1,76 @@
+/* ============================================================
+   Privacy Policy — page-scoped legal styles (`legal-` prefix)
+   The shared Nav is transparent with white text until scrolled
+   (built for the homepage hero). This page opens on cream, so
+   we repaint the unscrolled nav in ink for legible contrast.
+   ============================================================ */
+
+.legal-page .nav:not(.scrolled) { color: var(--text); }
+.legal-page .nav:not(.scrolled) .nav-icon-btn { border-color: var(--border); }
+.legal-page .nav:not(.scrolled) .nav-links a:hover { color: var(--gold-ink); }
+.legal-page .nav:not(.scrolled) .btn-glass {
+  border-color: var(--border);
+  color: var(--text);
+  background: transparent;
+}
+
+/* ── Layout ──────────────────────────────────────────────── */
+.legal-main {
+  padding: 8.5rem clamp(1.25rem, 5vw, 3rem) 6rem;
+  background: var(--bg);
+}
+.legal-wrap { max-width: 72ch; margin: 0 auto; }
+
+/* ── Masthead ────────────────────────────────────────────── */
+.legal-hero { padding-bottom: 2.75rem; margin-bottom: 2.75rem; border-bottom: 1px dashed var(--border); }
+.legal-kicker {
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold-ink);
+  margin-bottom: 1.1rem;
+}
+.legal-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  font-size: clamp(2.6rem, 5.5vw, 4rem);
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+  color: var(--text);
+  margin-bottom: 0.75rem;
+}
+.legal-title em { font-style: italic; color: var(--gold-ink); }
+.legal-dates { font-size: 0.84rem; color: var(--sub); }
+
+/* ── Preamble ────────────────────────────────────────────── */
+.legal-intro p { font-size: 0.95rem; line-height: 1.95; color: var(--sub); }
+.legal-intro p + p { margin-top: 0.85rem; font-style: italic; }
+
+/* ── Numbered sections, stitched seams between ───────────── */
+.legal-section { padding: 2.4rem 0; }
+.legal-section + .legal-section { border-top: 1px dashed var(--border); }
+.legal-intro + .legal-section { margin-top: 2.75rem; border-top: 1px dashed var(--border); }
+.legal-section h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 400;
+  font-size: 1.55rem;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  margin-bottom: 0.85rem;
+}
+.legal-no {
+  font-style: italic;
+  color: var(--gold-ink);
+  margin-right: 0.45rem;
+}
+.legal-section p { font-size: 0.92rem; line-height: 1.9; color: var(--sub); }
+.legal-section p + p { margin-top: 0.85rem; }
+.legal-section strong { font-weight: 500; color: var(--text); }
+.legal-link {
+  color: var(--gold-ink);
+  border-bottom: 1px dashed var(--gold-ink);
+  transition: border-color 0.2s, color 0.2s;
+}
+.legal-link:hover { color: var(--gold); border-bottom-style: solid; }

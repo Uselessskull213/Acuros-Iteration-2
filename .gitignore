@@ -5,7 +5,10 @@ node_modules/
 .env.local
 .env.*.local
 
-# Astro / Vercel build artifacts
+# Next.js / Vercel build artifacts
+.next/
+out/
+next-env.d.ts
 dist/
 .astro/
 .vercel/

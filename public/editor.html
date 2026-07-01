@@ -9,10 +9,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
-<script is:inline src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script is:inline src="/js/acuros-config.js"></script>
-<script is:inline src="/js/acuros-auth.js"></script>
-<style is:inline>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="/js/acuros-config.js"></script>
+<script src="/js/acuros-auth.js"></script>
+<style>
 :root{
   --bg:#0a0a09;--bg2:#111110;--bg3:#161614;--bg4:#1d1d1a;
   --border:#222220;--border-hi:#33332e;
@@ -237,7 +237,7 @@ a:hover{color:var(--ac-hi)}
   </div>
 </div>
 
-<script is:inline>
+<script>
 (() => {
   const SB_URL = window.ACUROS.SUPABASE_URL;
   const SB_KEY = window.ACUROS.SUPABASE_ANON_KEY;

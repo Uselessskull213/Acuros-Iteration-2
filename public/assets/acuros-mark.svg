@@ -11,11 +11,11 @@
       <!-- left crescent -->
       <path d="M 500 58
                C 368 170, 298 340, 494 480
-               C 396 332, 440 176, 500 58 Z" fill="#F5EDDC"/>
+               C 396 332, 440 176, 500 58 Z" fill="url(#gold)"/>
       <!-- right crescent (mirror) -->
       <path d="M 500 58
                C 632 170, 702 340, 506 480
-               C 604 332, 560 176, 500 58 Z" fill="#F5EDDC"/>
+               C 604 332, 560 176, 500 58 Z" fill="url(#gold)"/>
     </g>
   </defs>
   <use href="#petal"/>

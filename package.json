@@ -1,18 +1,23 @@
 {
   "name": "acuros-health",
   "private": true,
-  "type": "module",
   "scripts": {
-    "dev": "astro dev",
-    "start": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
-    "astro": "astro"
+    "dev": "next dev",
+    "start": "next start",
+    "build": "next build",
+    "preview": "next dev"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.4",
     "@vercel/functions": "^3.7.1",
-    "astro": "^6.4.8",
-    "isomorphic-dompurify": "^3.18.0"
+    "isomorphic-dompurify": "^3.18.0",
+    "next": "^16.2.10",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
+  },
+  "type": "module",
+  "devDependencies": {
+    "@types/react": "19.2.17",
+    "typescript": "6.0.3"
   }
 }

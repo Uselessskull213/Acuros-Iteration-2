@@ -1,0 +1,113 @@
+/* ============================================================
+   Terms of Service — page-scoped legal styles
+   Shared skeleton classes (.legal-page, .legal-main, .legal-h1,
+   .legal-section) mirror the privacy page; everything else is
+   prefixed `terms-` to avoid cross-page collisions.
+   ============================================================ */
+
+/* The fixed Nav is built for the dark homepage hero (white text
+   until scrolled). Legal pages open on the cream canvas, so make
+   the nav ink-readable at scroll 0. */
+.legal-page .nav:not(.scrolled) { color: var(--text); }
+.legal-page .nav:not(.scrolled) .nav-icon-btn { border-color: var(--border); }
+.legal-page .nav:not(.scrolled) .nav-links a:hover { color: var(--gold-ink); }
+
+.legal-main {
+  max-width: 72ch;
+  margin: 0 auto;
+  padding: 8rem clamp(1.25rem, 5vw, 2rem) 5.5rem;
+}
+
+.legal-h1 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 300;
+  font-size: clamp(2.6rem, 6vw, 3.9rem);
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+  color: var(--text);
+  margin: 0 0 0.6rem;
+}
+
+.legal-section {
+  border-top: 1px dashed var(--border);
+  margin-top: 2.4rem;
+  padding-top: 2.1rem;
+}
+
+/* ── Terms-specific detail ─────────────────────────────────── */
+.terms-kicker {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.66rem;
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold-ink);
+  margin: 0 0 1.1rem;
+}
+
+.terms-date {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: 1.02rem;
+  color: var(--sub);
+  margin: 0 0 3rem;
+}
+
+.terms-article p,
+.terms-article li {
+  font-size: 0.94rem;
+  line-height: 1.9;
+  color: var(--sub);
+}
+
+.terms-article .legal-section h2 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 400;
+  font-size: 1.55rem;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  margin: 0 0 0.75rem;
+}
+
+.terms-article .legal-section h2 em {
+  font-style: italic;
+  color: var(--gold-ink);
+}
+
+.terms-num {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.66rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  color: var(--gold-ink);
+  display: block;
+  margin-bottom: 0.45rem;
+}
+
+.terms-article ul {
+  margin: 0.5rem 0 0;
+  padding-left: 1.35rem;
+}
+
+.terms-article li { margin-bottom: 0.35rem; }
+.terms-article li::marker { color: var(--gold-ink); }
+
+.terms-article strong {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.terms-article a {
+  color: var(--gold-ink);
+  text-decoration: none;
+  border-bottom: 1px dashed var(--gold-ink);
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.terms-article a:hover {
+  color: var(--gold);
+  border-bottom-color: var(--gold);
+}
+
+.terms-article .legal-section p + p { margin-top: 0.9rem; }

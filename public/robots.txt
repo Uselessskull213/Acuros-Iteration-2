@@ -20,4 +20,50 @@ Disallow: /*?from=*
 Disallow: /*?portal=*
 Disallow: /*?role=*
 
+# AI search crawlers are explicitly welcome on public pages (citation > obscurity).
+# They inherit the same app-page disallows as everyone else via the * group above;
+# these named groups exist so a future edit to * can't silently block citation bots.
+User-agent: GPTBot
+Allow: /
+Disallow: /api/
+Disallow: /editor
+Disallow: /developer
+Disallow: /onboarding
+Disallow: /dashboard
+Disallow: /settings
+Disallow: /patient-portal
+
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /api/
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /api/
+Disallow: /editor
+Disallow: /developer
+Disallow: /onboarding
+Disallow: /dashboard
+Disallow: /settings
+Disallow: /patient-portal
+
+User-agent: anthropic-ai
+Allow: /
+Disallow: /api/
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /api/
+Disallow: /editor
+Disallow: /developer
+Disallow: /onboarding
+Disallow: /dashboard
+Disallow: /settings
+Disallow: /patient-portal
+
+User-agent: Google-Extended
+Allow: /
+
+# LLM context file: https://acuros.ca/llms.txt
+
 Sitemap: https://acuros.ca/sitemap.xml
