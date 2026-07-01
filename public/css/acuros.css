@@ -146,3 +146,12 @@ nav#main-nav .nav-inner{padding:0 1.6rem}
    class name stays in the markup; only its shape changes. */
 .btn,.btn-pill{border-radius:10px}
 .btn{text-transform:uppercase;letter-spacing:.1em}
+
+/* Dark mode flips the brand metal gold -> blue site-wide (matching each
+   page's own --ac flip). The legacy chrome uses the raster gold mark, so
+   recolor it optically: gold (hue ~39deg) -> brand blue (hue ~209deg). */
+html.dark #nav-logo-img,
+html.dark img[src="/logo.png"],
+html.dark img[src*="logo-mark"]{
+  filter:hue-rotate(168deg) saturate(.85) brightness(1.14);
+}

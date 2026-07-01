@@ -39,9 +39,21 @@ html.dark {
   --ac: #4990d4;
   --ac-ink: #4990d4;
   --nav: rgba(12, 12, 10, 0.82);
-  --gold-ink: #d8b05a;
+  /* dark mode flips the brand metal: gold -> blue (site-wide convention) */
+  --gold: #4990d4;
+  --gold-2: #7ab3e8;
+  --gold-ink: #8fc1ec;
   --shadow-tint: 0, 0, 0;
 }
+/* the mark's gradient follows the theme metal */
+.mk-1 { stop-color: #d8b05a; }
+.mk-2 { stop-color: #c29638; }
+.mk-3 { stop-color: #b0842e; }
+.mk-4 { stop-color: #9a7127; }
+html.dark .mk-1 { stop-color: #8fc1ec; }
+html.dark .mk-2 { stop-color: #62a2dd; }
+html.dark .mk-3 { stop-color: #4990d4; }
+html.dark .mk-4 { stop-color: #3775ae; }
 
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
@@ -150,9 +162,13 @@ html.dark .bezel > * { box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.06); }
 .btn-solid {
   background: var(--gold);
   color: #fff;
-  box-shadow: 0 10px 26px -12px rgba(var(--shadow-tint), 0.55), 0 2px 8px -4px rgba(138, 99, 17, 0.4);
+  box-shadow: 0 10px 26px -12px rgba(var(--shadow-tint), 0.55),
+    0 2px 8px -4px color-mix(in srgb, var(--gold-ink) 40%, transparent);
 }
-.btn-solid:hover { background: var(--gold-ink); box-shadow: 0 14px 32px -12px rgba(138, 99, 17, 0.5); }
+.btn-solid:hover {
+  background: color-mix(in srgb, var(--gold) 78%, var(--text));
+  box-shadow: 0 14px 32px -12px color-mix(in srgb, var(--gold-ink) 50%, transparent);
+}
 html.dark .btn-solid { color: #12100a; }
 .btn-outline { border-color: var(--border); color: var(--text); background: transparent; }
 .btn-outline:hover { border-color: var(--gold); color: var(--gold-ink); }
@@ -349,8 +365,9 @@ html.dark .nav.scrolled { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0
   position: relative;
   min-height: 100dvh;
   display: flex;
-  align-items: flex-end;
-  padding: 0 0 clamp(4rem, 10vh, 7rem);
+  /* content sits centered in the frame, not tucked into a corner */
+  align-items: center;
+  padding: clamp(6rem, 14vh, 9rem) 0 clamp(4rem, 10vh, 6rem);
   overflow: hidden;
   background: var(--ink-dark);
 }
@@ -378,11 +395,12 @@ html.dark .nav.scrolled { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0
 .hero-title {
   font-family: 'Cormorant Garamond', serif;
   font-weight: 200;
-  font-size: clamp(3.6rem, 10vw, 9.5rem);
+  /* viewport-proportional at every size — never a small block lost in the frame */
+  font-size: clamp(3.2rem, 11.5vw, 12rem);
   line-height: 0.9;
   letter-spacing: -0.04em;
   color: #fff;
-  margin-bottom: 2.75rem;
+  margin-bottom: clamp(1.8rem, 4vh, 3rem);
   max-width: 12ch;
 }
 .hl { display: block; overflow: hidden; line-height: 1.01; }
@@ -485,7 +503,7 @@ html.dark .nav.scrolled { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--gold-2);
-  border-bottom: 1px dashed rgba(216, 176, 90, 0.5);
+  border-bottom: 1px dashed color-mix(in srgb, var(--gold-2) 50%, transparent);
   padding-bottom: 3px;
   transition: border-color 0.25s;
 }
@@ -698,8 +716,8 @@ html.dark .nav.scrolled { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(42% 60% at 18% 8%, rgba(201, 146, 42, 0.13) 0%, transparent 70%),
-    radial-gradient(50% 70% at 85% 90%, rgba(138, 99, 17, 0.1) 0%, transparent 70%);
+    radial-gradient(42% 60% at 18% 8%, color-mix(in srgb, var(--gold) 13%, transparent) 0%, transparent 70%),
+    radial-gradient(50% 70% at 85% 90%, color-mix(in srgb, var(--gold-ink) 10%, transparent) 0%, transparent 70%);
   pointer-events: none;
 }
 .banner-mark {
@@ -736,11 +754,11 @@ html.dark .nav.scrolled { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(60% 50% at 90% 0%, rgba(201, 146, 42, 0.12) 0%, transparent 70%);
+  background: radial-gradient(60% 50% at 90% 0%, color-mix(in srgb, var(--gold) 12%, transparent) 0%, transparent 70%);
   pointer-events: none;
 }
 .contact-info > * { position: relative; }
-.contact-info .eyebrow { color: var(--gold-2); border-color: rgba(216, 176, 90, 0.4); }
+.contact-info .eyebrow { color: var(--gold-2); }
 .contact-info h2 {
   font-family: 'Cormorant Garamond', serif;
   font-weight: 300;
@@ -763,7 +781,7 @@ html.dark .nav.scrolled { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0
 .contact-note { font-size: 0.85rem; font-style: italic; color: var(--gold-2) !important; margin-top: 0.6rem; }
 .contact-tags { display: flex; gap: 0.6rem; margin-top: 1.6rem; flex-wrap: wrap; }
 .contact-tags span {
-  border: 1px dashed rgba(216, 176, 90, 0.45);
+  border: 1px dashed color-mix(in srgb, var(--gold-2) 45%, transparent);
   color: var(--gold-2);
   border-radius: 8px;
   font-size: 0.72rem;

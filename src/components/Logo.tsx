@@ -25,11 +25,12 @@ export default function Logo({
     >
       {!color && (
         <defs>
+          {/* stop colors live in globals.css (.mk-*) so the mark flips gold->blue with the theme */}
           <linearGradient id={gradId} x1="120" y1="120" x2="880" y2="880" gradientUnits="userSpaceOnUse">
-            <stop offset="0" stopColor="#D8B05A" />
-            <stop offset="0.35" stopColor="#C29638" />
-            <stop offset="0.65" stopColor="#B0842E" />
-            <stop offset="1" stopColor="#9A7127" />
+            <stop offset="0" className="mk-1" />
+            <stop offset="0.35" className="mk-2" />
+            <stop offset="0.65" className="mk-3" />
+            <stop offset="1" className="mk-4" />
           </linearGradient>
         </defs>
       )}
