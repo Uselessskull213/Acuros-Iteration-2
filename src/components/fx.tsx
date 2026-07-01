@@ -3,7 +3,6 @@
 import { useEffect, useRef, type CSSProperties, type ReactNode } from 'react';
 import Logo from './Logo';
 
-const FINE_POINTER = '(hover: hover) and (pointer: fine)';
 const REDUCED = '(prefers-reduced-motion: reduce)';
 
 /* Scroll-reveal: adds .in when the element enters the viewport. */
@@ -54,48 +53,6 @@ export function Reveal({
   );
 }
 
-/* Pointer tilt (3D perspective) — desktop fine pointers only. */
-export function Tilt({
-  children,
-  className = '',
-  max = 8,
-  lift = -4,
-}: {
-  children: ReactNode;
-  className?: string;
-  max?: number;
-  lift?: number;
-}) {
-  const ref = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    if (!window.matchMedia(FINE_POINTER).matches || window.matchMedia(REDUCED).matches) return;
-    const move = (e: PointerEvent) => {
-      const r = el.getBoundingClientRect();
-      const rx = ((e.clientY - r.top) / r.height - 0.5) * -max;
-      const ry = ((e.clientX - r.left) / r.width - 0.5) * max;
-      el.style.transition = 'transform .14s cubic-bezier(.22,1,.36,1)';
-      el.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(${lift}px)`;
-    };
-    const leave = () => {
-      el.style.transition = 'transform .68s cubic-bezier(.34,1.56,.64,1)';
-      el.style.transform = '';
-    };
-    el.addEventListener('pointermove', move);
-    el.addEventListener('pointerleave', leave);
-    return () => {
-      el.removeEventListener('pointermove', move);
-      el.removeEventListener('pointerleave', leave);
-    };
-  }, [max, lift]);
-  return (
-    <div ref={ref} className={className}>
-      {children}
-    </div>
-  );
-}
-
 /* Scroll-linked parallax translate (rAF-throttled, transform-only). */
 export function Parallax({
   children,
@@ -140,18 +97,6 @@ export function Parallax({
   );
 }
 
-/* The floating 3D mark: layered SVG planes on a slow turn. Pure CSS motion. */
-export function Logo3D({ size = 150, className = '' }: { size?: number; className?: string }) {
-  return (
-    <div className={`logo3d ${className}`} style={{ width: size, height: size }} aria-hidden="true">
-      <div className="logo3d-spin">
-        <Logo size={size} className="logo3d-back" color="#7a5c20" />
-        <Logo size={size} className="logo3d-front" />
-      </div>
-    </div>
-  );
-}
-
 /* Scroll-rotating gold medallion used as a section seam ornament. */
 export function Medallion({ size = 56 }: { size?: number }) {
   return (
@@ -161,36 +106,6 @@ export function Medallion({ size = 56 }: { size?: number }) {
         <Logo size={size} />
       </Parallax>
       <span className="seam-line" />
-    </div>
-  );
-}
-
-/* Magnetic hover for CTAs (desktop only). */
-export function Magnetic({ children, className = '' }: { children: ReactNode; className?: string }) {
-  const ref = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    if (!window.matchMedia(FINE_POINTER).matches || window.matchMedia(REDUCED).matches) return;
-    const move = (e: PointerEvent) => {
-      const r = el.getBoundingClientRect();
-      const dx = (e.clientX - (r.left + r.width / 2)) * 0.08;
-      const dy = (e.clientY - (r.top + r.height / 2)) * 0.08;
-      el.style.transform = `translate(${dx}px,${dy}px)`;
-    };
-    const leave = () => {
-      el.style.transform = '';
-    };
-    el.addEventListener('pointermove', move);
-    el.addEventListener('pointerleave', leave);
-    return () => {
-      el.removeEventListener('pointermove', move);
-      el.removeEventListener('pointerleave', leave);
-    };
-  }, []);
-  return (
-    <div ref={ref} className={`mag ${className}`}>
-      {children}
     </div>
   );
 }

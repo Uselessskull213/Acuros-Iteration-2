@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Chip from './Chip';
-import { Logo3D, Magnetic } from './fx';
 
 const HERO_VIDEO_DARK = '/assets/hero-dark.mp4';
 const HERO_VIDEO_LIGHT = '/assets/hero-light.mp4';
@@ -72,9 +71,6 @@ export default function Hero() {
       />
 
       <div className={`hero-inner ${fired ? 'fired' : ''}`}>
-        <div className="hero-mark">
-          <Logo3D size={132} />
-        </div>
         <h1 className="hero-title">
           <span className="hl">
             <span className="hl-inner hl-1">Power Your</span>
@@ -84,17 +80,13 @@ export default function Hero() {
           </span>
         </h1>
         <div className="hero-ctas">
-          <Magnetic>
-            <a href="/onboarding" className="btn btn-solid btn-lg">
-              Set up your clinic
-              <Chip />
-            </a>
-          </Magnetic>
-          <Magnetic>
-            <a href="/patient-portal" className="btn btn-glass btn-lg">
-              Patient Login
-            </a>
-          </Magnetic>
+          <a href="/onboarding" className="btn btn-solid btn-lg">
+            Set up your clinic
+            <Chip />
+          </a>
+          <a href="/patient-portal" className="btn btn-glass btn-lg">
+            Patient Login
+          </a>
         </div>
       </div>
     </section>

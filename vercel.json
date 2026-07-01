@@ -10,10 +10,7 @@
     "api/portal-edit.js": { "maxDuration": 60 },
     "api/chat.js": { "maxDuration": 60 }
   },
-  "redirects": [
-    { "source": "/developer", "has": [{ "type": "host", "value": "acuros.ca" }],     "destination": "https://dev.acuros.ca/", "permanent": false },
-    { "source": "/developer", "has": [{ "type": "host", "value": "www.acuros.ca" }], "destination": "https://dev.acuros.ca/", "permanent": false }
-  ],
+  "redirects": [],
   "rewrites": [
     { "source": "/c/:slug",     "destination": "/api/clinic-page?slug=:slug" },
     { "source": "/sitemap.xml", "destination": "/api/sitemap" }

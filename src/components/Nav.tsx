@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from 'react';
 import Logo from './Logo';
 import Chip from './Chip';
-import { Magnetic } from './fx';
 
 declare global {
   interface Window {
@@ -189,12 +188,12 @@ export default function Nav() {
             </div>
           )}
 
-          <Magnetic className="nav-cta-wrap">
+          <div className="nav-cta-wrap">
             <a className="btn btn-solid" href={cta.href}>
               {cta.label}
               <Chip />
             </a>
-          </Magnetic>
+          </div>
 
           <button
             type="button"

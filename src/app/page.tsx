@@ -6,7 +6,7 @@ import ContactForm from '@/components/ContactForm';
 import BenefitsTabs from '@/components/BenefitsTabs';
 import Logo from '@/components/Logo';
 import Chip from '@/components/Chip';
-import { Reveal, Tilt, Parallax, Medallion } from '@/components/fx';
+import { Reveal, Parallax, Medallion } from '@/components/fx';
 
 const FAQS = [
   {
@@ -191,7 +191,7 @@ export default function Home() {
           </Reveal>
           <div className="tools-grid">
             <Reveal className="tool tool-tall" variant="left">
-              <Tilt className="bezel tool-bezel" max={5} lift={-3}>
+              <div className="bezel tool-bezel">
                 <a className="tool-card" href="/ai-assistant">
                   <figure
                     style={{
@@ -207,10 +207,10 @@ export default function Home() {
                     <span className="tool-cta">Try it free →</span>
                   </div>
                 </a>
-              </Tilt>
+              </div>
             </Reveal>
             <Reveal className="tool" variant="right" delay={90}>
-              <Tilt className="bezel tool-bezel" max={5} lift={-3}>
+              <div className="bezel tool-bezel">
                 <a className="tool-card" href="#contact">
                   <figure
                     style={{
@@ -229,10 +229,10 @@ export default function Home() {
                     <span className="tool-cta">See how it works →</span>
                   </div>
                 </a>
-              </Tilt>
+              </div>
             </Reveal>
             <Reveal className="tool" variant="right" delay={180}>
-              <Tilt className="bezel tool-bezel" max={5} lift={-3}>
+              <div className="bezel tool-bezel">
                 <a className="tool-card" href="/patient-portal">
                   <figure
                     style={{
@@ -248,7 +248,7 @@ export default function Home() {
                     <span className="tool-cta">Patient login →</span>
                   </div>
                 </a>
-              </Tilt>
+              </div>
             </Reveal>
           </div>
         </section>
@@ -343,7 +343,7 @@ export default function Home() {
               </Reveal>
             </div>
             <Reveal variant="right" delay={120}>
-              <Tilt className="bezel chat-bezel" max={6} lift={-2}>
+              <div className="bezel chat-bezel">
                 <div className="chat-card">
                 <div className="chat-head">
                   <Logo size={20} />
@@ -367,7 +367,7 @@ export default function Home() {
                   AI is typing…
                 </div>
                 </div>
-              </Tilt>
+              </div>
             </Reveal>
           </div>
         </section>
