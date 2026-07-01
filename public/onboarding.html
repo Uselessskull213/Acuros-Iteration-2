@@ -28,112 +28,139 @@
   <style>
     :root{
       --bg:#f0ebe1;--bg2:#f8f4ec;--bg3:#e6e0d4;
-      --border:#d4cdb8;--text:#1c1a14;--sub:#5c5346;--mute:#a09480;
-      --ac:#c9922a;--nav:rgba(240,235,225,.97);
-      --ok:#3b7a3b;--err:#b73838
+      --border:#d4cdb8;--text:#1c1a14;--sub:#574e41;--mute:#6e6553;
+      --ac:#c9922a;--ac-ink:#8a6311;--nav:rgba(240,235,225,.86);
+      --ok:#2f6b2f;--err:#b73838;
+      --shadow-tint:28,22,8;
+      --ease:cubic-bezier(.22,1,.36,1)
     }
     html.dark{
       --bg:#0c0c0a;--bg2:#111110;--bg3:#161614;
-      --border:#1e1e1b;--text:#f0ede8;--sub:#8c8880;--mute:#4e4c48;
-      --ac:#4990d4;--nav:rgba(12,12,10,.97);
-      --ok:#7ec27e;--err:#e58a8a
+      --border:#232320;--text:#f0ede8;--sub:#b4aea4;--mute:#8f8a80;
+      --ac:#4990d4;--ac-ink:#4990d4;--nav:rgba(12,12,10,.82);
+      --ok:#7ec27e;--err:#e58a8a;
+      --shadow-tint:0,0,0
     }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     html{scroll-behavior:smooth}
-    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100dvh}
-    h1,h2,h3{font-family:'Cormorant Garamond',serif;line-height:1.06;letter-spacing:-.02em}
+    body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);color:var(--text);min-height:100dvh;-webkit-font-smoothing:antialiased}
+    h1,h2,h3,h4{font-family:'Cormorant Garamond',serif;font-weight:300;line-height:1.06;letter-spacing:-.02em;text-wrap:balance}
 
-    /* ── Top bar ── */
-    .topbar{height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;border-bottom:1px solid var(--border);background:var(--nav);position:sticky;top:0;z-index:50;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
-    .topbar-logo{font-family:'Cormorant Garamond',serif;font-size:.95rem;font-weight:300;letter-spacing:.22em;color:var(--text);text-decoration:none}
-    .topbar-meta{font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--mute)}
-    .topbar-out{font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--sub);background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif}
-    .topbar-out:hover{color:var(--text)}
+    /* ── Floating island nav (same geometry as the homepage) ── */
+    .topbar{position:fixed;top:14px;left:50%;transform:translateX(-50%);width:min(1360px,calc(100% - 1.2rem));height:60px;z-index:160;display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:0 1.6rem;border-radius:14px;border:1px solid var(--border);background:var(--nav);backdrop-filter:blur(22px) saturate(170%);-webkit-backdrop-filter:blur(22px) saturate(170%);box-shadow:inset 0 1px 0 rgba(255,255,255,.28),0 18px 44px -22px rgba(var(--shadow-tint),.45)}
+    html.dark .topbar{box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 18px 44px -22px rgba(0,0,0,.6)}
+    .topbar-logo{font-family:'Cormorant Garamond',serif;font-size:.9rem;font-weight:300;letter-spacing:.22em;color:var(--text);text-decoration:none}
+    .topbar-meta{font-size:.6rem;letter-spacing:.26em;text-transform:uppercase;color:var(--mute);font-weight:500}
+    .topbar-out{min-height:40px;display:inline-flex;align-items:center;font-size:.64rem;letter-spacing:.16em;text-transform:uppercase;font-weight:500;color:var(--sub);background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:color .2s}
+    .topbar-out:hover{color:var(--ac-ink)}
+    @media(max-width:560px){.topbar-meta{display:none}}
 
     /* ── Layout ── */
-    .shell{display:grid;grid-template-columns:280px 1fr;min-height:calc(100dvh - 64px)}
-    @media(max-width:880px){.shell{grid-template-columns:1fr}.sidebar{display:none}}
-    .sidebar{padding:3rem 2rem;border-right:1px solid var(--border);background:var(--bg2)}
-    .step-list{list-style:none;display:flex;flex-direction:column;gap:.25rem}
-    .step-list li{display:flex;align-items:center;gap:.875rem;padding:.625rem .25rem;font-size:.82rem;color:var(--mute);cursor:pointer;border-left:2px solid transparent;padding-left:.875rem;transition:color .2s,border-color .2s}
-    .step-list li:hover{color:var(--sub)}
-    .step-list li.active{color:var(--text);border-left-color:var(--ac);font-weight:500}
+    .shell{display:grid;grid-template-columns:280px 1fr;max-width:1360px;margin:0 auto;min-height:100dvh;padding-top:7rem}
+    @media(max-width:880px){.shell{grid-template-columns:1fr;padding-top:6.2rem}.sidebar{display:none}}
+    .sidebar{padding:1rem 2.2rem 3rem 1.2rem;border-right:1px dashed var(--border);align-self:start;position:sticky;top:6.5rem}
+    .step-list{list-style:none;display:flex;flex-direction:column}
+    .step-list li{position:relative;display:flex;align-items:center;gap:.9rem;padding:.35rem .4rem;font-size:.82rem;color:var(--mute);cursor:pointer;border-radius:10px;transition:color .2s}
+    .step-list li:hover{color:var(--text)}
+    .step-list li+li{margin-top:.95rem}
+    .step-list li+li::before{content:'';position:absolute;left:calc(.4rem + 14px);top:-1.05rem;height:1.05rem;border-left:1px dashed color-mix(in srgb,var(--ac) 35%,var(--border))}
+    .step-list li.active{color:var(--text);font-weight:500}
     .step-list li.done{color:var(--sub)}
-    .step-list .step-num{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:300;width:1.25rem;color:var(--mute)}
-    .step-list .step-num.done{color:var(--ac)}
-    .step-list li.active .step-num{color:var(--text)}
+    .step-list .step-num{width:28px;height:28px;flex:none;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--border);border-radius:9px;background:var(--bg2);font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.98rem;font-weight:400;color:var(--mute);transition:border-color .2s,color .2s,background .2s}
+    .step-list li.active .step-num{border-color:var(--ac);color:var(--ac-ink);background:color-mix(in srgb,var(--ac) 10%,var(--bg2))}
+    .step-list .step-num.done{border-color:color-mix(in srgb,var(--ac) 50%,var(--border));color:var(--ac-ink)}
+    .side-note{font-size:.72rem;color:var(--mute);margin-top:2.4rem;line-height:1.65;max-width:24ch}
 
-    .canvas{padding:4rem 5rem 6rem;max-width:780px;width:100%;margin:0 auto}
-    @media(max-width:880px){.canvas{padding:2.5rem 1.5rem 4rem}}
+    .canvas{padding:1rem clamp(1.5rem,5vw,4.5rem) 6rem;max-width:880px;width:100%;margin:0 auto}
+    @media(max-width:880px){.canvas{padding:.5rem 1.25rem 4rem}}
 
-    .pill{display:inline-flex;align-items:center;gap:.5rem;padding:.35rem .75rem;font-size:.55rem;letter-spacing:.18em;text-transform:uppercase;color:var(--mute);background:var(--bg3);border:1px solid var(--border);font-weight:500}
-    .pill .dot{width:5px;height:5px;border-radius:50%;background:var(--ac)}
+    /* Eyebrow kicker — plain tracked caps with a small gold diamond (no pills) */
+    .pill{display:inline-flex;align-items:center;gap:.6rem;font-size:.66rem;font-weight:500;letter-spacing:.26em;text-transform:uppercase;color:var(--ac-ink);background:none;border:none;padding:0}
+    .pill .dot{width:5px;height:5px;flex:none;background:var(--ac);clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)}
+    .sidebar .pill{margin-bottom:1.6rem}
 
-    .hd{font-size:clamp(2rem,4vw,2.85rem);font-weight:200;letter-spacing:-.025em;line-height:1.04;margin-top:1.25rem;margin-bottom:.75rem}
-    .hd em{color:var(--ac);font-style:italic}
-    .sub{font-size:.95rem;color:var(--sub);line-height:1.7;max-width:55ch;font-weight:300;margin-bottom:2.5rem}
+    .hd{font-size:clamp(2.1rem,4vw,3rem);font-weight:200;letter-spacing:-.025em;line-height:1.05;margin-top:1.1rem;margin-bottom:.8rem}
+    .hd em{color:var(--ac-ink);font-style:italic}
+    .sub{font-size:.95rem;color:var(--sub);line-height:1.7;max-width:58ch;font-weight:300;margin-bottom:2rem}
+
+    /* Double-bezel step panel: machined outer tray + concentric inner core */
+    .panel{background:color-mix(in srgb,var(--text) 4%,transparent);border:1px solid color-mix(in srgb,var(--text) 8%,transparent);border-radius:24px;padding:6px}
+    .panel-core{background:var(--bg2);border:1px solid var(--border);border-radius:18px;padding:clamp(1.4rem,3vw,2.2rem);box-shadow:inset 0 1px 1px rgba(255,255,255,.35),0 1px 0 rgba(255,255,255,.2)}
+    html.dark .panel-core{box-shadow:inset 0 1px 1px rgba(255,255,255,.06)}
 
     /* Field primitives */
-    .field{display:flex;flex-direction:column;gap:.5rem;margin-bottom:1.25rem}
-    .field-lbl{font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--mute);font-weight:500}
-    .field-help{font-size:.72rem;color:var(--mute);line-height:1.55;margin-top:.35rem}
-    .inp,.txa{width:100%;background:var(--bg2);border:1px solid var(--border);padding:.875rem 1rem;font-size:.92rem;color:var(--text);font-family:inherit;transition:border-color .22s,box-shadow .22s,background .22s}
-    .inp:focus,.txa:focus{outline:none;border-color:var(--ac);background:var(--bg3);box-shadow:0 0 0 3px rgba(201,146,42,.1)}
+    .field{display:flex;flex-direction:column;gap:.5rem;margin-bottom:1.3rem}
+    .field-lbl{font-size:.64rem;letter-spacing:.18em;text-transform:uppercase;color:var(--mute);font-weight:500}
+    .field-help{font-size:.74rem;color:var(--mute);line-height:1.55;margin-top:.3rem}
+    .inp,.txa{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:.8rem 1rem;font-size:.92rem;color:var(--text);font-family:inherit;transition:border-color .22s,box-shadow .22s}
+    .inp:focus,.txa:focus{outline:none;border-color:var(--ac);box-shadow:0 0 0 3px color-mix(in srgb,var(--ac) 18%,transparent)}
     .inp::placeholder,.txa::placeholder{color:var(--mute)}
     .txa{resize:vertical;line-height:1.6;min-height:120px}
     .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
     @media(max-width:600px){.grid-2{grid-template-columns:1fr}}
 
-    /* Buttons */
-    .btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.78rem 1.6rem;font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;font-weight:500;font-family:'DM Sans',sans-serif;border:1px solid transparent;text-decoration:none;cursor:pointer;transition:background .25s,color .25s,border-color .25s,transform .15s}
-    .btn:not([disabled]):active{transform:scale(.97)}
-    .btn[disabled]{opacity:.45;cursor:not-allowed}
-    .btn-solid{background:var(--text);color:var(--bg);border-color:var(--text)}
-    .btn-solid:hover:not([disabled]){background:var(--ac);border-color:var(--ac);color:#fff}
+    /* Buttons — squared, tracked caps; colour/shadow feedback only, no movement */
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:.55rem;padding:.72rem 1.5rem;min-height:44px;border-radius:10px;font-size:.76rem;letter-spacing:.12em;text-transform:uppercase;font-weight:500;font-family:'DM Sans',sans-serif;border:1px solid transparent;text-decoration:none;cursor:pointer;transition:background .25s,color .25s,border-color .25s,box-shadow .25s}
+    .btn[disabled]{opacity:.55;cursor:not-allowed}
+    /* uniform with the homepage: bright metal fill + near-black ink (AA ~6.9:1) */
+    .btn-solid{background:var(--ac);color:#12100a;box-shadow:0 10px 26px -12px rgba(var(--shadow-tint),.5)}
+    .btn-solid:hover:not([disabled]){background:color-mix(in srgb,var(--ac) 78%,var(--text));box-shadow:0 14px 32px -12px rgba(var(--shadow-tint),.55)}
+    html.dark .btn-solid{background:var(--ac);color:#0c0c0a}
+    html.dark .btn-solid:hover:not([disabled]){background:color-mix(in srgb,var(--ac) 84%,#fff)}
     .btn-outline{background:transparent;color:var(--text);border-color:var(--border)}
-    .btn-outline:hover:not([disabled]){border-color:var(--ac);color:var(--ac)}
-    .btn-ghost{background:transparent;color:var(--sub);border-color:transparent;padding-left:.5rem;padding-right:.5rem}
+    .btn-outline:hover:not([disabled]){border-color:var(--ac);color:var(--ac-ink)}
+    .btn-ghost{background:transparent;color:var(--sub);border-color:transparent;padding-left:.9rem;padding-right:.9rem}
     .btn-ghost:hover:not([disabled]){color:var(--text)}
-    .btn-ai{background:transparent;color:var(--ac);border-color:rgba(201,146,42,.4)}
-    .btn-ai:hover:not([disabled]){background:rgba(201,146,42,.08);border-color:var(--ac)}
+    .btn-ai{background:transparent;color:var(--ac-ink);border:1px dashed color-mix(in srgb,var(--ac) 55%,var(--border))}
+    .btn-ai:hover:not([disabled]){background:color-mix(in srgb,var(--ac) 10%,transparent);border-color:var(--ac)}
+    .btn-row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-top:.9rem}
+    .nav-right{display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
 
-    .nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border)}
-    .save-state{font-size:.62rem;letter-spacing:.04em;color:var(--mute)}
+    /* Stitched divider above the step's footer controls */
+    .nav-row{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;margin-top:2rem;padding-top:1.4rem;border-top:1px dashed var(--border)}
+    .save-state{font-size:.64rem;letter-spacing:.05em;color:var(--mute)}
     .save-state.saving{color:var(--sub)}
     .save-state.saved{color:var(--ok)}
     .save-state.error{color:var(--err)}
 
-    /* Editable list of services / products */
-    .row-list{display:flex;flex-direction:column;gap:.5rem;margin-top:1rem}
-    .row-card{display:grid;grid-template-columns:1fr auto;gap:1rem;align-items:center;padding:.875rem 1rem;background:var(--bg2);border:1px solid var(--border);transition:border-color .2s}
-    .row-card:hover{border-color:var(--ac)}
+    /* AI quickstart feature card (step 1) */
+    .quickstart{background:color-mix(in srgb,var(--ac) 4%,var(--bg2));border:1px dashed color-mix(in srgb,var(--ac) 45%,var(--border));border-radius:14px;padding:1.4rem 1.4rem 1.3rem;margin-bottom:2rem}
+    .quickstart .ai-helper-h{margin-bottom:.7rem}
+    .quickstart p{font-size:.84rem;color:var(--sub);line-height:1.65;margin-bottom:.9rem}
+    #ai-design{margin-top:.65rem}
+
+    /* Editable list of services / products (rows are injected by JS) */
+    .row-list{display:flex;flex-direction:column;gap:.6rem;margin-top:1.1rem}
+    #services-list>div:not(.row-card),#products-list>div:not(.row-card){border-radius:12px}
+    .row-card{display:grid;grid-template-columns:1fr auto;gap:1rem;align-items:center;padding:.9rem 1.1rem;background:var(--bg);border:1px solid var(--border);border-radius:14px;transition:border-color .2s,box-shadow .2s}
+    .row-card:hover{border-color:color-mix(in srgb,var(--ac) 55%,var(--border));box-shadow:0 8px 22px -16px rgba(var(--shadow-tint),.35)}
     .row-card-meta{display:flex;flex-direction:column;gap:.25rem;min-width:0}
-    .row-card-name{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:400;color:var(--text);letter-spacing:-.01em}
-    .row-card-sub{font-size:.7rem;color:var(--sub);line-height:1.5}
-    .row-card-edit{display:none;flex-direction:column;gap:.5rem;width:100%}
+    .row-card-name{font-family:'Cormorant Garamond',serif;font-size:1.12rem;font-weight:400;color:var(--text);letter-spacing:-.01em}
+    .row-card-sub{font-size:.72rem;color:var(--sub);line-height:1.5}
+    .row-card-edit{display:none;flex-direction:column;gap:.6rem;width:100%}
     .row-card.editing .row-card-meta{display:none}
-    .row-card.editing{grid-template-columns:1fr;gap:.5rem}
+    .row-card.editing{grid-template-columns:1fr;gap:.6rem}
     .row-card.editing .row-card-edit{display:flex}
     .row-card-actions{display:flex;gap:.5rem;align-items:center}
-    .icon-btn{width:30px;height:30px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--border);background:none;cursor:pointer;color:var(--sub);transition:border-color .2s,color .2s}
-    .icon-btn:hover{border-color:var(--ac);color:var(--ac)}
+    .icon-btn{width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--border);border-radius:9px;background:var(--bg2);cursor:pointer;color:var(--sub);transition:border-color .2s,color .2s,background .2s}
+    .icon-btn:hover{border-color:var(--ac);color:var(--ac-ink)}
     .icon-btn.danger:hover{border-color:var(--err);color:var(--err)}
 
     /* Slug field */
-    .slug-row{display:grid;grid-template-columns:auto 1fr auto;gap:.5rem;align-items:center}
-    .slug-prefix{font-size:.92rem;color:var(--mute);font-family:'DM Sans',sans-serif}
-    .slug-suggest-row{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.625rem}
-    .slug-chip{padding:.32rem .7rem;border:1px solid var(--border);background:var(--bg2);font-size:.72rem;color:var(--sub);cursor:pointer;font-family:'DM Sans',sans-serif;transition:border-color .2s,color .2s,background .2s}
-    .slug-chip:hover{border-color:var(--ac);color:var(--ac)}
-    .slug-status{font-size:.68rem;letter-spacing:.06em;display:inline-flex;align-items:center;gap:.4rem;height:1rem}
+    .slug-row{display:grid;grid-template-columns:auto 1fr auto;gap:.6rem;align-items:center}
+    .slug-prefix{font-size:.92rem;color:var(--sub);font-family:'DM Sans',sans-serif}
+    .slug-suggest-row{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:.65rem}
+    .slug-chip{padding:.34rem .8rem;border:1px dashed color-mix(in srgb,var(--ac) 45%,var(--border));border-radius:8px;background:transparent;font-size:.72rem;letter-spacing:.06em;color:var(--ac-ink);cursor:pointer;font-family:'DM Sans',sans-serif;transition:border-color .2s,color .2s,background .2s}
+    .slug-chip:hover{background:color-mix(in srgb,var(--ac) 10%,transparent);border-color:var(--ac)}
+    .slug-status{font-size:.68rem;letter-spacing:.06em;display:inline-flex;align-items:center;gap:.4rem;min-height:1rem}
     .slug-status.ok{color:var(--ok)}
     .slug-status.bad{color:var(--err)}
 
     /* AI helper card */
-    .ai-helper{display:flex;flex-direction:column;gap:.625rem;background:var(--bg2);border:1px dashed var(--border);padding:1rem 1.25rem;margin-top:.625rem}
-    .ai-helper-h{font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ac);display:flex;align-items:center;gap:.5rem}
-    .ai-helper-h .dot{width:5px;height:5px;border-radius:50%;background:var(--ac)}
-    .ai-helper-status{font-size:.7rem;color:var(--sub)}
+    .ai-helper{display:flex;flex-direction:column;gap:.6rem;background:color-mix(in srgb,var(--ac) 4%,var(--bg2));border:1px dashed color-mix(in srgb,var(--ac) 40%,var(--border));border-radius:12px;padding:1rem 1.2rem;margin:.65rem 0}
+    .ai-helper-h{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;font-weight:500;color:var(--ac-ink);display:flex;align-items:center;gap:.55rem}
+    .ai-helper-h .dot{width:5px;height:5px;flex:none;background:var(--ac);clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)}
+    .ai-helper-status{font-size:.74rem;color:var(--sub)}
     .typing-dots{display:inline-flex;align-items:center;gap:4px}
     .typing-dots span{width:5px;height:5px;border-radius:50%;background:var(--ac);opacity:.45;animation:tdPulse 1.2s ease-in-out infinite}
     .typing-dots span:nth-child(2){animation-delay:.15s}
@@ -142,45 +169,48 @@
     @media(prefers-reduced-motion:reduce){.typing-dots span{animation:none;opacity:.7}}
 
     /* Toast */
-    .toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(20px);padding:.8rem 1.25rem;background:var(--text);color:var(--bg);font-size:.72rem;letter-spacing:.06em;opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;z-index:200;max-width:90vw;text-align:center}
+    .toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(14px);padding:.85rem 1.3rem;background:var(--text);color:var(--bg);font-size:.74rem;letter-spacing:.06em;border-radius:10px;box-shadow:0 18px 44px -18px rgba(var(--shadow-tint),.5);opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;z-index:300;max-width:90vw;text-align:center}
     .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
     .toast.error{background:var(--err);color:#fff}
 
     /* Auth gate */
-    #gate{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:calc(100dvh - 64px);padding:2rem;text-align:center;gap:1rem}
-    #gate-h{font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:200;letter-spacing:-.025em;color:var(--text)}
+    #gate{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100dvh;padding:8rem 2rem 4rem;text-align:center;gap:1.1rem}
+    #gate-h{font-family:'Cormorant Garamond',serif;font-size:clamp(2.4rem,5vw,3.4rem);font-weight:200;letter-spacing:-.025em;color:var(--text)}
     #gate-p{font-size:.92rem;color:var(--sub);max-width:46ch;line-height:1.7}
 
-    /* Review summary */
-    .review-card{padding:1.5rem;background:var(--bg2);border:1px solid var(--border);margin-bottom:1rem}
-    .review-card h4{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:300;letter-spacing:-.02em;margin-bottom:.5rem}
-    .review-card p{font-size:.82rem;color:var(--sub);line-height:1.65}
-    .review-meta{display:grid;grid-template-columns:auto 1fr;gap:.5rem 1rem;margin-top:.875rem;font-size:.78rem}
-    .review-meta dt{color:var(--mute);font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;align-self:center}
+    /* Review summary (injected by JS) */
+    .review-card{padding:1.6rem;background:var(--bg);border:1px solid var(--border);border-radius:14px;margin-bottom:1rem}
+    .review-card h4{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:300;letter-spacing:-.02em;margin-bottom:.5rem}
+    .review-card p{font-size:.86rem;color:var(--sub);line-height:1.65}
+    .review-meta{display:grid;grid-template-columns:auto 1fr;gap:.55rem 1.2rem;margin-top:1rem;padding-top:1rem;border-top:1px dashed var(--border);font-size:.8rem}
+    .review-meta dt{color:var(--mute);font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;font-weight:500;align-self:center}
     .review-meta dd{color:var(--text)}
 
     /* Upload */
-    .upload-zone{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem;border:1px dashed var(--border);background:var(--bg2);cursor:pointer;transition:border-color .2s,background .2s}
-    .upload-zone:hover{border-color:var(--ac);background:var(--bg3)}
+    .upload-zone{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.6rem;border:1px dashed var(--border);border-radius:14px;background:var(--bg);cursor:pointer;transition:border-color .2s,background .2s}
+    .upload-zone:hover{border-color:var(--ac);background:color-mix(in srgb,var(--ac) 5%,var(--bg))}
     .upload-zone img{max-width:160px;max-height:120px;object-fit:contain;margin-bottom:.5rem}
     .upload-zone-text{font-size:.78rem;color:var(--sub)}
 
     /* Theme palette swatches */
     .palette-row{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.5rem}
-    .palette-chip{display:flex;align-items:center;gap:.5rem;padding:.35rem .75rem;border:1px solid var(--border);background:var(--bg2);cursor:pointer;font-size:.7rem;color:var(--sub);font-family:'DM Sans',sans-serif;transition:border-color .2s,color .2s}
-    .palette-chip.active{border-color:var(--ac);color:var(--ac)}
-    .palette-swatch{width:14px;height:14px;border-radius:50%;border:1px solid rgba(0,0,0,.1)}
+    .palette-chip{display:flex;align-items:center;gap:.5rem;min-height:36px;padding:.42rem .85rem;border:1px solid var(--border);border-radius:10px;background:var(--bg);cursor:pointer;font-size:.72rem;letter-spacing:.04em;color:var(--sub);font-family:'DM Sans',sans-serif;transition:border-color .2s,color .2s,background .2s}
+    .palette-chip:hover{border-color:color-mix(in srgb,var(--ac) 55%,var(--border))}
+    .palette-chip.active{border-color:var(--ac);color:var(--ac-ink);background:color-mix(in srgb,var(--ac) 8%,var(--bg))}
+    .palette-swatch{width:14px;height:14px;flex:none;border-radius:4px;border:1px solid rgba(0,0,0,.12)}
 
     /* Step transitions */
-    .step{display:none;animation:stepIn .4s cubic-bezier(.22,1,.36,1)}
+    .step{display:none;animation:stepIn .4s var(--ease)}
     .step.active{display:block}
     @keyframes stepIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
     @media(prefers-reduced-motion:reduce){.step{animation:none}}
 
-    /* Banner */
-    .banner{padding:.75rem 1rem;font-size:.78rem;color:var(--err);background:rgba(183,56,56,.06);border:1px solid rgba(183,56,56,.25);margin-bottom:1.25rem;display:none}
+    /* Banner + existing-portal notice */
+    .banner{padding:.85rem 1.1rem;font-size:.8rem;border-radius:12px;color:var(--err);background:color-mix(in srgb,var(--err) 7%,var(--bg2));border:1px solid color-mix(in srgb,var(--err) 35%,var(--border));margin-bottom:1.25rem;display:none}
     .banner.show{display:block}
-    .banner.success{color:var(--ok);background:rgba(59,122,59,.06);border-color:rgba(59,122,59,.25)}
+    .banner.success{color:var(--ok);background:color-mix(in srgb,var(--ok) 7%,var(--bg2));border-color:color-mix(in srgb,var(--ok) 35%,var(--border))}
+    #existing-portal-note{padding:.95rem 1.15rem;margin-bottom:1.25rem;border:1px dashed color-mix(in srgb,var(--ac) 45%,var(--border));background:color-mix(in srgb,var(--ac) 7%,var(--bg2));border-radius:12px;font-size:.82rem;line-height:1.6;color:var(--text)}
+    #existing-portal-note a{color:var(--ac-ink) !important;font-weight:500}
   </style>
   <link rel="stylesheet" href="/css/acuros.css"/>
 </head>
@@ -203,7 +233,7 @@
 <!-- Wizard, shown once authed -->
 <main class="shell" id="shell" style="display:none">
   <aside class="sidebar">
-    <div class="pill" style="margin-bottom:1.5rem"><span class="dot"></span>Setup</div>
+    <div class="pill"><span class="dot"></span>Setup</div>
     <ol class="step-list" id="step-nav">
       <li data-step="1"><span class="step-num">1</span><span>Basics</span></li>
       <li data-step="2"><span class="step-num">2</span><span>Services</span></li>
@@ -212,12 +242,12 @@
       <li data-step="5"><span class="step-num">5</span><span>URL</span></li>
       <li data-step="6"><span class="step-num">6</span><span>Review &amp; publish</span></li>
     </ol>
-    <p style="font-size:.7rem;color:var(--mute);margin-top:2rem;line-height:1.6">Your progress saves automatically. You can pick this up anywhere.</p>
+    <p class="side-note">Your progress saves automatically. You can pick this up anywhere.</p>
   </aside>
 
   <section class="canvas" id="main">
     <div class="banner" id="banner"></div>
-    <div id="existing-portal-note" role="status" style="display:none;padding:.95rem 1.15rem;margin-bottom:1.25rem;border:1px solid rgba(201,146,42,.35);background:rgba(201,146,42,.06);border-radius:8px;font-size:.82rem;line-height:1.6;color:var(--text)"></div>
+    <div id="existing-portal-note" role="status" style="display:none"></div>
 
     <!-- ── Step 1: Basics ───────────────────────────────────────────── -->
     <div class="step" data-step="1">
@@ -225,15 +255,16 @@
       <h1 class="hd">Tell us about your <em>practice.</em></h1>
       <p class="sub">The basics. Two minutes. You can edit any of this later from your dashboard.</p>
 
+      <div class="panel"><div class="panel-core">
       <!-- Auto-design shortcut: one paragraph in, full portal out. -->
-      <div style="background:var(--bg2);border:1px solid var(--border);padding:1.5rem 1.5rem 1.25rem;margin-bottom:2rem">
-        <div class="ai-helper-h" style="margin-bottom:.625rem"><span class="dot"></span>AI quickstart, design my whole portal</div>
-        <p style="font-size:.82rem;color:var(--sub);line-height:1.65;margin-bottom:.875rem">Paste one or two sentences about your clinic. Claude will name your services, polish your tagline, pick an accent palette, and pre-fill every step of this wizard. You can edit anything afterwards.</p>
+      <div class="quickstart">
+        <div class="ai-helper-h"><span class="dot"></span>AI quickstart, design my whole portal</div>
+        <p>Paste one or two sentences about your clinic. Claude will name your services, polish your tagline, pick an accent palette, and pre-fill every step of this wizard. You can edit anything afterwards.</p>
         <textarea id="f-design-text" class="txa" aria-label="Describe your clinic in one or two sentences for AI quickstart" placeholder="We're a family-run aesthetics clinic in midtown Toronto. We focus on natural results, conservative dosing, and long-term skin health, botox, fillers, microneedling, and IV vitamin therapy."></textarea>
-        <div class="ai-helper" style="display:none;margin-top:.625rem" id="ai-design">
+        <div class="ai-helper" style="display:none" id="ai-design">
           <div class="ai-helper-status" id="ai-design-status"><span class="typing-dots"><span></span><span></span><span></span></span></div>
         </div>
-        <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.875rem">
+        <div class="btn-row">
           <button class="btn btn-solid" id="btn-design-ai">Design my portal with AI →</button>
           <button class="btn btn-ghost" id="btn-design-skip" type="button">I'll fill it in manually</button>
         </div>
@@ -268,6 +299,7 @@
         <span class="save-state" id="save-1"></span>
         <button class="btn btn-solid" data-next="2">Continue →</button>
       </div>
+      </div></div>
     </div>
 
     <!-- ── Step 2: Services ─────────────────────────────────────────── -->
@@ -276,6 +308,7 @@
       <h1 class="hd">What do you <em>offer?</em></h1>
       <p class="sub">Type your service list however you'd describe it on a phone call. We'll structure it.</p>
 
+      <div class="panel"><div class="panel-core">
       <div class="field">
         <label class="field-lbl" for="f-services-text">Free-text description</label>
         <textarea id="f-services-text" class="txa" placeholder="We offer botox and dermal fillers, microneedling, chemical peels, IV vitamin therapy, and consultations…"></textarea>
@@ -287,7 +320,7 @@
         <div class="ai-helper-status" id="ai-services-status"><span class="typing-dots"><span></span><span></span><span></span></span></div>
       </div>
 
-      <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+      <div class="btn-row">
         <button class="btn btn-ai" id="btn-services-ai">Structure with AI</button>
         <button class="btn btn-outline" id="btn-services-add">+ Add manually</button>
       </div>
@@ -296,11 +329,12 @@
 
       <div class="nav-row">
         <button class="btn btn-ghost" data-prev="1">← Back</button>
-        <div style="display:flex;align-items:center;gap:1rem">
+        <div class="nav-right">
           <span class="save-state" id="save-2"></span>
           <button class="btn btn-solid" data-next="3">Continue →</button>
         </div>
       </div>
+      </div></div>
     </div>
 
     <!-- ── Step 3: Products ─────────────────────────────────────────── -->
@@ -309,6 +343,7 @@
       <h1 class="hd">Anything you <em>sell?</em></h1>
       <p class="sub">Skincare, supplements, recovery products. Skip if you don't sell physical products yet.</p>
 
+      <div class="panel"><div class="panel-core">
       <div class="field">
         <label class="field-lbl" for="f-products-text">Free-text description</label>
         <textarea id="f-products-text" class="txa" placeholder="SPF 50 mineral sunscreen, vitamin C serum, post-treatment recovery balm, collagen peptides…"></textarea>
@@ -319,7 +354,7 @@
         <div class="ai-helper-status" id="ai-products-status"><span class="typing-dots"><span></span><span></span><span></span></span></div>
       </div>
 
-      <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+      <div class="btn-row">
         <button class="btn btn-ai" id="btn-products-ai">Structure with AI</button>
         <button class="btn btn-outline" id="btn-products-add">+ Add manually</button>
       </div>
@@ -328,11 +363,12 @@
 
       <div class="nav-row">
         <button class="btn btn-ghost" data-prev="2">← Back</button>
-        <div style="display:flex;align-items:center;gap:1rem">
+        <div class="nav-right">
           <span class="save-state" id="save-3"></span>
           <button class="btn btn-solid" data-next="4">Continue →</button>
         </div>
       </div>
+      </div></div>
     </div>
 
     <!-- ── Step 4: Brand ────────────────────────────────────────────── -->
@@ -341,6 +377,7 @@
       <h1 class="hd">Find your <em>voice.</em></h1>
       <p class="sub">Describe your clinic in two or three sentences. We'll polish it into a tagline and a homepage paragraph.</p>
 
+      <div class="panel"><div class="panel-core">
       <div class="field">
         <label class="field-lbl" for="f-brand-text">Describe your clinic</label>
         <textarea id="f-brand-text" class="txa" placeholder="We're a family-run aesthetics clinic in midtown Toronto. We focus on natural results, conservative dosing, and long-term skin health rather than dramatic transformations…"></textarea>
@@ -396,11 +433,12 @@
 
       <div class="nav-row">
         <button class="btn btn-ghost" data-prev="3">← Back</button>
-        <div style="display:flex;align-items:center;gap:1rem">
+        <div class="nav-right">
           <span class="save-state" id="save-4"></span>
           <button class="btn btn-solid" data-next="5">Continue →</button>
         </div>
       </div>
+      </div></div>
     </div>
 
     <!-- ── Step 5: Slug ─────────────────────────────────────────────── -->
@@ -409,6 +447,7 @@
       <h1 class="hd">Pick your <em>address.</em></h1>
       <p class="sub">This is the public URL where patients find your portal. You can change it later.</p>
 
+      <div class="panel"><div class="panel-core">
       <div class="field">
         <label class="field-lbl" for="f-slug">Your portal URL</label>
         <div class="slug-row">
@@ -423,11 +462,12 @@
 
       <div class="nav-row">
         <button class="btn btn-ghost" data-prev="4">← Back</button>
-        <div style="display:flex;align-items:center;gap:1rem">
+        <div class="nav-right">
           <span class="save-state" id="save-5"></span>
           <button class="btn btn-solid" data-next="6" id="btn-step5-next">Continue →</button>
         </div>
       </div>
+      </div></div>
     </div>
 
     <!-- ── Step 6: Review & Publish ─────────────────────────────────── -->
@@ -436,12 +476,14 @@
       <h1 class="hd">Ready to <em>publish.</em></h1>
       <p class="sub">Quick review. After you publish, your portal goes live and starts accepting bookings.</p>
 
+      <div class="panel"><div class="panel-core">
       <div id="review-summary"></div>
 
       <div class="nav-row">
         <button class="btn btn-ghost" data-prev="5">← Back</button>
         <button class="btn btn-solid" id="btn-publish">Publish my clinic</button>
       </div>
+      </div></div>
     </div>
   </section>
 </main>

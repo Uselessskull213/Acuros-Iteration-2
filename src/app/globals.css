@@ -161,7 +161,8 @@ html.dark .bezel > * { box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.06); }
 .btn-outline .btn-chip { background: color-mix(in srgb, var(--text) 6%, transparent); box-shadow: none; }
 .btn-solid {
   background: var(--gold);
-  color: #fff;
+  /* near-black ink on the metal fill — white-on-gold fails AA (~2.6:1) */
+  color: #12100a;
   box-shadow: 0 10px 26px -12px rgba(var(--shadow-tint), 0.55),
     0 2px 8px -4px color-mix(in srgb, var(--gold-ink) 40%, transparent);
 }
@@ -268,7 +269,7 @@ html.dark .nav.scrolled { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0
   border-radius: 50%;
   border: 1px solid var(--gold);
   background: linear-gradient(135deg, var(--gold-2), var(--gold));
-  color: #fff;
+  color: #12100a;
   font-weight: 500;
   font-size: 0.85rem;
   cursor: pointer;

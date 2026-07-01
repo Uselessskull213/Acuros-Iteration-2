@@ -19,92 +19,217 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,200;0,300;0,400;0,500;1,200;1,300&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 
   <style>
+    /* ── Gilded Clinical Minimalism — developer console skin ─────────────
+       Tokens mirror src/app/globals.css; dark mode flips gold -> blue.   */
     :root{
       --bg:#f0ebe1;--bg2:#f8f4ec;--bg3:#e6e0d4;
-      --border:#d4cdb8;--text:#1c1a14;--sub:#5c5346;--mute:#a09480;
-      --ac:#c9922a;--nav:rgba(240,235,225,.97);
-      --ok:#3b7a3b;--err:#b73838
+      --border:#d4cdb8;--text:#1c1a14;--sub:#5c5346;--mute:#6e6553;
+      --ac:#c9922a;--ac-ink:#8a6311;
+      --nav:rgba(240,235,225,.86);
+      --ok:#2e6e2e;--err:#a83030;--focus:#2a6dc9;
+      --ink:#14100a;--shadow-tint:28,22,8
     }
     html.dark{
       --bg:#0c0c0a;--bg2:#111110;--bg3:#161614;
-      --border:#1e1e1b;--text:#f0ede8;--sub:#8c8880;--mute:#4e4c48;
-      --ac:#4990d4;--nav:rgba(12,12,10,.97)
+      --border:#232320;--text:#f0ede8;--sub:#8c8880;--mute:#7e7a70;
+      --ac:#4990d4;--ac-ink:#4990d4;
+      --nav:rgba(12,12,10,.82);
+      --ok:#5fae5f;--err:#e07070;--focus:#6fa8e0;
+      --ink:#12100a;--shadow-tint:0,0,0
     }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100dvh}
-    h1,h2,h3{font-family:'Cormorant Garamond',serif;line-height:1.04;letter-spacing:-.02em}
+    body{font-family:'DM Sans',sans-serif;font-weight:300;background:var(--bg);color:var(--text);min-height:100dvh;line-height:1.65;-webkit-font-smoothing:antialiased}
+    h1,h2,h3{font-family:'Cormorant Garamond',serif;line-height:1.06;letter-spacing:-.02em;text-wrap:balance}
     a{color:inherit;text-decoration:none}
+    :focus-visible{outline:2px solid var(--focus);outline-offset:2px}
 
-    .topbar{height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;border-bottom:1px solid var(--border);background:var(--nav);position:sticky;top:0;z-index:50;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
-    .topbar-logo{font-family:'Cormorant Garamond',serif;font-size:.9rem;letter-spacing:.22em;color:var(--text)}
-    .topbar-links{display:flex;gap:1.5rem}
-    .topbar-link{font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--sub);padding:.4rem 0;border-bottom:1px solid transparent;transition:color .2s}
-    .topbar-link:hover{color:var(--text)}
-    .topbar-link.active{color:var(--text);border-bottom-color:var(--ac)}
-    .out-btn{font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--sub);background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif}
+    /* ── Floating island nav (uniform with homepage .nav) ─────────────── */
+    .topbar{
+      position:fixed;top:14px;left:50%;transform:translateX(-50%);
+      width:min(1360px,calc(100% - 1.2rem));height:60px;z-index:160;
+      display:flex;align-items:center;justify-content:space-between;gap:1.5rem;
+      padding:0 1rem 0 1.35rem;
+      border-radius:14px;border:1px solid var(--border);
+      background:var(--nav);
+      -webkit-backdrop-filter:blur(22px) saturate(170%);backdrop-filter:blur(22px) saturate(170%);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.28),0 18px 44px -22px rgba(var(--shadow-tint),.45)
+    }
+    html.dark .topbar{box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 18px 44px -22px rgba(0,0,0,.6)}
+    .topbar-logo{display:flex;align-items:center;gap:.7rem;min-height:44px}
+    .topbar-logo img{height:26px;width:auto;display:block}
+    .brand-word{display:flex;flex-direction:column;line-height:1.15}
+    .brand-main{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:.9rem;letter-spacing:.22em}
+    .brand-sub{font-size:.42rem;font-weight:400;letter-spacing:.42em;color:var(--sub)}
+    .topbar-links{display:flex;gap:2.1rem}
+    .topbar-link{display:inline-flex;align-items:center;gap:.45rem;min-height:44px;font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--sub);transition:color .2s}
+    .topbar-link:hover{color:var(--ac-ink)}
+    .topbar-link.active{color:var(--text)}
+    .topbar-link.active::before{content:'';width:5px;height:5px;flex:none;background:var(--ac);clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)}
+    .topbar-actions{display:flex;align-items:center}
+    .out-btn{
+      display:inline-flex;align-items:center;justify-content:center;min-height:40px;
+      padding:.45rem 1.05rem;border-radius:10px;border:1px solid var(--border);
+      background:transparent;color:var(--sub);cursor:pointer;
+      font-family:'DM Sans',sans-serif;font-size:.62rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;
+      transition:color .25s,border-color .25s,background .25s
+    }
+    .out-btn:hover{border-color:var(--ac);color:var(--ac-ink)}
+    @media(max-width:640px){
+      .topbar{padding:0 .75rem 0 1rem;gap:.75rem}
+      .topbar-links{gap:1.1rem}
+      .topbar-link{font-size:.6rem;letter-spacing:.12em}
+      .brand-word{display:none}
+    }
 
-    .canvas{max-width:1100px;margin:0 auto;padding:3rem 2rem 5rem}
-    @media(max-width:880px){.canvas{padding:2rem 1.25rem 4rem}}
+    /* ── Eyebrow kicker (homepage motif) ───────────────────────────────── */
+    .eyebrow{
+      display:inline-flex;align-items:center;gap:.6rem;
+      font-size:10.5px;font-weight:500;letter-spacing:.26em;text-transform:uppercase;
+      color:var(--ac-ink);margin-bottom:1.1rem
+    }
+    .eyebrow::before{content:'';width:5px;height:5px;flex:none;background:var(--ac);clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)}
 
-    .pill{display:inline-flex;align-items:center;gap:.5rem;padding:.32rem .7rem;font-size:.55rem;letter-spacing:.18em;text-transform:uppercase;color:var(--mute);background:var(--bg3);border:1px solid var(--border);font-weight:500}
-    .pill .dot{width:5px;height:5px;border-radius:50%;background:var(--mute)}
-    .pill.live{color:var(--ok);border-color:rgba(59,122,59,.3);background:rgba(59,122,59,.06)}
+    /* ── Page canvas ───────────────────────────────────────────────────── */
+    .canvas{max-width:1200px;margin:0 auto;padding:7.5rem 2rem 6rem}
+    @media(max-width:880px){.canvas{padding:7rem 1.25rem 4.5rem}}
+
+    .page-head{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1.25rem;margin-bottom:2rem}
+    .header-h{font-size:clamp(2.1rem,4.2vw,3.1rem);font-weight:300;letter-spacing:-.025em}
+    .header-h em{color:var(--ac-ink);font-style:italic}
+    .page-head-side{display:flex;flex-direction:column;align-items:flex-end;gap:.6rem;text-align:right}
+    @media(max-width:880px){.page-head-side{align-items:flex-start;text-align:left}}
+    .header-meta{font-size:.8rem;color:var(--sub)}
+    .header-meta a{color:var(--ac-ink);border-bottom:1px dashed color-mix(in srgb,var(--ac-ink) 45%,transparent);padding-bottom:1px;transition:border-color .2s}
+    .header-meta a:hover{border-bottom-color:var(--ac-ink)}
+
+    /* stitched hairline seam under the page head */
+    .stitch{border:0;border-top:1px dashed var(--border);margin:0 0 2.25rem}
+
+    /* ── Status badge (kept .pill hooks; softly squared, no pill shape) ── */
+    .pill{
+      display:inline-flex;align-items:center;gap:.55rem;padding:.42rem .85rem;
+      border-radius:9px;border:1px solid var(--border);
+      background:color-mix(in srgb,var(--text) 4%,transparent);
+      font-size:.6rem;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--sub)
+    }
+    .pill .dot{width:6px;height:6px;flex:none;background:var(--sub);clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)}
+    .pill.live{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 35%,var(--border));background:color-mix(in srgb,var(--ok) 7%,transparent)}
     .pill.live .dot{background:var(--ok)}
-    .pill.off{color:var(--err);border-color:rgba(183,56,56,.3);background:rgba(183,56,56,.06)}
+    .pill.off{color:var(--err);border-color:color-mix(in srgb,var(--err) 35%,var(--border));background:color-mix(in srgb,var(--err) 7%,transparent)}
     .pill.off .dot{background:var(--err)}
 
-    .header-row{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:2.25rem}
-    .header-h{font-size:clamp(1.85rem,3.5vw,2.6rem);font-weight:200;letter-spacing:-.025em;line-height:1.05;margin-top:.625rem}
-    .header-h em{color:var(--ac);font-style:italic}
-    .header-meta{font-size:.78rem;color:var(--sub);line-height:1.55}
-    .header-meta a{color:var(--ac)}
+    /* ── Flash banner ──────────────────────────────────────────────────── */
+    .banner{
+      display:none;margin-bottom:1.5rem;padding:.85rem 1.1rem;border-radius:12px;
+      font-size:.8rem;color:var(--err);
+      background:color-mix(in srgb,var(--err) 7%,var(--bg2));
+      border:1px solid color-mix(in srgb,var(--err) 35%,var(--border))
+    }
+    .banner.success{color:var(--ok);background:color-mix(in srgb,var(--ok) 7%,var(--bg2));border-color:color-mix(in srgb,var(--ok) 35%,var(--border))}
 
-    .banner{padding:.8rem 1rem;font-size:.78rem;color:var(--err);background:rgba(183,56,56,.06);border:1px solid rgba(183,56,56,.25);margin-bottom:1.5rem;display:none}
-    .banner.success{color:var(--ok);background:rgba(59,122,59,.06);border-color:rgba(59,122,59,.25)}
-
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
+    /* ── Double-bezel cards ────────────────────────────────────────────── */
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem}
     @media(max-width:880px){.grid{grid-template-columns:1fr}}
-    .card{background:var(--bg2);border:1px solid var(--border);padding:1.5rem 1.625rem;display:flex;flex-direction:column;gap:.875rem}
-    .card.span2{grid-column:1/-1}
-    .card .lbl{font-size:.55rem;letter-spacing:.22em;text-transform:uppercase;color:var(--mute)}
-    .card h3{font-size:1.35rem;font-weight:300;letter-spacing:-.02em}
-    .card p{font-size:.78rem;color:var(--sub);line-height:1.6}
+    .bezel{
+      background:color-mix(in srgb,var(--text) 4%,transparent);
+      border:1px solid color-mix(in srgb,var(--text) 7%,transparent);
+      border-radius:24px;padding:6px;
+      box-shadow:0 24px 60px -30px rgba(var(--shadow-tint),.45)
+    }
+    .bezel>.card{
+      height:100%;border-radius:18px;background:var(--bg2);
+      box-shadow:inset 0 1px 1px rgba(255,255,255,.35),0 1px 0 rgba(255,255,255,.2);
+      padding:1.75rem 1.85rem 1.85rem;
+      display:flex;flex-direction:column;gap:1rem
+    }
+    html.dark .bezel>.card{box-shadow:inset 0 1px 1px rgba(255,255,255,.06)}
+    .card .lbl{display:inline-flex;align-items:center;gap:.55rem;font-size:10.5px;font-weight:500;letter-spacing:.26em;text-transform:uppercase;color:var(--ac-ink)}
+    .card .lbl::before{content:'';width:5px;height:5px;flex:none;background:var(--ac);clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)}
+    .card h3{font-size:1.55rem;font-weight:300}
+    .card h3 em{font-style:italic;color:var(--ac-ink)}
+    .card p{font-size:.82rem;color:var(--sub);line-height:1.65;max-width:56ch}
+    .card p a{color:var(--ac-ink);border-bottom:1px dashed color-mix(in srgb,var(--ac-ink) 45%,transparent);padding-bottom:1px}
     .card code{font-family:'JetBrains Mono','SF Mono',monospace}
+    .card-actions{display:flex;gap:.7rem;flex-wrap:wrap;margin-top:auto;padding-top:1.1rem;border-top:1px dashed var(--border)}
 
-    .btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.7rem 1.4rem;font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;font-weight:500;font-family:'DM Sans',sans-serif;border:1px solid transparent;cursor:pointer;text-decoration:none;transition:background .25s,color .25s,border-color .25s}
-    .btn-solid{background:var(--text);color:var(--bg);border-color:var(--text)}
-    .btn-solid:hover{background:var(--ac);border-color:var(--ac);color:#fff}
+    /* ── Buttons — stationary, softly squared, color/shadow feedback ───── */
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:.55rem;
+      min-height:44px;padding:.72rem 1.4rem;border-radius:10px;border:1px solid transparent;
+      font-family:'DM Sans',sans-serif;font-size:.76rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;
+      cursor:pointer;text-decoration:none;
+      transition:background .25s,border-color .25s,box-shadow .25s,color .25s
+    }
+    .btn-solid,.btn-gold{
+      background:var(--ac);border-color:var(--ac);color:var(--ink);
+      box-shadow:0 10px 26px -12px rgba(var(--shadow-tint),.55),0 2px 8px -4px color-mix(in srgb,var(--ac-ink) 40%,transparent)
+    }
+    .btn-solid:hover,.btn-gold:hover{
+      background:color-mix(in srgb,var(--ac) 82%,var(--text));border-color:color-mix(in srgb,var(--ac) 82%,var(--text));
+      box-shadow:0 14px 32px -12px color-mix(in srgb,var(--ac-ink) 50%,transparent)
+    }
     .btn-outline{background:transparent;color:var(--text);border-color:var(--border)}
-    .btn-outline:hover{border-color:var(--ac);color:var(--ac)}
-    .btn-gold{background:var(--ac);border-color:var(--ac);color:#fff}
-    .btn-gold:hover{filter:brightness(1.08)}
-    .btn[disabled]{opacity:.45;cursor:not-allowed;pointer-events:none}
+    .btn-outline:hover{border-color:var(--ac);color:var(--ac-ink)}
+    .btn[disabled]{opacity:.5;cursor:not-allowed;pointer-events:none}
 
-    /* Switch */
-    .switch-row{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1rem 1.125rem;background:var(--bg3);border:1px solid var(--border)}
-    .switch-info b{display:block;font-size:.85rem;font-weight:500}
-    .switch-info span{font-size:.7rem;color:var(--sub)}
-    .switch{position:relative;width:52px;height:28px;flex:none;background:var(--border);border:none;cursor:pointer;transition:background .25s;border-radius:999px}
-    .switch::after{content:'';position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:var(--bg2);transition:left .25s;box-shadow:0 1px 3px rgba(0,0,0,.25)}
-    .switch.on{background:var(--ok)}
-    .switch.on::after{left:27px}
+    /* ── Live switch — machined squared toggle, 44px hit area ──────────── */
+    .switch-row{
+      display:flex;align-items:center;justify-content:space-between;gap:1rem;
+      padding:.9rem 1.15rem;border-radius:12px;
+      background:color-mix(in srgb,var(--text) 4%,transparent);
+      border:1px dashed var(--border)
+    }
+    .switch-info b{display:block;font-size:.88rem;font-weight:500}
+    .switch-info span{font-size:.74rem;color:var(--sub)}
+    .switch{position:relative;width:64px;height:44px;flex:none;background:none;border:none;cursor:pointer;padding:0}
+    .switch::before{
+      content:'';position:absolute;top:8px;left:6px;width:52px;height:28px;border-radius:9px;
+      background:var(--bg3);border:1px solid var(--border);transition:background .25s,border-color .25s
+    }
+    .switch::after{
+      content:'';position:absolute;top:11px;left:9px;width:22px;height:22px;border-radius:6px;
+      background:var(--bg2);box-shadow:0 1px 3px rgba(var(--shadow-tint),.35);transition:left .25s,background .25s
+    }
+    .switch.on::before{background:var(--ok);border-color:var(--ok)}
+    .switch.on::after{left:33px;background:#fff}
     .switch[disabled]{opacity:.5;cursor:not-allowed}
     .switch.busy{opacity:.6;pointer-events:none}
 
-    /* Codes + QR */
-    .code-big{font-family:'JetBrains Mono','SF Mono',monospace;font-size:1.35rem;letter-spacing:.06em;color:var(--ac);font-weight:500;word-break:break-all}
+    /* ── Codes + QR ────────────────────────────────────────────────────── */
+    .code-big{font-family:'JetBrains Mono','SF Mono',monospace;font-size:1.3rem;letter-spacing:.07em;color:var(--ac-ink);font-weight:500;word-break:break-all}
+    #acct-code{font-size:1.05rem}
     .code-row{display:flex;align-items:center;gap:.875rem;flex-wrap:wrap}
-    .qr-wrap{display:flex;gap:1.25rem;align-items:flex-start;flex-wrap:wrap}
-    .qr-box{background:#fff;padding:10px;border:1px solid var(--border);line-height:0;flex:none}
+    .qr-wrap{display:flex;gap:1.4rem;align-items:flex-start;flex-wrap:wrap;margin-top:auto;padding-top:1.1rem;border-top:1px dashed var(--border)}
+    .qr-box{
+      background:#fff;padding:10px;border-radius:12px;border:1px solid var(--border);line-height:0;flex:none;
+      box-shadow:0 10px 26px -14px rgba(var(--shadow-tint),.4)
+    }
     .qr-box svg{display:block;width:148px;height:148px}
-    .qr-side{flex:1;min-width:200px;display:flex;flex-direction:column;gap:.75rem}
+    .qr-side{flex:1;min-width:200px;display:flex;flex-direction:column;gap:.85rem}
+    .qr-side .btn{align-self:flex-start}
 
-    .meta-list{display:flex;flex-direction:column;gap:.45rem;font-size:.78rem;color:var(--sub)}
+    .meta-list{display:flex;flex-direction:column;gap:.45rem;font-size:.8rem;color:var(--sub)}
     .meta-list b{color:var(--text);font-weight:500}
 
-    .tier-badge{display:inline-block;font-size:.55rem;letter-spacing:.2em;text-transform:uppercase;padding:.25rem .6rem;border:1px solid var(--ac);color:var(--ac);font-weight:500}
+    .tier-badge{
+      display:inline-block;font-size:.6rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;
+      padding:.28rem .65rem;border-radius:7px;
+      border:1px solid color-mix(in srgb,var(--ac-ink) 55%,var(--border));color:var(--ac-ink)
+    }
 
-    #gate{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:calc(100dvh - 62px);padding:2rem;text-align:center;gap:.75rem}
+    /* ── Gate ──────────────────────────────────────────────────────────── */
+    #gate{
+      display:none;flex-direction:column;align-items:center;justify-content:center;
+      min-height:100dvh;padding:8rem 1.5rem 4rem;text-align:center;gap:.9rem
+    }
+    #gate h1{font-size:clamp(2.4rem,5.5vw,3.6rem);font-weight:200;letter-spacing:-.025em}
+    #gate h1 em{font-style:italic;color:var(--ac-ink)}
+    #gate-msg{color:var(--sub);max-width:46ch;line-height:1.65;font-size:.92rem}
+    #gate .btn{margin-top:.6rem}
+
+    @media (prefers-reduced-motion:reduce){
+      *,*::before,*::after{transition-duration:.01ms !important;animation-duration:.01ms !important}
+    }
   </style>
   <link rel="stylesheet" href="/css/acuros.css"/>
 </head>
@@ -113,8 +238,14 @@
 <a href="#canvas" class="skip-link">Skip to content</a>
 
 <header class="topbar">
-  <a href="/" class="topbar-logo">ACUROS HEALTH</a>
-  <nav class="topbar-links">
+  <a href="/" class="topbar-logo" aria-label="Acuros Health — home">
+    <img src="/logo.png" alt="" height="26"/>
+    <span class="brand-word">
+      <span class="brand-main">ACUROS</span>
+      <span class="brand-sub">HEALTH</span>
+    </span>
+  </a>
+  <nav class="topbar-links" aria-label="Console">
     <a class="topbar-link" href="/dashboard">Dashboard</a>
     <a class="topbar-link" href="/editor">AI editor</a>
     <a class="topbar-link active" href="/developer">Developer</a>
@@ -125,92 +256,106 @@
 </header>
 
 <section id="gate">
-  <h1 style="font-size:2.4rem;font-weight:200">Developer console.</h1>
-  <p id="gate-msg" style="color:var(--sub);max-width:46ch;line-height:1.65">This console is for clinic owners. Sign in to manage your portal, codes, and billing.</p>
+  <span class="eyebrow">Clinic owners only</span>
+  <h1>Developer <em>console</em>.</h1>
+  <p id="gate-msg">This console is for clinic owners. Sign in to manage your portal, codes, and billing.</p>
   <a class="btn btn-solid" id="gate-cta" href="https://acuros.ca/patient-portal?role=owner">Sign in</a>
 </section>
 
 <main class="canvas" id="canvas" style="display:none">
   <div class="banner" id="banner"></div>
 
-  <div class="header-row">
+  <div class="page-head">
     <div>
-      <span class="pill" id="status-pill"><span class="dot"></span><span id="status-text">Loading</span></span>
+      <span class="eyebrow">Clinic operations</span>
       <h1 class="header-h">Developer <em>console</em></h1>
     </div>
-    <p class="header-meta" id="dev-url"></p>
+    <div class="page-head-side">
+      <span class="pill" id="status-pill"><span class="dot"></span><span id="status-text">Loading</span></span>
+      <p class="header-meta" id="dev-url"></p>
+    </div>
   </div>
+
+  <hr class="stitch" aria-hidden="true"/>
 
   <div class="grid">
 
     <!-- Portal status -->
-    <div class="card">
-      <div class="lbl">Portal status</div>
-      <h3 id="ps-name">Your clinic</h3>
-      <p>Take your public page online or offline instantly. While offline, <code id="ps-url-code">/c/…</code> returns a "not found" page and is hidden from search engines and the sitemap.</p>
-      <div class="switch-row">
-        <div class="switch-info">
-          <b id="sw-label">Page is offline</b>
-          <span id="sw-sub">Flip the switch to go live.</span>
+    <div class="bezel">
+      <section class="card">
+        <div class="lbl">Portal status</div>
+        <h3 id="ps-name">Your clinic</h3>
+        <p>Take your public page online or offline instantly. While offline, <code id="ps-url-code">/c/…</code> returns a "not found" page and is hidden from search engines and the sitemap.</p>
+        <div class="switch-row">
+          <div class="switch-info">
+            <b id="sw-label">Page is offline</b>
+            <span id="sw-sub">Flip the switch to go live.</span>
+          </div>
+          <button class="switch" id="live-switch" role="switch" aria-checked="false" aria-label="Portal live toggle"></button>
         </div>
-        <button class="switch" id="live-switch" role="switch" aria-checked="false" aria-label="Portal live toggle"></button>
-      </div>
-      <div class="meta-list">
-        <span id="ps-published-line"></span>
-        <span id="ps-updated-line"></span>
-      </div>
+        <div class="meta-list">
+          <span id="ps-published-line"></span>
+          <span id="ps-updated-line"></span>
+        </div>
+      </section>
     </div>
 
     <!-- AI assistant -->
-    <div class="card">
-      <div class="lbl">AI design studio</div>
-      <h3>Design your page with AI.</h3>
-      <p>Describe the page you want — hero, services, palette, typography — and the Acuros AI assistant builds and rewrites your portal live. Preview on desktop, tablet, and mobile, then save a draft or publish.</p>
-      <div style="display:flex;gap:.625rem;flex-wrap:wrap;margin-top:auto">
-        <a class="btn btn-solid" href="/editor">Open AI editor</a>
-        <a class="btn btn-outline" href="/onboarding">Content wizard</a>
-      </div>
+    <div class="bezel">
+      <section class="card">
+        <div class="lbl">AI design studio</div>
+        <h3>Design your page with <em>AI</em>.</h3>
+        <p>Describe the page you want — hero, services, palette, typography — and the Acuros AI assistant builds and rewrites your portal live. Preview on desktop, tablet, and mobile, then save a draft or publish.</p>
+        <div class="card-actions">
+          <a class="btn btn-solid" href="/editor">Open AI editor</a>
+          <a class="btn btn-outline" href="/onboarding">Content wizard</a>
+        </div>
+      </section>
     </div>
 
     <!-- Clinic code + QR -->
-    <div class="card">
-      <div class="lbl">Clinic code &amp; QR</div>
-      <h3>Your clinic code.</h3>
-      <div class="code-row">
-        <code class="code-big" id="clinic-code">…</code>
-        <button class="btn btn-outline" id="clinic-code-copy" type="button" style="padding:.5rem 1rem;font-size:.55rem">Copy</button>
-      </div>
-      <p>Patients enter this code on <a href="/patient-portal" style="color:var(--ac)">/patient-portal</a> to join your clinic. The QR code opens your public page — print it for your front desk or window.</p>
-      <div class="qr-wrap">
-        <div class="qr-box" id="clinic-qr" aria-label="QR code linking to your clinic page"></div>
-        <div class="qr-side">
-          <div class="meta-list">
-            <span>Links to <b id="clinic-qr-target">your portal</b></span>
-          </div>
-          <button class="btn btn-outline" id="clinic-qr-dl" type="button" style="align-self:flex-start">Download QR</button>
+    <div class="bezel">
+      <section class="card">
+        <div class="lbl">Clinic code &amp; QR</div>
+        <h3>Your clinic <em>code</em>.</h3>
+        <div class="code-row">
+          <code class="code-big" id="clinic-code">…</code>
+          <button class="btn btn-outline" id="clinic-code-copy" type="button">Copy</button>
         </div>
-      </div>
+        <p>Patients enter this code on <a href="/patient-portal">/patient-portal</a> to join your clinic. The QR code opens your public page — print it for your front desk or window.</p>
+        <div class="qr-wrap">
+          <div class="qr-box" id="clinic-qr" aria-label="QR code linking to your clinic page"></div>
+          <div class="qr-side">
+            <div class="meta-list">
+              <span>Links to <b id="clinic-qr-target">your portal</b></span>
+            </div>
+            <button class="btn btn-outline" id="clinic-qr-dl" type="button">Download QR</button>
+          </div>
+        </div>
+      </section>
     </div>
 
     <!-- Personal code + billing -->
-    <div class="card">
-      <div class="lbl">Your account</div>
-      <h3>Personal code &amp; plan.</h3>
-      <div class="code-row">
-        <code class="code-big" id="acct-code" style="font-size:1.1rem">…</code>
-        <button class="btn btn-outline" id="acct-code-copy" type="button" style="padding:.5rem 1rem;font-size:.55rem">Copy</button>
-      </div>
-      <p>Your personal account code identifies you across Acuros web and mobile. Scan the QR below to share it.</p>
-      <div class="qr-wrap">
-        <div class="qr-box" id="acct-qr" aria-label="QR code of your personal account code"><!-- qr --></div>
-        <div class="qr-side">
-          <div class="meta-list">
-            <span>Plan: <span class="tier-badge" id="tier-badge">FREE</span></span>
-            <span id="tier-sub">Standard access.</span>
-          </div>
-          <a class="btn btn-gold" id="upgrade-btn" href="#" target="_blank" rel="noopener" style="align-self:flex-start">Upgrade to Acuros Plus</a>
+    <div class="bezel">
+      <section class="card">
+        <div class="lbl">Your account</div>
+        <h3>Personal code &amp; <em>plan</em>.</h3>
+        <div class="code-row">
+          <code class="code-big" id="acct-code">…</code>
+          <button class="btn btn-outline" id="acct-code-copy" type="button">Copy</button>
         </div>
-      </div>
+        <p>Your personal account code identifies you across Acuros web and mobile. Scan the QR below to share it.</p>
+        <div class="qr-wrap">
+          <div class="qr-box" id="acct-qr" aria-label="QR code of your personal account code"><!-- qr --></div>
+          <div class="qr-side">
+            <div class="meta-list">
+              <span>Plan: <span class="tier-badge" id="tier-badge">FREE</span></span>
+              <span id="tier-sub">Standard access.</span>
+            </div>
+            <a class="btn btn-gold" id="upgrade-btn" href="#" target="_blank" rel="noopener">Upgrade to Acuros Plus</a>
+          </div>
+        </div>
+      </section>
     </div>
 
   </div>
