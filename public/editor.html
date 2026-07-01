@@ -696,5 +696,35 @@ a:hover{color:var(--ac-hi)}
   });
 })();
 </script>
+<script>
+// ── Published-portal controls (additive) ────────────────────────────────────
+// For a published clinic, saving IS updating the live page (portal-save
+// writes organizations.portal_html, which /c/<slug> serves directly), and
+// re-publishing isn't a thing (api/onboarding.js rejects it). Reflect that:
+// the save action reads "Update live site" and the Publish button hides.
+// Detection: the editor sets the #status pill to the 'live' state exactly
+// when the loaded org is published.
+(function () {
+  let applied = false;
+  function check() {
+    if (applied) return;
+    const status = document.getElementById('status');
+    if (!status || !/\blive\b/i.test(status.className + ' ' + status.textContent)) return;
+    applied = true;
+    const save = document.getElementById('saveDraftBtn');
+    const pub = document.getElementById('publishBtn');
+    if (save) save.textContent = 'Update live site';
+    if (pub) pub.style.display = 'none';
+  }
+  const arm = setInterval(() => {
+    const status = document.getElementById('status');
+    if (!status) return;
+    clearInterval(arm);
+    check();
+    new MutationObserver(check).observe(status, { attributes: true, childList: true, subtree: true, characterData: true });
+  }, 400);
+  setTimeout(() => clearInterval(arm), 30000);
+})();
+</script>
 </body>
 </html>

@@ -210,6 +210,14 @@
     .banner.show{display:block}
     .banner.success{color:var(--ok);background:color-mix(in srgb,var(--ok) 7%,var(--bg2));border-color:color-mix(in srgb,var(--ok) 35%,var(--border))}
     #existing-portal-note{padding:.95rem 1.15rem;margin-bottom:1.25rem;border:1px dashed color-mix(in srgb,var(--ac) 45%,var(--border));background:color-mix(in srgb,var(--ac) 7%,var(--bg2));border-radius:12px;font-size:.82rem;line-height:1.6;color:var(--text)}
+    /* membership gate + published lock (step 6) */
+    #plus-gate,#published-lock{margin:1.4rem 0;padding:1.4rem 1.5rem;border:1px dashed color-mix(in srgb,var(--ac) 50%,var(--border));background:color-mix(in srgb,var(--ac) 6%,var(--bg2));border-radius:14px}
+    .plus-kicker{display:inline-flex;align-items:center;gap:.5rem;font-size:10.5px;font-weight:500;letter-spacing:.26em;text-transform:uppercase;color:var(--ac-ink);margin-bottom:.6rem}
+    .plus-kicker::before{content:'';width:5px;height:5px;background:var(--ac);clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)}
+    #plus-gate h3,#published-lock h3{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:1.45rem;margin:0 0 .45rem}
+    #plus-gate p,#published-lock p{color:var(--sub);font-size:.88rem;max-width:56ch;margin:0 0 1rem}
+    .plus-row{display:flex;gap:.8rem;flex-wrap:wrap}
+    #plus-gate-note{min-height:1.2em;margin:.9rem 0 0 !important;font-size:.82rem;color:var(--ac-ink)}
     #existing-portal-note a{color:var(--ac-ink) !important;font-weight:500}
   </style>
   <link rel="stylesheet" href="/css/acuros.css"/>
@@ -479,6 +487,32 @@
       <div class="panel"><div class="panel-core">
       <div id="review-summary"></div>
 
+      <!-- Membership gate: publishing requires Acuros Plus (also enforced server-side) -->
+      <div id="plus-gate" style="display:none">
+        <span class="plus-kicker">Membership</span>
+        <h3>Acuros Plus required to publish</h3>
+        <p>Your portal design, hosting at acuros.ca/c/your-slug, and the AI editor are part of the
+           Acuros Plus membership. Complete the payment, then publishing unlocks automatically.</p>
+        <div class="plus-row">
+          <a id="plus-pay-link" class="btn btn-solid" target="_blank" rel="noopener"
+             href="https://buy.stripe.com/fZu9AM1f89Wz2DjbWA4ko05">Get Acuros Plus →</a>
+          <button id="plus-recheck" class="btn btn-outline" type="button">I&rsquo;ve paid — check again</button>
+        </div>
+        <p id="plus-gate-note" role="status"></p>
+      </div>
+
+      <!-- Shown instead of the publish button once a clinic is live -->
+      <div id="published-lock" style="display:none">
+        <span class="plus-kicker">Published</span>
+        <h3>This clinic is live</h3>
+        <p>Publishing is one-time. To change your portal, describe the change to the AI editor and
+           it updates your live page.</p>
+        <div class="plus-row">
+          <a class="btn btn-solid" href="/editor">Open the AI editor →</a>
+          <a class="btn btn-outline" href="/developer">Developer console</a>
+        </div>
+      </div>
+
       <div class="nav-row">
         <button class="btn btn-ghost" data-prev="5">← Back</button>
         <button class="btn btn-solid" id="btn-publish">Publish my clinic</button>
@@ -584,11 +618,26 @@ function maybeShowExistingPortalNote(){
   if (!el || !org) return;
   if (!(org.is_published || org.published_at || org.portal_html)) return;
   const liveUrl = org.slug ? ('/c/' + org.slug) : '';
-  el.innerHTML =
-    '<strong>You already have a portal' + (org.is_published ? " — it's live" : '') + '.</strong> ' +
-    'Edit your existing design in the <a href="/editor" style="color:var(--ac);font-weight:500">AI editor</a>' +
-    (liveUrl ? ' or <a href="' + liveUrl + '" target="_blank" rel="noopener" style="color:var(--ac)">view it live</a>' : '') +
-    '. Continuing this wizard and publishing will <strong>rebuild it from scratch</strong>.';
+  const published = !!(org.is_published || org.published_at);
+  if (published) {
+    // Publishing is one-time (enforced server-side). The wizard becomes
+    // read-only for published clinics: hide the publish control entirely
+    // and route all changes through the AI editor.
+    el.innerHTML =
+      '<strong>Your clinic is published' + (org.is_published ? " — it's live" : '') + '.</strong> ' +
+      'Published portals can’t be re-published from this wizard. Make changes in the ' +
+      '<a href="/editor" style="color:var(--ac);font-weight:500">AI editor</a>' +
+      (liveUrl ? ' or <a href="' + liveUrl + '" target="_blank" rel="noopener" style="color:var(--ac)">view it live</a>' : '') + '.';
+    const pub = document.getElementById('btn-publish');
+    if (pub) pub.style.display = 'none';
+    const lock = document.getElementById('published-lock');
+    if (lock) lock.style.display = 'block';
+  } else {
+    el.innerHTML =
+      '<strong>You already have a portal draft.</strong> ' +
+      'Edit the existing design in the <a href="/editor" style="color:var(--ac);font-weight:500">AI editor</a>, ' +
+      'or finish this wizard to publish it.';
+  }
   el.style.display = 'block';
 }
 function hydrateForm(){
@@ -1038,6 +1087,78 @@ $('#btn-publish').addEventListener('click', async () => {
 
 // ── Boot ──
 bootAuth();
+</script>
+
+<script>
+// ── Acuros Plus publish gate (additive) ─────────────────────────────────────
+// Publishing requires an active Plus membership. The REAL gate lives in
+// api/onboarding.js (402 PAYMENT_REQUIRED) + api/stripe-webhook.js (tier flip
+// on checkout.session.completed); this script only mirrors it in the UI:
+// disables the publish button, deep-links the Stripe payment link with this
+// user's id (client_reference_id) + email, and re-checks after payment.
+(function () {
+  const PAY_LINK = 'https://buy.stripe.com/fZu9AM1f89Wz2DjbWA4ko05';
+  const $id = (i) => document.getElementById(i);
+  const gate = $id('plus-gate');
+  const pub = $id('btn-publish');
+  if (!gate || !pub) return;
+
+  let paid = false;
+  async function fetchTier() {
+    try {
+      const { data: { session } = {} } = await sb.auth.getSession();
+      if (!session) return null;
+      const payLink = $id('plus-pay-link');
+      if (payLink) {
+        payLink.href = PAY_LINK + '?' + new URLSearchParams({
+          client_reference_id: session.user.id,
+          prefilled_email: session.user.email || '',
+        });
+      }
+      const { data } = await sb.from('profiles').select('tier').eq('id', session.user.id).maybeSingle();
+      return String((data && data.tier) || '').toLowerCase();
+    } catch (_e) { return null; }
+  }
+
+  async function apply() {
+    // Published clinics show the lock instead — the gate is moot there.
+    const published = !!(typeof org !== 'undefined' && org && (org.is_published || org.published_at));
+    if (published) { gate.style.display = 'none'; return true; }
+    const tier = await fetchTier();
+    if (tier === null) return false; // signed out / offline — leave defaults
+    paid = tier === 'plus' || tier === 'admin';
+    gate.style.display = paid ? 'none' : 'block';
+    pub.disabled = !paid;
+    pub.title = paid ? '' : 'Publishing requires Acuros Plus';
+    return paid;
+  }
+
+  const recheck = $id('plus-recheck');
+  if (recheck) recheck.addEventListener('click', async () => {
+    const note = $id('plus-gate-note');
+    recheck.disabled = true;
+    if (note) note.textContent = 'Checking your membership…';
+    const ok = await apply();
+    if (note) note.textContent = ok
+      ? 'Membership active — you can publish now.'
+      : 'No active membership found yet. Card payments usually confirm within a minute — try again shortly.';
+    recheck.disabled = false;
+  });
+
+  // Re-check when the owner returns from the Stripe checkout tab.
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && !paid) apply(); });
+
+  // Initial check once the wizard has booted (session ready).
+  const t = setInterval(async () => {
+    try {
+      const { data: { session } = {} } = await sb.auth.getSession();
+      if (!session) return;
+      clearInterval(t);
+      apply();
+    } catch (_e) { /* keep waiting */ }
+  }, 700);
+  setTimeout(() => clearInterval(t), 30000);
+})();
 </script>
 
 </body>

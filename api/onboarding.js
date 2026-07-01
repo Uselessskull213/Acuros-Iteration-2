@@ -510,6 +510,34 @@ export default async function handler(req, res) {
       // Be defensive — even if save somehow didn't run, create the row.
       const org = await getOrCreateOwnerOrg(admin, user, { create: true });
       if (!org) return res.status(500).json({ error: 'Could not load or create your clinic record.' });
+
+      // Publishing is ONE-TIME. A published clinic is edited via the AI
+      // editor (/editor + portal-save), never re-run through the wizard —
+      // re-publishing would wipe services/products and regenerate the
+      // portal from scratch. Checked BEFORE any destructive writes.
+      if (org.is_published || org.published_at) {
+        return res.status(409).json({
+          error: 'Your clinic is already published. Use the AI editor to make changes — the wizard cannot re-publish over a live portal.',
+          code: 'ALREADY_PUBLISHED',
+          editorUrl: '/editor',
+        });
+      }
+
+      // Publishing requires an active Acuros Plus membership. Enforced
+      // server-side so the gate cannot be bypassed by skipping the UI.
+      // profiles.tier is flipped to 'plus' by api/stripe-webhook.js when
+      // Stripe reports checkout.session.completed for this user.
+      const { data: payerProfile } = await admin
+        .from('profiles').select('tier').eq('id', user.id).maybeSingle();
+      const tier = String(payerProfile?.tier || '').toLowerCase();
+      if (tier !== 'plus' && tier !== 'admin') {
+        return res.status(402).json({
+          error: 'Publishing your portal requires an Acuros Plus membership.',
+          code: 'PAYMENT_REQUIRED',
+          payUrl: 'https://buy.stripe.com/fZu9AM1f89Wz2DjbWA4ko05',
+        });
+      }
+
       if (!org.slug) return res.status(400).json({ error: 'Pick a slug before publishing.' });
       if (!org.name || org.name.length < 2) return res.status(400).json({ error: 'Clinic name is required.' });
 
