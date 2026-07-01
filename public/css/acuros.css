@@ -115,3 +115,34 @@ a.side-badge,.feed-text a{
   padding:.6rem 1rem;border-radius:0 0 var(--radius) 0;font-size:.8rem;
 }
 .skip-link:focus{left:0}
+
+/* ============================================================================
+   5. Brand chrome v2 (2026-07 rebrand) — unify legacy pages with the new
+   marketing chrome. Same principles as the layers above: token/primitive-level
+   overrides only, no markup changes.
+   ========================================================================== */
+
+/* Floating island nav for the public-facing legacy pages (shop, bookings,
+   patient-portal, settings, ai-assistant). Same geometry as the homepage nav:
+   detached, centered, softly-squared glass. App consoles (.topbar) keep their
+   compact full-width chrome. */
+nav#main-nav{
+  top:14px;
+  left:50%;
+  right:auto;
+  transform:translateX(-50%);
+  width:min(1360px,calc(100% - 1.2rem));
+  border-radius:14px;
+  border:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.28),0 18px 44px -22px rgba(28,22,8,.45);
+}
+html.dark nav#main-nav{
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 18px 44px -22px rgba(0,0,0,.6);
+}
+nav#main-nav .nav-inner{padding:0 1.6rem}
+
+/* Softly-squared buttons everywhere — retire the full pill. The .btn-pill
+   class name stays in the markup; only its shape changes. */
+.btn,.btn-pill{border-radius:10px}
+.btn{text-transform:uppercase;letter-spacing:.1em}

@@ -184,7 +184,9 @@ export default function Home() {
         {/* ── Three tools, asymmetric editorial grid ── */}
         <section className="section tools">
           <Reveal variant="fade">
-            <span className="eyebrow">The platform</span>
+            <span className="eyebrow">
+              <span className="eyebrow-n">01</span> The platform
+            </span>
           </Reveal>
           <Reveal as="h2" className="sec-title">
             Three tools. <em>One platform.</em>
@@ -258,7 +260,9 @@ export default function Home() {
         {/* ── Benefits, tabbed ── */}
         <section className="section">
           <Reveal variant="fade">
-            <span className="eyebrow">Benefits</span>
+            <span className="eyebrow">
+              <span className="eyebrow-n">02</span> Benefits
+            </span>
           </Reveal>
           <Reveal as="h2" className="sec-title">
             Everything your clinic <em>needs, nothing it doesn&rsquo;t.</em>
@@ -271,7 +275,9 @@ export default function Home() {
         {/* ── How it works ── */}
         <section className="section how">
           <Reveal variant="fade">
-            <span className="eyebrow">Onboarding</span>
+            <span className="eyebrow">
+              <span className="eyebrow-n">03</span> Onboarding
+            </span>
           </Reveal>
           <div className="how-head">
             <Reveal as="h2" className="sec-title" variant="left">
@@ -316,7 +322,9 @@ export default function Home() {
           <div className="ai-grid">
             <div className="ai-copy">
               <Reveal variant="fade">
-                <span className="eyebrow">Acuros AI</span>
+                <span className="eyebrow">
+                  <span className="eyebrow-n">04</span> Acuros AI
+                </span>
               </Reveal>
               <Reveal as="h2" className="sec-title" variant="left">
                 Ask anything <em>about your health.</em>
@@ -375,7 +383,9 @@ export default function Home() {
         {/* ── FAQ — extractable answers, no accordions ── */}
         <section className="section" id="faq">
           <Reveal variant="fade">
-            <span className="eyebrow">Common questions</span>
+            <span className="eyebrow">
+              <span className="eyebrow-n">05</span> Common questions
+            </span>
           </Reveal>
           <Reveal as="h2" className="sec-title">
             Answers, <em>before you ask.</em>
@@ -418,7 +428,9 @@ export default function Home() {
         <section className="contact" id="contact">
           <div className="contact-info">
             <Reveal variant="fade">
-              <span className="eyebrow">Contact</span>
+              <span className="eyebrow">
+                <span className="eyebrow-n">06</span> Contact
+              </span>
             </Reveal>
             <Reveal as="h2" variant="left">
               Let&rsquo;s set up your clinic.

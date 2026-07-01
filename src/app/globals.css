@@ -76,17 +76,14 @@ a { color: inherit; text-decoration: none; }
 }
 html.dark .grain { opacity: 0.05; }
 
-/* eyebrow kicker above section titles */
+/* eyebrow kicker above section titles — plain tracked caps with ordinal */
 .eyebrow {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  border: 1px solid color-mix(in srgb, var(--gold) 40%, var(--border));
-  border-radius: 100px;
-  padding: 0.28rem 0.85rem;
-  font-size: 10px;
+  gap: 0.6rem;
+  font-size: 10.5px;
   font-weight: 500;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.26em;
   text-transform: uppercase;
   color: var(--gold-ink);
   margin-bottom: 1.3rem;
@@ -98,6 +95,7 @@ html.dark .grain { opacity: 0.05; }
   background: var(--gold);
   clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
 }
+.eyebrow-n { color: var(--mute); font-style: normal; }
 
 /* double-bezel shell: machined outer tray + concentric inner core */
 .bezel {
@@ -117,34 +115,35 @@ html.dark .bezel > * { box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.06); }
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  padding: 0.66rem 1.6rem;
-  border-radius: 100px;
+  gap: 0.55rem;
+  padding: 0.72rem 1.5rem;
+  border-radius: 10px; /* softly squared — no full pills */
   border: 1px solid transparent;
   font-family: 'DM Sans', sans-serif;
-  font-size: 0.86rem;
-  font-weight: 400;
-  letter-spacing: 0.04em;
+  font-size: 0.76rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
   cursor: pointer;
   /* stationary buttons: color/shadow feedback only, no movement */
   transition: background 0.25s, border-color 0.25s, box-shadow 0.25s, color 0.25s;
   min-height: 44px;
 }
-.btn-lg { padding: 0.875rem 2.25rem; font-size: 0.92rem; }
-/* button-in-button trailing chip: the arrow lives in its own machined circle */
+.btn-lg { padding: 0.95rem 2.1rem; font-size: 0.8rem; }
+/* button-in-button trailing chip: the arrow lives in its own machined square */
 .btn-chip {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 28px;
   height: 28px;
-  border-radius: 50%;
+  border-radius: 7px;
   background: rgba(255, 255, 255, 0.16);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
   margin-right: -0.9rem;
   flex: none;
 }
-.btn-lg .btn-chip { margin-right: -1.4rem; width: 30px; height: 30px; }
+.btn-lg .btn-chip { margin-right: -1.2rem; width: 30px; height: 30px; }
 .btn-chip { transition: background 0.25s; }
 .btn:hover .btn-chip { background: rgba(255, 255, 255, 0.24); }
 .btn-outline .btn-chip { background: color-mix(in srgb, var(--text) 6%, transparent); box-shadow: none; }
@@ -183,7 +182,7 @@ html.dark .btn-solid { color: #12100a; }
   top: 14px;
   left: 50%;
   transform: translateX(-50%);
-  width: min(1160px, calc(100% - 1.6rem));
+  width: min(1360px, calc(100% - 1.2rem));
   z-index: 160; /* stays above the mobile glass overlay so the burger can morph to X */
   display: flex;
   align-items: center;
@@ -191,7 +190,7 @@ html.dark .btn-solid { color: #12100a; }
   gap: 1.5rem;
   padding: 0 0.65rem 0 1.35rem;
   height: 62px;
-  border-radius: 100px;
+  border-radius: 14px;
   color: #fff;
   background: rgba(18, 14, 8, 0.32);
   border: 1px solid rgba(255, 255, 255, 0.14);
@@ -225,7 +224,8 @@ html.dark .nav.scrolled { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0
   letter-spacing: 0.22em;
 }
 .nav-word-sub { font-size: 0.42rem; font-weight: 400; letter-spacing: 0.42em; opacity: 0.75; }
-.nav-links { display: flex; gap: 2rem; font-size: 0.82rem; letter-spacing: 0.05em; }
+/* uppercase tracked links — same voice as the legacy app chrome */
+.nav-links { display: flex; gap: 2.1rem; font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase; }
 .nav-links a { opacity: 0.82; transition: opacity 0.2s, color 0.2s; padding: 0.4rem 0; }
 .nav-links a:hover { opacity: 1; color: var(--gold-2); }
 .nav.scrolled .nav-links a:hover { color: var(--gold-ink); }
@@ -481,8 +481,9 @@ html.dark .nav.scrolled { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0
 .split-body em { color: var(--gold-2); }
 .split-body p { color: rgba(255, 255, 255, 0.78); font-size: 0.95rem; max-width: 46ch; margin-bottom: 1.4rem; }
 .split-cta {
-  font-size: 0.85rem;
-  letter-spacing: 0.08em;
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
   color: var(--gold-2);
   border-bottom: 1px dashed rgba(216, 176, 90, 0.5);
   padding-bottom: 3px;
@@ -526,10 +527,10 @@ html.dark .nav.scrolled { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0
   margin-bottom: 0.5rem;
 }
 .tool-body p { color: var(--sub); font-size: 0.9rem; max-width: 52ch; margin-bottom: 0.9rem; }
-.tool-cta { font-size: 0.82rem; letter-spacing: 0.06em; color: var(--gold-ink); }
+.tool-cta { font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold-ink); }
 
 /* ── Benefits tabs ───────────────────────────────────────── */
-.tabs { display: inline-flex; gap: 0.4rem; border: 1px dashed var(--border); border-radius: 100px; padding: 0.3rem; margin-bottom: 2.4rem; }
+.tabs { display: inline-flex; gap: 0.4rem; border: 1px dashed var(--border); border-radius: 12px; padding: 0.3rem; margin-bottom: 2.4rem; }
 .tabs button {
   border: 0;
   background: none;
@@ -538,7 +539,7 @@ html.dark .nav.scrolled { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0
   letter-spacing: 0.04em;
   color: var(--sub);
   padding: 0.5rem 1.3rem;
-  border-radius: 100px;
+  border-radius: 9px;
   cursor: pointer;
   transition: background 0.25s, color 0.25s;
   min-height: 40px;
@@ -764,7 +765,7 @@ html.dark .nav.scrolled { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0
 .contact-tags span {
   border: 1px dashed rgba(216, 176, 90, 0.45);
   color: var(--gold-2);
-  border-radius: 100px;
+  border-radius: 8px;
   font-size: 0.72rem;
   letter-spacing: 0.14em;
   padding: 0.35rem 0.9rem;
