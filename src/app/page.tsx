@@ -35,7 +35,9 @@ const FAQS = [
   },
 ];
 
-const TITLE = 'Acuros Health | Branded patient portals for Canadian clinics';
+// Kept deliberately short — the long keyword title read as clutter in Google
+// results. The description + JSON-LD carry the keywords instead.
+const TITLE = 'Acuros Health';
 const DESC =
   'Give your clinic a branded patient portal with an AI health assistant, online bookings, loyalty rewards, and PIPEDA-compliant records. Built for Canadian clinics. Live in a day, no EMR migration.';
 
