@@ -21,3 +21,4 @@ dist/
 *.bak*
 test.txt
 /hero-bg.jpg
+tsconfig.tsbuildinfo
