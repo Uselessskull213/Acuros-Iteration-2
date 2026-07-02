@@ -36,6 +36,16 @@ export default function Nav() {
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // Supabase falls back to the Site URL (this homepage) when a redirect_to
+    // isn't allowlisted, and magic-link emails land here by default — but no
+    // Supabase client runs on this page, so tokens in the hash would be
+    // silently dropped and the user left signed out. Hand them to the portal,
+    // which consumes them (detectSessionInUrl) and routes by role.
+    const h = window.location.hash;
+    if (h.includes('access_token=') || h.includes('error_code=')) {
+      window.location.replace('/patient-portal' + h);
+      return;
+    }
     const apply = () => {
       const a = readAuth();
       setAuth(a);

@@ -19,6 +19,11 @@
     STORAGE_KEY: 'sb-' + REF + '-auth-token',
     // Canonical origin. All auth + post-auth redirects pin here so login
     // never resolves against dev.acuros.ca (a different origin) by accident.
-    APEX_ORIGIN: 'https://acuros.ca',
+    //
+    // MUST be the www host: Vercel 307s acuros.ca -> www.acuros.ca, and the
+    // Supabase redirect allowlist only accepts https://www.acuros.ca/* —
+    // a bare-apex redirect_to gets silently replaced with the Site URL
+    // (the homepage), which strands OAuth tokens on a page with no client.
+    APEX_ORIGIN: 'https://www.acuros.ca',
   };
 })();

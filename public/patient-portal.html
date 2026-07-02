@@ -1602,6 +1602,27 @@ async function ptRegister(e){
       });
       if(error)throw error;
 
+      // Email autoconfirm is ON for this project: signUp already returns a
+      // live, confirmed session. Don't gate the new account behind an OTP
+      // email that may never arrive — finish registration right here. The
+      // OTP path below remains as the fallback for when confirmations are
+      // re-enabled (data.session comes back null in that case).
+      if (data?.session && data?.user) {
+        const safeCode = (role === 'patient' && code) ? code.toUpperCase() : '';
+        if (safeCode) { try { localStorage.setItem('ah-org-code', safeCode); } catch(_e){} }
+        const profile = { id: data.user.id, name, first_name:first, last_name:last, tier:'free', usage_count:0, role, role_confirmed:true };
+        try { await sb.from('profiles').upsert(profile); } catch(_){}
+        showMsg('pt-ok','Account created. Signing you in…','ok');
+        if (role === 'clinic_owner') {
+          setTimeout(() => window.location.replace('/onboarding'), 700);
+          return;
+        }
+        const p = await fetchProfile(data.user.id).catch(()=>null);
+        currentUser = buildCurrentUserFromAuth(data.user, p, profile);
+        setTimeout(() => syncPortal(), 800);
+        return;
+      }
+
       // Match the mobile flow: send a 6-digit OTP and switch to the OTP
       // panel for email verification. The profile row (with the user's
       // chosen name + role) is staged in ptOTPState and
