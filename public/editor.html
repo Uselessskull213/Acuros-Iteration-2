@@ -372,7 +372,12 @@ a:hover{color:var(--ac-hi)}
   // ── Auth gate ──────────────────────────────────────────
   async function bootstrap(){
     const { data: { session } } = await sb.auth.getSession();
-    if (!session?.user) return showGate('Sign in to <em>edit</em>', 'Portal editing is for clinic owners. Sign in to continue.', 'Sign in', '/patient-portal?role=owner&from=editor');
+    if (!session?.user) {
+      // Stale/revoked stored session (stacked sign-ins) → purge so the next
+      // sign-in is clean instead of looping on the same dead token.
+      try { window.acurosAuth?.purgeIfStale?.(); } catch(_e){}
+      return showGate('Sign in to <em>edit</em>', 'Portal editing is for clinic owners. Sign in to continue.', 'Sign in', '/patient-portal?role=owner&from=editor');
+    }
 
     state.user = session.user;
     const [profileRes, orgRes] = await Promise.all([

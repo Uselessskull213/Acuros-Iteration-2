@@ -566,7 +566,13 @@ async function bootAuth(){
   if (!sb) { showGate('Auth not configured.'); return; }
   const { data } = await sb.auth.getSession();
   session = data?.session || null;
-  if (!session) { showGate(); return; }
+  if (!session) {
+    // Stale/revoked stored session (stacked sign-ins) → purge so the next
+    // sign-in is clean instead of looping on the same dead token.
+    try { window.acurosAuth?.purgeIfStale?.(); } catch(_e){}
+    showGate();
+    return;
+  }
   token = session.access_token;
   // Anyone in the clinic-setup wizard is owner-intent by definition. OAuth
   // signups arrive as 'patient' (Google/Apple carry no role metadata) and the

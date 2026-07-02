@@ -494,7 +494,13 @@ async function boot(){
   if (!sb) { showGate(); return; }
   const { data } = await sb.auth.getSession();
   session = data?.session || null;
-  if (!session) { showGate(); return; }
+  if (!session) {
+    // Stale/revoked stored session (stacked sign-ins) → purge so the next
+    // sign-in is clean instead of looping on the same dead token.
+    try { window.acurosAuth?.purgeIfStale?.(); } catch(_e){}
+    showGate();
+    return;
+  }
   token = session.access_token;
 
   const [profileRes, orgRes] = await Promise.all([

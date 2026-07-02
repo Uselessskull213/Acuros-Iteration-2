@@ -192,6 +192,18 @@
       // exp is unix seconds; allow a small skew. -1 (unparseable) → treat as not signed in.
       return exp === -1 ? false : (exp * 1000 > Date.now() - 5000);
     },
+    // Poison recovery. Call from an auth gate right after getSession()
+    // returns null. If a session is STILL sitting in storage, it's stale and
+    // unrefreshable (e.g. a revoked/rotated refresh token from stacked
+    // sessions) — supabase-js couldn't use it and won't always self-clean it.
+    // Purge it so the next sign-in writes a clean session instead of the gate
+    // reloading the same dead token forever. Returns true if it purged.
+    purgeIfStale: function () {
+      try {
+        if (this.rawSession()) { this.clearAll(); return true; }
+      } catch (_e) {}
+      return false;
+    },
     setRole: function (role) { if (role) setFlag('ah-user-role', role); },
     getRole: function () { return getFlag('ah-user-role'); },
     setInitial: function (i) { if (i) setFlag('ah-user-initial', i); },
