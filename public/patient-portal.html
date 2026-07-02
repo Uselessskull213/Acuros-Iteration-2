@@ -1139,6 +1139,33 @@ const CONFIG = { supabaseUrl: window.ACUROS.SUPABASE_URL, supabaseKey: window.AC
 let sb = null;
 try { if (CONFIG.supabaseKey) sb = window.createAcurosClient(CONFIG.supabaseUrl, CONFIG.supabaseKey); }
 catch(e) { console.error('[Acuros] auth client failed to initialise', e); }
+
+// ── Hard reset escape hatch: /patient-portal?reset ─────────────────────
+// A stuck user whose stored session/cookies are corrupt (stacked sign-ins,
+// a browser that mangled a chunked cookie) can land here to wipe ALL local
+// auth state and start clean — no digging through browser settings. Runs
+// synchronously BEFORE onAuthStateChange registers so nothing auto-routes
+// on the way out. Also revokes server-side sessions, then reloads to a
+// bare login form.
+(function handleReset(){
+  var q = new URLSearchParams(location.search);
+  if (!q.has('reset')) return;
+  try { window.acurosAuth && window.acurosAuth.clearAll(); } catch(_e){}
+  try {
+    // best-effort nuke of every supabase/acuros key across both stores
+    Object.keys(localStorage).forEach(function(k){ if(/^sb-|^ah-/.test(k)) localStorage.removeItem(k); });
+  } catch(_e){}
+  var done = function(){
+    q.delete('reset');
+    location.replace(location.pathname + (q.toString() ? '?' + q.toString() : ''));
+  };
+  // Revoke server-side too, but never block the reset on a slow/failed call.
+  var t = setTimeout(done, 1200);
+  try {
+    if (sb) sb.auth.signOut({ scope:'global' }).then(function(){ clearTimeout(t); done(); }).catch(function(){ clearTimeout(t); done(); });
+    else done();
+  } catch(_e){ clearTimeout(t); done(); }
+})();
 let currentUser = null, ptMode = 'login';
 const ORG_BANNER_DISMISSED_KEY = 'ah-org-banner-dismissed';
 // Legacy hard-coded clinic codes used to point at static /aaaclinics-portal,
