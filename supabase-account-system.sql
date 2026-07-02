@@ -133,7 +133,10 @@ BEGIN
     'free',
     0,
     CASE WHEN meta_role IN ('patient','clinic_owner') THEN meta_role ELSE 'patient' END,
-    meta_role IN ('patient','clinic_owner')
+    -- COALESCE is load-bearing: meta_role IN (...) is NULL (not false) when
+    -- meta_role is NULL, and role_confirmed is NOT NULL — without it every
+    -- OAuth signup (no role metadata) fails the insert.
+    COALESCE(meta_role IN ('patient','clinic_owner'), false)
   )
   ON CONFLICT (id) DO NOTHING;
   RETURN NEW;
