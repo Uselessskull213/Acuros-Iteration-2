@@ -568,6 +568,17 @@ async function bootAuth(){
   session = data?.session || null;
   if (!session) { showGate(); return; }
   token = session.access_token;
+  // Anyone in the clinic-setup wizard is owner-intent by definition. OAuth
+  // signups arrive as 'patient' (Google/Apple carry no role metadata) and the
+  // onboarding API rejects patients — so promote patient -> clinic_owner here
+  // (a self-service change the profiles RLS update policy explicitly allows)
+  // before loading state. Never touches admins or existing owners.
+  try {
+    await sb.from('profiles')
+      .update({ role: 'clinic_owner', role_confirmed: true })
+      .eq('id', session.user.id)
+      .eq('role', 'patient');
+  } catch(_e){}
   $('#shell').style.display = '';
   $('#gate').style.display = 'none';
   await loadState();

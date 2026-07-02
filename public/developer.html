@@ -259,7 +259,7 @@
   <span class="eyebrow">Clinic owners only</span>
   <h1>Developer <em>console</em>.</h1>
   <p id="gate-msg">This console is for clinic owners. Sign in to manage your portal, codes, and billing.</p>
-  <a class="btn btn-solid" id="gate-cta" href="https://acuros.ca/patient-portal?role=owner">Sign in</a>
+  <a class="btn btn-solid" id="gate-cta" href="/patient-portal?role=owner&from=developer">Sign in</a>
 </section>
 
 <main class="canvas" id="canvas" style="display:none">
@@ -390,7 +390,7 @@ function showGate(msg, cta, href){
   $('#gate').style.display = 'flex';
   $('#canvas').style.display = 'none';
   if (msg) $('#gate-msg').textContent = msg;
-  if (cta) { $('#gate-cta').textContent = cta; $('#gate-cta').href = href || 'https://acuros.ca/patient-portal?role=owner'; }
+  if (cta) { $('#gate-cta').textContent = cta; $('#gate-cta').href = href || '/patient-portal?role=owner&from=developer'; }
 }
 
 // ── QR helpers (qrcode-generator) ─────────────────────────────────────
@@ -503,7 +503,9 @@ async function boot(){
   ]);
   profile = profileRes.data;
   if (!profile || (profile.role !== 'clinic_owner' && profile.role !== 'admin')) {
-    showGate('The developer console is only for clinic owners. If you should have owner access, contact support.', 'Open settings', '/settings');
+    // Onboarding claims the owner role for owner-intent users — route there
+    // instead of dead-ending on "contact support".
+    showGate('The developer console is for clinic owners. Set up your clinic to get owner access.', 'Set up your clinic', '/onboarding');
     return;
   }
   if (!orgRes.data) {

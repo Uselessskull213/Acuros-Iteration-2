@@ -155,7 +155,7 @@ a:hover{color:var(--ac-hi)}
   <div class="gate-card">
     <h1 id="gateTitle">Sign in to <em>edit</em></h1>
     <p id="gateMsg">Portal editing is for clinic owners. Sign in to continue.</p>
-    <a class="btn btn-pri" id="gateCta" href="https://acuros.ca/patient-portal?role=owner">Sign in</a>
+    <a class="btn btn-pri" id="gateCta" href="/patient-portal?role=owner&from=editor">Sign in</a>
   </div>
 </div>
 
@@ -372,7 +372,7 @@ a:hover{color:var(--ac-hi)}
   // ── Auth gate ──────────────────────────────────────────
   async function bootstrap(){
     const { data: { session } } = await sb.auth.getSession();
-    if (!session?.user) return showGate('Sign in to <em>edit</em>', 'Portal editing is for clinic owners. Sign in to continue.', 'Sign in', 'https://acuros.ca/patient-portal?role=owner');
+    if (!session?.user) return showGate('Sign in to <em>edit</em>', 'Portal editing is for clinic owners. Sign in to continue.', 'Sign in', '/patient-portal?role=owner&from=editor');
 
     state.user = session.user;
     const [profileRes, orgRes] = await Promise.all([
@@ -381,7 +381,9 @@ a:hover{color:var(--ac-hi)}
     ]);
     const profile = profileRes.data;
     if (!profile || (profile.role !== 'clinic_owner' && profile.role !== 'admin')) {
-      return showGate('Not <em>authorized</em>', 'This page is only for clinic owners. If you should have owner access, please contact support.', 'Open dashboard', '/dashboard');
+      // Not a dead end: onboarding claims the owner role for owner-intent
+      // users, so send them there instead of bouncing them to the dashboard.
+      return showGate('Become a <em>clinic owner</em>', 'Portal editing is for clinic owners. Set up your clinic to get owner access.', 'Set up your clinic', '/onboarding');
     }
     if (!orgRes.data) {
       return showGate('Finish <em>onboarding</em>', "You haven't set up your clinic yet. Complete onboarding to start editing your portal.", 'Start onboarding', '/onboarding');

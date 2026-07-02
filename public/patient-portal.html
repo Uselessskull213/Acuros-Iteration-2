@@ -1807,12 +1807,21 @@ async function ownerRedirectIfApplicable(userId){
       try {
         await sb.from('profiles')
           .update({ role: 'clinic_owner', role_confirmed: true })
-          .eq('id', userId);
+          .eq('id', userId)
+          .eq('role', 'patient'); // promote-only: never touches admins/owners
       } catch(_e){}
       window.location.replace(apex + '/onboarding');
       return true;
     }
     if (window.acurosAuth) window.acurosAuth.setRole('clinic_owner');
+    // A gate on another owner page sent them here to sign in (?from=…) —
+    // return them to that page instead of the dashboard, so "sign in" from
+    // the AI editor lands back IN the editor rather than looping.
+    const from = params.get('from');
+    if (from === 'editor' || from === 'developer') {
+      window.location.replace(apex + '/' + from);
+      return true;
+    }
     // "Completed onboarding" = ever published (matches the dashboard gate), so
     // an owner who toggled their page offline still lands on the dashboard.
     window.location.replace(apex + ((data.is_published || data.published_at) ? '/dashboard' : '/onboarding'));

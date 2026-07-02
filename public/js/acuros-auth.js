@@ -47,12 +47,25 @@
     document.cookie = name + '=' + value + COOKIE_DOMAIN + '; path=/; max-age=' + MAXAGE + SECURE + '; samesite=lax';
   }
   function deleteCookie(name) {
+    // Expire BOTH the .acuros.ca cookie and any host-only zombie with the
+    // same name. Duplicate-name cookies (left by older adapter versions)
+    // shadow each other in document.cookie and can pin a stale session.
     document.cookie = name + '=' + COOKIE_DOMAIN + '; path=/; max-age=0' + SECURE + '; samesite=lax';
+    document.cookie = name + '=; path=/; max-age=0' + SECURE + '; samesite=lax';
+  }
+  // document.cookie can contain SEVERAL cookies with the same name (host-only
+  // vs .acuros.ca scope) and hides which is which — collect all of them.
+  function readCookieAll(name) {
+    var esc = name.replace(/[.$?*|{}()[\]\\/+^]/g, '\\$&');
+    var re = new RegExp('(?:^|; )' + esc + '=([^;]*)', 'g');
+    var out = [];
+    var m;
+    while ((m = re.exec(document.cookie))) out.push(m[1]);
+    return out;
   }
   function readCookie(name) {
-    var esc = name.replace(/[.$?*|{}()[\]\\/+^]/g, '\\$&');
-    var m = document.cookie.match(new RegExp('(?:^|; )' + esc + '=([^;]*)'));
-    return m ? m[1] : null;
+    var all = readCookieAll(name);
+    return all.length ? all[0] : null;
   }
 
   function setCookieChunked(key, value) {
@@ -64,19 +77,35 @@
     for (var i = 0; i < n; i++) writeCookie(key + '.' + i, enc.slice(i * CHUNK, (i + 1) * CHUNK));
   }
   function getCookieChunked(key) {
-    var single = readCookie(key);
-    if (single !== null) { try { return decodeURIComponent(single); } catch (_e) { return single; } }
+    // Gather every candidate value — duplicate single cookies (host-only
+    // zombies next to the .acuros.ca cookie) AND the chunked assembly can
+    // coexist. Never trust document.cookie's ordering (it lists the OLDEST
+    // first for equal paths): return whichever session expires LATEST.
+    var candidates = [];
+    readCookieAll(key).forEach(function (v) {
+      try { candidates.push(decodeURIComponent(v)); } catch (_e) { candidates.push(v); }
+    });
     var nRaw = readCookie(key + '.chunks');
-    if (!nRaw) return null;
-    var n = parseInt(nRaw, 10);
-    if (!(n > 0)) return null;
-    var out = '';
-    for (var i = 0; i < n; i++) {
-      var part = readCookie(key + '.' + i);
-      if (part === null) return null; // incomplete — treat as absent
-      out += part;
+    if (nRaw) {
+      var n = parseInt(nRaw, 10);
+      if (n > 0) {
+        var out = '';
+        for (var i = 0; i < n; i++) {
+          var part = readCookie(key + '.' + i);
+          if (part === null) { out = null; break; } // incomplete — skip
+          out += part;
+        }
+        if (out !== null) {
+          try { candidates.push(decodeURIComponent(out)); } catch (_e) { candidates.push(out); }
+        }
+      }
     }
-    try { return decodeURIComponent(out); } catch (_e) { return out; }
+    if (!candidates.length) return null;
+    var best = candidates[0];
+    for (var j = 1; j < candidates.length; j++) {
+      if (sessionExpiry(candidates[j]) > sessionExpiry(best)) best = candidates[j];
+    }
+    return best;
   }
   function removeCookieChunked(key) {
     deleteCookie(key);
