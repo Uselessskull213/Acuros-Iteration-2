@@ -1798,8 +1798,20 @@ async function ownerRedirectIfApplicable(userId){
     // Distinguish a query failure from a genuine non-owner: an explicit
     // owner-intent user (role=owner) is sent to onboarding rather than being
     // stranded on the patient portal; a plain visitor just stays here.
-    if (error) return wantsOwner ? (window.location.replace(apex + '/onboarding'), true) : false;
-    if (!data)  return wantsOwner ? (window.location.replace(apex + '/onboarding'), true) : false;
+    // Owner intent must be persisted server-side FIRST: the onboarding API
+    // rejects 'patient' profiles, and OAuth signups carry no role metadata,
+    // so claim clinic_owner (a self-service change RLS explicitly allows)
+    // before handing the user to /onboarding.
+    if (error || !data) {
+      if (!wantsOwner) return false;
+      try {
+        await sb.from('profiles')
+          .update({ role: 'clinic_owner', role_confirmed: true })
+          .eq('id', userId);
+      } catch(_e){}
+      window.location.replace(apex + '/onboarding');
+      return true;
+    }
     if (window.acurosAuth) window.acurosAuth.setRole('clinic_owner');
     // "Completed onboarding" = ever published (matches the dashboard gate), so
     // an owner who toggled their page offline still lands on the dashboard.

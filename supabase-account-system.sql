@@ -112,21 +112,28 @@ CREATE TRIGGER guard_profile_privileges
 
 -- ── 5. Seed a profile row on auth signup ────────────────────
 -- Runs as the auth admin via the auth.users trigger. Only touches columns
--- that exist (NO email column on this project). role defaults to 'patient'
--- and role_confirmed to false (column defaults), so the role picker shows.
+-- that exist (NO email column on this project). Honors the role chosen at
+-- signup (user_metadata.role) — dropping it stranded every new clinic owner
+-- as 'patient', which the onboarding API then 403s (owner-funnel deadlock).
+-- Unknown/absent role falls back to 'patient' with role_confirmed=false so
+-- the role picker shows.
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS trigger
 LANGUAGE plpgsql
 SECURITY DEFINER
 SET search_path TO 'public'
 AS $$
+DECLARE
+  meta_role text := NEW.raw_user_meta_data->>'role';
 BEGIN
-  INSERT INTO public.profiles (id, name, tier, usage_count)
+  INSERT INTO public.profiles (id, name, tier, usage_count, role, role_confirmed)
   VALUES (
     NEW.id,
     COALESCE(NEW.raw_user_meta_data->>'full_name', split_part(NEW.email, '@', 1), 'Patient'),
     'free',
-    0
+    0,
+    CASE WHEN meta_role IN ('patient','clinic_owner') THEN meta_role ELSE 'patient' END,
+    meta_role IN ('patient','clinic_owner')
   )
   ON CONFLICT (id) DO NOTHING;
   RETURN NEW;
@@ -138,10 +145,46 @@ CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
 
+-- ── 5b. Owning an organization implies clinic_owner ─────────
+-- OAuth signups (Google/Apple) carry no role metadata; the moment
+-- onboarding assigns them an org, promote the profile. Never demotes,
+-- never touches admins.
+CREATE OR REPLACE FUNCTION public.sync_owner_role()
+RETURNS trigger
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path TO 'public'
+AS $$
+BEGIN
+  IF NEW.owner_id IS NOT NULL THEN
+    UPDATE public.profiles
+       SET role = 'clinic_owner', role_confirmed = true
+     WHERE id = NEW.owner_id AND role NOT IN ('clinic_owner','admin');
+  END IF;
+  RETURN NEW;
+END;
+$$;
+DROP TRIGGER IF EXISTS trg_org_owner_role ON public.organizations;
+CREATE TRIGGER trg_org_owner_role
+  AFTER INSERT OR UPDATE OF owner_id ON public.organizations
+  FOR EACH ROW EXECUTE FUNCTION public.sync_owner_role();
+
+-- ── 5c. One-time backfill for accounts stranded as 'patient' ──
+UPDATE public.profiles p
+   SET role = 'clinic_owner', role_confirmed = true
+  FROM auth.users u
+ WHERE p.id = u.id
+   AND p.role = 'patient'
+   AND (
+     u.raw_user_meta_data->>'role' = 'clinic_owner'
+     OR EXISTS (SELECT 1 FROM public.organizations o WHERE o.owner_id = p.id)
+   );
+
 -- ── 6. Least-privilege grants ───────────────────────────────
 -- Trigger functions fire regardless of caller EXECUTE, so they must NOT be
 -- exposed as RPCs. generate_account_code() stays definer-only on purpose.
 REVOKE EXECUTE ON FUNCTION public.handle_new_user()          FROM anon, authenticated;
+REVOKE EXECUTE ON FUNCTION public.sync_owner_role()          FROM anon, authenticated;
 REVOKE EXECUTE ON FUNCTION public.guard_profile_privileges() FROM anon, authenticated;
 REVOKE EXECUTE ON FUNCTION public.set_account_code()         FROM anon, authenticated;
 REVOKE EXECUTE ON FUNCTION public.generate_account_code()    FROM anon, authenticated;
