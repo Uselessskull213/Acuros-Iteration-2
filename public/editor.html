@@ -13,6 +13,13 @@
 <script src="/js/acuros-config.js"></script>
 <script src="/js/acuros-auth.js"></script>
 <style>
+/* The `hidden` attribute must always win. .gate/.topbar/.app set an explicit
+   `display` (flex/grid), which overrides the UA `[hidden]{display:none}` — so
+   toggling `.hidden=true` in JS did NOT visually hide the gate, leaving the
+   "Sign in to edit" overlay stuck on top of the fully-loaded editor for
+   signed-in owners (looked like an endless sign-in loop). This global reset
+   guarantees any [hidden] element is actually hidden. */
+[hidden]{display:none!important;}
 :root{
   --bg:#0a0a09;--bg2:#111110;--bg3:#161614;--bg4:#1d1d1a;
   --border:#222220;--border-hi:#33332e;
