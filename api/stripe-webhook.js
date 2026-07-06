@@ -1,16 +1,28 @@
-// api/stripe-webhook.js — flip profiles.tier to 'plus' when Stripe reports a
-// completed checkout for the Acuros Plus payment link.
+// api/stripe-webhook.js — keep profiles.tier in sync with Stripe billing.
+//
+// Handles:
+//   • checkout.session.completed      — first payment: tier → 'plus', and we
+//                                        record the Stripe customer id so later
+//                                        subscription events can find the user.
+//   • customer.subscription.created   — subscribed:  tier → 'plus'
+//   • customer.subscription.updated   — status change: active/trialing → 'plus',
+//                                        canceled/unpaid/expired → 'free'
+//   • customer.subscription.deleted   — canceled:    tier → 'free'
 //
 // Setup (one-time, Stripe dashboard):
 //   Developers → Webhooks → Add endpoint
 //     URL:    https://acuros.ca/api/stripe-webhook
-//     Events: checkout.session.completed
+//     Events: checkout.session.completed,
+//             customer.subscription.created,
+//             customer.subscription.updated,
+//             customer.subscription.deleted
 //   Then copy the endpoint's signing secret into Vercel env as
 //   STRIPE_WEBHOOK_SECRET (starts with whsec_).
 //
-// The payment link is opened from onboarding/developer/settings with
-// ?client_reference_id=<supabase user id>&prefilled_email=<email>, so the
-// completed session carries the user id back to us here. No Stripe SDK —
+// The payment link is opened with ?client_reference_id=<supabase user id>, so
+// the first completed session carries the user id back here. Subscription
+// events don't carry that id — only the Stripe customer id — so we map them via
+// profiles.stripe_customer_id, which the checkout event stores. No Stripe SDK —
 // signature verification is a plain HMAC-SHA256 over the RAW request body
 // (t + '.' + payload, from the stripe-signature header), which is why this
 // handler reads the stream itself instead of touching req.body.
@@ -19,6 +31,12 @@ import crypto from 'node:crypto';
 import { getSupabaseAdmin, isSupabaseConfigured } from './_lib/supabase-admin.js';
 
 const TOLERANCE_S = 5 * 60; // reject events older than 5 minutes (replay guard)
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+// Stripe subscription statuses that mean the customer currently has access.
+const ACTIVE_STATUSES = new Set(['active', 'trialing']);
+// …and the ones that mean access is gone.
+const INACTIVE_STATUSES = new Set(['canceled', 'unpaid', 'incomplete_expired', 'past_due']);
 
 function readRawBody(req) {
   return new Promise((resolve, reject) => {
@@ -51,6 +69,70 @@ function verifyStripeSignature(rawBody, sigHeader, secret) {
   });
 }
 
+// ── Handlers (return {status, body}) ─────────────────────────────────────
+// First payment: upgrade + remember the Stripe customer for later events.
+async function handleCheckoutCompleted(admin, session) {
+  if (session.payment_status && session.payment_status !== 'paid') {
+    return { status: 200, body: { received: true, ignored: 'not-paid' } };
+  }
+  const userId = String(session.client_reference_id || '').trim();
+  const customerId = typeof session.customer === 'string' ? session.customer : null;
+  if (!UUID_RE.test(userId)) {
+    console.error('[stripe-webhook] completed checkout without client_reference_id:', {
+      session: session.id, email: session.customer_details?.email || session.customer_email || null,
+    });
+    return { status: 200, body: { received: true, ignored: 'no-client-reference-id' } };
+  }
+  const patch = { tier: 'plus' };
+  if (customerId) patch.stripe_customer_id = customerId;
+  const { data: updated, error } = await admin
+    .from('profiles').update(patch).eq('id', userId).select('id').maybeSingle();
+  if (error) throw error;
+  if (!updated) {
+    console.error('[stripe-webhook] paid user has no profile row:', userId);
+    return { status: 200, body: { received: true, ignored: 'no-profile' } };
+  }
+  console.log('[stripe-webhook] upgraded to plus:', userId, 'session:', session.id);
+  return { status: 200, body: { received: true, upgraded: true } };
+}
+
+// Subscribe / update / cancel: map the Stripe customer to a profile and set tier.
+async function handleSubscriptionEvent(admin, eventType, sub) {
+  const customerId = typeof sub.customer === 'string' ? sub.customer : null;
+  if (!customerId) {
+    return { status: 200, body: { received: true, ignored: 'no-customer' } };
+  }
+
+  // Deleted → gone. Otherwise decide by status.
+  let tier;
+  if (eventType === 'customer.subscription.deleted') {
+    tier = 'free';
+  } else if (ACTIVE_STATUSES.has(sub.status)) {
+    tier = 'plus';
+  } else if (INACTIVE_STATUSES.has(sub.status)) {
+    tier = 'free';
+  } else {
+    // incomplete / paused / anything else — don't touch the tier.
+    return { status: 200, body: { received: true, ignored: 'status:' + (sub.status || 'unknown') } };
+  }
+
+  const { data: updated, error } = await admin
+    .from('profiles')
+    .update({ tier })
+    .eq('stripe_customer_id', customerId)
+    .select('id')
+    .maybeSingle();
+  if (error) throw error;
+  if (!updated) {
+    // No profile carries this customer id (e.g. subscription predates the
+    // stripe_customer_id backfill). Log so it can be reconciled by email.
+    console.error('[stripe-webhook] subscription event for unknown customer:', customerId, eventType);
+    return { status: 200, body: { received: true, ignored: 'unknown-customer' } };
+  }
+  console.log('[stripe-webhook]', eventType, '→ tier', tier, 'for', updated.id, 'customer:', customerId);
+  return { status: 200, body: { received: true, tier } };
+}
+
 export default async function handler(req, res) {
   res.setHeader('X-Content-Type-Options', 'nosniff');
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
@@ -81,45 +163,27 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Invalid JSON.' });
   }
 
-  // Only paid, completed checkouts flip the tier. Everything else is a no-op
-  // 200 so Stripe doesn't retry events we deliberately ignore.
-  if (event?.type !== 'checkout.session.completed') {
-    return res.status(200).json({ received: true, ignored: event?.type || 'unknown' });
-  }
-  const session = event.data?.object || {};
-  if (session.payment_status && session.payment_status !== 'paid') {
-    return res.status(200).json({ received: true, ignored: 'not-paid' });
-  }
-
-  const userId = String(session.client_reference_id || '').trim();
-  const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-  if (!UUID_RE.test(userId)) {
-    // Paid without a usable reference (e.g. link opened without the id) —
-    // log loudly so it can be reconciled manually via the email on file.
-    console.error('[stripe-webhook] completed checkout without client_reference_id:', {
-      session: session.id, email: session.customer_details?.email || session.customer_email || null,
-    });
-    return res.status(200).json({ received: true, ignored: 'no-client-reference-id' });
-  }
-
+  const obj = event?.data?.object || {};
   try {
     const admin = getSupabaseAdmin();
-    const { data: updated, error } = await admin
-      .from('profiles')
-      .update({ tier: 'plus' })
-      .eq('id', userId)
-      .select('id, tier')
-      .maybeSingle();
-    if (error) throw error;
-    if (!updated) {
-      console.error('[stripe-webhook] paid user has no profile row:', userId);
-      return res.status(200).json({ received: true, ignored: 'no-profile' });
+    let result;
+    switch (event?.type) {
+      case 'checkout.session.completed':
+        result = await handleCheckoutCompleted(admin, obj);
+        break;
+      case 'customer.subscription.created':
+      case 'customer.subscription.updated':
+      case 'customer.subscription.deleted':
+        result = await handleSubscriptionEvent(admin, event.type, obj);
+        break;
+      default:
+        // Ignore everything else with a 200 so Stripe doesn't retry.
+        return res.status(200).json({ received: true, ignored: event?.type || 'unknown' });
     }
-    console.log('[stripe-webhook] upgraded to plus:', userId, 'session:', session.id);
-    return res.status(200).json({ received: true, upgraded: true });
+    return res.status(result.status).json(result.body);
   } catch (err) {
-    console.error('[stripe-webhook] tier update failed:', err?.message || err);
-    // 500 → Stripe retries, so a transient DB error can't lose an upgrade.
-    return res.status(500).json({ error: 'Upgrade failed, will retry.' });
+    console.error('[stripe-webhook] handler failed:', err?.message || err);
+    // 500 → Stripe retries, so a transient DB error can't lose a billing change.
+    return res.status(500).json({ error: 'Handler failed, will retry.' });
   }
 }

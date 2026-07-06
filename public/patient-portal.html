@@ -984,6 +984,7 @@
             <input id="clinic-join-code" class="inp" placeholder="Enter a clinic code (e.g. CLINIC-7A8B9C12)" style="flex:1;min-width:240px;text-transform:uppercase;letter-spacing:.04em" maxlength="32" autocomplete="off"/>
             <button type="submit" class="btn btn-solid mag" style="padding:.7rem 1.4rem;font-size:.62rem" id="clinic-join-btn">Join clinic</button>
           </form>
+          <p style="margin-top:.5rem;font-size:.72rem;color:var(--sub);line-height:1.5">The clinic must verify you first. Share your Acuros account code — find it in <a href="/settings" style="color:var(--ac)">Settings</a> — with them, then enter their clinic code here.</p>
           <div id="clinic-join-msg" style="display:none;margin-top:.5rem;font-size:.78rem;line-height:1.5;padding:.6rem .8rem"></div>
 
           <!-- Joined-clinics list -->
@@ -1306,18 +1307,20 @@ async function joinOrg(e){
     }
     if(!org) throw new Error('Code not recognized. Please verify the code with your clinic.');
     if(!org.active) throw new Error('This clinic code is no longer active. Please contact your clinic.');
+    // Persist the real clinic linkage (org_id). The DB enforces the clinic
+    // owner's verified-members gate on this write, so we MUST await it and
+    // only proceed on success — otherwise a patient the clinic hasn't
+    // verified would be redirected into a portal they were rejected from.
+    // (profiles has no patient_code column; the code lives in localStorage.)
+    const{error:e1}=await sb.from('profiles').update({org_id:org.id}).eq('id',currentUser.id);
+    if(e1){
+      setBtn('org-join-btn',false,'Connect');
+      showMsg('org-err', e1.message || 'Your clinic needs to verify your account before you can join.', 'err');
+      return;
+    }
     localStorage.setItem('ah-org-code',code);
     localStorage.setItem('ah-org-id',org.id||'');
     localStorage.setItem('ah-org-name',org.name);
-    (async()=>{
-      try{
-        // Persist the real clinic linkage (org_id). The clinic code itself is
-        // already stored in localStorage('ah-org-code') above. profiles has no
-        // patient_code column, so writing one would reject the whole update.
-        const{error:e1}=await sb.from('profiles').update({org_id:org.id}).eq('id',currentUser.id);
-        if(e1) console.warn('[Acuros] could not persist clinic link:', e1.message||e1);
-      }catch(_){}
-    })();
     const portalUrl=getClinicPortalUrl(code);
     setBtn('org-join-btn',false,'Connect');
     if(portalUrl){

@@ -107,6 +107,20 @@
     .btn-outline{background:transparent;color:var(--text);border-color:var(--border)}
     .btn-outline:hover{border-color:var(--ac);color:var(--ac)}
 
+    /* Verified members */
+    .verify-inp{flex:1;min-width:240px;padding:.7rem .85rem;font-family:'DM Sans',sans-serif;font-size:.9rem;color:var(--text);background:var(--bg);border:1px solid var(--border);text-transform:uppercase;letter-spacing:.04em}
+    .verify-inp:focus{outline:2px solid var(--ac);outline-offset:1px;border-color:transparent}
+    #verify-msg.ok{color:var(--ok);background:rgba(59,122,59,.06);border:1px solid rgba(59,122,59,.25);padding:.6rem .8rem}
+    #verify-msg.err{color:var(--err);background:rgba(183,56,56,.06);border:1px solid rgba(183,56,56,.25);padding:.6rem .8rem}
+    .vm-row{display:grid;grid-template-columns:1fr auto auto;gap:1rem;align-items:center;padding:.8rem 1rem;border-bottom:1px solid var(--border);background:var(--bg2)}
+    .vm-row:first-child{border-top:1px solid var(--border)}
+    .vm-name{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:300;color:var(--text)}
+    .vm-code{font-family:'JetBrains Mono','SF Mono',monospace;font-size:.72rem;color:var(--sub);margin-top:.2rem;letter-spacing:.04em}
+    .vm-badge{font-size:.5rem;letter-spacing:.2em;text-transform:uppercase;padding:.25rem .6rem;border:1px solid var(--border);color:var(--mute);white-space:nowrap}
+    .vm-badge.joined{border-color:rgba(59,122,59,.35);color:var(--ok);background:rgba(59,122,59,.06)}
+    .vm-remove{font-size:.55rem;letter-spacing:.14em;text-transform:uppercase;color:var(--err);background:none;border:1px solid transparent;cursor:pointer;padding:.35rem .5rem;font-family:'DM Sans',sans-serif}
+    .vm-remove:hover{border-color:var(--err)}
+
     /* Gate */
     #gate{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:calc(100dvh - 62px);padding:2rem;text-align:center;gap:.75rem}
   </style>
@@ -120,6 +134,7 @@
   <nav class="topbar-tabs">
     <button class="topbar-tab active" data-view="overview">Overview</button>
     <button class="topbar-tab" data-view="bookings">Bookings</button>
+    <button class="topbar-tab" data-view="members">Members</button>
     <button class="topbar-tab" data-view="content">Content</button>
   </nav>
   <div class="topbar-actions">
@@ -158,7 +173,7 @@
         <code id="dash-code" style="font-family:'JetBrains Mono','SF Mono',monospace;font-size:1.4rem;letter-spacing:.06em;color:var(--ac);font-weight:500">...</code>
         <button id="dash-code-copy" class="btn btn-outline" type="button" style="padding:.5rem 1rem;font-size:.55rem">Copy</button>
       </div>
-      <p style="font-size:.7rem;color:var(--sub);margin-top:.5rem;line-height:1.5;max-width:60ch">Share this code with your patients. They enter it on <code>/patient-portal</code> to join your clinic and unlock bookings, your shop, and the AI assistant tied to your portal.</p>
+      <p style="font-size:.7rem;color:var(--sub);margin-top:.5rem;line-height:1.5;max-width:60ch">Share this code with your patients. They enter it on <code>/patient-portal</code> to join your clinic and unlock bookings, your shop, and the AI assistant tied to your portal. Patients can only join after you add their Acuros account code under <a href="#" onclick="showView('members');return false" style="color:var(--ac)">Members</a>.</p>
     </div>
   </div>
 
@@ -203,6 +218,24 @@
   <!-- Bookings view -->
   <section class="view" data-view="bookings">
     <div id="bookings-list"></div>
+  </section>
+
+  <!-- Members view: owner-controlled verified allowlist -->
+  <section class="view" data-view="members">
+    <div class="card" style="margin-bottom:1.25rem">
+      <div class="lbl">Verified members</div>
+      <p style="color:var(--sub);font-size:.82rem;line-height:1.65;margin:.5rem 0 1rem;max-width:64ch">
+        Only patients you verify can join your clinic. Ask a patient for their
+        <strong>Acuros account code</strong> (it looks like <code style="font-family:'JetBrains Mono','SF Mono',monospace">ACU-XXXXXX</code>), enter it below,
+        then share your clinic code so they can join. Removing someone here also revokes their access.
+      </p>
+      <form id="verify-form" style="display:flex;gap:.625rem;flex-wrap:wrap;align-items:center">
+        <input id="verify-code" class="verify-inp" placeholder="Patient account code (ACU-XXXXXX)" maxlength="32" autocomplete="off" spellcheck="false"/>
+        <button type="submit" class="btn btn-solid" id="verify-btn">Verify member</button>
+      </form>
+      <div id="verify-msg" style="display:none;margin-top:.7rem;font-size:.78rem;line-height:1.5"></div>
+    </div>
+    <div id="verify-list"><div class="empty">Loading…</div></div>
   </section>
 
   <!-- Content view -->
@@ -414,12 +447,94 @@ async function loadContent(){
   } catch(_e){}
 }
 
-// Tab switching
-$$('.topbar-tab').forEach(b => b.addEventListener('click', () => {
-  const v = b.dataset.view;
-  $$('.topbar-tab').forEach(t => t.classList.toggle('active', t === b));
+// ── Verified members ──────────────────────────────────────────────────
+async function vapi(path, opts){
+  const headers = { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token };
+  const resp = await fetch('/api/verified-members?action=' + path, { ...opts, headers: { ...headers, ...(opts?.headers || {}) } });
+  const data = await resp.json().catch(() => ({}));
+  if (!resp.ok) throw new Error(data?.error || ('Request failed: ' + resp.status));
+  return data;
+}
+
+function setVMsg(msg, kind){
+  const el = $('#verify-msg');
+  if (!el) return;
+  if (!msg) { el.style.display = 'none'; el.className = ''; el.textContent = ''; return; }
+  el.textContent = msg; el.className = kind || ''; el.style.display = 'block';
+}
+
+async function loadVerified(){
+  const root = $('#verify-list');
+  try {
+    const { members } = await vapi('list', { method: 'GET' });
+    renderVerified(members || []);
+  } catch(err){
+    root.innerHTML = '<div class="empty">Could not load verified members: ' + escapeHtml(err.message) + '</div>';
+  }
+}
+
+function renderVerified(list){
+  const root = $('#verify-list');
+  if (!list.length){
+    root.innerHTML = '<div class="empty">No verified patients yet. Add a patient’s account code above to let them join.</div>';
+    return;
+  }
+  root.innerHTML = list.map(m => {
+    const name = m.patient_name || 'Patient';
+    return ''+
+      '<div class="vm-row">'+
+        '<div><div class="vm-name">'+escapeHtml(name)+'</div><div class="vm-code">'+escapeHtml(m.account_code)+'</div></div>'+
+        '<span class="vm-badge'+(m.joined?' joined':'')+'">'+(m.joined?'Joined':'Not joined')+'</span>'+
+        '<button class="vm-remove" data-id="'+escapeHtml(m.id)+'" data-name="'+escapeHtml(name)+'">Remove</button>'+
+      '</div>';
+  }).join('');
+  root.querySelectorAll('.vm-remove').forEach(btn =>
+    btn.addEventListener('click', () => removeVerified(btn.dataset.id, btn.dataset.name)));
+}
+
+async function removeVerified(id, name){
+  if (!confirm('Remove ' + (name || 'this patient') + ' from verified members? This also revokes their access to your clinic.')) return;
+  try {
+    await vapi('remove', { method: 'POST', body: JSON.stringify({ id }) });
+    setVMsg('Removed ' + (name || 'patient') + '.', 'ok');
+    await loadVerified();
+  } catch(err){
+    setVMsg('Could not remove: ' + err.message, 'err');
+  }
+}
+
+(function wireVerifyForm(){
+  const form = document.getElementById('verify-form');
+  if (!form) return;
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const inp = $('#verify-code'), btn = $('#verify-btn');
+    const code = (inp.value || '').trim().toUpperCase();
+    setVMsg('', null);
+    if (code.length < 4){ setVMsg('That account code looks too short.', 'err'); return; }
+    btn.disabled = true; const prev = btn.textContent; btn.textContent = 'Verifying…';
+    try {
+      const { member } = await vapi('add', { method: 'POST', body: JSON.stringify({ account_code: code }) });
+      inp.value = '';
+      setVMsg('Verified ' + (member.patient_name || member.account_code) + '. They can now join with your clinic code.', 'ok');
+      await loadVerified();
+    } catch(err){
+      setVMsg(err.message, 'err');
+    } finally {
+      btn.disabled = false; btn.textContent = prev;
+    }
+  });
+})();
+
+// ── View switching ────────────────────────────────────────────────────
+let _verifiedLoaded = false;
+function showView(v){
+  $$('.topbar-tab').forEach(t => t.classList.toggle('active', t.dataset.view === v));
   $$('.view').forEach(s => s.classList.toggle('active', s.dataset.view === v));
-}));
+  if (v === 'members' && !_verifiedLoaded) { _verifiedLoaded = true; loadVerified(); }
+}
+window.showView = showView;
+$$('.topbar-tab').forEach(b => b.addEventListener('click', () => showView(b.dataset.view)));
 
 boot();
 </script>

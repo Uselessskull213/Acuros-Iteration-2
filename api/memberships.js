@@ -117,6 +117,24 @@ export default async function handler(req, res) {
         return res.status(403).json({ error: 'This clinic is not yet accepting patients.' });
       }
 
+      // Verification gate: the clinic owner must have added this patient's
+      // account code to their verified list. This is a clean pre-check for a
+      // friendly message; the BEFORE INSERT trigger on clinic_memberships is
+      // the authoritative backstop that no code path can bypass.
+      const { data: prof } = await admin
+        .from('profiles').select('account_code').eq('id', user.id).maybeSingle();
+      const { data: verified } = await admin
+        .from('verified_members')
+        .select('id')
+        .eq('org_id', org.id)
+        .ilike('account_code', prof?.account_code || ' ')
+        .maybeSingle();
+      if (!verified) {
+        return res.status(403).json({
+          error: 'This clinic needs to verify you first. Share your Acuros account code with them, then try again.',
+        });
+      }
+
       // Insert the membership. The unique (user_id, org_id) constraint
       // makes re-joining a no-op from the user's perspective.
       const { data: membership, error: joinErr } = await admin

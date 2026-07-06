@@ -217,6 +217,51 @@
       border:1px solid color-mix(in srgb,var(--ac-ink) 55%,var(--border));color:var(--ac-ink)
     }
 
+    /* ── Danger zone ───────────────────────────────────────────────────── */
+    .danger-zone{margin-top:1.4rem}
+    .bezel.danger{
+      background:color-mix(in srgb,var(--err) 6%,transparent);
+      border-color:color-mix(in srgb,var(--err) 22%,transparent)
+    }
+    .bezel.danger>.card{background:var(--bg2)}
+    .bezel.danger .lbl{color:var(--err)}
+    .bezel.danger .lbl::before{background:var(--err)}
+    .bezel.danger .card h3 em{color:var(--err)}
+    .btn-danger{
+      background:transparent;color:var(--err);
+      border-color:color-mix(in srgb,var(--err) 45%,var(--border))
+    }
+    .btn-danger:hover{background:var(--err);border-color:var(--err);color:#fff;box-shadow:none}
+    .btn-danger-solid{background:var(--err);border-color:var(--err);color:#fff;box-shadow:none}
+    .btn-danger-solid:hover{background:color-mix(in srgb,var(--err) 85%,#000);border-color:color-mix(in srgb,var(--err) 85%,#000)}
+
+    /* ── Confirm modal ─────────────────────────────────────────────────── */
+    .modal-scrim{
+      display:none;position:fixed;inset:0;z-index:400;
+      align-items:center;justify-content:center;padding:1.5rem;
+      background:color-mix(in srgb,var(--ink) 55%,transparent);
+      -webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)
+    }
+    .modal-scrim.open{display:flex}
+    .modal{
+      width:min(460px,100%);background:var(--bg2);
+      border:1px solid var(--border);border-radius:18px;
+      padding:1.85rem 1.85rem 1.6rem;
+      box-shadow:0 40px 90px -40px rgba(var(--shadow-tint),.6)
+    }
+    .modal h3{font-size:1.55rem;font-weight:300;margin-bottom:.6rem}
+    .modal h3 em{font-style:italic;color:var(--err)}
+    .modal p{font-size:.84rem;color:var(--sub);line-height:1.6;margin-bottom:1.1rem}
+    .modal p b{color:var(--text);font-weight:500}
+    .modal label{display:block;font-size:.62rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--sub);margin-bottom:.5rem}
+    .modal input{
+      width:100%;padding:.72rem .85rem;border-radius:10px;
+      border:1px solid var(--border);background:var(--bg);color:var(--text);
+      font-family:'DM Sans',sans-serif;font-size:.9rem
+    }
+    .modal input:focus{outline:2px solid var(--err);outline-offset:1px;border-color:transparent}
+    .modal-actions{display:flex;gap:.7rem;justify-content:flex-end;margin-top:1.3rem;flex-wrap:wrap}
+
     /* ── Gate ──────────────────────────────────────────────────────────── */
     #gate{
       display:none;flex-direction:column;align-items:center;justify-content:center;
@@ -353,13 +398,42 @@
               <span id="tier-sub">Standard access.</span>
             </div>
             <a class="btn btn-gold" id="upgrade-btn" href="#" target="_blank" rel="noopener">Upgrade to Acuros Plus</a>
+            <a class="btn btn-outline" id="billing-btn" href="https://billing.stripe.com/p/login/4gM7sE7Dw7Or2Dj1hW4ko00" target="_blank" rel="noopener">Manage billing</a>
           </div>
         </div>
       </section>
     </div>
 
   </div>
+
+  <!-- Danger zone -->
+  <div class="danger-zone">
+    <div class="bezel danger">
+      <section class="card">
+        <div class="lbl">Danger zone</div>
+        <h3>Delete this <em>clinic</em>.</h3>
+        <p>Permanently remove <b id="dz-name">your clinic</b> and everything tied to it — your public page, services, products, bookings, memberships, rewards and points. Patients who joined with your code will be unlinked. <b>This cannot be undone.</b></p>
+        <div class="card-actions">
+          <button class="btn btn-danger" id="delete-clinic-btn" type="button">Delete clinic permanently</button>
+        </div>
+      </section>
+    </div>
+  </div>
 </main>
+
+<!-- Delete confirmation modal -->
+<div class="modal-scrim" id="delete-modal" role="dialog" aria-modal="true" aria-labelledby="delete-modal-title">
+  <div class="modal">
+    <h3 id="delete-modal-title">Delete <em>clinic</em>?</h3>
+    <p>This permanently deletes <b id="dm-name">your clinic</b> and all of its data. There is no way to recover it. To confirm, type the clinic name below.</p>
+    <label for="dm-input">Clinic name</label>
+    <input id="dm-input" type="text" autocomplete="off" spellcheck="false" placeholder="Type the clinic name to confirm"/>
+    <div class="modal-actions">
+      <button class="btn btn-outline" id="dm-cancel" type="button">Cancel</button>
+      <button class="btn btn-danger-solid" id="dm-confirm" type="button" disabled>Delete forever</button>
+    </div>
+  </div>
+</div>
 
 <script>
 const SB_URL = window.ACUROS.SUPABASE_URL;
@@ -561,7 +635,64 @@ async function boot(){
     up.href = STRIPE_PLUS_LINK + '?' + params.toString();
   }
 
+  // Danger zone — delete clinic
+  $('#dz-name').textContent = org.name || 'your clinic';
+  $('#dm-name').textContent = org.name || 'your clinic';
+  wireDeleteClinic();
+
   sb.auth.onAuthStateChange((event) => { if (event === 'SIGNED_OUT') location.reload(); });
+}
+
+// ── Delete clinic ──────────────────────────────────────────────────────
+function wireDeleteClinic(){
+  const scrim   = $('#delete-modal');
+  const input   = $('#dm-input');
+  const confirm = $('#dm-confirm');
+  const expected = String(org.name || '').trim().toLowerCase();
+
+  const open = () => {
+    input.value = '';
+    confirm.disabled = true;
+    confirm.textContent = 'Delete forever';
+    scrim.classList.add('open');
+    setTimeout(() => input.focus(), 30);
+  };
+  const close = () => scrim.classList.remove('open');
+
+  $('#delete-clinic-btn').addEventListener('click', open);
+  $('#dm-cancel').addEventListener('click', close);
+  scrim.addEventListener('click', (e) => { if (e.target === scrim) close(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && scrim.classList.contains('open')) close(); });
+
+  input.addEventListener('input', () => {
+    confirm.disabled = input.value.trim().toLowerCase() !== expected;
+  });
+  input.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !confirm.disabled) confirm.click(); });
+
+  confirm.addEventListener('click', async () => {
+    if (confirm.disabled) return;
+    confirm.disabled = true;
+    confirm.textContent = 'Deleting…';
+    try {
+      const resp = await fetch('/api/onboarding?action=delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+        body: JSON.stringify({ confirm_name: input.value.trim() }),
+      });
+      const data = await resp.json().catch(() => ({}));
+      if (!resp.ok) throw new Error(data?.error || ('Request failed: ' + resp.status));
+      // Gone. Land the owner on the home page with a clean slate.
+      close();
+      flash('Your clinic has been permanently deleted.', true);
+      setTimeout(() => {
+        window.location.href = ((window.ACUROS && window.ACUROS.APEX_ORIGIN) || '') + '/';
+      }, 1200);
+    } catch (err) {
+      flash('Could not delete your clinic: ' + err.message, false);
+      close();
+      confirm.textContent = 'Delete forever';
+    }
+  });
 }
 
 boot().catch(err => { console.error(err); showGate('Something went wrong loading the console: ' + (err?.message || err)); });

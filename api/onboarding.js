@@ -652,6 +652,57 @@ export default async function handler(req, res) {
       return res.status(200).json({ org: updated, url: `/c/${updated.slug}` });
     }
 
+    // ── POST ?action=delete ──────────────────────────────────────────
+    // Permanently delete the owner's clinic and everything under it.
+    // Guarded by a name-match confirmation so a stray/replayed POST can't
+    // wipe a clinic without explicit intent.
+    if (req.method === 'POST' && action === 'delete') {
+      const org = await getOrCreateOwnerOrg(admin, user); // { create:false } — never resurrect
+      if (!org) return res.status(404).json({ error: 'You have no clinic to delete.' });
+
+      const confirmName = String((req.body && req.body.confirm_name) || '').trim();
+      if (confirmName.toLowerCase() !== String(org.name || '').trim().toLowerCase()) {
+        return res.status(400).json({ error: 'Type your clinic name exactly to confirm deletion.' });
+      }
+
+      // Most children of organizations are ON DELETE CASCADE; two references
+      // are not and must be cleared first or the delete fails a FK check:
+      //   • profiles.org_id       → NO ACTION (nullable): unlink joined patients.
+      //   • reward_redemptions     → NO ACTION on BOTH organizations(org_id) and
+      //                              clinic_rewards(reward_id). It's NOT NULL, so
+      //                              the rows must be removed, not nulled — before
+      //                              the clinic_rewards cascade tries to delete
+      //                              the rewards they point at.
+      const { error: unlinkErr } = await admin
+        .from('profiles').update({ org_id: null }).eq('org_id', org.id);
+      if (unlinkErr) throw unlinkErr;
+
+      // Delete redemptions by org_id (satisfies the organizations FK) and, for
+      // safety against any org_id/reward drift, also by this org's reward ids
+      // (satisfies the clinic_rewards FK the cascade would otherwise trip on).
+      const { error: rr1 } = await admin
+        .from('reward_redemptions').delete().eq('org_id', org.id);
+      if (rr1) throw rr1;
+      const { data: rewardRows } = await admin
+        .from('clinic_rewards').select('id').eq('org_id', org.id);
+      const rewardIds = (rewardRows || []).map((r) => r.id);
+      if (rewardIds.length) {
+        const { error: rr2 } = await admin
+          .from('reward_redemptions').delete().in('reward_id', rewardIds);
+        if (rr2) throw rr2;
+      }
+
+      // Everything else cascades (services, products, bookings, memberships,
+      // points, wallet_transactions, invites, availability, client_codes,
+      // clinic_visits, org_members, clinic_rewards); orders.org_id → SET NULL.
+      // The owner_id filter is a belt-and-braces ownership re-check.
+      const { error: delErr } = await admin
+        .from('organizations').delete().eq('id', org.id).eq('owner_id', user.id);
+      if (delErr) throw delErr;
+
+      return res.status(200).json({ ok: true });
+    }
+
     return res.status(400).json({ error: 'Unknown action' });
   } catch (err) {
     console.error('[onboarding] error:', err);
