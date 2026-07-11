@@ -734,7 +734,7 @@ function renderProducts() {
       ? `<span class="product-badge${p.badge==='Essential'?' gold':''}">${p.badge}</span>` : '';
     const delayClass = i > 2 ? 'rv d' + Math.min((i % 3) + 1, 4) : 'rv';
     return `
-    <div class="product-card ${delayClass}" style="background:var(--bg2)">
+    <div class="product-card ${delayClass}" id="product-${slugify(p.name)}" style="background:var(--bg2)">
       ${badgeHtml}
       <div style="overflow:hidden"><img src="${p.img}" alt="${p.name}" loading="lazy"/></div>
       <div style="padding:1.5rem;display:flex;flex-direction:column;flex:1;gap:0">
@@ -1001,6 +1001,35 @@ function fireHeroAnims() {
   if (hl2) setTimeout(() => hl2.style.transform = 'none', 300);
 }
 
+/* ─── Deep links (?category=skincare&highlight=arnica-gel-500mg) ───
+   Used by the Post-Op Care page's product recommendations. Category maps to
+   the existing filter buttons; highlight scrolls to a product card by
+   slugified name and pulses it. Unknown values are ignored gracefully. */
+function slugify(s) { return String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
+function applyShopDeepLink() {
+  let q;
+  try { q = new URLSearchParams(location.search); } catch (_e) { return; }
+  const cat = q.get('category');
+  const hl = q.get('highlight');
+  if (cat && CATEGORIES.includes(cat)) filterProducts(cat);
+  if (!hl) return;
+  const pulse = (el) => {
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.classList.add('in');
+    el.style.transition = 'outline-color .4s';
+    el.style.outline = '2px solid var(--ac)';
+    el.style.outlineOffset = '3px';
+    setTimeout(() => { el.style.outline = 'none'; }, 2600);
+  };
+  const tryHighlight = (attempt) => {
+    const el = document.getElementById('product-' + slugify(hl));
+    if (el) { pulse(el); return; }
+    // Product not in the current category filter — fall back to All once.
+    if (attempt === 0 && activeFilter !== 'all') { filterProducts('all'); setTimeout(() => tryHighlight(1), 340); }
+  };
+  setTimeout(() => tryHighlight(0), cat ? 340 : 120);
+}
+
 /* ─── Boot ─── */
 document.addEventListener('DOMContentLoaded', () => {
   loadCart();
@@ -1010,6 +1039,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setupReveal();
   initMagnetic();
   setTimeout(fireHeroAnims, 100);
+  applyShopDeepLink();
 });
 setTimeout(() => document.querySelectorAll('.rv').forEach(el => el.classList.add('in')), 3500);
 

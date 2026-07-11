@@ -14,6 +14,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <script src="/js/acuros-config.js"></script>
   <script src="/js/acuros-auth.js"></script>
+  <script src="/js/postop-crypto.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,200;0,300;0,400;0,500;1,200;1,300&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
@@ -121,6 +122,43 @@
     .vm-remove{font-size:.55rem;letter-spacing:.14em;text-transform:uppercase;color:var(--err);background:none;border:1px solid transparent;cursor:pointer;padding:.35rem .5rem;font-family:'DM Sans',sans-serif}
     .vm-remove:hover{border-color:var(--err)}
 
+    /* Post-Op reviews */
+    .po-layout{display:grid;grid-template-columns:300px minmax(0,1fr);gap:1.25rem;align-items:start}
+    @media(max-width:880px){.po-layout{grid-template-columns:1fr}}
+    .po-case-row{display:flex;flex-direction:column;gap:.3rem;padding:.8rem .95rem;border:1px solid var(--border);background:var(--bg2);cursor:pointer;transition:background .2s,border-color .2s;width:100%;text-align:left;font-family:'DM Sans',sans-serif}
+    .po-case-row:hover{background:var(--bg3)}
+    .po-case-row.active{border-color:var(--ac);background:var(--bg3)}
+    .po-case-name{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:300;color:var(--text);display:flex;align-items:center;justify-content:space-between;gap:.5rem}
+    .po-case-sub{font-size:.66rem;color:var(--mute);font-family:'JetBrains Mono','SF Mono',monospace;letter-spacing:.02em}
+    .po-unread{min-width:18px;height:18px;border-radius:99px;background:var(--ac);color:#fff;font-size:.6rem;display:inline-flex;align-items:center;justify-content:center;padding:0 .3rem;flex-shrink:0;font-family:'DM Sans',sans-serif}
+    .po-thread-wrap{border:1px solid var(--border);background:var(--bg2)}
+    .po-thread-head{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;padding:1rem 1.25rem;border-bottom:1px solid var(--border)}
+    .po-thread{display:flex;flex-direction:column;gap:.7rem;padding:1.25rem;max-height:480px;min-height:240px;overflow-y:auto;background:var(--bg)}
+    .po-msg{max-width:78%;display:flex;flex-direction:column;gap:.3rem}
+    .po-msg.mine{align-self:flex-end;align-items:flex-end}
+    .po-msg.theirs{align-self:flex-start;align-items:flex-start}
+    .po-bubble{padding:.7rem .9rem;border:1px solid var(--border);font-size:.84rem;line-height:1.6;color:var(--text);word-break:break-word;white-space:pre-wrap;background:var(--bg2)}
+    .po-msg.mine .po-bubble{background:rgba(201,146,42,.08);border-color:rgba(201,146,42,.3)}
+    html.dark .po-msg.mine .po-bubble{background:rgba(73,144,212,.12);border-color:rgba(73,144,212,.35)}
+    .po-msg-meta{font-family:'JetBrains Mono','SF Mono',monospace;font-size:.56rem;color:var(--mute);letter-spacing:.03em;display:flex;align-items:center;gap:.4rem}
+    .po-msg-img{max-width:280px;max-height:280px;border:1px solid var(--border);cursor:zoom-in;display:block;object-fit:cover}
+    .po-day-sep{align-self:center;font-family:'JetBrains Mono','SF Mono',monospace;font-size:.58rem;color:var(--mute);letter-spacing:.14em;text-transform:uppercase;padding:.2rem .8rem;border:1px solid var(--border);background:var(--bg2);margin:.4rem 0}
+    .po-undecryptable{font-style:italic;color:var(--mute)}
+    .po-composer{display:flex;flex-direction:column;gap:.6rem;padding:1rem 1.25rem;border-top:1px solid var(--border)}
+    .po-composer-row{display:flex;gap:.6rem;align-items:flex-end}
+    .po-composer textarea{flex:1;resize:none;min-height:44px;max-height:140px;padding:.7rem .85rem;font-family:'DM Sans',sans-serif;font-size:.85rem;color:var(--text);background:var(--bg);border:1px solid var(--border);outline:none}
+    .po-composer textarea:focus{border-color:var(--ac)}
+    .po-icon-btn{width:42px;height:42px;flex-shrink:0;border:1px solid var(--border);background:var(--bg);color:var(--sub);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .2s,color .2s}
+    .po-icon-btn:hover{border-color:var(--ac);color:var(--ac)}
+    .po-icon-btn[disabled]{opacity:.45;cursor:not-allowed}
+    .po-enc-note{display:flex;align-items:center;gap:.45rem;font-size:.62rem;color:var(--mute)}
+    .po-enc-note svg{flex-shrink:0;color:var(--ok)}
+    .po-status-pill{font-size:.5rem;letter-spacing:.18em;text-transform:uppercase;padding:.22rem .5rem;border:1px solid var(--border);color:var(--mute);white-space:nowrap}
+    .po-status-pill.active{border-color:rgba(201,146,42,.4);color:var(--ac)}
+    .po-status-pill.resolved{border-color:rgba(59,122,59,.4);color:var(--ok)}
+    #po-lightbox{position:fixed;inset:0;z-index:9500;background:rgba(8,7,6,.88);display:none;align-items:center;justify-content:center;padding:2rem;cursor:zoom-out}
+    #po-lightbox img{max-width:min(92vw,1000px);max-height:86vh}
+
     /* Gate */
     #gate{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:calc(100dvh - 62px);padding:2rem;text-align:center;gap:.75rem}
   </style>
@@ -135,6 +173,7 @@
     <button class="topbar-tab active" data-view="overview">Overview</button>
     <button class="topbar-tab" data-view="bookings">Bookings</button>
     <button class="topbar-tab" data-view="members">Members</button>
+    <button class="topbar-tab" data-view="postop">Post-Op <span id="postop-tab-badge" style="display:none;min-width:16px;height:16px;border-radius:99px;background:var(--ac);color:#fff;font-size:.55rem;align-items:center;justify-content:center;padding:0 .25rem;margin-left:.35rem;vertical-align:1px"></span></button>
     <button class="topbar-tab" data-view="content">Content</button>
   </nav>
   <div class="topbar-actions">
@@ -238,6 +277,35 @@
     <div id="verify-list"><div class="empty">Loading…</div></div>
   </section>
 
+  <!-- Post-Op reviews: E2E-encrypted patient photo threads -->
+  <section class="view" data-view="postop">
+    <div class="card" style="margin-bottom:1.25rem">
+      <div class="lbl">Encrypted post-op review</div>
+      <p style="color:var(--sub);font-size:.82rem;line-height:1.65;margin:.5rem 0 .75rem;max-width:70ch">
+        Patients send recovery photos and questions from their
+        <strong>Post-Op Care</strong> page. Everything is end-to-end encrypted:
+        it is sealed on the patient&rsquo;s device and can only be opened with the key
+        held in <em>this</em> browser &mdash; Acuros servers never see the content.
+        Keep a backup of your key to read threads from another device.
+      </p>
+      <div id="po-key-status" style="font-size:.78rem;color:var(--sub);line-height:1.6">Preparing this device&rsquo;s key&hellip;</div>
+      <div style="display:flex;gap:.5rem;margin-top:.75rem;flex-wrap:wrap">
+        <button class="btn btn-outline" style="padding:.5rem 1rem;font-size:.55rem" id="po-key-export" onclick="poDownloadKey()" disabled>Download key backup</button>
+        <label class="btn btn-outline" style="padding:.5rem 1rem;font-size:.55rem;cursor:pointer">
+          Import key backup<input type="file" accept=".json,application/json" id="po-key-import" style="display:none"/>
+        </label>
+      </div>
+    </div>
+    <div class="po-layout">
+      <div id="po-case-list" style="display:flex;flex-direction:column;gap:.5rem">
+        <div class="empty">Loading&hellip;</div>
+      </div>
+      <div id="po-thread-panel">
+        <div class="empty">Select a recovery thread to review it.</div>
+      </div>
+    </div>
+  </section>
+
   <!-- Content view -->
   <section class="view" data-view="content">
     <div class="card">
@@ -259,6 +327,8 @@
     </div>
   </section>
 </main>
+
+<div id="po-lightbox" onclick="this.style.display='none'"><img id="po-lightbox-img" alt="Patient recovery photo"/></div>
 
 <script>
 const SB_URL = window.ACUROS.SUPABASE_URL;
@@ -323,6 +393,10 @@ async function boot(){
   $('#canvas').style.display = '';
   hydrateChrome();
   await Promise.all([loadCounts(), loadBookings(), loadContent()]);
+  // Activate encrypted post-op review for this clinic (publishes the public
+  // key so patients can start threads) and surface any unread count on the
+  // tab — without requiring the owner to open the tab first.
+  poActivate().then(() => loadPostop().then(() => { _postopLoaded = true; })).catch(() => {});
 }
 
 function showGate(msg){
@@ -526,12 +600,356 @@ async function removeVerified(id, name){
   });
 })();
 
+// ── Post-Op reviews (E2E-encrypted patient threads) ───────────────────
+// The clinic's ECDH keypair lives in THIS browser (localStorage, keyed by
+// the owner's user id). ensureKeys() publishes only the public half to
+// postop_keys tagged with org_id, which is what lets patients start
+// encrypted threads with this clinic. See /js/postop-crypto.js.
+let poPair = null, poKeyState = 'pending';
+let poCases = [], poActive = null, poKey = null, poChannel = null;
+let poPatientNames = {}, poUnread = {}, poMediaUrls = {};
+
+function poEsc(s){ return escapeHtml(s); }
+function poFmtDate(d){
+  const dt = new Date(String(d).length === 10 ? d + 'T12:00:00' : d);
+  return isNaN(dt) ? '' : dt.toLocaleDateString('en-CA', { month:'short', day:'numeric', year:'numeric' });
+}
+function poDays(dateStr){
+  if (!dateStr) return null;
+  const d = new Date(String(dateStr).length === 10 ? dateStr + 'T12:00:00' : dateStr);
+  return isNaN(d) ? null : Math.max(0, Math.floor((Date.now() - d.getTime()) / 86400000));
+}
+
+// Called on boot: activates encrypted review for this clinic (publishes the
+// public key) without requiring the owner to open the tab first. Never
+// overwrites a key from another device — that needs an explicit import.
+async function poActivate(){
+  const status = document.getElementById('po-key-status');
+  if (!window.PostopCrypto || !window.PostopCrypto.supported) {
+    poKeyState = 'unsupported';
+    if (status) status.innerHTML = '<span style="color:var(--err)">This browser does not support the required encryption features.</span>';
+    return;
+  }
+  try {
+    const res = await window.PostopCrypto.ensureKeys(sb, session.user.id, org.id);
+    if (res.status === 'ready') {
+      poPair = res.pair; poKeyState = 'ready';
+      if (status) status.innerHTML = 'Encrypted review is <strong style="color:var(--ok)">active</strong> on this device. Patients can send you photos from their Post-Op Care page.';
+      const ex = document.getElementById('po-key-export'); if (ex) ex.disabled = false;
+    } else if (res.status === 'missing-local') {
+      poKeyState = 'missing-local';
+      if (status) status.innerHTML = '<span style="color:var(--err)">Your clinic key was created on another device.</span> Import your key backup to read threads here, or <button class="btn btn-outline" style="padding:.3rem .6rem;font-size:.5rem" onclick="poRegenKey()">start fresh</button> (existing threads stay unreadable and patients must open new ones).';
+    }
+  } catch (e) {
+    poKeyState = 'error';
+    if (status) status.innerHTML = '<span style="color:var(--err)">' + poEsc(e.message || 'Could not prepare the key.') + '</span>';
+  }
+}
+async function poRegenKey(){
+  if (!confirm('Start fresh with a new clinic key?\n\nEvery existing thread was sealed against your old key and will remain permanently unreadable. Patients will need to start new threads.')) return;
+  try {
+    poPair = await window.PostopCrypto.regenerate(sb, session.user.id, org.id);
+    poKeyState = 'ready';
+    document.getElementById('po-key-status').innerHTML = 'A new key is active. Download a backup now.';
+    document.getElementById('po-key-export').disabled = false;
+    loadPostop();
+  } catch(e){ alert(e.message || 'Could not regenerate.'); }
+}
+window.poRegenKey = poRegenKey;
+function poDownloadKey(){
+  const json = window.PostopCrypto.exportBackup(session.user.id);
+  if (!json) return;
+  const blob = new Blob([json], { type:'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'acuros-clinic-postop-key-backup.json';
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+}
+window.poDownloadKey = poDownloadKey;
+(function wirePoImport(){
+  const el = document.getElementById('po-key-import');
+  if (!el) return;
+  el.addEventListener('change', async function(){
+    const f = this.files && this.files[0];
+    this.value = '';
+    if (!f) return;
+    try {
+      poPair = await window.PostopCrypto.importBackup(sb, session.user.id, org.id, await f.text());
+      poKeyState = 'ready';
+      document.getElementById('po-key-status').innerHTML = 'Key imported. Existing threads are readable again.';
+      document.getElementById('po-key-export').disabled = false;
+      loadPostop();
+      if (poActive) poOpenCase(poActive.id);
+    } catch(e){ alert(e.message || 'Import failed.'); }
+  });
+})();
+
+async function loadPostop(){
+  const list = document.getElementById('po-case-list');
+  try {
+    const { data, error } = await sb.from('postop_cases')
+      .select('*').eq('org_id', org.id).order('created_at', { ascending:false });
+    if (error) throw error;
+    poCases = data || [];
+    // Patient display names come from this org's bookings (owner-readable).
+    const ids = [...new Set(poCases.map(c => c.patient_id))];
+    if (ids.length) {
+      const { data: bks } = await sb.from('bookings')
+        .select('patient_id, patient_first_name, patient_last_name')
+        .eq('org_id', org.id).in('patient_id', ids);
+      (bks || []).forEach(b => {
+        const n = [b.patient_first_name, b.patient_last_name].filter(Boolean).join(' ');
+        if (b.patient_id && n && !poPatientNames[b.patient_id]) poPatientNames[b.patient_id] = n;
+      });
+    }
+    poUnread = {};
+    await Promise.all(poCases.map(async (c) => {
+      let q = sb.from('postop_messages').select('id', { count:'exact', head:true })
+        .eq('case_id', c.id).eq('sender_role','patient');
+      if (c.clinic_last_seen_at) q = q.gt('created_at', c.clinic_last_seen_at);
+      const { count } = await q;
+      poUnread[c.id] = count || 0;
+    }));
+    poRenderList();
+    poUpdateTabBadge();
+  } catch (err) {
+    list.innerHTML = '<div class="empty">Could not load post-op threads: ' + poEsc(err.message) + '</div>';
+  }
+}
+function poUpdateTabBadge(){
+  const total = Object.values(poUnread).reduce((a,b) => a + b, 0);
+  const el = document.getElementById('postop-tab-badge');
+  if (!el) return;
+  el.style.display = total ? 'inline-flex' : 'none';
+  el.textContent = total > 9 ? '9+' : String(total);
+}
+function poRenderList(){
+  const list = document.getElementById('po-case-list');
+  if (!poCases.length) {
+    list.innerHTML = '<div class="empty">No recovery threads yet. Patients start them from their Post-Op Care page after a visit.</div>';
+    return;
+  }
+  list.innerHTML = poCases.map(c => {
+    const unread = poUnread[c.id] || 0;
+    const days = poDays(c.surgery_date || c.created_at);
+    const who = poPatientNames[c.patient_id] || 'Patient';
+    return '<button class="po-case-row' + (poActive && poActive.id === c.id ? ' active' : '') + '" onclick="poOpenCase(\'' + c.id + '\')">' +
+      '<span class="po-case-name"><span>' + poEsc(who) + ' &mdash; ' + poEsc(c.procedure_name) + '</span>' + (unread ? '<span class="po-unread">' + unread + '</span>' : '') + '</span>' +
+      '<span class="po-case-sub">' + (days !== null ? 'day ' + days : '') + (c.status === 'resolved' ? ' &middot; resolved' : '') + (c.surgery_date ? ' &middot; ' + poEsc(poFmtDate(c.surgery_date)) : '') + '</span>' +
+    '</button>';
+  }).join('');
+}
+window.poOpenCase = async function(caseId){
+  const c = poCases.find(x => x.id === caseId);
+  if (!c) return;
+  poActive = c; poKey = null;
+  poRenderList();
+  const panel = document.getElementById('po-thread-panel');
+  const who = poPatientNames[c.patient_id] || 'Patient';
+  const days = poDays(c.surgery_date || c.created_at);
+  panel.innerHTML =
+    '<div class="po-thread-wrap">' +
+      '<div class="po-thread-head">' +
+        '<div style="min-width:0">' +
+          '<div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap">' +
+            '<h3 style="font-size:1.3rem;font-weight:300">' + poEsc(who) + ' &mdash; ' + poEsc(c.procedure_name) + '</h3>' +
+            '<span class="po-status-pill ' + c.status + '">' + c.status + '</span>' +
+          '</div>' +
+          '<div class="po-case-sub" style="margin-top:.3rem">' + (c.surgery_date ? poEsc(poFmtDate(c.surgery_date)) + ' &middot; ' : '') + (days !== null ? 'day ' + days + ' of recovery' : '') + (c.procedure_category ? ' &middot; ' + poEsc(c.procedure_category) : '') + '</div>' +
+        '</div>' +
+        '<button class="btn btn-outline" style="padding:.45rem .9rem;font-size:.55rem" onclick="poToggleResolve()">' + (c.status === 'active' ? 'Mark resolved' : 'Reopen') + '</button>' +
+      '</div>' +
+      '<div class="po-thread" id="po-thread"></div>' +
+      (c.status === 'active' ?
+      '<div class="po-composer">' +
+        '<div id="po-send-err" style="display:none;color:var(--err);font-size:.75rem"></div>' +
+        '<div class="po-composer-row">' +
+          '<button class="po-icon-btn" id="po-attach" title="Attach a photo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.2"/><path d="M8 6l1.2-2h5.6L16 6"/></svg></button>' +
+          '<input type="file" id="po-file" accept="image/*" style="display:none"/>' +
+          '<textarea id="po-input" placeholder="Reply to your patient&hellip;" maxlength="4000" rows="1"></textarea>' +
+          '<button class="po-icon-btn" id="po-send" title="Send" style="background:var(--text);color:var(--bg);border-color:var(--text)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg></button>' +
+        '</div>' +
+        '<div class="po-enc-note"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><span>End-to-end encrypted &mdash; sealed for this patient only.</span></div>' +
+      '</div>' : '') +
+    '</div>';
+  const thread = document.getElementById('po-thread');
+  if (poKeyState !== 'ready') {
+    thread.innerHTML = '<div class="empty">Import your clinic key backup above to read this thread on this device.</div>';
+    return;
+  }
+  try {
+    poKey = await window.PostopCrypto.deriveCaseKey(poPair.privateJwk, c.patient_pub_jwk, c.id);
+  } catch(_e){
+    thread.innerHTML = '<div class="empty">Could not derive this thread&rsquo;s key on this device.</div>';
+    return;
+  }
+  await poRefreshThread(true);
+  poMarkSeen(c);
+  poSubscribe(c);
+  const send = document.getElementById('po-send');
+  if (send) {
+    send.addEventListener('click', poSendText);
+    const inp = document.getElementById('po-input');
+    inp.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); poSendText(); } });
+    inp.addEventListener('input', function(){ this.style.height=''; this.style.height = Math.min(this.scrollHeight, 140) + 'px'; });
+    document.getElementById('po-attach').addEventListener('click', () => document.getElementById('po-file').click());
+    document.getElementById('po-file').addEventListener('change', function(){
+      const f = this.files && this.files[0]; this.value = '';
+      if (f) poSendImage(f);
+    });
+  }
+};
+async function poRefreshThread(scroll){
+  if (!poActive) return;
+  const thread = document.getElementById('po-thread');
+  const { data, error } = await sb.from('postop_messages')
+    .select('*').eq('case_id', poActive.id).order('created_at', { ascending:true }).limit(500);
+  if (error) { thread.innerHTML = '<div class="empty">Could not load messages.</div>'; return; }
+  thread.innerHTML = '';
+  let lastDay = '';
+  for (const m of (data || [])) {
+    const day = poFmtDate(m.created_at);
+    if (day !== lastDay) { lastDay = day; const sep = document.createElement('div'); sep.className='po-day-sep'; sep.textContent = day; thread.appendChild(sep); }
+    thread.appendChild(await poRenderMsg(m));
+  }
+  if (!data || !data.length) thread.innerHTML = '<div class="empty" style="border:none">No messages yet in this thread.</div>';
+  if (scroll) thread.scrollTop = thread.scrollHeight;
+}
+async function poRenderMsg(m){
+  const wrap = document.createElement('div');
+  wrap.className = 'po-msg ' + (m.sender_role === 'clinic' ? 'mine' : 'theirs');
+  const time = new Date(m.created_at).toLocaleTimeString('en-CA', { hour:'numeric', minute:'2-digit' });
+  const who = m.sender_role === 'clinic' ? 'You' : (poPatientNames[m.sender_id] || 'Patient');
+  if (m.kind === 'image' && m.media_path) {
+    const holder = document.createElement('div');
+    holder.className = 'po-bubble';
+    holder.innerHTML = '<span class="po-undecryptable">Decrypting photo&hellip;</span>';
+    wrap.appendChild(holder);
+    poDecryptMedia(m).then(url => {
+      if (!url) { holder.innerHTML = '<span class="po-undecryptable">Photo could not be decrypted on this device.</span>'; return; }
+      holder.style.padding = '4px'; holder.innerHTML = '';
+      const img = document.createElement('img');
+      img.className = 'po-msg-img'; img.src = url; img.alt = 'Patient recovery photo';
+      img.onclick = () => { document.getElementById('po-lightbox-img').src = url; document.getElementById('po-lightbox').style.display = 'flex'; };
+      holder.appendChild(img);
+    });
+  } else {
+    const bubble = document.createElement('div');
+    bubble.className = 'po-bubble';
+    bubble.innerHTML = '<span class="po-undecryptable">Decrypting&hellip;</span>';
+    wrap.appendChild(bubble);
+    (async () => {
+      try { bubble.textContent = await window.PostopCrypto.decryptText(poKey, m.body_cipher); }
+      catch(_e){ bubble.innerHTML = '<span class="po-undecryptable">Could not decrypt (different key).</span>'; }
+    })();
+  }
+  const meta = document.createElement('div');
+  meta.className = 'po-msg-meta';
+  meta.innerHTML = '<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>' + poEsc(who) + ' &middot; ' + poEsc(time);
+  wrap.appendChild(meta);
+  return wrap;
+}
+async function poDecryptMedia(m){
+  if (poMediaUrls[m.id]) return poMediaUrls[m.id];
+  try {
+    const { data, error } = await sb.storage.from('postop-media').download(m.media_path);
+    if (error || !data) return null;
+    const plain = await window.PostopCrypto.decryptBytes(poKey, new Uint8Array(await data.arrayBuffer()));
+    const url = URL.createObjectURL(new Blob([plain], { type: m.media_mime || 'image/jpeg' }));
+    poMediaUrls[m.id] = url;
+    return url;
+  } catch(_e){ return null; }
+}
+function poSubscribe(c){
+  if (poChannel) { try { sb.removeChannel(poChannel); } catch(_e){} poChannel = null; }
+  try {
+    poChannel = sb.channel('postop-dash-' + c.id)
+      .on('postgres_changes', { event:'INSERT', schema:'public', table:'postop_messages', filter:'case_id=eq.' + c.id }, async (payload) => {
+        if (!poActive || poActive.id !== c.id) return;
+        const thread = document.getElementById('po-thread');
+        if (thread) { thread.appendChild(await poRenderMsg(payload.new)); thread.scrollTop = thread.scrollHeight; }
+        if (payload.new.sender_role === 'patient') poMarkSeen(c);
+      })
+      .subscribe();
+  } catch(_e){}
+}
+function poMarkSeen(c){
+  const now = new Date().toISOString();
+  c.clinic_last_seen_at = now;
+  poUnread[c.id] = 0;
+  poRenderList(); poUpdateTabBadge();
+  sb.from('postop_cases').update({ clinic_last_seen_at: now }).eq('id', c.id).then(() => {});
+}
+window.poToggleResolve = async function(){
+  if (!poActive) return;
+  const next = poActive.status === 'active' ? 'resolved' : 'active';
+  const { error } = await sb.from('postop_cases').update({ status: next }).eq('id', poActive.id);
+  if (error) return;
+  poActive.status = next;
+  poOpenCase(poActive.id);
+};
+function poSendErr(msg){
+  const el = document.getElementById('po-send-err');
+  if (!el) return;
+  if (!msg) { el.style.display = 'none'; return; }
+  el.style.display = 'block'; el.textContent = msg;
+  setTimeout(() => { el.style.display = 'none'; }, 6000);
+}
+async function poSendText(){
+  const inp = document.getElementById('po-input');
+  const text = inp && inp.value.trim();
+  if (!text || !poActive || !poKey) return;
+  try {
+    const cipher = await window.PostopCrypto.encryptText(poKey, text);
+    const { error } = await sb.from('postop_messages').insert({
+      case_id: poActive.id, org_id: poActive.org_id,
+      sender_id: session.user.id, sender_role: 'clinic',
+      kind: 'text', body_cipher: cipher
+    });
+    if (error) throw new Error(error.message);
+    inp.value = ''; inp.style.height = '';
+    setTimeout(() => { if (!poChannel) poRefreshThread(true); }, 400);
+  } catch(e){ poSendErr('Could not send: ' + (e.message || 'unknown error')); }
+}
+async function poSendImage(file){
+  if (!poActive || !poKey || !file) return;
+  try {
+    if (!/^image\//.test(file.type)) throw new Error('Only image files can be attached.');
+    let payload = file, mime = file.type || 'image/jpeg';
+    try {
+      const bmp = await createImageBitmap(file);
+      const MAX = 1600, scale = Math.min(1, MAX / Math.max(bmp.width, bmp.height));
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.max(1, Math.round(bmp.width * scale));
+      canvas.height = Math.max(1, Math.round(bmp.height * scale));
+      canvas.getContext('2d').drawImage(bmp, 0, 0, canvas.width, canvas.height);
+      const blob = await new Promise(res => canvas.toBlob(res, 'image/jpeg', .86));
+      if (blob) { payload = blob; mime = 'image/jpeg'; }
+    } catch(_e){}
+    const bytes = new Uint8Array(await payload.arrayBuffer());
+    const cipher = await window.PostopCrypto.encryptBytes(poKey, bytes);
+    const path = 'case_' + poActive.id + '/' + crypto.randomUUID() + '.bin';
+    const up = await sb.storage.from('postop-media').upload(path, new Blob([cipher], { type:'application/octet-stream' }), { contentType:'application/octet-stream' });
+    if (up.error) throw new Error(up.error.message);
+    const { error } = await sb.from('postop_messages').insert({
+      case_id: poActive.id, org_id: poActive.org_id,
+      sender_id: session.user.id, sender_role: 'clinic',
+      kind: 'image', media_path: path, media_mime: mime
+    });
+    if (error) throw new Error(error.message);
+    setTimeout(() => { if (!poChannel) poRefreshThread(true); }, 400);
+  } catch(e){ poSendErr('Could not send the photo: ' + (e.message || 'unknown error')); }
+}
+
 // ── View switching ────────────────────────────────────────────────────
 let _verifiedLoaded = false;
+let _postopLoaded = false;
 function showView(v){
   $$('.topbar-tab').forEach(t => t.classList.toggle('active', t.dataset.view === v));
   $$('.view').forEach(s => s.classList.toggle('active', s.dataset.view === v));
   if (v === 'members' && !_verifiedLoaded) { _verifiedLoaded = true; loadVerified(); }
+  if (v === 'postop' && !_postopLoaded) { _postopLoaded = true; loadPostop(); }
 }
 window.showView = showView;
 $$('.topbar-tab').forEach(b => b.addEventListener('click', () => showView(b.dataset.view)));

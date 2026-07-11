@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-80K00SEBQK"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-80K00SEBQK');</script>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Post-Op Care - Acuros Health</title>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico"/>
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png"/>
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png"/>
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon-180.png"/>
+  <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png"/>
+  <link rel="icon" type="image/png" sizes="512x512" href="/favicon-512.png"/>
+  <link rel="manifest" href="/site.webmanifest"/>
+  <meta name="theme-color" content="#2a6dc9"/>
+  <meta name="description" content="Private post-operative care. Send encrypted recovery photos to your clinic, follow stage-aware guidance, and prepare better questions."/>
+  <link rel="canonical" href="https://acuros.ca/post-op"/>
+  <meta name="robots" content="noindex"/>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="/js/acuros-config.js"></script>
+  <script src="/js/acuros-auth.js"></script>
+  <script src="/js/postop-crypto.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    /* ═══════════════════════════════════════════════════════════════════
+       POST-OP CARE. Same workspace language as the patient portal:
+       bento surfaces, mono numerics, Cormorant as accent, gold→blue accent.
+    ═══════════════════════════════════════════════════════════════════ */
+    :root{
+      --bg:#f5f1e8;--bg2:#ffffff;--bg3:#ebe5d6;
+      --border:#d8d1bc;--border2:#e6e0d2;
+      --text:#1a1815;--sub:#5e564a;--mute:#9e9583;
+      --ac:#c9922a;--ac2:#deab48;
+      --nav:rgba(245,241,232,.97);
+      --good:#1f7a3a;--warn:#b88a2a;--bad:#a83838
+    }
+    html.dark{
+      --bg:#0c0c0a;--bg2:#141412;--bg3:#1c1c19;
+      --border:#26241f;--border2:#1d1c18;
+      --text:#f0ede8;--sub:#a8a298;--mute:#5a564f;
+      --ac:#4990d4;--ac2:#6fa8e0;
+      --nav:rgba(12,12,10,.96);
+      --good:#4ade80;--warn:#d4a849;--bad:#f87171
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;min-height:100dvh;-webkit-font-smoothing:antialiased}
+    h1,h2,h3,h4{font-family:'Cormorant Garamond',serif;font-weight:300;line-height:1.04;letter-spacing:-.025em}
+    em{font-style:italic;font-weight:300}
+    .mono{font-family:'JetBrains Mono',monospace;font-feature-settings:'tnum';letter-spacing:-.01em}
+    .serif{font-family:'Cormorant Garamond',serif}
+
+    #grain{position:fixed;inset:0;z-index:9992;pointer-events:none;opacity:.04;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-repeat:repeat;background-size:180px 180px}
+    html:not(.dark) #grain{opacity:.02;mix-blend-mode:multiply}
+    #scroll-prog{position:fixed;top:0;left:0;z-index:9001;height:1px;background:var(--ac);width:0%;will-change:width;pointer-events:none}
+
+    /* ── NAV (canonical) ── */
+    nav#main-nav{position:fixed;top:0;left:0;right:0;z-index:200;background:transparent;transition:background .45s cubic-bezier(.22,1,.36,1),border-color .45s,backdrop-filter .45s}
+    nav#main-nav.scrolled,nav#main-nav.solid{background:var(--nav);backdrop-filter:blur(28px) saturate(180%);-webkit-backdrop-filter:blur(28px) saturate(180%);border-bottom:1px solid var(--border)}
+    .nav-inner{height:72px;max-width:1440px;margin:0 auto;padding:0 3rem;display:flex;align-items:center;justify-content:space-between;transition:height .4s cubic-bezier(.22,1,.36,1)}
+    nav#main-nav.scrolled .nav-inner,nav#main-nav.solid .nav-inner{height:60px}
+    .nav-logo{display:flex;align-items:center;gap:.875rem;text-decoration:none}
+    #nav-logo-img{width:32px;height:32px;object-fit:contain;display:block}
+    .nav-logo-text{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:.9rem;letter-spacing:.22em;color:var(--text);line-height:1}
+    .nav-logo-sub{font-size:.42rem;letter-spacing:.42em;text-transform:uppercase;color:var(--mute);font-family:'DM Sans',sans-serif;font-weight:400}
+    .nav-link{position:relative;font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--sub);background:none;border:none;cursor:pointer;padding:0;font-family:inherit;transition:color .22s;text-decoration:none;display:inline-block}
+    .nav-link::after{content:'';position:absolute;left:0;bottom:-2px;width:0;height:1px;background:var(--ac);transition:width .3s cubic-bezier(.22,1,.36,1)}
+    .nav-link:hover::after,.nav-link.active::after{width:100%}
+    .nav-link:hover,.nav-link.active{color:var(--text)}
+    @media(max-width:900px){.hnm{display:none!important}#mob-btn{display:flex!important}.nav-inner{padding:0 1.5rem}}
+
+    /* ── Buttons ── */
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.78rem 1.875rem;font-size:.64rem;letter-spacing:.18em;text-transform:uppercase;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;border:1px solid transparent;text-decoration:none;position:relative;overflow:hidden;isolation:isolate;transition:background .32s cubic-bezier(.22,1,.36,1),color .32s,transform .32s,border-color .32s,box-shadow .32s;will-change:transform}
+    .btn::before{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(110deg,transparent 0%,transparent 38%,rgba(255,255,255,.18) 50%,transparent 62%,transparent 100%);transform:translateX(-110%);transition:transform .9s cubic-bezier(.22,1,.36,1);pointer-events:none}
+    .btn:hover::before{transform:translateX(110%)}
+    .btn:not([disabled]):active{transform:scale(.97);transition-duration:80ms}
+    .btn[disabled]{opacity:.5;cursor:not-allowed}
+    .btn-solid{background:var(--text);color:var(--bg);border-color:var(--text)}
+    .btn-solid:hover{background:var(--ac);color:#fff;border-color:var(--ac);box-shadow:0 10px 28px -10px rgba(184,138,42,.55)}
+    .btn-outline{background:transparent;color:var(--text);border-color:var(--border)}
+    .btn-outline:hover{border-color:var(--ac);color:var(--ac);background:rgba(184,138,42,.06)}
+    html:not(.dark) .btn-solid{background:#1a1815;color:#fff;border-color:#1a1815}
+    html:not(.dark) .btn-solid:hover{background:var(--ac);color:#fff;border-color:var(--ac)}
+
+    .lbl{font-family:'DM Sans',sans-serif;font-size:.55rem;letter-spacing:.28em;text-transform:uppercase;color:var(--mute);font-weight:500}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .spin{width:14px;height:14px;border:1.5px solid transparent;border-top-color:currentColor;border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
+    .err-box{background:rgba(168,56,56,.08);border-left:2px solid rgba(168,56,56,.5);color:var(--bad);padding:.75rem 1rem;font-size:.78rem}
+    .ok-box{background:rgba(31,122,58,.08);border-left:2px solid rgba(31,122,58,.5);color:var(--good);padding:.75rem 1rem;font-size:.78rem}
+    .warn-box{background:rgba(184,138,42,.08);border-left:2px solid rgba(184,138,42,.5);color:var(--warn);padding:.75rem 1rem;font-size:.78rem}
+
+    .rv{opacity:0;transform:translateY(14px);transition:opacity .75s cubic-bezier(.22,1,.36,1),transform .75s cubic-bezier(.22,1,.36,1)}
+    .rv.in{opacity:1;transform:none}
+    .rv.d1{transition-delay:.06s}.rv.d2{transition-delay:.13s}.rv.d3{transition-delay:.2s}
+
+    /* ── Inputs ── */
+    .field{display:flex;flex-direction:column;gap:.4rem}
+    .field-lbl{font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);font-weight:500}
+    .inp{width:100%;background:var(--bg);border:1px solid var(--border);padding:.75rem .85rem;font-size:.85rem;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s,box-shadow .2s;border-radius:5px}
+    .inp:focus{border-color:var(--ac);box-shadow:0 0 0 3px rgba(184,138,42,.12)}
+    .inp::placeholder{color:var(--mute)}
+    select.inp{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%239e9583' fill='none' stroke-width='1.4'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .85rem center}
+
+    /* ── Mobile menu ── */
+    #mob-menu{position:fixed;inset:0;z-index:9990;background:var(--bg);padding:2rem 1.5rem;transform:translateX(100%);transition:transform .5s cubic-bezier(.22,1,.36,1);overflow-y:auto}
+    #mob-menu.open{transform:translateX(0)}
+
+    /* ═══ Signed-out gate ═══ */
+    #po-gate{
+      position:relative;min-height:100dvh;display:none;align-items:center;justify-content:center;
+      padding:7rem 1.5rem 4rem;
+      background:
+        radial-gradient(circle at 22% 18%,rgba(184,138,42,.04) 0%,transparent 38%),
+        radial-gradient(circle at 80% 84%,rgba(184,138,42,.03) 0%,transparent 42%),
+        var(--bg);
+      overflow:hidden
+    }
+    #po-gate::before{
+      content:'';position:absolute;inset:0;z-index:0;pointer-events:none;
+      background-image:linear-gradient(var(--border2) 1px,transparent 1px),linear-gradient(90deg,var(--border2) 1px,transparent 1px);
+      background-size:64px 64px;
+      mask-image:radial-gradient(ellipse 70% 60% at 50% 50%,black 30%,transparent 100%);
+      -webkit-mask-image:radial-gradient(ellipse 70% 60% at 50% 50%,black 30%,transparent 100%);
+      opacity:.45
+    }
+    .po-gate-card{position:relative;z-index:1;max-width:520px;width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:2.75rem 2.5rem;box-shadow:0 30px 80px -30px rgba(60,42,12,.18)}
+    html.dark .po-gate-card{box-shadow:0 30px 80px -30px rgba(0,0,0,.7)}
+
+    .po-tag{display:inline-flex;align-items:center;gap:.625rem;font-size:.55rem;letter-spacing:.32em;text-transform:uppercase;color:var(--ac);font-weight:500;padding:.4rem .8rem .4rem .55rem;background:rgba(184,138,42,.07);border:1px solid rgba(184,138,42,.22);border-radius:99px}
+    .po-tag::before{content:'';display:block;width:5px;height:5px;border-radius:50%;background:var(--ac);box-shadow:0 0 8px var(--ac);animation:poPulse 2.4s ease-in-out infinite}
+    @keyframes poPulse{0%,100%{opacity:1}50%{opacity:.35}}
+    @media(prefers-reduced-motion:reduce){.po-tag::before{animation:none}}
+
+    /* ═══ App shell ═══ */
+    #po-app{display:none;background:var(--bg);min-height:100dvh}
+    .ws{max-width:1440px;margin:0 auto;padding:8rem 3rem 4rem;display:flex;flex-direction:column;gap:1.5rem}
+    @media(max-width:900px){.ws{padding:6rem 1.25rem 3rem;gap:1.25rem}}
+    .ws-head{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+    .ws-h1{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(2.4rem,4vw,3.4rem);font-weight:300;color:var(--text);letter-spacing:-.025em;line-height:1.05}
+    .ws-h1 em{color:var(--ac)}
+    .ws-greet-meta{display:flex;align-items:center;gap:.6rem;font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--mute);letter-spacing:.04em;flex-wrap:wrap}
+
+    .po-grid{display:grid;grid-template-columns:320px minmax(0,1fr);gap:1.5rem;align-items:start}
+    @media(max-width:900px){.po-grid{grid-template-columns:1fr;gap:1.25rem}}
+    .po-side{display:flex;flex-direction:column;gap:1rem;position:sticky;top:5.5rem}
+    @media(max-width:900px){.po-side{position:static}}
+    .po-main{display:flex;flex-direction:column;gap:1.25rem;min-width:0}
+
+    .card{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:1.25rem}
+    .card-h{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:300;letter-spacing:-.02em;line-height:1.1}
+
+    /* Case list */
+    .po-case-row{display:flex;flex-direction:column;gap:.3rem;padding:.875rem .95rem;border:1px solid var(--border);border-radius:6px;background:var(--bg);cursor:pointer;transition:border-color .22s,background .22s,transform .22s;text-align:left;width:100%;font-family:'DM Sans',sans-serif}
+    .po-case-row:hover{border-color:var(--ac);background:var(--bg3)}
+    .po-case-row.active{border-color:var(--ac);background:var(--bg3)}
+    .po-case-name{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:300;color:var(--text);letter-spacing:-.01em;line-height:1.2;display:flex;align-items:center;gap:.5rem;justify-content:space-between}
+    .po-case-sub{font-size:.66rem;color:var(--mute);letter-spacing:.02em;font-family:'JetBrains Mono',monospace}
+    .po-unread{min-width:18px;height:18px;border-radius:99px;background:var(--ac);color:#fff;font-family:'JetBrains Mono',monospace;font-size:.6rem;display:inline-flex;align-items:center;justify-content:center;padding:0 .3rem;flex-shrink:0}
+    .po-status-pill{font-size:.5rem;letter-spacing:.18em;text-transform:uppercase;padding:.22rem .5rem;border:1px solid var(--border);border-radius:999px;color:var(--mute);white-space:nowrap}
+    .po-status-pill.active{border-color:rgba(184,138,42,.4);color:var(--ac)}
+    .po-status-pill.resolved{border-color:rgba(31,122,58,.4);color:var(--good)}
+
+    /* Thread */
+    .po-thread-card{display:flex;flex-direction:column;gap:0;padding:0;overflow:hidden}
+    .po-thread-head{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;padding:1.25rem 1.25rem 1rem;border-bottom:1px solid var(--border)}
+    .po-thread{display:flex;flex-direction:column;gap:.7rem;padding:1.25rem;max-height:520px;min-height:260px;overflow-y:auto;background:var(--bg)}
+    .po-msg{max-width:78%;display:flex;flex-direction:column;gap:.3rem}
+    .po-msg.mine{align-self:flex-end;align-items:flex-end}
+    .po-msg.theirs{align-self:flex-start;align-items:flex-start}
+    .po-bubble{padding:.7rem .9rem;border-radius:10px;border:1px solid var(--border);font-size:.84rem;line-height:1.6;color:var(--text);word-break:break-word;white-space:pre-wrap}
+    .po-msg.mine .po-bubble{background:rgba(184,138,42,.08);border-color:rgba(184,138,42,.28);border-bottom-right-radius:3px}
+    html.dark .po-msg.mine .po-bubble{background:rgba(73,144,212,.12);border-color:rgba(73,144,212,.35)}
+    .po-msg.theirs .po-bubble{background:var(--bg2);border-bottom-left-radius:3px}
+    .po-msg-meta{font-family:'JetBrains Mono',monospace;font-size:.56rem;color:var(--mute);letter-spacing:.03em;display:flex;align-items:center;gap:.4rem}
+    .po-msg-img{max-width:280px;max-height:280px;border-radius:8px;border:1px solid var(--border);cursor:zoom-in;display:block;object-fit:cover}
+    .po-day-sep{align-self:center;font-family:'JetBrains Mono',monospace;font-size:.58rem;color:var(--mute);letter-spacing:.14em;text-transform:uppercase;padding:.2rem .8rem;border:1px solid var(--border2);border-radius:99px;background:var(--bg2);margin:.4rem 0}
+    .po-undecryptable{font-style:italic;color:var(--mute)}
+
+    .po-composer{display:flex;flex-direction:column;gap:.6rem;padding:1rem 1.25rem 1.25rem;border-top:1px solid var(--border);background:var(--bg2)}
+    .po-composer-row{display:flex;gap:.6rem;align-items:flex-end}
+    .po-composer textarea{flex:1;resize:none;min-height:44px;max-height:140px}
+    .po-icon-btn{width:42px;height:42px;flex-shrink:0;border:1px solid var(--border);background:var(--bg);color:var(--sub);cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:5px;transition:border-color .22s,color .22s,background .22s}
+    .po-icon-btn:hover{border-color:var(--ac);color:var(--ac)}
+    .po-icon-btn[disabled]{opacity:.45;cursor:not-allowed}
+    .po-enc-note{display:flex;align-items:center;gap:.45rem;font-size:.62rem;color:var(--mute);letter-spacing:.02em}
+    .po-enc-note svg{flex-shrink:0;color:var(--good)}
+
+    /* Guidance + AI two-up */
+    .po-two{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;align-items:start}
+    @media(max-width:900px){.po-two{grid-template-columns:1fr}}
+
+    .po-stage-row{display:flex;gap:.4rem;flex-wrap:wrap;margin:.75rem 0 1rem}
+    .po-stage{font-size:.56rem;letter-spacing:.14em;text-transform:uppercase;padding:.3rem .65rem;border:1px solid var(--border);border-radius:99px;color:var(--mute);background:var(--bg)}
+    .po-stage.now{border-color:rgba(184,138,42,.45);color:var(--ac);background:rgba(184,138,42,.06)}
+    .po-guide-list{display:flex;flex-direction:column;gap:.55rem}
+    .po-guide-item{display:flex;gap:.6rem;font-size:.78rem;color:var(--sub);line-height:1.6}
+    .po-guide-item::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--ac);flex-shrink:0;margin-top:.55rem}
+    .po-flags{margin-top:1rem;border-top:1px dashed var(--border);padding-top:1rem}
+    .po-flag-item{display:flex;gap:.6rem;font-size:.76rem;color:var(--sub);line-height:1.6}
+    .po-flag-item::before{content:'';width:4px;height:4px;border-radius:1px;background:var(--bad);flex-shrink:0;margin-top:.55rem}
+
+    /* AI panel */
+    .po-ai-thread{display:flex;flex-direction:column;gap:.6rem;max-height:340px;overflow-y:auto;padding:.25rem 0;margin:.75rem 0}
+    .po-ai-msg{font-size:.8rem;line-height:1.65;color:var(--text)}
+    .po-ai-msg.user{align-self:flex-end;background:var(--bg3);border:1px solid var(--border);border-radius:8px;border-bottom-right-radius:3px;padding:.55rem .8rem;max-width:85%}
+    .po-ai-msg.ai{align-self:flex-start;max-width:100%;color:var(--sub)}
+    .po-ai-msg.ai strong{color:var(--text)}
+    .po-ai-msg.ai h4{font-family:'DM Sans',sans-serif;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text);font-weight:600;margin:.5rem 0 .2rem}
+    .po-ai-msg.ai ul,.po-ai-msg.ai ol{padding-left:1.1rem;display:flex;flex-direction:column;gap:.25rem;margin:.25rem 0}
+    .po-ai-chips{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.75rem}
+    .po-ai-chip{font-size:.64rem;padding:.4rem .7rem;border:1px solid var(--border);border-radius:99px;background:var(--bg);color:var(--sub);cursor:pointer;font-family:'DM Sans',sans-serif;transition:border-color .2s,color .2s}
+    .po-ai-chip:hover{border-color:var(--ac);color:var(--ac)}
+    .po-ai-foot{font-size:.6rem;color:var(--mute);line-height:1.6;border-top:1px dashed var(--border);padding-top:.75rem;margin-top:.75rem}
+
+    /* Products */
+    .po-prod-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+    @media(max-width:900px){.po-prod-strip{grid-template-columns:1fr 1fr}}
+    @media(max-width:520px){.po-prod-strip{grid-template-columns:1fr}}
+    .po-prod{display:flex;flex-direction:column;gap:.45rem;padding:1.1rem;border:1px solid var(--border);border-radius:6px;background:var(--bg2);text-decoration:none;transition:border-color .25s,transform .3s cubic-bezier(.22,1,.36,1),box-shadow .3s}
+    .po-prod:hover{border-color:var(--ac);transform:translateY(-2px);box-shadow:0 12px 36px -16px rgba(60,42,12,.18)}
+    html.dark .po-prod:hover{box-shadow:0 12px 36px -16px rgba(0,0,0,.6)}
+    .po-prod-cat{font-size:.5rem;letter-spacing:.28em;text-transform:uppercase;color:var(--mute);font-weight:500}
+    .po-prod-name{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:300;color:var(--text);letter-spacing:-.01em;line-height:1.2}
+    .po-prod-why{font-size:.7rem;color:var(--sub);line-height:1.55;flex:1}
+    .po-prod-link{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--ac);letter-spacing:.04em;display:inline-flex;align-items:center;gap:.4rem;transition:gap .25s}
+    .po-prod:hover .po-prod-link{gap:.7rem}
+
+    /* Recent-visit picker rows */
+    .po-visit-row{display:grid;grid-template-columns:64px 1fr auto;gap:.875rem;align-items:center;padding:.75rem .875rem;border:1px solid var(--border);border-radius:6px;background:var(--bg);cursor:pointer;transition:border-color .22s,background .22s;width:100%;text-align:left;font-family:'DM Sans',sans-serif}
+    .po-visit-row:hover{border-color:var(--ac);background:var(--bg3)}
+    .po-visit-date{display:flex;flex-direction:column;align-items:center;justify-content:center;border-right:1px solid var(--border);padding-right:.875rem}
+    .po-visit-mon{font-size:.55rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ac);font-weight:600}
+    .po-visit-day{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:200;color:var(--text);line-height:1}
+    .po-visit-name{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:300;color:var(--text);line-height:1.25;margin-bottom:.15rem}
+    .po-visit-sub{font-size:.68rem;color:var(--sub)}
+    .po-visit-go{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--ac);letter-spacing:.04em;white-space:nowrap}
+
+    .po-empty{display:flex;flex-direction:column;align-items:flex-start;gap:.6rem;padding:1.5rem;border:1px dashed var(--border);border-radius:6px;color:var(--sub)}
+    .po-empty-h{font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:300;color:var(--text)}
+    .po-empty-p{font-size:.78rem;line-height:1.65}
+
+    .po-skel{height:64px;border-radius:6px;background:linear-gradient(90deg,var(--bg) 0%,var(--bg3) 50%,var(--bg) 100%);background-size:200% 100%;animation:poShim 1.4s ease-in-out infinite}
+    @keyframes poShim{0%{background-position:200% 0}100%{background-position:-200% 0}}
+    @media(prefers-reduced-motion:reduce){.po-skel{animation:none;background:var(--bg3)}}
+
+    /* Image lightbox */
+    #po-lightbox{position:fixed;inset:0;z-index:9500;background:rgba(8,7,6,.88);backdrop-filter:blur(10px);display:none;align-items:center;justify-content:center;padding:2rem;cursor:zoom-out}
+    #po-lightbox img{max-width:min(92vw,1000px);max-height:86vh;border-radius:8px;box-shadow:0 40px 120px rgba(0,0,0,.6)}
+
+    /* Steps on empty state */
+    .po-steps{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-top:.5rem;width:100%}
+    @media(max-width:900px){.po-steps{grid-template-columns:1fr}}
+    .po-step{background:var(--bg2);padding:1.1rem;display:flex;flex-direction:column;gap:.35rem}
+    .po-step-num{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--ac);letter-spacing:.05em}
+    .po-step-h{font-size:.78rem;color:var(--text);font-weight:500}
+    .po-step-p{font-size:.7rem;color:var(--sub);line-height:1.55}
+  </style>
+</head>
+<body>
+<div id="grain" aria-hidden="true"></div>
+<div id="scroll-prog" aria-hidden="true"></div>
+
+<!-- ── Canonical nav ── -->
+<nav id="main-nav" class="solid">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">
+      <img id="nav-logo-img" src="/logo.png" alt="Acuros"/>
+      <div style="display:flex;flex-direction:column;gap:2px">
+        <span class="nav-logo-text">ACUROS</span>
+        <span class="nav-logo-sub">HEALTH</span>
+      </div>
+    </a>
+    <div style="display:flex;align-items:center;gap:3rem" class="hnm">
+      <a class="nav-link" href="/">Home</a>
+      <a class="nav-link" href="/patient-portal">Patient Portal</a>
+      <a class="nav-link active" href="/post-op">Post-Op Care</a>
+      <a class="nav-link" href="/shop">Shop</a>
+    </div>
+    <div style="display:flex;align-items:center;gap:.875rem">
+      <button id="nav-theme-toggle" onclick="toggleTheme()" style="width:34px;height:34px;border:1px solid var(--border);background:none;color:var(--sub);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .22s,color .22s" title="Toggle theme" aria-label="Toggle theme">
+        <span id="th-icon" style="display:flex;align-items:center"></span>
+      </button>
+      <button onclick="openMob()" style="display:none;background:none;border:none;cursor:pointer;color:var(--text);padding:.25rem" id="mob-btn" aria-label="Open menu">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16M4 12h12M4 18h8"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<div id="mob-menu">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3.5rem">
+    <span style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:300;color:var(--text);letter-spacing:.16em">ACUROS</span>
+    <button onclick="closeMob()" style="background:none;border:none;cursor:pointer;color:var(--text)">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <div style="display:flex;flex-direction:column">
+    <a href="/" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:200;color:var(--sub);text-decoration:none;border-bottom:1px solid var(--border);padding:.875rem 0">Home</a>
+    <a href="/patient-portal" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:200;color:var(--sub);text-decoration:none;border-bottom:1px solid var(--border);padding:.875rem 0">Patient Portal</a>
+    <a href="/post-op" style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:200;color:var(--ac);text-decoration:none;border-bottom:1px solid var(--border);padding:.875rem 0">Post-Op Care</a>
+    <a href="/shop" style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:200;color:var(--sub);text-decoration:none;padding:.875rem 0">Shop</a>
+  </div>
+</div>
+
+<!-- ═══ Signed-out gate ═══ -->
+<div id="po-gate">
+  <div class="po-gate-card rv">
+    <span class="po-tag">Encrypted recovery channel</span>
+    <h1 style="font-size:clamp(2.2rem,4.5vw,3rem);margin:1.25rem 0 .75rem">Post-Op <em style="color:var(--ac)">Care</em></h1>
+    <p style="font-size:.9rem;color:var(--sub);line-height:1.75;margin-bottom:1.75rem">
+      Send recovery photos privately to your clinic, follow stage-aware aftercare
+      guidance, and get educational answers from the Acuros assistant. Everything
+      you share with your clinic here is end-to-end encrypted — sign in to begin.
+    </p>
+    <a class="btn btn-solid" href="/patient-portal" style="width:100%">Sign in via Patient Portal</a>
+    <p style="font-size:.68rem;color:var(--mute);margin-top:1rem;line-height:1.6">
+      New to Acuros? Create your free account from the portal — it takes under a minute.
+    </p>
+  </div>
+</div>
+
+<!-- ═══ App ═══ -->
+<div id="po-app">
+  <div class="ws">
+    <div class="ws-head rv">
+      <div style="display:flex;flex-direction:column;gap:.5rem">
+        <span class="po-tag" style="align-self:flex-start">End-to-end encrypted</span>
+        <h1 class="ws-h1">Post-Op <em>Care</em></h1>
+      </div>
+      <div class="ws-greet-meta">
+        <span id="po-meta-name" class="mono"></span>
+        <span aria-hidden="true">&middot;</span>
+        <span id="po-meta-date" class="mono"></span>
+      </div>
+    </div>
+
+    <div id="po-banner" style="display:none"></div>
+
+    <div class="po-grid">
+      <!-- ── Left rail ── -->
+      <aside class="po-side rv d1">
+        <div class="card">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+            <span class="lbl">Recovery threads</span>
+            <button class="btn btn-outline" style="padding:.4rem .9rem;font-size:.56rem" onclick="showNewCase()">+ New</button>
+          </div>
+          <div id="po-case-list" style="display:flex;flex-direction:column;gap:.5rem">
+            <div class="po-skel"></div><div class="po-skel"></div>
+          </div>
+        </div>
+
+        <div class="card" id="po-key-card">
+          <span class="lbl">Encryption key</span>
+          <div id="po-key-status" style="margin-top:.75rem;font-size:.72rem;color:var(--sub);line-height:1.6">Preparing this device&rsquo;s key&hellip;</div>
+          <div style="display:flex;gap:.5rem;margin-top:.875rem;flex-wrap:wrap">
+            <button class="btn btn-outline" style="padding:.45rem .8rem;font-size:.54rem" onclick="downloadKeyBackup()" id="po-key-export" disabled>Download backup</button>
+            <label class="btn btn-outline" style="padding:.45rem .8rem;font-size:.54rem;cursor:pointer">
+              Import backup<input type="file" accept=".json,application/json" id="po-key-import" style="display:none"/>
+            </label>
+          </div>
+          <p style="font-size:.62rem;color:var(--mute);line-height:1.6;margin-top:.75rem">
+            Your private key lives only on this device. Keep a backup to read your
+            threads from another device — without it, encrypted history cannot be
+            recovered by anyone, including Acuros.
+          </p>
+        </div>
+      </aside>
+
+      <!-- ── Main column ── -->
+      <main class="po-main rv d2">
+
+        <!-- Empty / intro state -->
+        <div id="po-view-empty" class="card" style="display:none;padding:2rem">
+          <span class="lbl" style="color:var(--ac)">How it works</span>
+          <h2 class="card-h" style="font-size:1.75rem;margin:.6rem 0 .4rem">Recovery, privately reviewed by <em style="color:var(--ac)">your clinic</em></h2>
+          <p style="font-size:.82rem;color:var(--sub);line-height:1.7;max-width:60ch">
+            Open a recovery thread for a recent procedure. Photos and messages are
+            encrypted on your device before upload — only you and your clinic hold
+            the keys. No thread yet? Start one from a recent visit.
+          </p>
+          <div class="po-steps">
+            <div class="po-step"><span class="po-step-num">01</span><span class="po-step-h">Start a thread</span><span class="po-step-p">Pick the procedure you had — from a recent booking or entered manually.</span></div>
+            <div class="po-step"><span class="po-step-num">02</span><span class="po-step-h">Send photos securely</span><span class="po-step-p">Snap the area, attach, send. Encrypted before it ever leaves your phone.</span></div>
+            <div class="po-step"><span class="po-step-num">03</span><span class="po-step-h">Your clinic reviews</span><span class="po-step-p">Your care team replies in the same encrypted thread with next steps.</span></div>
+          </div>
+          <button class="btn btn-solid" style="margin-top:1.5rem" onclick="showNewCase()">Start a recovery thread</button>
+        </div>
+
+        <!-- New case -->
+        <div id="po-view-new" class="card" style="display:none;padding:1.75rem">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1.25rem">
+            <h2 class="card-h" style="font-size:1.6rem">New recovery <em style="color:var(--ac)">thread</em></h2>
+            <button class="btn btn-outline" style="padding:.45rem .9rem;font-size:.56rem" onclick="closeNewCase()">Cancel</button>
+          </div>
+          <div id="po-new-err" style="display:none;margin-bottom:1rem"></div>
+
+          <span class="lbl">From a recent visit</span>
+          <div id="po-visit-list" style="display:flex;flex-direction:column;gap:.5rem;margin:.75rem 0 1.5rem">
+            <div class="po-skel"></div>
+          </div>
+
+          <span class="lbl">Or enter manually</span>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.875rem;margin-top:.75rem" id="po-manual-grid">
+            <div class="field" style="grid-column:1/-1">
+              <label class="field-lbl" for="po-new-org">Clinic</label>
+              <select class="inp" id="po-new-org"></select>
+            </div>
+            <div class="field">
+              <label class="field-lbl" for="po-new-proc">Procedure</label>
+              <input class="inp" id="po-new-proc" placeholder="e.g. Microneedling" maxlength="120"/>
+            </div>
+            <div class="field">
+              <label class="field-lbl" for="po-new-cat">Category</label>
+              <select class="inp" id="po-new-cat">
+                <option>Surgical</option><option>Injectables</option><option>Body Contouring</option>
+                <option>Aesthetics</option><option>Non-Surgical</option><option>Dermatology</option>
+                <option>Wellness</option><option selected>General</option>
+              </select>
+            </div>
+            <div class="field">
+              <label class="field-lbl" for="po-new-date">Procedure date</label>
+              <input class="inp" id="po-new-date" type="date"/>
+            </div>
+            <div style="display:flex;align-items:flex-end">
+              <button class="btn btn-solid" style="width:100%" id="po-new-submit" onclick="createCaseManual()">Open thread</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Case view -->
+        <div id="po-view-case" style="display:none;flex-direction:column;gap:1.25rem">
+          <div class="card po-thread-card">
+            <div class="po-thread-head">
+              <div style="min-width:0">
+                <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap">
+                  <h2 class="card-h" id="po-case-title" style="font-size:1.55rem"></h2>
+                  <span class="po-status-pill" id="po-case-status"></span>
+                </div>
+                <div class="po-case-sub" id="po-case-sub" style="margin-top:.35rem"></div>
+              </div>
+              <div style="display:flex;gap:.5rem;align-items:center">
+                <button class="btn btn-outline" style="padding:.45rem .9rem;font-size:.56rem" id="po-case-resolve" onclick="toggleResolve()"></button>
+              </div>
+            </div>
+            <div class="po-thread" id="po-thread" aria-live="polite"></div>
+            <div class="po-composer" id="po-composer">
+              <div id="po-send-err" style="display:none"></div>
+              <div class="po-composer-row">
+                <button class="po-icon-btn" id="po-attach" title="Attach a photo" aria-label="Attach a photo">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.2"/><path d="M8 6l1.2-2h5.6L16 6"/></svg>
+                </button>
+                <input type="file" id="po-file" accept="image/*" style="display:none"/>
+                <textarea class="inp" id="po-input" placeholder="Describe how your recovery is going&hellip;" maxlength="4000" rows="1"></textarea>
+                <button class="po-icon-btn" id="po-send" title="Send" aria-label="Send" style="background:var(--text);color:var(--bg);border-color:var(--text)">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+                </button>
+              </div>
+              <div class="po-enc-note">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+                <span>End-to-end encrypted &mdash; only you and your clinic can read messages or view photos.</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="po-two">
+            <!-- Stage guidance -->
+            <div class="card" style="padding:1.5rem">
+              <span class="lbl" style="color:var(--ac)">Recovery guide</span>
+              <h3 class="card-h" style="margin-top:.5rem" id="po-guide-title">General aftercare</h3>
+              <div class="po-stage-row" id="po-stage-row"></div>
+              <div class="po-guide-list" id="po-guide-list"></div>
+              <div class="po-flags">
+                <span class="lbl" style="color:var(--bad)">Contact your clinic promptly if</span>
+                <div style="display:flex;flex-direction:column;gap:.45rem;margin-top:.6rem" id="po-flag-list"></div>
+                <p style="font-size:.64rem;color:var(--mute);line-height:1.6;margin-top:.75rem">
+                  General education only &mdash; your clinic&rsquo;s aftercare sheet always takes
+                  precedence. For chest pain or trouble breathing, call 911.
+                </p>
+              </div>
+            </div>
+
+            <!-- AI guidance -->
+            <div class="card" style="padding:1.5rem;display:flex;flex-direction:column">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem">
+                <div>
+                  <span class="lbl" style="color:var(--ac)">AI guidance</span>
+                  <h3 class="card-h" style="margin-top:.5rem">Ask about your <em style="color:var(--ac)">recovery</em></h3>
+                </div>
+              </div>
+              <div class="po-ai-chips" id="po-ai-chips" style="margin-top:.875rem"></div>
+              <div class="po-ai-thread" id="po-ai-thread"></div>
+              <div style="display:flex;gap:.6rem;align-items:flex-end">
+                <textarea class="inp" id="po-ai-input" placeholder="e.g. Is itching around the area common?" maxlength="2000" rows="1" style="resize:none;min-height:44px"></textarea>
+                <button class="po-icon-btn" id="po-ai-send" title="Ask" aria-label="Ask" style="background:var(--text);color:var(--bg);border-color:var(--text)">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+                </button>
+              </div>
+              <div class="po-ai-foot">
+                Educational guidance only &mdash; not medical advice and never a diagnosis.
+                The assistant cannot see your photos or clinic messages; they stay
+                encrypted. In an emergency call 911.
+              </div>
+            </div>
+          </div>
+
+          <!-- Products -->
+          <div>
+            <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:.875rem">
+              <div>
+                <span class="lbl" style="color:var(--ac)">Recommended for your recovery</span>
+                <h3 class="card-h" style="margin-top:.4rem" id="po-prod-title">Recovery essentials</h3>
+              </div>
+              <a href="/shop" class="po-prod-link" style="font-size:.62rem">Browse the full shop &rarr;</a>
+            </div>
+            <div class="po-prod-strip" id="po-prod-strip"></div>
+            <p style="font-size:.62rem;color:var(--mute);margin-top:.75rem;line-height:1.6">
+              General suggestions by procedure type &mdash; not a prescription. Check with
+              your clinic before starting anything new, especially on treated skin.
+            </p>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+</div>
+
+<div id="po-lightbox" onclick="this.style.display='none'"><img id="po-lightbox-img" alt="Recovery photo"/></div>
+
+<script>
+/* ═══════════════ THEME / NAV / CHROME ═══════════════ */
+(function initTheme(){ if(localStorage.getItem('ah-theme')==='dark') document.documentElement.classList.add('dark'); })();
+const SUN  = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>';
+const MOON = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+function toggleTheme(){
+  const isDark = document.documentElement.classList.toggle('dark');
+  localStorage.setItem('ah-theme', isDark ? 'dark' : 'light');
+  renderThemeToggle();
+}
+function renderThemeToggle(){
+  const el = document.getElementById('th-icon');
+  if (el) el.innerHTML = document.documentElement.classList.contains('dark') ? SUN : MOON;
+}
+renderThemeToggle();
+function openMob(){ document.getElementById('mob-menu').classList.add('open'); document.body.style.overflow='hidden'; }
+function closeMob(){ document.getElementById('mob-menu').classList.remove('open'); document.body.style.overflow=''; }
+window.addEventListener('scroll', () => {
+  const nav = document.getElementById('main-nav');
+  if (nav) nav.classList.toggle('scrolled', window.scrollY > 8);
+  const prog = document.getElementById('scroll-prog');
+  if (prog) {
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    prog.style.width = (max > 0 ? (window.scrollY / max) * 100 : 0) + '%';
+  }
+}, { passive: true });
+function setupReveal(){
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: .08 });
+  document.querySelectorAll('.rv:not(.in)').forEach(el => io.observe(el));
+}
+
+/* ═══════════════ SUPABASE + AUTH ═══════════════ */
+const CONFIG = { supabaseUrl: window.ACUROS.SUPABASE_URL, supabaseKey: window.ACUROS.SUPABASE_ANON_KEY };
+let sb = null;
+try { if (CONFIG.supabaseKey) sb = window.createAcurosClient(CONFIG.supabaseUrl, CONFIG.supabaseKey); }
+catch(e) { console.error('[Acuros/post-op] auth client failed to initialise', e); }
+
+let currentUser = null;      // { id, email, name }
+let myPair = null;           // { privateJwk, publicJwk }
+let keyState = 'pending';    // pending | ready | missing-local | unsupported | error
+let cases = [];              // patient's postop_cases
+let orgNames = {};           // org_id -> clinic name
+let clinicKeys = {};         // org_id -> public_jwk (clinic side)
+let bookingsCache = null;    // /api/bookings?action=mine result
+let activeCase = null;
+let activeKey = null;        // derived AES key for activeCase
+let rtChannel = null;
+let mediaUrlCache = {};      // message id -> object URL
+let aiConvo = [];            // [{role:'user'|'assistant', text}]
+let unreadByCase = {};
+
+const esc = (s) => String(s == null ? '' : s)
+  .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+  .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+
+function fmtDate(d){
+  const dt = (d instanceof Date) ? d : new Date(String(d).length === 10 ? d + 'T12:00:00' : d);
+  if (isNaN(dt)) return '';
+  return dt.toLocaleDateString('en-CA', { month:'short', day:'numeric', year:'numeric' });
+}
+function daysSince(dateStr){
+  if (!dateStr) return null;
+  const d = new Date(String(dateStr).length === 10 ? dateStr + 'T12:00:00' : dateStr);
+  if (isNaN(d)) return null;
+  return Math.max(0, Math.floor((Date.now() - d.getTime()) / 86400000));
+}
+async function getToken(){
+  try { const { data } = await sb.auth.getSession(); return data && data.session && data.session.access_token || null; }
+  catch(_e){ return null; }
+}
+function banner(html, cls){
+  const b = document.getElementById('po-banner');
+  if (!html) { b.style.display = 'none'; b.innerHTML = ''; return; }
+  b.innerHTML = '<div class="' + (cls || 'warn-box') + '">' + html + '</div>';
+  b.style.display = 'block';
+}
+
+/* ═══════════════ VIEW SWITCHING ═══════════════ */
+function showView(name){
+  document.getElementById('po-view-empty').style.display = name === 'empty' ? 'block' : 'none';
+  document.getElementById('po-view-new').style.display   = name === 'new'   ? 'block' : 'none';
+  document.getElementById('po-view-case').style.display  = name === 'case'  ? 'flex'  : 'none';
+}
+function showNewCase(){
+  if (keyState !== 'ready') { flashKeyCard(); return; }
+  renderVisitPicker();
+  renderOrgSelect();
+  showView('new');
+}
+function closeNewCase(){ showView(activeCase ? 'case' : 'empty'); }
+function flashKeyCard(){
+  const el = document.getElementById('po-key-card');
+  el.style.borderColor = 'var(--warn)';
+  el.scrollIntoView({ behavior:'smooth', block:'center' });
+  setTimeout(() => { el.style.borderColor = ''; }, 1600);
+}
+
+/* ═══════════════ KEYS ═══════════════ */
+async function initKeys(){
+  const status = document.getElementById('po-key-status');
+  const exportBtn = document.getElementById('po-key-export');
+  if (!window.PostopCrypto || !window.PostopCrypto.supported) {
+    keyState = 'unsupported';
+    status.innerHTML = '<span style="color:var(--bad)">This browser does not support the encryption features. Try a current version of Chrome, Safari, Edge or Firefox.</span>';
+    return;
+  }
+  try {
+    const res = await window.PostopCrypto.ensureKeys(sb, currentUser.id, null);
+    if (res.status === 'ready') {
+      myPair = res.pair;
+      keyState = 'ready';
+      status.innerHTML = 'Active on this device. ' + (res.fresh ? 'A new key was created — download a backup now so you can read threads from other devices.' : 'Messages you receive are decrypted locally.');
+      exportBtn.disabled = false;
+    } else if (res.status === 'missing-local') {
+      keyState = 'missing-local';
+      status.innerHTML = '<span style="color:var(--warn)">Your encryption key was created on another device.</span> Import your key backup to read existing threads here, or <button class="po-ai-chip" style="display:inline" onclick="regenKey()">start fresh</button> (old threads stay unreadable).';
+    }
+  } catch (e) {
+    keyState = 'error';
+    status.innerHTML = '<span style="color:var(--bad)">' + esc(e.message || 'Could not prepare your key.') + '</span>';
+  }
+}
+async function regenKey(){
+  if (!confirm('Start fresh with a new key?\n\nMessages and photos in threads created with your old key will remain permanently unreadable on every device. New threads will work normally.')) return;
+  try {
+    myPair = await window.PostopCrypto.regenerate(sb, currentUser.id, null);
+    keyState = 'ready';
+    document.getElementById('po-key-status').textContent = 'A new key is active on this device. Download a backup now.';
+    document.getElementById('po-key-export').disabled = false;
+    await loadCases();
+  } catch (e) { alert(e.message || 'Could not regenerate the key.'); }
+}
+function downloadKeyBackup(){
+  const json = window.PostopCrypto.exportBackup(currentUser.id);
+  if (!json) return;
+  const blob = new Blob([json], { type:'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'acuros-postop-key-backup.json';
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+}
+document.getElementById('po-key-import').addEventListener('change', async function(){
+  const f = this.files && this.files[0];
+  this.value = '';
+  if (!f) return;
+  try {
+    const text = await f.text();
+    myPair = await window.PostopCrypto.importBackup(sb, currentUser.id, null, text);
+    keyState = 'ready';
+    document.getElementById('po-key-status').textContent = 'Key imported. Threads created with this key are readable again.';
+    document.getElementById('po-key-export').disabled = false;
+    await loadCases();
+    if (activeCase) openCase(activeCase.id);
+  } catch (e) { alert(e.message || 'Import failed.'); }
+});
+
+/* ═══════════════ DATA LOADING ═══════════════ */
+async function loadMemberships(){
+  try {
+    const token = await getToken();
+    if (!token) return;
+    const r = await fetch('/api/memberships?action=mine', { headers: { Authorization: 'Bearer ' + token } });
+    const j = await r.json().catch(() => ({}));
+    (j.memberships || []).forEach(m => { if (m.org) orgNames[m.org.id] = m.org.name; });
+  } catch(_e){}
+}
+async function loadBookings(){
+  if (bookingsCache) return bookingsCache;
+  try {
+    const token = await getToken();
+    if (!token) return (bookingsCache = []);
+    const r = await fetch('/api/bookings?action=mine', { headers: { Authorization: 'Bearer ' + token } });
+    const j = await r.json().catch(() => ({}));
+    bookingsCache = (j.bookings || []).filter(b => b.status !== 'cancelled');
+  } catch(_e){ bookingsCache = []; }
+  return bookingsCache;
+}
+async function loadCases(){
+  const list = document.getElementById('po-case-list');
+  const { data, error } = await sb.from('postop_cases')
+    .select('*').order('created_at', { ascending:false });
+  if (error) {
+    list.innerHTML = '<div class="err-box">Could not load your threads. Refresh to retry.</div>';
+    return;
+  }
+  cases = data || [];
+  // resolve clinic names we don't know yet (published orgs are readable)
+  const missing = [...new Set(cases.map(c => c.org_id).filter(id => !orgNames[id]))];
+  if (missing.length) {
+    const { data: orgs } = await sb.from('organizations').select('id, name').in('id', missing);
+    (orgs || []).forEach(o => { orgNames[o.id] = o.name; });
+  }
+  await computeUnread();
+  renderCaseList();
+  if (!cases.length) showView('empty');
+}
+async function computeUnread(){
+  unreadByCase = {};
+  await Promise.all(cases.map(async (c) => {
+    if (!c.patient_last_seen_at) { unreadByCase[c.id] = 0; return; }
+    const { count } = await sb.from('postop_messages')
+      .select('id', { count:'exact', head:true })
+      .eq('case_id', c.id).eq('sender_role','clinic')
+      .gt('created_at', c.patient_last_seen_at);
+    unreadByCase[c.id] = count || 0;
+  }));
+}
+function renderCaseList(){
+  const list = document.getElementById('po-case-list');
+  if (!cases.length) {
+    list.innerHTML = '<div class="po-empty" style="padding:1rem"><span class="po-empty-p">No recovery threads yet.</span></div>';
+    return;
+  }
+  list.innerHTML = cases.map(c => {
+    const unread = unreadByCase[c.id] || 0;
+    const days = daysSince(c.surgery_date || c.created_at);
+    return '<button class="po-case-row' + (activeCase && activeCase.id === c.id ? ' active' : '') + '" onclick="openCase(\'' + c.id + '\')">' +
+      '<span class="po-case-name"><span>' + esc(c.procedure_name) + '</span>' + (unread ? '<span class="po-unread">' + unread + '</span>' : '') + '</span>' +
+      '<span class="po-case-sub">' + esc(orgNames[c.org_id] || 'Your clinic') + (days !== null ? ' &middot; day ' + days : '') + (c.status === 'resolved' ? ' &middot; resolved' : '') + '</span>' +
+    '</button>';
+  }).join('');
+}
+
+/* ═══════════════ CASE CREATION ═══════════════ */
+async function clinicKeyFor(orgId){
+  if (clinicKeys[orgId]) return clinicKeys[orgId];
+  const { data } = await sb.from('postop_keys').select('public_jwk').eq('org_id', orgId).maybeSingle();
+  if (data && data.public_jwk) clinicKeys[orgId] = data.public_jwk;
+  return clinicKeys[orgId] || null;
+}
+async function renderVisitPicker(){
+  const el = document.getElementById('po-visit-list');
+  el.innerHTML = '<div class="po-skel"></div>';
+  const bookings = await loadBookings();
+  const usedBookings = new Set(cases.map(c => c.booking_id).filter(Boolean));
+  const today = new Date(); today.setHours(23,59,59,0);
+  const candidates = (bookings || []).filter(b =>
+    b.org_id && b.procedure_name && b.appointment_date &&
+    new Date(b.appointment_date + 'T00:00:00') <= today &&
+    !usedBookings.has(b.id)
+  ).slice(0, 6);
+  // resolve org names for candidate bookings
+  const missing = [...new Set(candidates.map(b => b.org_id).filter(id => !orgNames[id]))];
+  if (missing.length) {
+    const { data: orgs } = await sb.from('organizations').select('id, name').in('id', missing);
+    (orgs || []).forEach(o => { orgNames[o.id] = o.name; });
+  }
+  if (!candidates.length) {
+    el.innerHTML = '<div class="po-empty" style="padding:.875rem 1rem"><span class="po-empty-p">No past visits found &mdash; use the manual form below, or <a href="/bookings" style="color:var(--ac)">book a visit</a> first.</span></div>';
+    return;
+  }
+  el.innerHTML = candidates.map(b => {
+    const d = new Date(b.appointment_date + 'T12:00:00');
+    const mon = d.toLocaleDateString('en-CA', { month:'short' });
+    return '<button class="po-visit-row" onclick="createCaseFromBooking(\'' + b.id + '\')">' +
+      '<span class="po-visit-date"><span class="po-visit-mon">' + esc(mon) + '</span><span class="po-visit-day">' + d.getDate() + '</span></span>' +
+      '<span style="min-width:0"><span class="po-visit-name">' + esc(b.procedure_name) + '</span><span class="po-visit-sub">' + esc(orgNames[b.org_id] || 'Clinic') + (b.procedure_category ? ' &middot; ' + esc(b.procedure_category) : '') + '</span></span>' +
+      '<span class="po-visit-go">Start &rarr;</span>' +
+    '</button>';
+  }).join('');
+}
+function renderOrgSelect(){
+  const sel = document.getElementById('po-new-org');
+  const ids = Object.keys(orgNames);
+  sel.innerHTML = ids.length
+    ? ids.map(id => '<option value="' + esc(id) + '">' + esc(orgNames[id]) + '</option>').join('')
+    : '<option value="">No connected clinic &mdash; join one from your portal first</option>';
+  const dateEl = document.getElementById('po-new-date');
+  if (!dateEl.value) dateEl.value = new Date().toISOString().slice(0, 10);
+}
+function newCaseError(msg){
+  const el = document.getElementById('po-new-err');
+  if (!msg) { el.style.display = 'none'; return; }
+  el.className = 'err-box'; el.style.display = 'block'; el.textContent = msg;
+}
+async function createCaseFromBooking(bookingId){
+  const b = (bookingsCache || []).find(x => x.id === bookingId);
+  if (!b) return;
+  await createCase({
+    org_id: b.org_id, booking_id: b.id,
+    procedure_name: b.procedure_name,
+    procedure_category: b.procedure_category || null,
+    surgery_date: b.appointment_date || null
+  });
+}
+async function createCaseManual(){
+  const orgId = document.getElementById('po-new-org').value;
+  const proc = document.getElementById('po-new-proc').value.trim();
+  const cat = document.getElementById('po-new-cat').value;
+  const date = document.getElementById('po-new-date').value || null;
+  if (!orgId) return newCaseError('Connect with a clinic from your patient portal first — post-op review is clinic-to-patient.');
+  if (!proc) return newCaseError('Enter the procedure name.');
+  await createCase({ org_id: orgId, booking_id: null, procedure_name: proc, procedure_category: cat, surgery_date: date });
+}
+async function createCase(fields){
+  newCaseError('');
+  const btn = document.getElementById('po-new-submit');
+  btn.disabled = true;
+  try {
+    const clinicJwk = await clinicKeyFor(fields.org_id);
+    if (!clinicJwk) {
+      newCaseError((orgNames[fields.org_id] || 'This clinic') + ' has not activated encrypted post-op review yet. Ask them to open the Post-Op tab of their clinic dashboard once — then try again.');
+      return;
+    }
+    const row = Object.assign({}, fields, {
+      patient_id: currentUser.id,
+      patient_pub_jwk: myPair.publicJwk,
+      clinic_pub_jwk: clinicJwk
+    });
+    const { data, error } = await sb.from('postop_cases').insert(row).select().single();
+    if (error) throw new Error(error.message);
+    cases.unshift(data);
+    renderCaseList();
+    await openCase(data.id);
+  } catch (e) {
+    newCaseError('Could not open the thread: ' + (e.message || 'unknown error') + (String(e.message||'').includes('row-level security') ? ' — you need a booking or membership with this clinic first.' : ''));
+  } finally { btn.disabled = false; }
+}
+
+/* ═══════════════ THREAD ═══════════════ */
+async function openCase(caseId){
+  const c = cases.find(x => x.id === caseId);
+  if (!c) return;
+  activeCase = c;
+  activeKey = null;
+  aiConvo = [];
+  renderCaseList();
+  showView('case');
+
+  document.getElementById('po-case-title').textContent = c.procedure_name;
+  const days = daysSince(c.surgery_date || c.created_at);
+  document.getElementById('po-case-sub').innerHTML =
+    esc(orgNames[c.org_id] || 'Your clinic') +
+    (c.surgery_date ? ' &middot; ' + esc(fmtDate(c.surgery_date)) : '') +
+    (days !== null ? ' &middot; day ' + days + ' of recovery' : '');
+  const st = document.getElementById('po-case-status');
+  st.textContent = c.status;
+  st.className = 'po-status-pill ' + c.status;
+  document.getElementById('po-case-resolve').textContent = c.status === 'active' ? 'Mark resolved' : 'Reopen thread';
+  document.getElementById('po-composer').style.display = c.status === 'active' ? 'flex' : 'none';
+
+  renderGuide(c);
+  renderProducts(c);
+  renderAiPanel(c);
+
+  const thread = document.getElementById('po-thread');
+  thread.innerHTML = '<div class="po-skel"></div><div class="po-skel" style="width:60%"></div>';
+
+  if (keyState !== 'ready') {
+    thread.innerHTML = '<div class="warn-box">Import your encryption key backup (left panel) to read and send messages in this thread.</div>';
+    return;
+  }
+  try {
+    activeKey = await window.PostopCrypto.deriveCaseKey(myPair.privateJwk, c.clinic_pub_jwk, c.id);
+  } catch (e) {
+    thread.innerHTML = '<div class="err-box">Could not derive this thread&rsquo;s key on this device.</div>';
+    return;
+  }
+  await refreshThread(true);
+  markSeen(c);
+  subscribeRealtime(c);
+}
+async function refreshThread(scroll){
+  if (!activeCase) return;
+  const { data, error } = await sb.from('postop_messages')
+    .select('*').eq('case_id', activeCase.id).order('created_at', { ascending:true }).limit(500);
+  const thread = document.getElementById('po-thread');
+  if (error) { thread.innerHTML = '<div class="err-box">Could not load messages.</div>'; return; }
+  thread.innerHTML = '';
+  let lastDay = '';
+  for (const m of (data || [])) {
+    const day = fmtDate(m.created_at);
+    if (day !== lastDay) {
+      lastDay = day;
+      const sep = document.createElement('div');
+      sep.className = 'po-day-sep'; sep.textContent = day;
+      thread.appendChild(sep);
+    }
+    thread.appendChild(await renderMessage(m));
+  }
+  if (!data || !data.length) {
+    thread.innerHTML = '<div class="po-empty" style="align-self:stretch"><span class="po-empty-h">Say hello to your care team</span><span class="po-empty-p">Describe how the area looks and feels, attach a photo, and your clinic will review it in this private thread.</span></div>';
+  }
+  if (scroll) thread.scrollTop = thread.scrollHeight;
+}
+async function renderMessage(m){
+  const wrap = document.createElement('div');
+  wrap.className = 'po-msg ' + (m.sender_role === 'patient' ? 'mine' : 'theirs');
+  const time = new Date(m.created_at).toLocaleTimeString('en-CA', { hour:'numeric', minute:'2-digit' });
+  const who = m.sender_role === 'patient' ? 'You' : (orgNames[m.org_id] || 'Clinic');
+  if (m.kind === 'image' && m.media_path) {
+    const holder = document.createElement('div');
+    holder.className = 'po-bubble';
+    holder.innerHTML = '<span class="po-undecryptable">Decrypting photo&hellip;</span>';
+    wrap.appendChild(holder);
+    decryptMedia(m).then(url => {
+      if (!url) { holder.innerHTML = '<span class="po-undecryptable">Photo could not be decrypted on this device.</span>'; return; }
+      holder.style.padding = '4px';
+      holder.innerHTML = '';
+      const img = document.createElement('img');
+      img.className = 'po-msg-img'; img.src = url; img.alt = 'Encrypted recovery photo';
+      img.onclick = () => { const lb = document.getElementById('po-lightbox'); document.getElementById('po-lightbox-img').src = url; lb.style.display = 'flex'; };
+      holder.appendChild(img);
+    });
+  } else {
+    const bubble = document.createElement('div');
+    bubble.className = 'po-bubble';
+    bubble.innerHTML = '<span class="po-undecryptable">Decrypting&hellip;</span>';
+    wrap.appendChild(bubble);
+    (async () => {
+      try { bubble.textContent = await window.PostopCrypto.decryptText(activeKey, m.body_cipher); }
+      catch(_e){ bubble.innerHTML = '<span class="po-undecryptable">Message could not be decrypted on this device (different key).</span>'; }
+    })();
+  }
+  const meta = document.createElement('div');
+  meta.className = 'po-msg-meta';
+  meta.innerHTML = '<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>' + esc(who) + ' &middot; ' + esc(time);
+  wrap.appendChild(meta);
+  return wrap;
+}
+async function decryptMedia(m){
+  if (mediaUrlCache[m.id]) return mediaUrlCache[m.id];
+  try {
+    const { data, error } = await sb.storage.from('postop-media').download(m.media_path);
+    if (error || !data) return null;
+    const buf = new Uint8Array(await data.arrayBuffer());
+    const plain = await window.PostopCrypto.decryptBytes(activeKey, buf);
+    const url = URL.createObjectURL(new Blob([plain], { type: m.media_mime || 'image/jpeg' }));
+    mediaUrlCache[m.id] = url;
+    return url;
+  } catch(_e){ return null; }
+}
+function subscribeRealtime(c){
+  if (rtChannel) { try { sb.removeChannel(rtChannel); } catch(_e){} rtChannel = null; }
+  try {
+    rtChannel = sb.channel('postop-' + c.id)
+      .on('postgres_changes', { event:'INSERT', schema:'public', table:'postop_messages', filter:'case_id=eq.' + c.id }, async (payload) => {
+        if (!activeCase || activeCase.id !== c.id) return;
+        const thread = document.getElementById('po-thread');
+        thread.appendChild(await renderMessage(payload.new));
+        thread.scrollTop = thread.scrollHeight;
+        if (payload.new.sender_role === 'clinic') markSeen(c);
+      })
+      .subscribe();
+  } catch(_e){}
+}
+function markSeen(c){
+  const now = new Date().toISOString();
+  c.patient_last_seen_at = now;
+  unreadByCase[c.id] = 0;
+  renderCaseList();
+  sb.from('postop_cases').update({ patient_last_seen_at: now }).eq('id', c.id).then(() => {});
+}
+async function toggleResolve(){
+  if (!activeCase) return;
+  const next = activeCase.status === 'active' ? 'resolved' : 'active';
+  const { error } = await sb.from('postop_cases').update({ status: next }).eq('id', activeCase.id);
+  if (error) return;
+  activeCase.status = next;
+  openCase(activeCase.id);
+}
+
+/* ── Sending ── */
+function sendError(msg){
+  const el = document.getElementById('po-send-err');
+  if (!msg) { el.style.display = 'none'; return; }
+  el.className = 'err-box'; el.style.display = 'block'; el.textContent = msg;
+  setTimeout(() => { el.style.display = 'none'; }, 6000);
+}
+async function sendText(){
+  const input = document.getElementById('po-input');
+  const text = input.value.trim();
+  if (!text || !activeCase || !activeKey) return;
+  const btn = document.getElementById('po-send');
+  btn.disabled = true;
+  try {
+    const cipher = await window.PostopCrypto.encryptText(activeKey, text);
+    const { error } = await sb.from('postop_messages').insert({
+      case_id: activeCase.id, org_id: activeCase.org_id,
+      sender_id: currentUser.id, sender_role: 'patient',
+      kind: 'text', body_cipher: cipher
+    });
+    if (error) throw new Error(error.message);
+    input.value = ''; input.style.height = '';
+    // realtime echoes our own insert; if the socket is down, refresh manually
+    setTimeout(() => { if (!rtChannel) refreshThread(true); }, 400);
+  } catch (e) { sendError('Could not send: ' + (e.message || 'unknown error')); }
+  finally { btn.disabled = false; }
+}
+async function resizeImage(file){
+  // Downscale + re-encode to JPEG. Bounds upload size and strips EXIF/GPS
+  // metadata before encryption (privacy: even ciphertext size says less).
+  try {
+    const bmp = await createImageBitmap(file);
+    const MAX = 1600;
+    const scale = Math.min(1, MAX / Math.max(bmp.width, bmp.height));
+    const w = Math.max(1, Math.round(bmp.width * scale));
+    const h = Math.max(1, Math.round(bmp.height * scale));
+    const canvas = document.createElement('canvas');
+    canvas.width = w; canvas.height = h;
+    canvas.getContext('2d').drawImage(bmp, 0, 0, w, h);
+    bmp.close && bmp.close();
+    const blob = await new Promise(res => canvas.toBlob(res, 'image/jpeg', .86));
+    if (blob) return { blob, mime: 'image/jpeg' };
+  } catch(_e){}
+  if (file.size <= 12 * 1024 * 1024) return { blob: file, mime: file.type || 'image/jpeg' };
+  throw new Error('That image is too large and could not be compressed in this browser.');
+}
+async function sendImage(file){
+  if (!activeCase || !activeKey || !file) return;
+  const btn = document.getElementById('po-attach');
+  btn.disabled = true;
+  sendError('');
+  try {
+    if (!/^image\//.test(file.type)) throw new Error('Only image files can be attached.');
+    const { blob, mime } = await resizeImage(file);
+    const bytes = new Uint8Array(await blob.arrayBuffer());
+    const cipher = await window.PostopCrypto.encryptBytes(activeKey, bytes);
+    const path = 'case_' + activeCase.id + '/' + crypto.randomUUID() + '.bin';
+    const up = await sb.storage.from('postop-media').upload(path, new Blob([cipher], { type:'application/octet-stream' }), { contentType:'application/octet-stream', upsert:false });
+    if (up.error) throw new Error(up.error.message);
+    const { error } = await sb.from('postop_messages').insert({
+      case_id: activeCase.id, org_id: activeCase.org_id,
+      sender_id: currentUser.id, sender_role: 'patient',
+      kind: 'image', media_path: path, media_mime: mime
+    });
+    if (error) throw new Error(error.message);
+    setTimeout(() => { if (!rtChannel) refreshThread(true); }, 400);
+  } catch (e) { sendError('Could not send the photo: ' + (e.message || 'unknown error')); }
+  finally { btn.disabled = false; }
+}
+document.getElementById('po-send').addEventListener('click', sendText);
+document.getElementById('po-input').addEventListener('keydown', function(e){
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendText(); }
+});
+document.getElementById('po-input').addEventListener('input', function(){
+  this.style.height = ''; this.style.height = Math.min(this.scrollHeight, 140) + 'px';
+});
+document.getElementById('po-attach').addEventListener('click', () => document.getElementById('po-file').click());
+document.getElementById('po-file').addEventListener('change', function(){
+  const f = this.files && this.files[0];
+  this.value = '';
+  if (f) sendImage(f);
+});
+
+/* ═══════════════ RECOVERY GUIDE (education only) ═══════════════ */
+const GUIDE_STAGES = [
+  { key:'s0', label:'First 48 hours', from:0, to:2 },
+  { key:'s1', label:'Week one', from:3, to:7 },
+  { key:'s2', label:'Weeks two & three', from:8, to:21 },
+  { key:'s3', label:'Beyond', from:22, to:100000 }
+];
+function guideBucket(cat, name){
+  const s = ((cat || '') + ' ' + (name || '')).toLowerCase();
+  if (/(inject|botox|filler|thread)/.test(s)) return 'injectables';
+  if (/(surg|lift|augment|tuck|excision|graft|implant)/.test(s)) return 'surgical';
+  if (/(contour|sculpt|lipo|coolsculpt)/.test(s)) return 'contouring';
+  if (/(derm|peel|microneedl|laser|skin|facial|aesthet)/.test(s)) return 'skin';
+  if (/(wellness|iv |vitamin|therapy)/.test(s)) return 'wellness';
+  return 'general';
+}
+const GUIDE = {
+  injectables: {
+    title:'After injectable treatments',
+    s0:['Cold compresses in short intervals are commonly used for swelling at injection sites.','Most clinics suggest staying upright for several hours and skipping strenuous exercise today.','Avoid rubbing or massaging the treated area unless your clinic told you to.'],
+    s1:['Small bumps and light bruising commonly settle over the first week.','Alcohol and intense heat (saunas, hot yoga) are often postponed this week.','Gentle cleansing and daily SPF are the usual skincare baseline.'],
+    s2:['Results typically settle into their final look during this window.','Book your follow-up if your clinic recommended one — photos help them compare.'],
+    s3:['Effects are usually stable now. Note anything asymmetric or new and share it with your clinic.']
+  },
+  surgical: {
+    title:'After a surgical procedure',
+    s0:['Rest, elevation of the treated area, and keeping dressings clean and dry are the classic first-48-hour basics.','Some drainage and bruising is commonly expected — your clinic’s sheet describes how much is normal for your procedure.','Short, gentle walks (if your clinic approved them) support circulation.'],
+    s1:['Peak swelling is often around day 2-3 and then eases.','Follow your clinic’s wound-care routine exactly; photograph the incision in good light before covering it again.','Sleep positioning matters for many procedures — confirm what your clinic prefers.'],
+    s2:['Sutures or steri-strips are commonly addressed in this window at a follow-up.','Itching around a healing incision is common; spreading redness is not — send a photo if unsure.'],
+    s3:['Scars typically keep maturing for months. Sun protection on the scar is the most repeated advice in aftercare sheets.']
+  },
+  contouring: {
+    title:'After body contouring',
+    s0:['Compression garments, if provided, are usually worn as instructed from day one.','Tenderness and firmness in the treated area are commonly reported early on.'],
+    s1:['Hydration and gentle movement are the usual week-one advice.','Swelling can fluctuate day to day — trend matters more than any single morning.'],
+    s2:['Numbness or tingling in treated zones commonly fades gradually in this window.'],
+    s3:['Contour changes typically become visible over 1-3 months as swelling fully resolves.']
+  },
+  skin: {
+    title:'After skin treatments',
+    s0:['Redness and warmth similar to a light sunburn are commonly expected right after treatment.','Skip actives (retinoids, acids, vitamin C) until your clinic clears them.','No picking or peeling flaking skin — let it release on its own.'],
+    s1:['Gentle cleanser, plain moisturizer, and strict SPF are the standard week-one routine.','Makeup is often paused for a few days — your clinic’s sheet has the exact timing.'],
+    s2:['New skin is photosensitive; daily SPF matters most in this window.','Texture and tone improvements typically appear progressively.'],
+    s3:['Series treatments usually schedule the next session around now — check your plan.']
+  },
+  wellness: {
+    title:'After wellness therapy',
+    s0:['Hydrate well today; light activity is usually fine unless you were told otherwise.','A small bruise at an IV site commonly fades within days.'],
+    s1:['Note how energy and sleep respond this week — useful signal for your clinic.'],
+    s2:['If this is part of a series, consistency drives most of the benefit.'],
+    s3:['Review with your clinic whether the protocol is doing what you both expected.']
+  },
+  general: {
+    title:'General aftercare',
+    s0:['Rest, hydration, and following your clinic’s aftercare sheet are the universal first steps.','Keep the treated area clean and avoid friction on it today.'],
+    s1:['Mild soreness that trends better each day is the common pattern.','Photograph the area in consistent light — it helps your clinic compare.'],
+    s2:['Gradually resume normal activity as your clinic advised.'],
+    s3:['If anything still feels unresolved, a follow-up visit is reasonable to request.']
+  }
+};
+const RED_FLAGS = [
+  'Spreading redness, warmth, or red streaks around the area',
+  'Pus, cloudy or foul-smelling discharge',
+  'Fever or chills',
+  'Pain that worsens after day 2-3 instead of easing',
+  'A wound opening up, or bleeding that does not stop with pressure',
+  'Calf pain or one-sided leg swelling; chest pain or trouble breathing (call 911)'
+];
+function renderGuide(c){
+  const bucket = guideBucket(c.procedure_category, c.procedure_name);
+  const g = GUIDE[bucket];
+  const days = daysSince(c.surgery_date || c.created_at);
+  const stage = GUIDE_STAGES.find(s => days !== null && days >= s.from && days <= s.to) || GUIDE_STAGES[0];
+  document.getElementById('po-guide-title').textContent = g.title;
+  document.getElementById('po-stage-row').innerHTML = GUIDE_STAGES.map(s =>
+    '<button class="po-stage' + (s.key === stage.key ? ' now' : '') + '" onclick="renderGuideStage(\'' + bucket + '\',\'' + s.key + '\')">' + esc(s.label) + '</button>'
+  ).join('');
+  renderGuideStage(bucket, stage.key);
+  document.getElementById('po-flag-list').innerHTML = RED_FLAGS.map(f => '<div class="po-flag-item">' + esc(f) + '</div>').join('');
+}
+function renderGuideStage(bucket, stageKey){
+  const g = GUIDE[bucket];
+  document.querySelectorAll('#po-stage-row .po-stage').forEach((el, i) => el.classList.toggle('now', GUIDE_STAGES[i].key === stageKey));
+  document.getElementById('po-guide-list').innerHTML = (g[stageKey] || []).map(t => '<div class="po-guide-item">' + esc(t) + '</div>').join('');
+}
+
+/* ═══════════════ PRODUCT RECOMMENDATIONS ═══════════════ */
+const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+const PRODUCT_RECS = {
+  injectables: [
+    { n:'Arnica Gel 500mg', why:'A shelf staple for post-injection bruise care.', cat:'' },
+    { n:'SPF 50+ Mineral Sunscreen', why:'Daily protection while treated skin settles.', cat:'skincare' },
+    { n:'Hyaluronic Acid Serum', why:'Lightweight hydration for recovering skin.', cat:'skincare' },
+    { n:'Barrier Repair Balm', why:'Soothes and supports the skin barrier.', cat:'skincare' }
+  ],
+  surgical: [
+    { n:'Arnica Gel 500mg', why:'Commonly used around post-op bruising.', cat:'' },
+    { n:'Oral Vitamin C 1000mg', why:'Everyday antioxidant support during healing.', cat:'supplements' },
+    { n:'Collagen Peptides', why:'A popular pick while tissue is rebuilding.', cat:'supplements' },
+    { n:'Sleep Support Formula', why:'Recovery runs on sleep more than anything.', cat:'wellness' }
+  ],
+  contouring: [
+    { n:'Electrolyte Recovery Powder', why:'Hydration support while swelling resolves.', cat:'wellness' },
+    { n:'Collagen Peptides', why:'A popular pick during tissue recovery.', cat:'supplements' },
+    { n:'Omega-3 Anti-Inflammatory', why:'Everyday omega-3s many patients keep on hand.', cat:'wellness' },
+    { n:'Biofreeze Roll-On', why:'Cooling relief for tender, worked-on areas.', cat:'' }
+  ],
+  skin: [
+    { n:'SPF 50 Physical Sunscreen', why:'The one non-negotiable after skin treatments.', cat:'skincare' },
+    { n:'Barrier Repair Balm', why:'Calms freshly treated, sensitive skin.', cat:'skincare' },
+    { n:'Hyaluronic Acid Moisturizer', why:'Plain, effective hydration while actives are paused.', cat:'skincare' },
+    { n:'Vitamin C Brightening Serum', why:'For when your clinic clears actives again.', cat:'skincare' }
+  ],
+  wellness: [
+    { n:'Electrolyte Recovery Powder', why:'Keeps hydration easy between sessions.', cat:'wellness' },
+    { n:'Probiotic Complex', why:'Daily gut support many wellness plans include.', cat:'wellness' },
+    { n:'Magnesium Glycinate', why:'A gentle evening staple for rest and recovery.', cat:'supplements' },
+    { n:'Vitamin D3 + K2', why:'Baseline daily support, especially in Canada.', cat:'supplements' }
+  ],
+  general: [
+    { n:'Arnica Gel 500mg', why:'A recovery-kit staple for bruising and soreness.', cat:'' },
+    { n:'Vitamin D3 + K2', why:'Baseline daily support while you rest up.', cat:'supplements' },
+    { n:'Sleep Support Formula', why:'Recovery runs on sleep more than anything.', cat:'wellness' },
+    { n:'SPF 50+ Mineral Sunscreen', why:'Protects healing skin whenever you head out.', cat:'skincare' }
+  ]
+};
+function renderProducts(c){
+  const bucket = guideBucket(c.procedure_category, c.procedure_name);
+  const recs = PRODUCT_RECS[bucket] || PRODUCT_RECS.general;
+  document.getElementById('po-prod-title').textContent =
+    'Picked for ' + (c.procedure_name.length > 34 ? 'this procedure' : c.procedure_name.toLowerCase());
+  document.getElementById('po-prod-strip').innerHTML = recs.map(r => {
+    const href = '/shop?highlight=' + encodeURIComponent(slug(r.n)) + (r.cat ? '&category=' + encodeURIComponent(r.cat) : '');
+    return '<a class="po-prod" href="' + href + '">' +
+      '<span class="po-prod-cat">' + esc(r.cat || 'recovery') + '</span>' +
+      '<span class="po-prod-name">' + esc(r.n) + '</span>' +
+      '<span class="po-prod-why">' + esc(r.why) + '</span>' +
+      '<span class="po-prod-link">View in shop &rarr;</span>' +
+    '</a>';
+  }).join('');
+}
+
+/* ═══════════════ AI GUIDANCE PANEL ═══════════════ */
+const AI_CHIPS = [
+  'What swelling is normal right now?',
+  'When can I exercise again?',
+  'How should I care for the area this week?'
+];
+function renderAiPanel(){
+  aiConvo = [];
+  document.getElementById('po-ai-thread').innerHTML = '';
+  document.getElementById('po-ai-chips').innerHTML = AI_CHIPS.map(q =>
+    '<button class="po-ai-chip" onclick="askAi(' + JSON.stringify(q).replace(/"/g,'&quot;') + ')">' + esc(q) + '</button>'
+  ).join('');
+}
+function mdToHtml(md){
+  const lines = String(md).split(/\r?\n/);
+  let html = '', listType = null;
+  const closeList = () => { if (listType) { html += '</' + listType + '>'; listType = null; } };
+  const inline = (s) => esc(s)
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>');
+  for (const raw of lines) {
+    const line = raw.trimEnd();
+    if (!line.trim()) { closeList(); continue; }
+    let m;
+    if ((m = line.match(/^#{2,4}\s+(.*)$/))) { closeList(); html += '<h4>' + inline(m[1]) + '</h4>'; }
+    else if ((m = line.match(/^[-*]\s+(.*)$/))) {
+      if (listType !== 'ul') { closeList(); html += '<ul>'; listType = 'ul'; }
+      html += '<li>' + inline(m[1]) + '</li>';
+    }
+    else if ((m = line.match(/^\d+[\.\)]\s+(.*)$/))) {
+      if (listType !== 'ol') { closeList(); html += '<ol>'; listType = 'ol'; }
+      html += '<li>' + inline(m[1]) + '</li>';
+    }
+    else if ((m = line.match(/^>\s?(.*)$/))) { closeList(); html += '<p style="border-left:2px solid var(--ac);padding-left:.6rem">' + inline(m[1]) + '</p>'; }
+    else { closeList(); html += '<p style="margin:.3rem 0">' + inline(line) + '</p>'; }
+  }
+  closeList();
+  return html;
+}
+function aiAppend(role, html){
+  const t = document.getElementById('po-ai-thread');
+  const el = document.createElement('div');
+  el.className = 'po-ai-msg ' + (role === 'user' ? 'user' : 'ai');
+  el.innerHTML = html;
+  t.appendChild(el);
+  t.scrollTop = t.scrollHeight;
+  return el;
+}
+async function askAi(question){
+  const q = (question || document.getElementById('po-ai-input').value).trim();
+  if (!q || !activeCase) return;
+  document.getElementById('po-ai-input').value = '';
+  document.getElementById('po-ai-chips').innerHTML = '';
+  aiConvo.push({ role:'user', text:q });
+  aiAppend('user', esc(q));
+  const pending = aiAppend('ai', '<span class="spin" style="width:12px;height:12px"></span>');
+  const btn = document.getElementById('po-ai-send');
+  btn.disabled = true;
+  try {
+    const token = await getToken();
+    const r = await fetch('/api/chat', {
+      method:'POST',
+      headers: Object.assign({ 'Content-Type':'application/json' }, token ? { Authorization:'Bearer ' + token } : {}),
+      body: JSON.stringify({
+        type:'postop',
+        messages: aiConvo.slice(-12).map(m => ({ role: m.role === 'user' ? 'user' : 'assistant', text: m.text })),
+        context: {
+          procedure: activeCase.procedure_name,
+          category: activeCase.procedure_category || '',
+          daysSince: daysSince(activeCase.surgery_date || activeCase.created_at),
+          clinicName: orgNames[activeCase.org_id] || ''
+        },
+        userName: (currentUser && currentUser.name) || ''
+      })
+    });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok || !j.text) throw new Error(j.error || 'The assistant is unavailable right now.');
+    aiConvo.push({ role:'assistant', text:j.text });
+    pending.innerHTML = mdToHtml(j.text);
+  } catch (e) {
+    pending.innerHTML = '<span style="color:var(--bad)">' + esc(e.message || 'Something went wrong.') + '</span>';
+  } finally { btn.disabled = false; }
+}
+document.getElementById('po-ai-send').addEventListener('click', () => askAi());
+document.getElementById('po-ai-input').addEventListener('keydown', function(e){
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); askAi(); }
+});
+
+/* ═══════════════ BOOT ═══════════════ */
+async function fetchProfileName(userId){
+  try {
+    const { data } = await sb.from('profiles').select('first_name, last_name, name').eq('id', userId).maybeSingle();
+    if (!data) return '';
+    return (data.first_name ? (data.first_name + ' ' + (data.last_name || '')).trim() : (data.name || '')).trim();
+  } catch(_e){ return ''; }
+}
+let booted = false;
+async function syncApp(session){
+  const gate = document.getElementById('po-gate');
+  const app = document.getElementById('po-app');
+  if (!session || !session.user) {
+    if (window.acurosAuth) window.acurosAuth.purgeIfStale && window.acurosAuth.purgeIfStale();
+    gate.style.display = 'flex';
+    app.style.display = 'none';
+    setupReveal();
+    return;
+  }
+  if (booted) return;
+  booted = true;
+  currentUser = { id: session.user.id, email: session.user.email || '', name: '' };
+  gate.style.display = 'none';
+  app.style.display = 'block';
+  document.getElementById('po-meta-date').textContent = new Date().toLocaleDateString('en-CA', { weekday:'short', month:'short', day:'numeric' });
+  setupReveal();
+  showView('empty');
+
+  currentUser.name = await fetchProfileName(currentUser.id);
+  document.getElementById('po-meta-name').textContent = currentUser.name || currentUser.email;
+
+  await Promise.all([initKeys(), loadMemberships()]);
+  await loadCases();
+  // Deep link: /post-op?case=<id>
+  const q = new URLSearchParams(location.search);
+  const target = q.get('case');
+  if (target && cases.some(c => c.id === target)) openCase(target);
+  else if (cases.length === 1) openCase(cases[0].id);
+}
+if (sb) {
+  sb.auth.onAuthStateChange((_event, session) => { syncApp(session); });
+  sb.auth.getSession().then(({ data }) => syncApp(data && data.session));
+} else {
+  document.getElementById('po-gate').style.display = 'flex';
+  setupReveal();
+}
+window.addEventListener('focus', () => { if (activeCase && activeKey) refreshThread(false); });
+</script>
+</body>
+</html>
