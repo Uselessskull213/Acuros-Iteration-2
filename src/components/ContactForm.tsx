@@ -36,6 +36,7 @@ export default function ContactForm() {
       const body = await resp.json().catch(() => ({}));
       if (!resp.ok) throw new Error((body as { error?: string }).error || 'Submission failed');
       setStatus('ok');
+      (window as { fbq?: (...args: unknown[]) => void }).fbq?.('track', 'Lead');
       form.reset();
       if (tsRef.current) tsRef.current.value = String(Date.now());
     } catch (err) {

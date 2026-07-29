@@ -1111,6 +1111,7 @@ $('#btn-publish').addEventListener('click', async () => {
   try {
     await saveProgress(true); // flush latest
     const out = await api('publish', { method: 'POST', body: JSON.stringify({ services, products }) });
+    if (window.fbq) fbq('track', 'CompleteRegistration');
     showBanner('Your clinic is live.', 'success');
     setTimeout(() => { window.location.href = out.url || '/'; }, 1200);
   } catch(err){
