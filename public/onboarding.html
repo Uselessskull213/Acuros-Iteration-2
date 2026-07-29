@@ -1170,7 +1170,7 @@ bootAuth();
     // session (returning subscribers never enter the unpaid branch first).
     if (!paid) { sawUnpaid = true; }
     else if (sawUnpaid && window.fbq && !localStorage.getItem('ah-fb-subscribed')) {
-      fbq('track', 'Subscribe');
+      fbq('track', 'Subscribe', { value: '150.00', currency: 'CAD' });
       try { localStorage.setItem('ah-fb-subscribed', '1'); } catch (_e) {}
     }
     gate.style.display = paid ? 'none' : 'block';
