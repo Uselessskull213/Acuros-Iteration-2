@@ -1170,7 +1170,14 @@ bootAuth();
     // session (returning subscribers never enter the unpaid branch first).
     if (!paid) { sawUnpaid = true; }
     else if (sawUnpaid && window.fbq && !localStorage.getItem('ah-fb-subscribed')) {
-      fbq('track', 'Subscribe', { value: '150.00', currency: 'CAD' });
+      // eventID matches the Stripe webhook's Conversions API Subscribe
+      // ('sub_<userId>') so Meta dedupes browser + server into one event.
+      let eid = null;
+      try {
+        const { data: { session } = {} } = await sb.auth.getSession();
+        if (session) eid = 'sub_' + session.user.id;
+      } catch (_e) {}
+      fbq('track', 'Subscribe', { value: '150.00', currency: 'CAD' }, eid ? { eventID: eid } : undefined);
       try { localStorage.setItem('ah-fb-subscribed', '1'); } catch (_e) {}
     }
     gate.style.display = paid ? 'none' : 'block';

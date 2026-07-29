@@ -29,6 +29,7 @@
 
 import crypto from 'node:crypto';
 import { getSupabaseAdmin, isSupabaseConfigured } from './_lib/supabase-admin.js';
+import { sendMetaEvent } from './_lib/meta-capi.js';
 
 const TOLERANCE_S = 5 * 60; // reject events older than 5 minutes (replay guard)
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -93,6 +94,20 @@ async function handleCheckoutCompleted(admin, session) {
     return { status: 200, body: { received: true, ignored: 'no-profile' } };
   }
   console.log('[stripe-webhook] upgraded to plus:', userId, 'session:', session.id);
+
+  // Server-side Subscribe via Conversions API — fires on payment truth even if
+  // the buyer never returns to the site. event_id 'sub_<userId>' matches the
+  // browser-side fire on onboarding, and is stable across Stripe retries, so
+  // Meta dedupes both. Never let a Meta failure break the billing flow.
+  await sendMetaEvent({
+    eventName: 'Subscribe',
+    eventId: 'sub_' + userId,
+    email: session.customer_details?.email || session.customer_email || null,
+    value: session.amount_total != null ? session.amount_total / 100 : 150,
+    currency: (session.currency || 'cad').toUpperCase(),
+    eventSourceUrl: 'https://www.acuros.ca/onboarding',
+  });
+
   return { status: 200, body: { received: true, upgraded: true } };
 }
 

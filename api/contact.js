@@ -1,7 +1,9 @@
 // api/contact.js — Vercel Serverless Function
 // Sends contact form emails via Resend, keeping the API key server-side.
 
+import crypto from 'node:crypto';
 import { checkRateLimit } from './_lib/rate-limit.js';
+import { sendMetaEvent } from './_lib/meta-capi.js';
 
 const RATE_LIMIT_WINDOW_MS = 60 * 1000;
 const RATE_LIMIT_MAX_REQUESTS = 8;
@@ -136,7 +138,19 @@ export default async function handler(req, res) {
     }
 
     const data = await resp.json();
-    return res.status(200).json({ success: true, id: data.id });
+
+    // Server-side Lead via Conversions API. The browser pixel fires the same
+    // event with this id, so Meta dedupes the pair. No-op without the token.
+    const leadEventId = crypto.randomUUID();
+    await sendMetaEvent({
+      eventName: 'Lead',
+      eventId: leadEventId,
+      email: safeEmail,
+      req,
+      eventSourceUrl: 'https://www.acuros.ca/',
+    });
+
+    return res.status(200).json({ success: true, id: data.id, leadEventId });
   } catch (err) {
     console.error('[Acuros/contact] Fetch error:', err);
     return res.status(500).json({ error: 'Failed to reach Resend API' });

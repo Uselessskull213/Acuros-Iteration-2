@@ -37,7 +37,14 @@ export default function ContactForm() {
       const body = await resp.json().catch(() => ({}));
       if (!resp.ok) throw new Error((body as { error?: string }).error || 'Submission failed');
       setStatus('ok');
-      (window as { fbq?: (...args: unknown[]) => void }).fbq?.('track', 'Lead');
+      // Same eventID as the server's Conversions API Lead → Meta dedupes.
+      const leadEventId = (body as { leadEventId?: string }).leadEventId;
+      (window as { fbq?: (...args: unknown[]) => void }).fbq?.(
+        'track',
+        'Lead',
+        {},
+        leadEventId ? { eventID: leadEventId } : undefined,
+      );
       form.reset();
       if (tsRef.current) tsRef.current.value = String(Date.now());
     } catch (err) {
