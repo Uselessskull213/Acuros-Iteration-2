@@ -1138,7 +1138,11 @@ bootAuth();
   const pub = $id('btn-publish');
   if (!gate || !pub) return;
 
+  const payLinkEl = $id('plus-pay-link');
+  if (payLinkEl) payLinkEl.addEventListener('click', () => { if (window.fbq) fbq('track', 'InitiateCheckout'); });
+
   let paid = false;
+  let sawUnpaid = false;
   async function fetchTier() {
     try {
       const { data: { session } = {} } = await sb.auth.getSession();
@@ -1162,6 +1166,13 @@ bootAuth();
     const tier = await fetchTier();
     if (tier === null) return false; // signed out / offline — leave defaults
     paid = tier === 'plus' || tier === 'admin';
+    // Subscribe fires only on the unpaid → paid transition seen in this page
+    // session (returning subscribers never enter the unpaid branch first).
+    if (!paid) { sawUnpaid = true; }
+    else if (sawUnpaid && window.fbq && !localStorage.getItem('ah-fb-subscribed')) {
+      fbq('track', 'Subscribe');
+      try { localStorage.setItem('ah-fb-subscribed', '1'); } catch (_e) {}
+    }
     gate.style.display = paid ? 'none' : 'block';
     pub.disabled = !paid;
     pub.title = paid ? '' : 'Publishing requires Acuros Plus';

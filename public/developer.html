@@ -650,6 +650,7 @@ async function boot(){
     if (session.user.email) params.set('prefilled_email', session.user.email);
     params.set('client_reference_id', session.user.id);
     up.href = STRIPE_PLUS_LINK + '?' + params.toString();
+    if (!up.dataset.fbWired) { up.dataset.fbWired = '1'; up.addEventListener('click', () => { if (window.fbq) fbq('track', 'InitiateCheckout'); }); }
   }
 
   // Danger zone — delete clinic

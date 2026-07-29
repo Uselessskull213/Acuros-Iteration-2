@@ -836,6 +836,7 @@ function renderMain(){
       params.set('client_reference_id',currentUser.id);
       upBtn.href='https://buy.stripe.com/fZu9AM1f89Wz2DjbWA4ko05?'+params.toString();
       upBtn.style.display='';
+      if(!upBtn.dataset.fbWired){upBtn.dataset.fbWired='1';upBtn.addEventListener('click',()=>{if(window.fbq)fbq('track','InitiateCheckout');});}
     }
   }
   setText('usage-value',usage+' AI interactions used');
