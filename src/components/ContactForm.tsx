@@ -30,7 +30,8 @@ export default function ContactForm() {
           email: String(data.get('email') || ''),
           type: String(data.get('type') || ''),
           message: String(data.get('message') || ''),
-          ts: String(data.get('ts') || ''),
+          honeypot: String(data.get('company') || ''),
+          formTs: String(data.get('ts') || ''),
         }),
       });
       const body = await resp.json().catch(() => ({}));

@@ -47,8 +47,9 @@ export default async function handler(req, res) {
   });
   if (!rl.allowed) return res.status(429).json({ error: 'Too many contact requests. Please try again shortly.' });
 
-  const { name, email, type, message, honeypot, formTs } = req.body || {};
+  const { name, clinic, email, type, message, honeypot, formTs } = req.body || {};
   const safeName = String(name || '').trim().slice(0, 100);
+  const safeClinic = String(clinic || '').trim().slice(0, 120);
   const safeEmail = String(email || '').trim().slice(0, 160);
   const safeType = String(type || '').trim().slice(0, 80);
   const safeMessage = String(message || '').trim().slice(0, 4000);
@@ -95,6 +96,10 @@ export default async function handler(req, res) {
           <a href="mailto:${escapeHtml(safeEmail)}" style="color:#0ea5e9">${escapeHtml(safeEmail)}</a>
         </td>
       </tr>
+      ${safeClinic ? `<tr>
+        <td style="padding:8px 0;color:#5a5a54;font-size:13px">Clinic</td>
+        <td style="padding:8px 0;color:#181816;font-size:14px">${escapeHtml(safeClinic)}</td>
+      </tr>` : ''}
       ${safeType ? `<tr>
         <td style="padding:8px 0;color:#5a5a54;font-size:13px">Type</td>
         <td style="padding:8px 0;color:#181816;font-size:14px">${escapeHtml(safeType)}</td>
