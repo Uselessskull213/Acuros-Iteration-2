@@ -1414,8 +1414,8 @@ $('#btn-design-ai').addEventListener('click', async () => {
     scheduleSave();
     setTimeout(() => {
       showView('wizard');
-      goStep(5, true);
-      toast('Your portal is drafted - review it below. Every step stays editable.');
+      goStep(4, true);
+      toast('Your portal is drafted - activate your membership to publish it. Every step stays editable.');
     }, 900);
   } catch (err) {
     clearInterval(aiStageTimer); aiStageTimer = null;
