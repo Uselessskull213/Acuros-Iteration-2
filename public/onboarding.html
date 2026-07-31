@@ -131,6 +131,7 @@
     .ai-example{padding:.45rem .95rem;border:1px solid var(--border);border-radius:99px;background:var(--bg);font-size:.76rem;color:var(--sub);cursor:pointer;font-family:inherit;transition:border-color .2s,color .2s}
     .ai-example:hover{border-color:var(--ac);color:var(--ac-ink)}
     .ai-actions{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-top:1.4rem}
+    .ai-links{display:flex;align-items:center;gap:1.2rem;flex-wrap:wrap}
     .ai-manual-link{background:none;border:none;cursor:pointer;font-family:inherit;font-size:.8rem;color:var(--mute);text-decoration:underline;text-underline-offset:3px;transition:color .2s}
     .ai-manual-link:hover{color:var(--text)}
     /* progress state */
@@ -403,30 +404,49 @@ src="https://www.facebook.com/tr?id=4162905814000026&ev=PageView&noscript=1"
 <!-- Dedicated AI setup screen -->
 <section id="ai-setup" class="ai-wrap" style="display:none">
   <div class="pill" style="justify-content:center;margin-bottom:1.4rem"><span class="dot"></span>AI setup</div>
-  <h1 class="choice-hd">Describe your <em>clinic.</em></h1>
-  <p class="choice-sub">Like you would on a phone call - a sentence or two is plenty. Claude drafts the whole portal from it.</p>
-  <div class="ai-card">
-    <div class="field" style="margin-bottom:1.2rem">
-      <label class="field-lbl" for="f-site-url">Already have a website? Import it &middot; most accurate</label>
-      <input id="f-site-url" class="inp" type="text" inputmode="url" autocomplete="url" spellcheck="false" placeholder="yourclinic.com"/>
-      <div class="field-help">We read your real services, products, prices, logo, and contact details straight from your site - nothing invented.</div>
+
+  <!-- Stage 1: the website. One question, nothing else on screen. -->
+  <div class="ai-stage" id="ai-stage-url">
+    <h1 class="choice-hd">What's your <em>website?</em></h1>
+    <p class="choice-sub">We read your real services, prices, products, logo, and contact details straight from your site - nothing invented.</p>
+    <div class="ai-card" id="ai-card-url">
+      <div class="field" style="margin-bottom:0">
+        <label class="field-lbl" for="f-site-url">Your website address</label>
+        <input id="f-site-url" class="inp" type="text" inputmode="url" autocomplete="url" spellcheck="false" placeholder="yourclinic.com"/>
+      </div>
+      <div class="ai-actions">
+        <button class="btn btn-solid btn-lg-setup" id="btn-import-site">Import my website →</button>
+        <button class="ai-manual-link" id="btn-no-website" type="button">I don't have a website</button>
+      </div>
     </div>
-    <label class="field-lbl" for="f-design-text" style="display:block;margin-bottom:.55rem" id="ai-notes-lbl">Or describe your clinic &middot; with a website above, this is optional notes</label>
-    <textarea id="f-design-text" class="txa" aria-label="Describe your clinic" placeholder="We're a family-run aesthetics clinic in midtown Toronto. We focus on natural results and long-term skin health - botox, fillers, microneedling, and IV vitamin therapy."></textarea>
-    <div class="ai-examples" id="ai-examples" aria-label="Example descriptions">
-      <button class="ai-example" type="button">Med spa</button>
-      <button class="ai-example" type="button">Family practice</button>
-      <button class="ai-example" type="button">Physiotherapy</button>
-      <button class="ai-example" type="button">Dental clinic</button>
+  </div>
+
+  <!-- Stage 2: describe it instead. -->
+  <div class="ai-stage" id="ai-stage-desc" style="display:none">
+    <h1 class="choice-hd">Describe your <em>clinic.</em></h1>
+    <p class="choice-sub">Like you would on a phone call - a sentence or two is plenty. Claude drafts the whole portal from it.</p>
+    <div class="ai-card" id="ai-card-desc">
+      <textarea id="f-design-text" class="txa" aria-label="Describe your clinic" placeholder="We're a family-run aesthetics clinic in midtown Toronto. We focus on natural results and long-term skin health - botox, fillers, microneedling, and IV vitamin therapy."></textarea>
+      <div class="ai-examples" id="ai-examples" aria-label="Example descriptions">
+        <button class="ai-example" type="button">Med spa</button>
+        <button class="ai-example" type="button">Family practice</button>
+        <button class="ai-example" type="button">Physiotherapy</button>
+        <button class="ai-example" type="button">Dental clinic</button>
+      </div>
+      <div class="ai-actions">
+        <button class="btn btn-solid btn-lg-setup" id="btn-design-ai">Design my portal →</button>
+        <span class="ai-links">
+          <button class="ai-manual-link" id="btn-has-website" type="button">← I do have a website</button>
+          <button class="ai-manual-link" id="btn-design-skip" type="button">Set it up manually</button>
+        </span>
+      </div>
     </div>
-    <div class="ai-progress" id="ai-design">
-      <div class="ai-progress-line"><span class="typing-dots"><span></span><span></span><span></span></span><span id="ai-design-status">Reading your description…</span></div>
-      <div class="ai-progress-bar"><span id="ai-design-bar"></span></div>
-    </div>
-    <div class="ai-actions">
-      <button class="btn btn-solid btn-lg-setup" id="btn-design-ai">Design my portal →</button>
-      <button class="ai-manual-link" id="btn-design-skip" type="button">I'd rather set it up manually</button>
-    </div>
+  </div>
+
+  <!-- Shared progress; moved into whichever card is active. -->
+  <div class="ai-progress" id="ai-design">
+    <div class="ai-progress-line"><span class="typing-dots"><span></span><span></span><span></span></span><span id="ai-design-status">Reading your description…</span></div>
+    <div class="ai-progress-bar"><span id="ai-design-bar"></span></div>
   </div>
 </section>
 
@@ -1244,7 +1264,28 @@ $('#btn-products-ai').addEventListener('click', () => runProductsAI());
 // ── Dedicated AI setup — Claude designs the entire portal from one
 // paragraph, fans the result across every wizard field, then drops the
 // owner on the review step. Everything stays editable.
-$('#btn-choice-ai').addEventListener('click', () => { showView('ai'); $('#f-design-text').focus(); });
+// The AI screen asks one question at a time: the website first, and only
+// the description if they say they don't have one.
+function setAiStage(stage){
+  const isUrl = stage !== 'desc';
+  $('#ai-stage-url').style.display  = isUrl ? '' : 'none';
+  $('#ai-stage-desc').style.display = isUrl ? 'none' : '';
+  // Keep the progress readout inside whichever card is on screen.
+  const card = isUrl ? $('#ai-card-url') : $('#ai-card-desc');
+  card.insertBefore($('#ai-design'), card.querySelector('.ai-actions'));
+  $('#ai-design').classList.remove('show');
+  $('#ai-design-bar').style.width = '0';
+  setTimeout(() => (isUrl ? $('#f-site-url') : $('#f-design-text')).focus(), 60);
+}
+function openAiSetup(){
+  showView('ai');
+  // Someone resuming a draft they described (no website) skips straight
+  // back to the description they already wrote.
+  setAiStage($('#f-design-text').value.trim() && !$('#f-site-url').value.trim() ? 'desc' : 'url');
+}
+$('#btn-no-website').addEventListener('click', () => setAiStage('desc'));
+$('#btn-has-website').addEventListener('click', () => setAiStage('url'));
+$('#btn-choice-ai').addEventListener('click', openAiSetup);
 $('#btn-choice-manual').addEventListener('click', () => { showView('wizard'); goStep(1, true); $('#f-name').focus(); });
 
 // Saved-draft resume card — continuing is explicit, never automatic.
@@ -1264,7 +1305,7 @@ $('#btn-start-over').addEventListener('click', async () => {
     toast('Could not delete the draft: ' + err.message, 'error');
   }
 });
-$('#btn-side-ai').addEventListener('click', () => { showView('ai'); $('#f-design-text').focus(); });
+$('#btn-side-ai').addEventListener('click', openAiSetup);
 $('#btn-design-skip').addEventListener('click', () => { showView('wizard'); goStep(1, true); $('#f-name').focus(); });
 
 // Example starters — a tap replaces the blank page problem.
@@ -1389,11 +1430,7 @@ async function applyImportedLogo(logo){
   }
 }
 
-$('#btn-design-ai').addEventListener('click', async () => {
-  const siteUrl = $('#f-site-url').value.trim();
-  const txt = $('#f-design-text').value.trim();
-  if (!siteUrl && !txt) { toast('Enter your website, or describe your clinic - one sentence is fine.', 'error'); $('#f-site-url').focus(); return; }
-  const btn = $('#btn-design-ai');
+async function runDesign(btn, siteUrl, txt){
   btn.disabled = true;
   startAiProgress(siteUrl ? AI_STAGES_SITE : AI_STAGES_DESC);
   try {
@@ -1419,11 +1456,25 @@ $('#btn-design-ai').addEventListener('click', async () => {
     }, 900);
   } catch (err) {
     clearInterval(aiStageTimer); aiStageTimer = null;
-    $('#ai-design-status').textContent = (siteUrl ? 'Import failed: ' : 'AI design failed: ') + err.message + ' - try again, or set up manually.';
+    $('#ai-design-status').textContent = (siteUrl ? 'Import failed: ' : 'AI design failed: ') + err.message +
+      (siteUrl ? " - try again, or choose “I don't have a website”." : ' - try again, or set it up manually.');
     $('#ai-design-bar').style.width = '0';
   } finally {
     btn.disabled = false;
   }
+}
+$('#f-site-url').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') { e.preventDefault(); $('#btn-import-site').click(); }
+});
+$('#btn-import-site').addEventListener('click', () => {
+  const siteUrl = $('#f-site-url').value.trim();
+  if (!siteUrl) { toast('Enter your website address, or choose "I don\'t have a website".', 'error'); $('#f-site-url').focus(); return; }
+  runDesign($('#btn-import-site'), siteUrl, '');
+});
+$('#btn-design-ai').addEventListener('click', () => {
+  const txt = $('#f-design-text').value.trim();
+  if (!txt) { toast('Describe your clinic first - one sentence is fine.', 'error'); $('#f-design-text').focus(); return; }
+  runDesign($('#btn-design-ai'), '', txt);
 });
 
 // Step 4 — brand polish
