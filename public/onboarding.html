@@ -335,6 +335,12 @@ src="https://www.facebook.com/tr?id=4162905814000026&ev=PageView&noscript=1"
   <h1 class="choice-hd">Describe your <em>clinic.</em></h1>
   <p class="choice-sub">Like you would on a phone call - a sentence or two is plenty. Claude drafts the whole portal from it.</p>
   <div class="ai-card">
+    <div class="field" style="margin-bottom:1.2rem">
+      <label class="field-lbl" for="f-site-url">Already have a website? Import it &middot; most accurate</label>
+      <input id="f-site-url" class="inp" type="text" inputmode="url" autocomplete="url" spellcheck="false" placeholder="yourclinic.com"/>
+      <div class="field-help">We read your real services, products, prices, logo, and contact details straight from your site - nothing invented.</div>
+    </div>
+    <label class="field-lbl" for="f-design-text" style="display:block;margin-bottom:.55rem" id="ai-notes-lbl">Or describe your clinic &middot; with a website above, this is optional notes</label>
     <textarea id="f-design-text" class="txa" aria-label="Describe your clinic" placeholder="We're a family-run aesthetics clinic in midtown Toronto. We focus on natural results and long-term skin health - botox, fillers, microneedling, and IV vitamin therapy."></textarea>
     <div class="ai-examples" id="ai-examples" aria-label="Example descriptions">
       <button class="ai-example" type="button">Med spa</button>
@@ -1068,87 +1074,135 @@ $$('.ai-example').forEach((b) => b.addEventListener('click', () => {
 
 // Staged status while the one API call runs — honest about being a draft
 // process, and far better than a frozen spinner.
-const AI_STAGES = ['Reading your description…','Naming your services and prices…','Writing your tagline and page copy…','Choosing an accent palette…','Reserving your web address…','Putting it all together…'];
+const AI_STAGES_DESC = ['Reading your description…','Naming your services and prices…','Writing your tagline and page copy…','Choosing an accent palette…','Reserving your web address…','Putting it all together…'];
+const AI_STAGES_SITE = ['Opening your website…','Reading your services and pricing pages…','Collecting your products…','Finding your logo and contact details…','Writing your tagline and page copy…','Reserving your web address…','Putting it all together…'];
 let aiStageTimer = null;
-function startAiProgress(){
+function startAiProgress(stages){
   const box = $('#ai-design'); const stat = $('#ai-design-status'); const bar = $('#ai-design-bar');
   box.classList.add('show');
   let i = 0;
-  stat.textContent = AI_STAGES[0]; bar.style.width = '8%';
+  stat.textContent = stages[0]; bar.style.width = '8%';
   aiStageTimer = setInterval(() => {
-    i = Math.min(i + 1, AI_STAGES.length - 1);
-    stat.textContent = AI_STAGES[i];
-    bar.style.width = (8 + (i / (AI_STAGES.length - 1)) * 82) + '%';
-  }, 2400);
+    i = Math.min(i + 1, stages.length - 1);
+    stat.textContent = stages[i];
+    bar.style.width = (8 + (i / (stages.length - 1)) * 82) + '%';
+  }, 2600);
 }
-function stopAiProgress(ok){
+function stopAiProgress(ok, msg){
   clearInterval(aiStageTimer); aiStageTimer = null;
   const bar = $('#ai-design-bar');
-  if (ok) { bar.style.width = '100%'; $('#ai-design-status').textContent = 'Done - taking you to your draft.'; }
+  if (ok) { bar.style.width = '100%'; $('#ai-design-status').textContent = msg || 'Done - taking you to your draft.'; }
 }
+
+// Fan an AI design result (from description or website import) out across
+// every wizard field. `sourceText` seeds the per-step free-text boxes.
+function applyDesign(out, sourceText){
+  if (out.name && !$('#f-name').value) $('#f-name').value = out.name;
+  if (out.specialty && !$('#f-specialty').value) $('#f-specialty').value = out.specialty;
+  if (out.location && !$('#f-location').value)   $('#f-location').value   = out.location;
+  if (out.tagline) $('#f-tagline').value         = out.tagline;
+  if (out.description) $('#f-description').value = out.description;
+  if (out.voice) $('#f-voice').value             = out.voice;
+  if (out.accent) {
+    $$('.palette-chip').forEach(c => c.classList.toggle('active', c.dataset.accent === out.accent));
+  }
+  if (Array.isArray(out.services) && out.services.length) {
+    services = out.services.map(s => ({
+      name: s.name || '', category: s.category || 'Consultation',
+      duration_min: +s.duration_min || 60, price_cents: +s.price_cents || 0,
+      description: s.description || '',
+    })).filter(s => s.name.trim());
+    renderServices();
+    $('#f-services-text').value = sourceText;
+  }
+  if (Array.isArray(out.products) && out.products.length) {
+    products = out.products.map(p => ({
+      name: p.name || '', category: p.category || 'Skincare',
+      price_cents: +p.price_cents || 0, description: p.description || '',
+    })).filter(p => p.name.trim());
+    renderProducts();
+    $('#f-products-text').value = sourceText;
+  }
+  if (sourceText) $('#f-brand-text').value = sourceText;
+
+  // Contact details straight from the site, when the import found them.
+  if (out.source) {
+    if (out.source.siteEmail && !$('#f-email').value) $('#f-email').value = out.source.siteEmail;
+    if (out.source.sitePhone && !$('#f-phone').value) $('#f-phone').value = out.source.sitePhone;
+  }
+
+  // Suggest a slug — render chips for the user to pick.
+  if (Array.isArray(out.slugs) && out.slugs.length) {
+    const row = $('#slug-suggest'); row.innerHTML = '';
+    out.slugs.slice(0, 5).forEach(s => {
+      const chip = document.createElement('button');
+      chip.className = 'slug-chip'; chip.type = 'button'; chip.textContent = s;
+      chip.addEventListener('click', () => { $('#f-slug').value = s; $('#f-slug').dispatchEvent(new Event('input')); });
+      row.appendChild(chip);
+    });
+    // Auto-pick the first available candidate as the default.
+    $('#f-slug').value = out.slugs[0];
+    $('#f-slug').dispatchEvent(new Event('input'));
+  }
+}
+
+// An imported logo arrives as a data URL. Store it in the clinic's own
+// asset bucket (same path as a manual upload); fall back to hotlinking the
+// site's URL if the upload fails.
+async function applyImportedLogo(logo){
+  if (!logo) return;
+  try {
+    if (logo.dataUrl && org?.id && sb) {
+      const blob = await (await fetch(logo.dataUrl)).blob();
+      const ext = ({ 'image/png':'png','image/jpeg':'jpg','image/webp':'webp','image/svg+xml':'svg','image/x-icon':'ico','image/vnd.microsoft.icon':'ico' })[logo.contentType] || 'png';
+      const path = 'org_' + org.id + '/logo.' + ext;
+      const { error } = await sb.storage.from('clinic-assets').upload(path, blob, { upsert: true, cacheControl: '3600', contentType: logo.contentType });
+      if (error) throw error;
+      const { data } = sb.storage.from('clinic-assets').getPublicUrl(path);
+      org.logo_url = data.publicUrl + '?v=' + Date.now();
+    } else if (logo.url) {
+      org.logo_url = logo.url;
+    }
+  } catch(_e) {
+    if (logo.url) org.logo_url = logo.url;
+  }
+  if (org?.logo_url) {
+    $('#logo-preview').src = org.logo_url; $('#logo-preview').style.display = '';
+    $('#logo-zone-text').textContent = 'Click to replace';
+  }
+}
+
 $('#btn-design-ai').addEventListener('click', async () => {
+  const siteUrl = $('#f-site-url').value.trim();
   const txt = $('#f-design-text').value.trim();
-  if (!txt) { toast('Describe your clinic first, even one sentence is fine.', 'error'); $('#f-design-text').focus(); return; }
+  if (!siteUrl && !txt) { toast('Enter your website, or describe your clinic - one sentence is fine.', 'error'); $('#f-site-url').focus(); return; }
   const btn = $('#btn-design-ai');
   btn.disabled = true;
-  startAiProgress();
+  startAiProgress(siteUrl ? AI_STAGES_SITE : AI_STAGES_DESC);
   try {
-    const out = await aiExtract('design', txt);
-
-    // Spray the result across every step's fields.
-    if (out.name && !$('#f-name').value) $('#f-name').value = out.name;
-    if (out.specialty && !$('#f-specialty').value) $('#f-specialty').value = out.specialty;
-    if (out.location && !$('#f-location').value)   $('#f-location').value   = out.location;
-    if (out.tagline) $('#f-tagline').value         = out.tagline;
-    if (out.description) $('#f-description').value = out.description;
-    if (out.voice) $('#f-voice').value             = out.voice;
-    if (out.accent) {
-      $$('.palette-chip').forEach(c => c.classList.toggle('active', c.dataset.accent === out.accent));
+    let out;
+    if (siteUrl) {
+      out = await api('import-site', { method: 'POST', body: JSON.stringify({ url: siteUrl, notes: txt }) });
+    } else {
+      out = await aiExtract('design', txt);
     }
-
-    if (Array.isArray(out.services) && out.services.length) {
-      services = out.services.map(s => ({
-        name: s.name || '', category: s.category || 'Consultation',
-        duration_min: +s.duration_min || 60, price_cents: +s.price_cents || 0,
-        description: s.description || '',
-      })).filter(s => s.name.trim());
-      renderServices();
-      $('#f-services-text').value = txt;
-    }
-    if (Array.isArray(out.products) && out.products.length) {
-      products = out.products.map(p => ({
-        name: p.name || '', category: p.category || 'Skincare',
-        price_cents: +p.price_cents || 0, description: p.description || '',
-      })).filter(p => p.name.trim());
-      renderProducts();
-      $('#f-products-text').value = txt;
-    }
-    $('#f-brand-text').value = txt;
-
-    // Suggest a slug — render chips for the user to pick.
-    if (Array.isArray(out.slugs) && out.slugs.length) {
-      const row = $('#slug-suggest'); row.innerHTML = '';
-      out.slugs.slice(0, 5).forEach(s => {
-        const chip = document.createElement('button');
-        chip.className = 'slug-chip'; chip.type = 'button'; chip.textContent = s;
-        chip.addEventListener('click', () => { $('#f-slug').value = s; $('#f-slug').dispatchEvent(new Event('input')); });
-        row.appendChild(chip);
-      });
-      // Auto-pick the first available candidate as the default.
-      $('#f-slug').value = out.slugs[0];
-      $('#f-slug').dispatchEvent(new Event('input'));
-    }
-
-    stopAiProgress(true);
+    const seed = txt || (siteUrl ? 'Imported from ' + siteUrl : '');
+    applyDesign(out, seed);
+    await applyImportedLogo(out.logo);
+    const found = [];
+    if (Array.isArray(out.services) && out.services.length) found.push(out.services.length + ' services');
+    if (Array.isArray(out.products) && out.products.length) found.push(out.products.length + ' products');
+    if (out.logo) found.push('your logo');
+    stopAiProgress(true, siteUrl && found.length ? ('Imported ' + found.join(', ') + ' from your site.') : undefined);
     scheduleSave();
     setTimeout(() => {
       showView('wizard');
       goStep(4, true);
       toast('Your portal is drafted - review it below. Every step stays editable.');
-    }, 650);
+    }, 900);
   } catch (err) {
     clearInterval(aiStageTimer); aiStageTimer = null;
-    $('#ai-design-status').textContent = 'AI design failed: ' + err.message + ' - try again, or set up manually.';
+    $('#ai-design-status').textContent = (siteUrl ? 'Import failed: ' : 'AI design failed: ') + err.message + ' - try again, or set up manually.';
     $('#ai-design-bar').style.width = '0';
   } finally {
     btn.disabled = false;

@@ -17,6 +17,7 @@ import { checkRateLimit } from './_lib/rate-limit.js';
 import { getSupabaseAdmin, isSupabaseConfigured } from './_lib/supabase-admin.js';
 import { sanitizePortalHtml } from './_lib/sanitize.js';
 import { generatePortal } from './_lib/portal-generator.js';
+import { crawlSite } from './_lib/site-import.js';
 
 const RATE_LIMIT_WINDOW_S = 60;
 const RATE_LIMIT_MAX_REQUESTS = 30;
@@ -223,10 +224,31 @@ const EXTRACT_SCHEMAS = {
   },
 };
 
+// Same output shape as `design`, but grounded in the clinic's real website.
+// Fidelity is the whole point: this prompt forbids inventing anything that
+// is not in the crawled content.
+EXTRACT_SCHEMAS.design_site = {
+  description: [
+    'You are given the ACTUAL text content crawled from the clinic\'s existing website, plus optional owner notes.',
+    'Accuracy is paramount - extract, do not imagine:',
+    '- Use the clinic\'s real name exactly as the site presents it.',
+    '- List the services the site actually offers, names as printed (normalise casing only). Do NOT add plausible-but-absent services.',
+    '- Include a price ONLY when one is printed on the site (integer cents; CAD unless the site clearly says otherwise). Use 0 when no price is shown.',
+    '- duration_min: use the stated duration when printed; otherwise a conservative standard estimate for that treatment type.',
+    '- Products: only items the site actually sells or lists for retail. If none, return an empty array.',
+    '- Location, speciality: only from the site content.',
+    '- Tagline and description: derive from the site\'s own wording, tightened to the limits - do not introduce new claims.',
+    '- The owner\'s notes, when present, are corrections and override the site.',
+    '- accent: pick the allowed hex closest to the site\'s brand feel; if unclear, choose by speciality.',
+    '- slugs: 3 candidates from the clinic\'s real name.',
+  ].join('\n'),
+  schema: EXTRACT_SCHEMAS.design.schema,
+};
+
 // Try Anthropic Claude Sonnet first (better for design tasks), fall back
 // to Google Gemini if no Anthropic key is configured. Both go through a
 // strict JSON-mode contract so the wizard can rely on the schema.
-async function callAIJson({ kind, text, org }) {
+async function callAIJson({ kind, text, org, maxTokens }) {
   const conf = EXTRACT_SCHEMAS[kind];
   if (!conf) throw new Error('Unsupported extract kind');
 
@@ -253,15 +275,15 @@ async function callAIJson({ kind, text, org }) {
   // Prefer Anthropic if available. Their JSON-mode behaviour is sturdier
   // for nested schemas and the Sonnet model writes better design copy.
   if (process.env.ANTHROPIC_API_KEY) {
-    return await callAnthropicJson({ systemPrompt, userPrompt, schema: conf.schema });
+    return await callAnthropicJson({ systemPrompt, userPrompt, schema: conf.schema, maxTokens });
   }
   if (process.env.GEMINI_API_KEY) {
-    return await callGeminiJson({ systemPrompt, userPrompt, schema: conf.schema });
+    return await callGeminiJson({ systemPrompt, userPrompt, schema: conf.schema, maxTokens });
   }
   throw new Error('No AI provider configured (set ANTHROPIC_API_KEY or GEMINI_API_KEY).');
 }
 
-async function callAnthropicJson({ systemPrompt, userPrompt, schema }) {
+async function callAnthropicJson({ systemPrompt, userPrompt, schema, maxTokens }) {
   const ctrl = new AbortController();
   const timeout = setTimeout(() => ctrl.abort(), 28000);
   try {
@@ -277,7 +299,7 @@ async function callAnthropicJson({ systemPrompt, userPrompt, schema }) {
       },
       body: JSON.stringify({
         model: process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-5',
-        max_tokens: 2048,
+        max_tokens: maxTokens || 2048,
         system: systemPrompt,
         tools: [{
           name: 'emit_result',
@@ -301,7 +323,7 @@ async function callAnthropicJson({ systemPrompt, userPrompt, schema }) {
   }
 }
 
-async function callGeminiJson({ systemPrompt, userPrompt, schema }) {
+async function callGeminiJson({ systemPrompt, userPrompt, schema, maxTokens }) {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) throw new Error('Gemini key not configured');
   const model = process.env.GEMINI_MODEL || 'gemini-2.0-flash';
@@ -319,7 +341,7 @@ async function callGeminiJson({ systemPrompt, userPrompt, schema }) {
           contents: [{ role: 'user', parts: [{ text: userPrompt }] }],
           generationConfig: {
             temperature: 0.3,
-            maxOutputTokens: 2048,
+            maxOutputTokens: maxTokens || 2048,
             responseMimeType: 'application/json',
             responseSchema: schema,
           },
@@ -498,6 +520,63 @@ export default async function handler(req, res) {
       }
 
       return res.status(200).json(out);
+    }
+
+    // ── POST ?action=import-site ─────────────────────────────────────
+    // body: { url, notes }
+    // Crawls the clinic's existing website (homepage + a handful of
+    // service/product/about pages), then runs the strict design_site
+    // extraction over the real content. Returns the same shape as the
+    // `design` extract, plus the discovered logo and crawl provenance.
+    if (req.method === 'POST' && action === 'import-site') {
+      const body = req.body || {};
+      const url = String(body.url || '').trim().slice(0, 300);
+      const notes = String(body.notes || '').trim().slice(0, 2000);
+      if (!url) return res.status(400).json({ error: 'Enter your website address.' });
+
+      let site;
+      try {
+        site = await crawlSite(url);
+      } catch (e) {
+        return res.status(400).json({ error: e.message || 'Could not read that site.' });
+      }
+      if (!site.text || site.text.length < 200) {
+        return res.status(400).json({ error: 'That site has too little readable content to import. Describe your clinic instead.' });
+      }
+
+      const org = await getOrCreateOwnerOrg(admin, user);
+      const grounding = [
+        `WEBSITE CONTENT (crawled live from ${site.finalUrl}):`,
+        site.text,
+        `SITE METADATA: ${JSON.stringify(site.meta)}`,
+        notes ? `OWNER'S NOTES (corrections and additions - these override the site):\n${notes}` : '',
+      ].filter(Boolean).join('\n\n');
+      const out = await callAIJson({ kind: 'design_site', text: grounding, org, maxTokens: 4096 });
+
+      // Scrub slug candidates against reserved + taken, same as `design`.
+      if (Array.isArray(out.slugs)) {
+        const cleaned = out.slugs.map(slugify).filter((s) => s.length >= 3);
+        const { data: reserved } = await admin.from('reserved_slugs').select('slug');
+        const reservedSet = new Set((reserved || []).map((r) => r.slug));
+        const { data: taken } = await admin
+          .from('organizations')
+          .select('slug')
+          .neq('owner_id', user.id)
+          .not('slug', 'is', null);
+        const takenSet = new Set((taken || []).map((r) => r.slug));
+        out.slugs = cleaned.filter((s) => !reservedSet.has(s) && !takenSet.has(s));
+      }
+
+      return res.status(200).json({
+        ...out,
+        logo: site.logo || null,
+        source: {
+          url: site.finalUrl,
+          pages: site.pagesCrawled,
+          siteEmail: site.meta.email || '',
+          sitePhone: site.meta.phone || '',
+        },
+      });
     }
 
     // ── POST ?action=publish ─────────────────────────────────────────
