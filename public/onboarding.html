@@ -286,6 +286,13 @@
     .plan-status.ok::before{content:'✓'}
     .plan-secure{display:flex;align-items:center;gap:.45rem;font-size:.72rem;color:var(--mute);margin-top:.9rem}
 
+    /* In-page Stripe Embedded Checkout */
+    .checkout-panel{margin-top:1.8rem;padding-top:1.6rem;border-top:1px dashed var(--border);animation:rise .5s var(--ease) both}
+    .checkout-head{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:1.1rem}
+    .checkout-close{background:none;border:none;cursor:pointer;font-family:inherit;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);transition:color .2s}
+    .checkout-close:hover{color:var(--text)}
+    #checkout-mount{min-height:220px}
+
     /* Opening hours grid (brand step) */
     .hours-list{display:flex;flex-direction:column;gap:.45rem;margin-top:.3rem}
     .hours-row{display:grid;grid-template-columns:5.5rem 1fr auto 1fr auto;gap:.6rem;align-items:center}
@@ -653,7 +660,7 @@ src="https://www.facebook.com/tr?id=4162905814000026&ev=PageView&noscript=1"
           </div>
           <p class="plan-secure"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Secure checkout by Stripe</p>
         </div>
-        <ul class="ai-points plan-points">
+        <ul class="plan-points">
           <li>Your branded portal, live at acuros.ca/c/your-address</li>
           <li>AI editor - change your live page by describing it</li>
           <li>Online bookings, confirmed within one business day</li>
@@ -661,6 +668,15 @@ src="https://www.facebook.com/tr?id=4162905814000026&ev=PageView&noscript=1"
           <li>AI health assistant for your patients, 24/7</li>
           <li>PIPEDA-compliant records on Canadian servers</li>
         </ul>
+      </div>
+
+      <!-- Stripe Embedded Checkout mounts here — payment happens on this page -->
+      <div class="checkout-panel" id="checkout-panel" hidden>
+        <div class="checkout-head">
+          <span class="plus-kicker" style="margin:0">Secure payment</span>
+          <button class="checkout-close" id="checkout-close" type="button">Cancel</button>
+        </div>
+        <div id="checkout-mount"></div>
       </div>
 
       <div class="nav-row">
@@ -1568,22 +1584,63 @@ bootAuth();
   const cont = $id('btn-plus-continue');
   if (!pub || !status) return;
 
-  // Stripe Checkout: the server creates a subscription session tied to this
-  // user and we redirect in the same tab. The static payment link stays as
-  // the href so the button still works if STRIPE_SECRET_KEY isn't set.
+  // Stripe Embedded Checkout — the card form renders INSIDE this page. We
+  // only leave acuros.ca if embedded mode is unavailable (no publishable
+  // key), in which case we fall back to the hosted page, then the link.
   const payLinkEl = $id('plus-pay-link');
+  const panel = $id('checkout-panel');
+  const mount = $id('checkout-mount');
+  let checkoutInstance = null;
+
+  function loadStripeJs() {
+    if (window.Stripe) return Promise.resolve();
+    if (!loadStripeJs._p) {
+      loadStripeJs._p = new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = 'https://js.stripe.com/v3/';
+        s.onload = resolve;
+        s.onerror = () => reject(new Error('Could not load Stripe.'));
+        document.head.appendChild(s);
+      });
+    }
+    return loadStripeJs._p;
+  }
+
+  async function closeCheckout() {
+    if (checkoutInstance) { try { checkoutInstance.destroy(); } catch (_e) {} checkoutInstance = null; }
+    if (panel) panel.hidden = true;
+    if (payLinkEl) { payLinkEl.textContent = 'Get Acuros Plus →'; payLinkEl.style.pointerEvents = ''; }
+  }
+  const closeBtn = $id('checkout-close');
+  if (closeBtn) closeBtn.addEventListener('click', closeCheckout);
+
   if (payLinkEl) payLinkEl.addEventListener('click', async (e) => {
-    if (window.fbq) fbq('track', 'InitiateCheckout');
     e.preventDefault();
-    const original = payLinkEl.textContent;
+    if (window.fbq) fbq('track', 'InitiateCheckout');
+    if (panel && !panel.hidden) { closeCheckout(); return; }
     payLinkEl.textContent = 'Opening secure checkout…';
     payLinkEl.style.pointerEvents = 'none';
     try {
-      const out = await api('checkout', { method: 'POST', body: JSON.stringify({}) });
-      if (!out?.url) throw new Error('No checkout URL returned.');
-      window.location.href = out.url;                       // same-tab redirect
+      const out = await api('checkout', { method: 'POST', body: JSON.stringify({ mode: 'embedded' }) });
+
+      // Preferred path: mount Stripe's form on this page.
+      if (out?.clientSecret && out?.publishableKey) {
+        await loadStripeJs();
+        const stripe = window.Stripe(out.publishableKey);
+        checkoutInstance = await stripe.initEmbeddedCheckout({ clientSecret: out.clientSecret });
+        mount.innerHTML = '';
+        panel.hidden = false;
+        checkoutInstance.mount('#checkout-mount');
+        payLinkEl.textContent = 'Hide checkout';
+        payLinkEl.style.pointerEvents = '';
+        panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+      // No publishable key configured — use the hosted Stripe page.
+      if (out?.url) { window.location.href = out.url; return; }
+      throw new Error('Checkout is unavailable right now.');
     } catch (err) {
-      payLinkEl.textContent = original;
+      payLinkEl.textContent = 'Get Acuros Plus →';
       payLinkEl.style.pointerEvents = '';
       if (err.code === 'STRIPE_NOT_CONFIGURED') {
         window.open(payLinkEl.href, '_blank', 'noopener');   // legacy fallback
@@ -1664,6 +1721,7 @@ bootAuth();
     status.textContent = paid ? 'Membership active - you’re all set.' : 'No active membership yet - publishing unlocks the moment you subscribe.';
     status.classList.toggle('ok', paid);
     if (payRow) payRow.style.display = paid ? 'none' : '';
+    if (paid) closeCheckout();   // tear down the embedded form once subscribed
     if (cont) { cont.disabled = !paid && !published; cont.title = (paid || published) ? '' : 'Complete your membership to continue'; }
     pub.disabled = !paid;
     pub.title = paid ? '' : 'Publishing requires Acuros Plus';

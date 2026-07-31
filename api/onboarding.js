@@ -605,12 +605,24 @@ export default async function handler(req, res) {
         } catch (_e) { /* fall through to inline price_data */ }
       }
 
+      // Embedded mode renders Stripe's payment form INSIDE acuros.ca (an
+      // iframe mounted on the Membership step) instead of sending the owner
+      // to checkout.stripe.com. Falls back to hosted redirect when no
+      // publishable key is configured, since Stripe.js needs one.
+      const pk = process.env.STRIPE_PUBLISHABLE_KEY || '';
+      const embedded = String((req.body && req.body.mode) || '') === 'embedded' && !!pk;
+
       const p = new URLSearchParams();
       p.set('mode', 'subscription');
       p.set('client_reference_id', user.id);
       if (user.email) p.set('customer_email', user.email);
-      p.set('success_url', retOrigin + '/onboarding?checkout=success&session_id={CHECKOUT_SESSION_ID}');
-      p.set('cancel_url', retOrigin + '/onboarding?checkout=cancelled');
+      if (embedded) {
+        p.set('ui_mode', 'embedded');
+        p.set('return_url', retOrigin + '/onboarding?checkout=success&session_id={CHECKOUT_SESSION_ID}');
+      } else {
+        p.set('success_url', retOrigin + '/onboarding?checkout=success&session_id={CHECKOUT_SESSION_ID}');
+        p.set('cancel_url', retOrigin + '/onboarding?checkout=cancelled');
+      }
       p.set('allow_promotion_codes', 'true');
       p.set('subscription_data[metadata][supabase_user_id]', user.id);
       p.set('line_items[0][quantity]', '1');
@@ -623,7 +635,12 @@ export default async function handler(req, res) {
         p.set('line_items[0][price_data][product_data][name]', 'Acuros Plus');
       }
       const session = await stripeForm('checkout/sessions', p);
-      return res.status(200).json({ url: session.url, id: session.id });
+      return res.status(200).json({
+        url: session.url || null,
+        id: session.id,
+        clientSecret: embedded ? session.client_secret : null,
+        publishableKey: embedded ? pk : null,
+      });
     }
 
     // ── POST ?action=verify-checkout ─────────────────────────────────
