@@ -7,6 +7,7 @@ import BenefitsTabs from '@/components/BenefitsTabs';
 import Logo from '@/components/Logo';
 import Chip from '@/components/Chip';
 import { Reveal, Parallax, Medallion } from '@/components/fx';
+import StoreBadges, { APP_STORE_URL, GOOGLE_PLAY_URL } from '@/components/StoreBadges';
 
 const FAQS = [
   {
@@ -31,7 +32,7 @@ const FAQS = [
   },
   {
     q: 'Do patients need to install an app?',
-    a: 'No install is needed. Each clinic portal is a website at acuros.ca/c/your-slug, accessible from any browser. Guests get one free AI message; patients get full access after signing in.',
+    a: 'No install is needed - each clinic portal is a website at acuros.ca/c/your-slug, accessible from any browser. For the best experience on the go, the free Acuros app is available on the App Store (iOS) and Google Play (Android), with the same secure sign-in.',
   },
 ];
 
@@ -105,6 +106,7 @@ const JSONLD = {
       name: 'Acuros Health',
       applicationCategory: 'HealthApplication',
       operatingSystem: 'Web, iOS, Android',
+      downloadUrl: [APP_STORE_URL, GOOGLE_PLAY_URL],
       offers: { '@type': 'Offer', price: 0, priceCurrency: 'CAD', availability: 'https://schema.org/InStock' },
       publisher: { '@id': 'https://acuros.ca/#org' },
       description:
@@ -382,11 +384,45 @@ export default function Home() {
           </div>
         </section>
 
+        {/* ── App download ── */}
+        <section className="section appband" id="app">
+          <Reveal variant="fade">
+            <span className="eyebrow">
+              <span className="eyebrow-n">05</span> The app
+            </span>
+          </Reveal>
+          <div className="appband-grid">
+            <div className="appband-copy">
+              <Reveal as="h2" className="sec-title" variant="left">
+                Your clinic, <em>in your pocket.</em>
+              </Reveal>
+              <Reveal as="p" className="appband-lead" variant="left" delay={90}>
+                Book appointments, ask the AI assistant, earn rewards, and track your recovery - anywhere. The free
+                Acuros app is on the App Store and Google Play.
+              </Reveal>
+              <Reveal variant="left" delay={160}>
+                <StoreBadges />
+              </Reveal>
+              <Reveal as="p" className="appband-note" variant="left" delay={220}>
+                Free for patients. Same secure sign-in as the web portal.
+              </Reveal>
+            </div>
+            <Reveal variant="right" delay={120}>
+              <ul className="ai-points appband-points">
+                <li>AI health answers, 24/7</li>
+                <li>Bookings confirmed in one business day</li>
+                <li>Loyalty points on every visit</li>
+                <li>Guided post-treatment recovery scans</li>
+              </ul>
+            </Reveal>
+          </div>
+        </section>
+
         {/* ── FAQ — extractable answers, no accordions ── */}
         <section className="section" id="faq">
           <Reveal variant="fade">
             <span className="eyebrow">
-              <span className="eyebrow-n">05</span> Common questions
+              <span className="eyebrow-n">06</span> Common questions
             </span>
           </Reveal>
           <Reveal as="h2" className="sec-title">
@@ -431,7 +467,7 @@ export default function Home() {
           <div className="contact-info">
             <Reveal variant="fade">
               <span className="eyebrow">
-                <span className="eyebrow-n">06</span> Contact
+                <span className="eyebrow-n">07</span> Contact
               </span>
             </Reveal>
             <Reveal as="h2" variant="left">

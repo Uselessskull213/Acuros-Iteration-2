@@ -1,4 +1,5 @@
 import Logo from './Logo';
+import StoreBadges from './StoreBadges';
 
 export default function Footer() {
   return (
@@ -14,6 +15,7 @@ export default function Footer() {
           </div>
           <p>Patient engagement platform for modern clinics. Built in Canada.</p>
           <a href="mailto:info@acuros.ca">info@acuros.ca</a>
+          <StoreBadges size="sm" />
         </div>
         <nav aria-label="Platform">
           <h4>Platform</h4>

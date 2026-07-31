@@ -703,6 +703,26 @@ html.dark .nav.scrolled { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0
 .chat-typing span:nth-child(3) { animation-delay: 0.3s; margin-right: 6px; }
 @keyframes typing { 0%, 100% { opacity: 0.25; translate: 0 0; } 50% { opacity: 1; translate: 0 -3px; } }
 
+/* ── App download band ───────────────────────────────────── */
+.appband-grid { display: grid; grid-template-columns: 1.05fr 1fr; gap: clamp(2rem, 6vw, 5rem); align-items: center; }
+.appband-lead { color: var(--sub); max-width: 50ch; margin-bottom: 1.8rem; }
+.appband-note { color: var(--mute); font-size: 0.82rem; margin-top: 1.1rem; }
+.appband-points { gap: 0.9rem; }
+.appband-points li { font-size: 0.95rem; }
+.store-badges { display: flex; align-items: center; gap: 0.9rem; flex-wrap: wrap; }
+.store-badges a {
+  display: inline-flex;
+  border-radius: 9px;
+  transition: opacity 0.25s, box-shadow 0.25s;
+}
+.store-badges a:hover {
+  opacity: 0.88;
+  box-shadow: 0 10px 26px -12px rgba(var(--shadow-tint), 0.55);
+}
+.store-badges img { display: block; height: 52px; width: auto; }
+.store-badges-sm img { height: 38px; }
+.footer-brand .store-badges { margin-top: 1.1rem; }
+
 /* ── CTA banner ──────────────────────────────────────────── */
 .banner {
   position: relative;
@@ -872,6 +892,7 @@ html.dark .nav.scrolled { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0
   .tools-grid { grid-template-columns: 1fr; grid-template-rows: none; }
   .tool-tall { grid-row: auto; }
   .ai-grid { grid-template-columns: 1fr; }
+  .appband-grid { grid-template-columns: 1fr; }
   .contact { grid-template-columns: 1fr; }
   .footer-grid { grid-template-columns: 1fr 1fr; }
 }
