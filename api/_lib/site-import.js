@@ -13,7 +13,7 @@ const MAX_EXTRA_PAGES = 6;
 const MAX_LOGO_BYTES = 600_000;
 
 // Links worth following on a clinic site, by href or anchor text.
-const PAGE_HINTS = /service|treatment|procedure|product|shop|store|price|pricing|fee|about|contact|team|menu|offer/i;
+const PAGE_HINTS = /service|treatment|procedure|product|shop|store|price|pricing|fee|about|contact|team|menu|offer|hour|visit|location|book|appointment/i;
 
 class ImportError extends Error {
   constructor(msg, code) { super(msg); this.code = code || 'import_failed'; }
@@ -138,7 +138,10 @@ function getJsonLd(html) {
       const flat = Array.isArray(parsed) ? parsed : (parsed['@graph'] || [parsed]);
       for (const node of flat) {
         const type = String(node['@type'] || '');
-        if (/organization|localbusiness|medical|clinic|dentist|physician|store|service|product|offer/i.test(type)) {
+        // openingHoursSpecification is the single most reliable hours source
+        // on clinic sites — keep any node that carries it, whatever its type.
+        if (node.openingHoursSpecification || node.openingHours ||
+            /organization|localbusiness|medical|clinic|dentist|physician|store|service|product|offer/i.test(type)) {
           out.push(node);
         }
       }

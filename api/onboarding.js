@@ -106,6 +106,33 @@ function slugify(input) {
 
 const ALLOWED_EXTRACT_KINDS = new Set(['services', 'products', 'brand', 'slug', 'design']);
 
+// Normalise AI-extracted opening hours into availability rows:
+// [{day_of_week 0-6, start_time 'HH:MM', end_time 'HH:MM'}], closed days dropped.
+function normalizeHours(raw) {
+  if (!Array.isArray(raw)) return [];
+  const hhmm = (v) => {
+    const m = String(v || '').trim().match(/^(\d{1,2}):(\d{2})(?::\d{2})?$/);
+    if (!m) return null;
+    const h = Number(m[1]), mi = Number(m[2]);
+    if (h < 0 || h > 23 || mi < 0 || mi > 59) return null;
+    return String(h).padStart(2, '0') + ':' + m[2];
+  };
+  const seen = new Set();
+  const out = [];
+  for (const row of raw) {
+    // Accepts the AI shape ({day, open, close, closed}) and the normalised
+    // shape the wizard round-trips ({day_of_week, start_time, end_time}).
+    const day = Number(row?.day ?? row?.day_of_week);
+    if (!Number.isInteger(day) || day < 0 || day > 6 || seen.has(day)) continue;
+    if (row?.closed) { seen.add(day); continue; }
+    const start = hhmm(row?.open ?? row?.start_time), end = hhmm(row?.close ?? row?.end_time);
+    if (!start || !end || start >= end) continue;
+    seen.add(day);
+    out.push({ day_of_week: day, start_time: start, end_time: end });
+  }
+  return out.sort((a, b) => a.day_of_week - b.day_of_week);
+}
+
 const EXTRACT_SCHEMAS = {
   services: {
     description: 'Extract a clean list of bookable services from the clinic owner\'s free-text description.',
@@ -241,8 +268,26 @@ EXTRACT_SCHEMAS.design_site = {
     '- The owner\'s notes, when present, are corrections and override the site.',
     '- accent: pick the allowed hex closest to the site\'s brand feel; if unclear, choose by speciality.',
     '- slugs: 3 candidates from the clinic\'s real name.',
+    '- hours: the clinic\'s real opening hours, one entry per day the site states. day = 0 (Sunday) through 6 (Saturday); open/close as 24-hour "HH:MM". Mark closed:true for days the site says they are closed. If the site shows no hours at all, return an empty array - never guess hours.',
   ].join('\n'),
-  schema: EXTRACT_SCHEMAS.design.schema,
+  schema: (() => {
+    const s = JSON.parse(JSON.stringify(EXTRACT_SCHEMAS.design.schema));
+    s.properties.hours = {
+      type: 'array',
+      description: 'Opening hours exactly as published on the site. Empty when the site states none.',
+      items: {
+        type: 'object',
+        properties: {
+          day:    { type: 'integer', description: '0=Sunday … 6=Saturday' },
+          open:   { type: 'string', description: '24-hour HH:MM, e.g. "09:00". Empty when closed.' },
+          close:  { type: 'string', description: '24-hour HH:MM, e.g. "17:30". Empty when closed.' },
+          closed: { type: 'boolean', description: 'True when the clinic is closed that day.' },
+        },
+        required: ['day'],
+      },
+    };
+    return s;
+  })(),
 };
 
 // Try Anthropic Claude Sonnet first (better for design tasks), fall back
@@ -522,6 +567,94 @@ export default async function handler(req, res) {
       return res.status(200).json(out);
     }
 
+    // ── POST ?action=checkout ────────────────────────────────────────
+    // Creates a Stripe Checkout Session (subscription mode) for Acuros
+    // Plus and returns its URL. The webhook (api/stripe-webhook.js) flips
+    // profiles.tier on completion; verify-checkout below gives an instant
+    // unlock on return. Requires STRIPE_SECRET_KEY in the environment —
+    // without it the client falls back to the static payment link.
+    if (req.method === 'POST' && action === 'checkout') {
+      const sk = process.env.STRIPE_SECRET_KEY;
+      if (!sk) return res.status(501).json({ error: 'Stripe checkout is not configured.', code: 'STRIPE_NOT_CONFIGURED' });
+
+      const retOrigin = (_o && (_allow.includes(_o) || /^https:\/\/[a-z0-9-]+\.vercel\.app$/i.test(_o)))
+        ? _o : 'https://www.acuros.ca';
+      const stripeForm = async (path, params) => {
+        const resp = await fetch('https://api.stripe.com/v1/' + path, {
+          method: params ? 'POST' : 'GET',
+          headers: {
+            Authorization: 'Bearer ' + sk,
+            ...(params ? { 'Content-Type': 'application/x-www-form-urlencoded' } : {}),
+          },
+          body: params ? params.toString() : undefined,
+        });
+        const data = await resp.json().catch(() => ({}));
+        if (!resp.ok) throw new Error(data?.error?.message || ('Stripe ' + resp.status));
+        return data;
+      };
+
+      // Reuse the existing CA$150/month price when one exists (it backs the
+      // payment link) instead of minting a new product per session.
+      let priceId = process.env.STRIPE_PLUS_PRICE_ID || null;
+      if (!priceId) {
+        try {
+          const prices = await stripeForm('prices?active=true&type=recurring&limit=100', null);
+          const match = (prices.data || []).find((p) =>
+            p.currency === 'cad' && p.unit_amount === 15000 && p.recurring?.interval === 'month');
+          if (match) priceId = match.id;
+        } catch (_e) { /* fall through to inline price_data */ }
+      }
+
+      const p = new URLSearchParams();
+      p.set('mode', 'subscription');
+      p.set('client_reference_id', user.id);
+      if (user.email) p.set('customer_email', user.email);
+      p.set('success_url', retOrigin + '/onboarding?checkout=success&session_id={CHECKOUT_SESSION_ID}');
+      p.set('cancel_url', retOrigin + '/onboarding?checkout=cancelled');
+      p.set('allow_promotion_codes', 'true');
+      p.set('subscription_data[metadata][supabase_user_id]', user.id);
+      p.set('line_items[0][quantity]', '1');
+      if (priceId) {
+        p.set('line_items[0][price]', priceId);
+      } else {
+        p.set('line_items[0][price_data][currency]', 'cad');
+        p.set('line_items[0][price_data][unit_amount]', '15000');
+        p.set('line_items[0][price_data][recurring][interval]', 'month');
+        p.set('line_items[0][price_data][product_data][name]', 'Acuros Plus');
+      }
+      const session = await stripeForm('checkout/sessions', p);
+      return res.status(200).json({ url: session.url, id: session.id });
+    }
+
+    // ── POST ?action=verify-checkout ─────────────────────────────────
+    // body: { session_id } — instant unlock on return from Stripe. The
+    // webhook remains authoritative; this just removes the lag. The
+    // session must belong to the signed-in user and be paid.
+    if (req.method === 'POST' && action === 'verify-checkout') {
+      const sk = process.env.STRIPE_SECRET_KEY;
+      if (!sk) return res.status(501).json({ error: 'Stripe checkout is not configured.', code: 'STRIPE_NOT_CONFIGURED' });
+      const sid = String((req.body && req.body.session_id) || '').trim();
+      if (!/^cs_[a-zA-Z0-9_]+$/.test(sid)) return res.status(400).json({ error: 'Invalid session id.' });
+
+      const resp = await fetch('https://api.stripe.com/v1/checkout/sessions/' + encodeURIComponent(sid), {
+        headers: { Authorization: 'Bearer ' + sk },
+      });
+      const session = await resp.json().catch(() => ({}));
+      if (!resp.ok) return res.status(502).json({ error: session?.error?.message || 'Could not verify the session.' });
+      if (String(session.client_reference_id || '') !== user.id) {
+        return res.status(403).json({ error: 'That checkout session belongs to a different account.' });
+      }
+      const paid = session.payment_status === 'paid';
+      if (paid) {
+        const customerId = typeof session.customer === 'string' ? session.customer : null;
+        const patch = { tier: 'plus' };
+        if (customerId) patch.stripe_customer_id = customerId;
+        const { error } = await admin.from('profiles').update(patch).eq('id', user.id);
+        if (error) throw error;
+      }
+      return res.status(200).json({ paid, status: session.payment_status || session.status || 'unknown' });
+    }
+
     // ── POST ?action=import-site ─────────────────────────────────────
     // body: { url, notes }
     // Crawls the clinic's existing website (homepage + a handful of
@@ -569,6 +702,7 @@ export default async function handler(req, res) {
 
       return res.status(200).json({
         ...out,
+        hours: normalizeHours(out.hours),
         logo: site.logo || null,
         source: {
           url: site.finalUrl,
@@ -619,6 +753,19 @@ export default async function handler(req, res) {
 
       if (!org.slug) return res.status(400).json({ error: 'Pick a slug before publishing.' });
       if (!org.name || org.name.length < 2) return res.status(400).json({ error: 'Clinic name is required.' });
+
+      // Opening hours → bookable availability. Imported from the clinic's
+      // own website (or edited in the wizard); only replaced when the
+      // wizard actually sends hours, so an empty import never wipes
+      // availability an owner set up by hand.
+      const hourRows = normalizeHours(body.hours);
+      if (hourRows.length) {
+        await admin.from('availability').delete().eq('org_id', org.id);
+        const { error: hoursErr } = await admin.from('availability').insert(
+          hourRows.map((h) => ({ org_id: org.id, ...h, is_active: true }))
+        );
+        if (hoursErr) throw hoursErr;
+      }
 
       // Replace services
       if (Array.isArray(body.services)) {

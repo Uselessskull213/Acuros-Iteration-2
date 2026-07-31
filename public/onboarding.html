@@ -284,6 +284,19 @@
     .plan-status{display:inline-flex;align-items:center;gap:.55rem;font-size:.8rem;letter-spacing:.04em;color:var(--sub);border:1px dashed var(--border);border-radius:99px;padding:.5rem 1rem;margin-bottom:1.1rem}
     .plan-status.ok{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 45%,var(--border));background:color-mix(in srgb,var(--ok) 7%,transparent)}
     .plan-status.ok::before{content:'✓'}
+    .plan-secure{display:flex;align-items:center;gap:.45rem;font-size:.72rem;color:var(--mute);margin-top:.9rem}
+
+    /* Opening hours grid (brand step) */
+    .hours-list{display:flex;flex-direction:column;gap:.45rem;margin-top:.3rem}
+    .hours-row{display:grid;grid-template-columns:5.5rem 1fr auto 1fr auto;gap:.6rem;align-items:center}
+    @media(max-width:600px){.hours-row{grid-template-columns:4.4rem 1fr auto 1fr auto;gap:.4rem}}
+    .hours-day{font-size:.8rem;color:var(--sub)}
+    .hours-row .inp{padding:.5rem .6rem;font-size:.86rem;text-align:center}
+    .hours-sep{font-size:.78rem;color:var(--mute)}
+    .hours-row.off .inp{opacity:.4;pointer-events:none}
+    .hours-toggle{background:none;border:none;cursor:pointer;font-family:inherit;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);padding:.3rem .1rem;transition:color .2s;justify-self:end;min-width:4.6rem;text-align:right}
+    .hours-toggle:hover{color:var(--ac-ink)}
+    .hours-row.off .hours-toggle{color:var(--ac-ink)}
 
     /* ── Section entrance animations (restart on every step change) ── */
     @keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
@@ -590,6 +603,13 @@ src="https://www.facebook.com/tr?id=4162905814000026&ev=PageView&noscript=1"
         <input id="f-logo-input" type="file" accept="image/png,image/svg+xml,image/jpeg" style="display:none"/>
       </div>
 
+      <div class="block-kicker" style="margin-top:2.2rem">Opening hours</div>
+      <div class="field">
+        <label class="field-lbl">When patients can book</label>
+        <div class="hours-list" id="hours-list"></div>
+        <div class="field-help" id="hours-help">These become your bookable appointment times. Imported from your website when we find them - edit anything that's off.</div>
+      </div>
+
       <div class="block-kicker" style="margin-top:2.2rem">Your address</div>
       <div class="field">
         <label class="field-lbl" for="f-slug">Your portal URL</label>
@@ -631,6 +651,7 @@ src="https://www.facebook.com/tr?id=4162905814000026&ev=PageView&noscript=1"
                href="https://buy.stripe.com/fZu9AM1f89Wz2DjbWA4ko05">Get Acuros Plus →</a>
             <button id="plus-recheck" class="btn btn-outline" type="button">I&rsquo;ve paid — check again</button>
           </div>
+          <p class="plan-secure"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Secure checkout by Stripe</p>
         </div>
         <ul class="ai-points plan-points">
           <li>Your branded portal, live at acuros.ca/c/your-address</li>
@@ -699,6 +720,8 @@ let token   = null;
 let org     = null;          // organizations row for the signed-in owner
 let services = [];           // [{id?, name, category, duration_min, price_cents, description}]
 let products = [];           // [{id?, name, category, price_cents, description}]
+// Opening hours → bookable availability. [{day_of_week 0-6, start_time, end_time}]
+let hours = [];
 let currentStep = 1;
 let saveTimer = null;
 
@@ -747,6 +770,7 @@ async function bootAuth(){
   } catch(_e){}
   $('#gate').style.display = 'none';
   await loadState();
+  window.acurosReady = true;   // the Stripe-return handler waits on this
 }
 // ── Views: choice (first run) / ai (dedicated AI setup) / wizard ──
 function showView(name){
@@ -861,6 +885,9 @@ function hydrateForm(){
   products = Array.isArray(org.onboarding_state?.products) ? org.onboarding_state.products : [];
   renderProducts();
 
+  hours = Array.isArray(org.onboarding_state?.hours) ? org.onboarding_state.hours : [];
+  renderHours();
+
   $('#f-brand-text').value   = org.onboarding_state?.brandText || '';
   $('#f-tagline').value      = org.brand?.tagline || '';
   $('#f-voice').value        = org.brand?.voice   || '';
@@ -913,6 +940,7 @@ function collectPatch(){
       products,
       brandText:    $('#f-brand-text').value || '',
       designText:   $('#f-design-text').value || '',
+      hours,
     },
   };
   if (org?.logo_url) patch.logo_url = org.logo_url;
@@ -959,7 +987,7 @@ function goStep(n, fromLoad){
   if (prog) prog.style.width = ((n - 1) / (STEP_COUNT - 1) * 100) + '%';
   $('#topbar-meta').textContent = ['ABOUT YOU','WHAT YOU OFFER','BRAND & ADDRESS','MEMBERSHIP','REVIEW'][n - 1] || 'CLINIC ONBOARDING';
   currentStep = n;
-  if (n === 3) prefillSlug();
+  if (n === 3) { prefillSlug(); seedHours(); }
   if (n === 4 && window.plusApply) window.plusApply();
   if (n === 5) renderReview();
   if (!fromLoad) saveProgress(true);
@@ -1012,6 +1040,61 @@ document.addEventListener('keydown', (e) => {
   const next = step.querySelector('button[data-next]');
   if (next) { e.preventDefault(); next.click(); }
 });
+
+// ── Opening hours editor (one row per weekday) ──
+const DAY_NAMES = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+// Sensible default when a site publishes no hours: weekdays 9-5, weekend closed.
+const DEFAULT_HOURS = [1,2,3,4,5].map((d) => ({ day_of_week: d, start_time: '09:00', end_time: '17:00' }));
+function hhmm(v){
+  const m = String(v || '').trim().match(/^(\d{1,2}):(\d{2})/);
+  if (!m) return '';
+  const h = Math.min(23, Math.max(0, +m[1]));
+  return String(h).padStart(2,'0') + ':' + m[2];
+}
+// Never leave a clinic with zero bookable hours — if the site published
+// none, start from weekdays 9-5 (clearly editable) rather than nothing.
+function seedHours(){
+  if (hours.length) return;
+  hours = DEFAULT_HOURS.map((h) => ({ ...h }));
+  renderHours();
+  scheduleSave();
+}
+function renderHours(){
+  const root = $('#hours-list'); if (!root) return;
+  root.innerHTML = '';
+  DAY_NAMES.forEach((label, day) => {
+    const row = hours.find((h) => +h.day_of_week === day) || null;
+    const el = document.createElement('div');
+    el.className = 'hours-row' + (row ? '' : ' off');
+    el.innerHTML =
+      '<span class="hours-day">' + label + '</span>' +
+      '<input class="inp" type="time" data-f="start" value="' + escapeHtml(hhmm(row?.start_time) || '09:00') + '" aria-label="' + label + ' opening time"/>' +
+      '<span class="hours-sep">to</span>' +
+      '<input class="inp" type="time" data-f="end" value="' + escapeHtml(hhmm(row?.end_time) || '17:00') + '" aria-label="' + label + ' closing time"/>' +
+      '<button class="hours-toggle" type="button">' + (row ? 'Open' : 'Closed') + '</button>';
+
+    const writeBack = () => {
+      const start = hhmm(el.querySelector('[data-f=start]').value);
+      const end   = hhmm(el.querySelector('[data-f=end]').value);
+      const i = hours.findIndex((h) => +h.day_of_week === day);
+      if (el.classList.contains('off')) { if (i >= 0) hours.splice(i, 1); }
+      else if (start && end && start < end) {
+        const next = { day_of_week: day, start_time: start, end_time: end };
+        if (i >= 0) hours[i] = next; else hours.push(next);
+        hours.sort((a, b) => a.day_of_week - b.day_of_week);
+      }
+      scheduleSave();
+    };
+    el.querySelectorAll('[data-f]').forEach((inp) => inp.addEventListener('change', writeBack));
+    el.querySelector('.hours-toggle').addEventListener('click', () => {
+      const nowOff = !el.classList.contains('off');
+      el.classList.toggle('off', nowOff);
+      el.querySelector('.hours-toggle').textContent = nowOff ? 'Closed' : 'Open';
+      writeBack();
+    });
+    root.appendChild(el);
+  });
+}
 
 // ── Step 2/3: services + products list editor ──
 function renderServices(){ renderRowList('#services-list', services, 'service'); }
@@ -1233,6 +1316,16 @@ function applyDesign(out, sourceText){
   }
   if (sourceText) $('#f-brand-text').value = sourceText;
 
+  // Opening hours straight from the site → bookable availability.
+  if (Array.isArray(out.hours) && out.hours.length) {
+    hours = out.hours
+      .filter((h) => Number.isInteger(+h.day_of_week) && h.start_time && h.end_time)
+      .map((h) => ({ day_of_week: +h.day_of_week, start_time: h.start_time, end_time: h.end_time }));
+    renderHours();
+    const help = $('#hours-help');
+    if (help) help.textContent = 'Imported from your website - these become your bookable appointment times. Edit anything that looks off.';
+  }
+
   // Contact details straight from the site, when the import found them.
   if (out.source) {
     if (out.source.siteEmail && !$('#f-email').value) $('#f-email').value = out.source.siteEmail;
@@ -1425,6 +1518,7 @@ function renderReview(){
         '<dt>Contact</dt><dd>'+escapeHtml($('#f-email').value || '-')+'</dd>'+
         '<dt>Services</dt><dd>'+services.length+'</dd>'+
         '<dt>Products</dt><dd>'+products.length+'</dd>'+
+        '<dt>Open</dt><dd>'+(hours.length ? hours.length + ' day' + (hours.length === 1 ? '' : 's') + ' a week' : 'No hours set')+'</dd>'+
       '</dl>'+
     '</div>';
 }
@@ -1436,7 +1530,7 @@ $('#btn-publish').addEventListener('click', async () => {
   btn.disabled = true; btn.textContent = 'Designing your portal…';
   try {
     await saveProgress(true); // flush latest
-    const out = await api('publish', { method: 'POST', body: JSON.stringify({ services, products }) });
+    const out = await api('publish', { method: 'POST', body: JSON.stringify({ services, products, hours }) });
     if (window.fbq) fbq('track', 'CompleteRegistration');
     showBanner('Your clinic is live.', 'success');
     setTimeout(() => { window.location.href = out.url || '/'; }, 1200);
@@ -1474,8 +1568,59 @@ bootAuth();
   const cont = $id('btn-plus-continue');
   if (!pub || !status) return;
 
+  // Stripe Checkout: the server creates a subscription session tied to this
+  // user and we redirect in the same tab. The static payment link stays as
+  // the href so the button still works if STRIPE_SECRET_KEY isn't set.
   const payLinkEl = $id('plus-pay-link');
-  if (payLinkEl) payLinkEl.addEventListener('click', () => { if (window.fbq) fbq('track', 'InitiateCheckout'); });
+  if (payLinkEl) payLinkEl.addEventListener('click', async (e) => {
+    if (window.fbq) fbq('track', 'InitiateCheckout');
+    e.preventDefault();
+    const original = payLinkEl.textContent;
+    payLinkEl.textContent = 'Opening secure checkout…';
+    payLinkEl.style.pointerEvents = 'none';
+    try {
+      const out = await api('checkout', { method: 'POST', body: JSON.stringify({}) });
+      if (!out?.url) throw new Error('No checkout URL returned.');
+      window.location.href = out.url;                       // same-tab redirect
+    } catch (err) {
+      payLinkEl.textContent = original;
+      payLinkEl.style.pointerEvents = '';
+      if (err.code === 'STRIPE_NOT_CONFIGURED') {
+        window.open(payLinkEl.href, '_blank', 'noopener');   // legacy fallback
+      } else {
+        status.textContent = 'Could not open checkout: ' + err.message;
+      }
+    }
+  });
+
+  // Returning from Stripe: verify the session for an instant unlock (the
+  // webhook stays authoritative), then clean the URL.
+  (async function handleCheckoutReturn(){
+    const q = new URLSearchParams(window.location.search);
+    const state = q.get('checkout');
+    if (!state) return;
+    const sid = q.get('session_id');
+    history.replaceState({}, '', window.location.pathname);
+    if (state === 'cancelled') {
+      status.textContent = 'Checkout cancelled - your setup is saved, you can subscribe whenever you’re ready.';
+      return;
+    }
+    if (state === 'success' && sid) {
+      status.textContent = 'Confirming your payment…';
+      // Wait for bootAuth to resolve the session before calling the API.
+      for (let i = 0; i < 40 && !window.acurosReady; i++) await new Promise((r) => setTimeout(r, 250));
+      for (let i = 0; i < 5; i++) {
+        try {
+          const out = await api('verify-checkout', { method: 'POST', body: JSON.stringify({ session_id: sid }) });
+          if (out?.paid) break;
+        } catch (_e) { /* retry — the session may still be settling */ }
+        await new Promise((r) => setTimeout(r, 1500));
+      }
+      await apply();
+      // Land them back on the Membership step, now unlocked.
+      if (typeof showView === 'function') { showView('wizard'); goStep(4, true); }
+    }
+  })();
 
   let paid = false;
   let sawUnpaid = false;
