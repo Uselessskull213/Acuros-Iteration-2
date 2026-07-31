@@ -83,21 +83,59 @@
     .hd em{color:var(--ac-ink);font-style:italic}
     .sub{font-size:.95rem;color:var(--sub);line-height:1.7;max-width:58ch;font-weight:300;margin-bottom:2rem}
 
-    /* Double-bezel step panel: machined outer tray + concentric inner core */
-    .panel{background:color-mix(in srgb,var(--text) 4%,transparent);border:1px solid color-mix(in srgb,var(--text) 8%,transparent);border-radius:24px;padding:6px}
-    .panel-core{background:var(--bg2);border:1px solid var(--border);border-radius:18px;padding:clamp(1.4rem,3vw,2.2rem);box-shadow:inset 0 1px 1px rgba(255,255,255,.35),0 1px 0 rgba(255,255,255,.2)}
-    html.dark .panel-core{box-shadow:inset 0 1px 1px rgba(255,255,255,.06)}
+    /* Step panel: one calm card, generous padding, soft ambient shadow */
+    .panel{background:transparent;border:none;padding:0}
+    .panel-core{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:clamp(1.8rem,4vw,2.8rem);box-shadow:0 30px 70px -48px rgba(var(--shadow-tint),.5),inset 0 1px 0 rgba(255,255,255,.3)}
+    html.dark .panel-core{box-shadow:0 30px 70px -48px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.05)}
 
     /* Field primitives */
-    .field{display:flex;flex-direction:column;gap:.5rem;margin-bottom:1.3rem}
-    .field-lbl{font-size:.64rem;letter-spacing:.18em;text-transform:uppercase;color:var(--mute);font-weight:500}
-    .field-help{font-size:.74rem;color:var(--mute);line-height:1.55;margin-top:.3rem}
-    .inp,.txa{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:.8rem 1rem;font-size:.92rem;color:var(--text);font-family:inherit;transition:border-color .22s,box-shadow .22s}
-    .inp:focus,.txa:focus{outline:none;border-color:var(--ac);box-shadow:0 0 0 3px color-mix(in srgb,var(--ac) 18%,transparent)}
+    .field{display:flex;flex-direction:column;gap:.55rem;margin-bottom:1.5rem}
+    .field-lbl{font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:var(--sub);font-weight:500}
+    .field-help{font-size:.78rem;color:var(--mute);line-height:1.55;margin-top:.3rem}
+    .inp,.txa{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:.95rem 1.1rem;font-size:1rem;color:var(--text);font-family:inherit;transition:border-color .22s,box-shadow .22s}
+    .inp:focus,.txa:focus{outline:none;border-color:var(--ac);box-shadow:0 0 0 3px color-mix(in srgb,var(--ac) 16%,transparent)}
     .inp::placeholder,.txa::placeholder{color:var(--mute)}
     .txa{resize:vertical;line-height:1.6;min-height:120px}
-    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.1rem}
     @media(max-width:600px){.grid-2{grid-template-columns:1fr}}
+
+    /* ── Mode choice: two large cards ── */
+    .choice-wrap{max-width:980px;margin:0 auto;padding:8.5rem 1.5rem 5rem;text-align:center}
+    .choice-hd{font-size:clamp(2.4rem,5vw,3.6rem);font-weight:200;letter-spacing:-.025em;margin-bottom:.7rem}
+    .choice-hd em{color:var(--ac-ink);font-style:italic}
+    .choice-sub{font-size:1rem;color:var(--sub);max-width:52ch;margin:0 auto 3rem;line-height:1.7}
+    .choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;text-align:left}
+    @media(max-width:760px){.choice-grid{grid-template-columns:1fr}}
+    .choice-card{position:relative;display:flex;flex-direction:column;gap:.7rem;padding:2.2rem 2rem;background:var(--bg2);border:1px solid var(--border);border-radius:20px;cursor:pointer;font-family:inherit;color:var(--text);text-align:left;transition:border-color .25s,box-shadow .25s,transform .25s var(--ease)}
+    .choice-card:hover{border-color:var(--ac);box-shadow:0 30px 70px -40px rgba(var(--shadow-tint),.5);transform:translateY(-2px)}
+    .choice-card.primary{background:linear-gradient(140deg,color-mix(in srgb,var(--ac) 9%,var(--bg2)),var(--bg2) 55%);border-color:color-mix(in srgb,var(--ac) 45%,var(--border))}
+    .choice-tag{position:absolute;top:1.3rem;right:1.3rem;font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;font-weight:500;color:var(--ac-ink);border:1px solid color-mix(in srgb,var(--ac) 45%,var(--border));border-radius:99px;padding:.3rem .7rem;background:color-mix(in srgb,var(--ac) 8%,transparent)}
+    .choice-icon{width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:12px;background:color-mix(in srgb,var(--ac) 12%,var(--bg));border:1px solid color-mix(in srgb,var(--ac) 30%,var(--border));color:var(--ac-ink);margin-bottom:.4rem}
+    .choice-card h2{font-family:'Cormorant Garamond',serif;font-size:1.7rem;font-weight:400;letter-spacing:-.01em}
+    .choice-card p{font-size:.92rem;color:var(--sub);line-height:1.65;flex:1}
+    .choice-cta{font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;font-weight:500;color:var(--ac-ink);margin-top:.6rem}
+
+    /* ── Dedicated AI setup screen ── */
+    .ai-wrap{max-width:760px;margin:0 auto;padding:8.5rem 1.5rem 5rem;text-align:center}
+    .ai-wrap .choice-hd{margin-bottom:.6rem}
+    .ai-wrap .choice-sub{margin-bottom:2.4rem}
+    .ai-card{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:clamp(1.6rem,4vw,2.4rem);text-align:left;box-shadow:0 30px 70px -48px rgba(var(--shadow-tint),.5)}
+    .ai-card .txa{min-height:170px;font-size:1.05rem;line-height:1.7}
+    .ai-examples{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.9rem}
+    .ai-example{padding:.45rem .95rem;border:1px solid var(--border);border-radius:99px;background:var(--bg);font-size:.76rem;color:var(--sub);cursor:pointer;font-family:inherit;transition:border-color .2s,color .2s}
+    .ai-example:hover{border-color:var(--ac);color:var(--ac-ink)}
+    .ai-actions{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-top:1.4rem}
+    .ai-manual-link{background:none;border:none;cursor:pointer;font-family:inherit;font-size:.8rem;color:var(--mute);text-decoration:underline;text-underline-offset:3px;transition:color .2s}
+    .ai-manual-link:hover{color:var(--text)}
+    /* progress state */
+    .ai-progress{display:none;margin-top:1.6rem;padding:1.3rem 1.4rem;border:1px solid var(--border);border-radius:14px;background:var(--bg)}
+    .ai-progress.show{display:block}
+    .ai-progress-line{display:flex;align-items:center;gap:.8rem;font-size:.9rem;color:var(--sub)}
+    .ai-progress-bar{height:3px;border-radius:99px;background:var(--bg3);margin-top:1rem;overflow:hidden}
+    .ai-progress-bar span{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,color-mix(in srgb,var(--ac) 70%,#fff),var(--ac));transition:width .8s var(--ease)}
+    .side-ai-link{display:inline-flex;align-items:center;gap:.5rem;margin-top:2rem;background:none;border:none;cursor:pointer;font-family:inherit;font-size:.76rem;color:var(--ac-ink);letter-spacing:.06em;transition:color .2s}
+    .side-ai-link:hover{color:var(--text)}
+    .side-ai-link .dot{width:5px;height:5px;background:var(--ac);clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)}
 
     /* Buttons — squared, tracked caps; colour/shadow feedback only, no movement */
     .btn{display:inline-flex;align-items:center;justify-content:center;gap:.55rem;padding:.72rem 1.5rem;min-height:44px;border-radius:10px;font-size:.76rem;letter-spacing:.12em;text-transform:uppercase;font-weight:500;font-family:'DM Sans',sans-serif;border:1px solid transparent;text-decoration:none;cursor:pointer;transition:background .25s,color .25s,border-color .25s,box-shadow .25s}
@@ -123,11 +161,7 @@
     .save-state.saved{color:var(--ok)}
     .save-state.error{color:var(--err)}
 
-    /* AI quickstart feature card (step 1) */
-    .quickstart{background:color-mix(in srgb,var(--ac) 4%,var(--bg2));border:1px dashed color-mix(in srgb,var(--ac) 45%,var(--border));border-radius:14px;padding:1.4rem 1.4rem 1.3rem;margin-bottom:2rem}
-    .quickstart .ai-helper-h{margin-bottom:.7rem}
-    .quickstart p{font-size:.84rem;color:var(--sub);line-height:1.65;margin-bottom:.9rem}
-    #ai-design{margin-top:.65rem}
+    .btn-lg-setup{padding:.95rem 2.1rem;font-size:.8rem}
 
     /* Editable list of services / products (rows are injected by JS) */
     .row-list{display:flex;flex-direction:column;gap:.6rem;margin-top:1.1rem}
@@ -171,10 +205,6 @@
     /* Setup progress — thin metal bar pinned to the very top */
     .setup-prog-track{position:fixed;top:0;left:0;right:0;height:2px;z-index:200;pointer-events:none}
     #setup-prog{display:block;height:100%;width:0;background:linear-gradient(90deg,color-mix(in srgb,var(--ac) 70%,#fff),var(--ac));transition:width .5s var(--ease)}
-
-    /* "Or" divider between the AI path and the manual fields */
-    .or-divider{display:flex;align-items:center;gap:1rem;margin:1.8rem 0 1.6rem;color:var(--mute);font-size:.62rem;letter-spacing:.22em;text-transform:uppercase;font-weight:500}
-    .or-divider::before,.or-divider::after{content:'';flex:1;border-top:1px dashed var(--border)}
 
     /* Sub-section kicker inside a merged step */
     .block-kicker{display:flex;align-items:center;gap:.55rem;font-size:.62rem;letter-spacing:.24em;text-transform:uppercase;font-weight:500;color:var(--ac-ink);margin-bottom:1rem}
@@ -277,6 +307,52 @@ src="https://www.facebook.com/tr?id=4162905814000026&ev=PageView&noscript=1"
   <a class="btn btn-solid" href="https://acuros.ca/patient-portal?role=owner">Sign in</a>
 </section>
 
+<!-- Mode choice: first-run screen, AI path vs manual path -->
+<section id="choice" class="choice-wrap" style="display:none">
+  <div class="pill" style="justify-content:center;margin-bottom:1.4rem"><span class="dot"></span>Clinic setup</div>
+  <h1 class="choice-hd">How would you like to <em>begin?</em></h1>
+  <p class="choice-sub">Either way, nothing goes live until you review and publish - and everything stays editable.</p>
+  <div class="choice-grid">
+    <button class="choice-card primary" id="btn-choice-ai" type="button">
+      <span class="choice-tag">Recommended</span>
+      <span class="choice-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9z"/></svg></span>
+      <h2>Set up with AI</h2>
+      <p>Describe your clinic in a sentence or two. Claude drafts your services, prices, tagline, palette, and web address - you just review and publish.</p>
+      <span class="choice-cta">Start with AI &middot; about 60 seconds →</span>
+    </button>
+    <button class="choice-card" id="btn-choice-manual" type="button">
+      <span class="choice-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg></span>
+      <h2>Set up manually</h2>
+      <p>Four short steps: your details, what you offer, your brand and address, then publish. The AI is still there to help on any step.</p>
+      <span class="choice-cta">Start manually →</span>
+    </button>
+  </div>
+</section>
+
+<!-- Dedicated AI setup screen -->
+<section id="ai-setup" class="ai-wrap" style="display:none">
+  <div class="pill" style="justify-content:center;margin-bottom:1.4rem"><span class="dot"></span>AI setup</div>
+  <h1 class="choice-hd">Describe your <em>clinic.</em></h1>
+  <p class="choice-sub">Like you would on a phone call - a sentence or two is plenty. Claude drafts the whole portal from it.</p>
+  <div class="ai-card">
+    <textarea id="f-design-text" class="txa" aria-label="Describe your clinic" placeholder="We're a family-run aesthetics clinic in midtown Toronto. We focus on natural results and long-term skin health - botox, fillers, microneedling, and IV vitamin therapy."></textarea>
+    <div class="ai-examples" id="ai-examples" aria-label="Example descriptions">
+      <button class="ai-example" type="button">Med spa</button>
+      <button class="ai-example" type="button">Family practice</button>
+      <button class="ai-example" type="button">Physiotherapy</button>
+      <button class="ai-example" type="button">Dental clinic</button>
+    </div>
+    <div class="ai-progress" id="ai-design">
+      <div class="ai-progress-line"><span class="typing-dots"><span></span><span></span><span></span></span><span id="ai-design-status">Reading your description…</span></div>
+      <div class="ai-progress-bar"><span id="ai-design-bar"></span></div>
+    </div>
+    <div class="ai-actions">
+      <button class="btn btn-solid btn-lg-setup" id="btn-design-ai">Design my portal →</button>
+      <button class="ai-manual-link" id="btn-design-skip" type="button">I'd rather set it up manually</button>
+    </div>
+  </div>
+</section>
+
 <!-- Wizard, shown once authed -->
 <main class="shell" id="shell" style="display:none">
   <aside class="sidebar">
@@ -288,6 +364,7 @@ src="https://www.facebook.com/tr?id=4162905814000026&ev=PageView&noscript=1"
       <li data-step="4"><span class="step-num">4</span><span>Review &amp; publish</span></li>
     </ol>
     <p class="side-note">Your progress saves automatically. You can pick this up anywhere.</p>
+    <button class="side-ai-link" id="btn-side-ai" type="button"><span class="dot"></span>Set up with AI instead</button>
   </aside>
 
   <section class="canvas" id="main">
@@ -305,26 +382,9 @@ src="https://www.facebook.com/tr?id=4162905814000026&ev=PageView&noscript=1"
     <div class="step" data-step="1">
       <div class="pill"><span class="dot"></span>Step 1 of 4</div>
       <h1 class="hd">Tell us about your <em>practice.</em></h1>
-      <p class="sub">One paragraph is enough - the AI sets up everything else. Or fill it in yourself below.</p>
+      <p class="sub">Just the basics - about a minute. Everything can be changed later from your dashboard.</p>
 
       <div class="panel"><div class="panel-core">
-      <!-- Auto-design shortcut: one paragraph in, full portal out. -->
-      <div class="quickstart">
-        <div class="ai-helper-h"><span class="dot"></span>Set up with AI &middot; about 60 seconds</div>
-        <p>Describe your clinic the way you would on a phone call. Claude names your services, polishes your tagline, picks a palette, and fills in every step. You can edit anything before publishing.</p>
-        <textarea id="f-design-text" class="txa" aria-label="Describe your clinic in one or two sentences for AI quickstart" placeholder="We're a family-run aesthetics clinic in midtown Toronto. We focus on natural results, conservative dosing, and long-term skin health, botox, fillers, microneedling, and IV vitamin therapy."></textarea>
-        <div class="ai-helper" style="display:none" id="ai-design">
-          <div class="ai-helper-status" id="ai-design-status"><span class="typing-dots"><span></span><span></span><span></span></span></div>
-        </div>
-        <div class="btn-row">
-          <button class="btn btn-solid" id="btn-design-ai">Design my portal with AI →</button>
-          <button class="btn btn-solid" id="btn-design-review" style="display:none">Looks good, review &amp; publish →</button>
-          <button class="btn btn-ghost" id="btn-design-skip" type="button">I'll fill it in manually</button>
-        </div>
-      </div>
-
-      <div class="or-divider"><span>Or fill in the basics yourself</span></div>
-
       <div class="field">
         <label class="field-lbl" for="f-name">Clinic name</label>
         <input id="f-name" class="inp" type="text" placeholder="Wellspring Family Clinic" maxlength="120" autocomplete="organization"/>
@@ -601,9 +661,18 @@ async function bootAuth(){
       .eq('id', session.user.id)
       .eq('role', 'patient');
   } catch(_e){}
-  $('#shell').style.display = '';
   $('#gate').style.display = 'none';
   await loadState();
+}
+// ── Views: choice (first run) / ai (dedicated AI setup) / wizard ──
+function showView(name){
+  $('#choice').style.display   = name === 'choice' ? '' : 'none';
+  $('#ai-setup').style.display = name === 'ai' ? '' : 'none';
+  $('#shell').style.display    = name === 'wizard' ? '' : 'none';
+  if (name !== 'wizard') $('#topbar-meta').textContent = name === 'ai' ? 'AI SETUP' : 'CLINIC SETUP';
+  const prog = $('#setup-prog');
+  if (prog && name !== 'wizard') prog.style.width = '0';
+  window.scrollTo({ top: 0, behavior: 'auto' });
 }
 function showGate(msg){
   $('#gate').style.display = '';
@@ -638,6 +707,11 @@ async function loadState(){
     }
     hydrateForm();
     maybeShowExistingPortalNote();
+    // Fresh accounts choose their path; anyone with a draft resumes the wizard.
+    const hasDraft = !!(org?.name || org?.slug ||
+      (org?.onboarding_state && (org.onboarding_state.services?.length || org.onboarding_state.servicesText || org.onboarding_state.designText)));
+    if (!hasDraft) { showView('choice'); return; }
+    showView('wizard');
     // Drafts saved by the old 6-step wizard map onto the merged 4-step flow.
     const stored = +(org?.onboarding_state?.step) || 1;
     const startStep = stored > 4 ? (stored === 5 ? 3 : 4) : Math.max(1, stored);
@@ -683,6 +757,7 @@ function hydrateForm(){
   $('#f-email').value     = org.contact_email || session?.user?.email || '';
   $('#f-phone').value     = org.brand?.phone || '';
 
+  $('#f-design-text').value = org.onboarding_state?.designText || '';
   $('#f-services-text').value = org.onboarding_state?.servicesText || '';
   services = Array.isArray(org.onboarding_state?.services) ? org.onboarding_state.services : [];
   renderServices();
@@ -742,6 +817,7 @@ function collectPatch(){
       productsText: $('#f-products-text').value || '',
       products,
       brandText:    $('#f-brand-text').value || '',
+      designText:   $('#f-design-text').value || '',
     },
   };
   if (org?.logo_url) patch.logo_url = org.logo_url;
@@ -970,18 +1046,52 @@ async function runProductsAI(quiet){
 }
 $('#btn-products-ai').addEventListener('click', () => runProductsAI());
 
-// Step 1 quickstart — Claude designs the entire portal from one paragraph,
-// then fans the result out across every wizard field. The owner can still
-// edit anything before publishing.
-$('#btn-design-skip').addEventListener('click', () => {
-  $('#f-name').focus();
-});
+// ── Dedicated AI setup — Claude designs the entire portal from one
+// paragraph, fans the result across every wizard field, then drops the
+// owner on the review step. Everything stays editable.
+$('#btn-choice-ai').addEventListener('click', () => { showView('ai'); $('#f-design-text').focus(); });
+$('#btn-choice-manual').addEventListener('click', () => { showView('wizard'); goStep(1, true); $('#f-name').focus(); });
+$('#btn-side-ai').addEventListener('click', () => { showView('ai'); $('#f-design-text').focus(); });
+$('#btn-design-skip').addEventListener('click', () => { showView('wizard'); goStep(1, true); $('#f-name').focus(); });
+
+// Example starters — a tap replaces the blank page problem.
+const AI_EXAMPLES = {
+  'Med spa': "We're a medical spa in downtown Toronto offering botox, dermal fillers, laser hair removal, and medical-grade facials. We focus on natural-looking results and long-term skin health.",
+  'Family practice': "We're a family medicine practice in Mississauga providing annual checkups, chronic-care management, vaccinations, and preventive health for all ages.",
+  'Physiotherapy': "We're a physiotherapy clinic in Vancouver offering sports rehab, manual therapy, dry needling, and post-surgical recovery programs.",
+  'Dental clinic': "We're a dental clinic in Calgary offering cleanings, fillings, whitening, Invisalign, and same-day emergency care in a calm, judgement-free setting.",
+};
+$$('.ai-example').forEach((b) => b.addEventListener('click', () => {
+  $('#f-design-text').value = AI_EXAMPLES[b.textContent] || '';
+  $('#f-design-text').focus();
+}));
+
+// Staged status while the one API call runs — honest about being a draft
+// process, and far better than a frozen spinner.
+const AI_STAGES = ['Reading your description…','Naming your services and prices…','Writing your tagline and page copy…','Choosing an accent palette…','Reserving your web address…','Putting it all together…'];
+let aiStageTimer = null;
+function startAiProgress(){
+  const box = $('#ai-design'); const stat = $('#ai-design-status'); const bar = $('#ai-design-bar');
+  box.classList.add('show');
+  let i = 0;
+  stat.textContent = AI_STAGES[0]; bar.style.width = '8%';
+  aiStageTimer = setInterval(() => {
+    i = Math.min(i + 1, AI_STAGES.length - 1);
+    stat.textContent = AI_STAGES[i];
+    bar.style.width = (8 + (i / (AI_STAGES.length - 1)) * 82) + '%';
+  }, 2400);
+}
+function stopAiProgress(ok){
+  clearInterval(aiStageTimer); aiStageTimer = null;
+  const bar = $('#ai-design-bar');
+  if (ok) { bar.style.width = '100%'; $('#ai-design-status').textContent = 'Done - taking you to your draft.'; }
+}
 $('#btn-design-ai').addEventListener('click', async () => {
   const txt = $('#f-design-text').value.trim();
-  if (!txt) { toast('Describe your clinic first, even one sentence is fine.', 'error'); return; }
-  const btn = $('#btn-design-ai'); const helper = $('#ai-design'); const stat = $('#ai-design-status');
-  helper.style.display = ''; stat.innerHTML = '<span class="typing-dots"><span></span><span></span><span></span></span> Designing your portal…';
+  if (!txt) { toast('Describe your clinic first, even one sentence is fine.', 'error'); $('#f-design-text').focus(); return; }
+  const btn = $('#btn-design-ai');
   btn.disabled = true;
+  startAiProgress();
   try {
     const out = await aiExtract('design', txt);
 
@@ -1029,18 +1139,21 @@ $('#btn-design-ai').addEventListener('click', async () => {
       $('#f-slug').dispatchEvent(new Event('input'));
     }
 
-    stat.innerHTML = 'Done - your whole portal is drafted. Jump straight to review, or step through and fine-tune.';
-    const reviewBtn = $('#btn-design-review');
-    reviewBtn.style.display = '';
-    btn.textContent = 'Run it again';
+    stopAiProgress(true);
     scheduleSave();
+    setTimeout(() => {
+      showView('wizard');
+      goStep(4, true);
+      toast('Your portal is drafted - review it below. Every step stays editable.');
+    }, 650);
   } catch (err) {
-    stat.textContent = 'AI design failed: ' + err.message;
+    clearInterval(aiStageTimer); aiStageTimer = null;
+    $('#ai-design-status').textContent = 'AI design failed: ' + err.message + ' - try again, or set up manually.';
+    $('#ai-design-bar').style.width = '0';
   } finally {
     btn.disabled = false;
   }
 });
-$('#btn-design-review').addEventListener('click', () => goStep(4));
 
 // Step 4 — brand polish
 $('#btn-brand-ai').addEventListener('click', async () => {
