@@ -268,13 +268,47 @@
     .banner.success{color:var(--ok);background:color-mix(in srgb,var(--ok) 7%,var(--bg2));border-color:color-mix(in srgb,var(--ok) 35%,var(--border))}
     #existing-portal-note{padding:.95rem 1.15rem;margin-bottom:1.25rem;border:1px dashed color-mix(in srgb,var(--ac) 45%,var(--border));background:color-mix(in srgb,var(--ac) 7%,var(--bg2));border-radius:12px;font-size:.82rem;line-height:1.6;color:var(--text)}
     /* membership gate + published lock (step 6) */
-    #plus-gate,#published-lock{margin:1.4rem 0;padding:1.4rem 1.5rem;border:1px dashed color-mix(in srgb,var(--ac) 50%,var(--border));background:color-mix(in srgb,var(--ac) 6%,var(--bg2));border-radius:14px}
+    #published-lock{margin:1.4rem 0;padding:1.4rem 1.5rem;border:1px dashed color-mix(in srgb,var(--ac) 50%,var(--border));background:color-mix(in srgb,var(--ac) 6%,var(--bg2));border-radius:14px}
+
+    /* ── Membership step: pricing panel ── */
+    .plan-core{background:linear-gradient(150deg,color-mix(in srgb,var(--ac) 7%,var(--bg2)),var(--bg2) 55%)}
+    .plan-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(1.6rem,4vw,3rem);align-items:start}
+    @media(max-width:760px){.plan-grid{grid-template-columns:1fr}}
+    .plan-price{font-family:'Cormorant Garamond',serif;font-weight:200;font-size:clamp(3.2rem,7vw,4.6rem);line-height:1;letter-spacing:-.03em;margin:.9rem 0 .5rem;color:var(--text)}
+    .plan-cur{font-size:.4em;vertical-align:.9em;letter-spacing:0;margin-right:.15rem;color:var(--sub)}
+    .plan-per{font-family:'DM Sans',sans-serif;font-size:.85rem;font-weight:300;color:var(--mute);margin-left:.35rem;letter-spacing:0}
+    .plan-note{font-size:.82rem;color:var(--sub);line-height:1.6;max-width:34ch;margin-bottom:1.2rem}
+    .plan-points{list-style:none;margin:0;padding:.4rem 0 0;display:flex;flex-direction:column;gap:.85rem}
+    .plan-points li{position:relative;padding-left:1.5rem;color:var(--sub);font-size:.92rem;line-height:1.55}
+    .plan-points li::before{content:'';position:absolute;left:0;top:.52em;width:9px;height:9px;background:var(--ac);clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)}
+    .plan-status{display:inline-flex;align-items:center;gap:.55rem;font-size:.8rem;letter-spacing:.04em;color:var(--sub);border:1px dashed var(--border);border-radius:99px;padding:.5rem 1rem;margin-bottom:1.1rem}
+    .plan-status.ok{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 45%,var(--border));background:color-mix(in srgb,var(--ok) 7%,transparent)}
+    .plan-status.ok::before{content:'✓'}
+
+    /* ── Section entrance animations (restart on every step change) ── */
+    @keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+    .step.active .pill{animation:rise .5s var(--ease) both}
+    .step.active .hd{animation:rise .55s var(--ease) .07s both}
+    .step.active .sub{animation:rise .55s var(--ease) .14s both}
+    .step.active .panel{animation:rise .6s var(--ease) .21s both}
+    #choice .pill,#ai-setup .pill{animation:rise .5s var(--ease) both}
+    #choice .choice-hd,#ai-setup .choice-hd{animation:rise .55s var(--ease) .07s both}
+    #choice .choice-sub,#ai-setup .choice-sub{animation:rise .55s var(--ease) .14s both}
+    #choice .resume-card{animation:rise .55s var(--ease) .2s both}
+    #choice .choice-card:first-child{animation:rise .6s var(--ease) .26s both}
+    #choice .choice-card:last-child{animation:rise .6s var(--ease) .34s both}
+    #ai-setup .ai-card{animation:rise .6s var(--ease) .22s both}
+    @media(prefers-reduced-motion:reduce){
+      .step.active .pill,.step.active .hd,.step.active .sub,.step.active .panel,
+      #choice .pill,#ai-setup .pill,#choice .choice-hd,#ai-setup .choice-hd,
+      #choice .choice-sub,#ai-setup .choice-sub,#choice .resume-card,
+      #choice .choice-card:first-child,#choice .choice-card:last-child,#ai-setup .ai-card{animation:none}
+    }
     .plus-kicker{display:inline-flex;align-items:center;gap:.5rem;font-size:10.5px;font-weight:500;letter-spacing:.26em;text-transform:uppercase;color:var(--ac-ink);margin-bottom:.6rem}
     .plus-kicker::before{content:'';width:5px;height:5px;background:var(--ac);clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)}
-    #plus-gate h3,#published-lock h3{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:1.45rem;margin:0 0 .45rem}
-    #plus-gate p,#published-lock p{color:var(--sub);font-size:.88rem;max-width:56ch;margin:0 0 1rem}
+    #published-lock h3{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:1.45rem;margin:0 0 .45rem}
+    #published-lock p{color:var(--sub);font-size:.88rem;max-width:56ch;margin:0 0 1rem}
     .plus-row{display:flex;gap:.8rem;flex-wrap:wrap}
-    #plus-gate-note{min-height:1.2em;margin:.9rem 0 0 !important;font-size:.82rem;color:var(--ac-ink)}
     #existing-portal-note a{color:var(--ac-ink) !important;font-weight:500}
   </style>
   <link rel="stylesheet" href="/css/acuros.css"/>
@@ -384,7 +418,8 @@ src="https://www.facebook.com/tr?id=4162905814000026&ev=PageView&noscript=1"
       <li data-step="1"><span class="step-num">1</span><span>About you</span></li>
       <li data-step="2"><span class="step-num">2</span><span>What you offer</span></li>
       <li data-step="3"><span class="step-num">3</span><span>Brand &amp; address</span></li>
-      <li data-step="4"><span class="step-num">4</span><span>Review &amp; publish</span></li>
+      <li data-step="4"><span class="step-num">4</span><span>Membership</span></li>
+      <li data-step="5"><span class="step-num">5</span><span>Review &amp; publish</span></li>
     </ol>
     <p class="side-note">Your progress saves automatically. You can pick this up anywhere.</p>
     <button class="side-ai-link" id="btn-side-ai" type="button"><span class="dot"></span>Set up with AI instead</button>
@@ -396,7 +431,8 @@ src="https://www.facebook.com/tr?id=4162905814000026&ev=PageView&noscript=1"
       <li data-step="1"><span class="step-num">1</span><span>About</span></li>
       <li data-step="2"><span class="step-num">2</span><span>Offer</span></li>
       <li data-step="3"><span class="step-num">3</span><span>Brand</span></li>
-      <li data-step="4"><span class="step-num">4</span><span>Publish</span></li>
+      <li data-step="4"><span class="step-num">4</span><span>Plan</span></li>
+      <li data-step="5"><span class="step-num">5</span><span>Publish</span></li>
     </ol>
     <div class="banner" id="banner"></div>
     <div id="existing-portal-note" role="status" style="display:none"></div>
@@ -577,28 +613,53 @@ src="https://www.facebook.com/tr?id=4162905814000026&ev=PageView&noscript=1"
       </div></div>
     </div>
 
-    <!-- ── Step 4: Review & Publish ─────────────────────────────────── -->
+    <!-- ── Step 4: Membership ───────────────────────────────────────── -->
     <div class="step" data-step="4">
-      <div class="pill"><span class="dot"></span>Step 4 of 4</div>
+      <div class="pill"><span class="dot"></span>Step 4 of 5</div>
+      <h1 class="hd">One membership. <em>Everything on.</em></h1>
+      <p class="sub">Your portal goes live the moment you publish - hosting, bookings, the AI editor, all of it is part of Acuros Plus.</p>
+
+      <div class="panel"><div class="panel-core plan-core">
+      <div class="plan-grid">
+        <div class="plan-head">
+          <span class="plus-kicker">Acuros Plus</span>
+          <div class="plan-price"><span class="plan-cur">CA$</span>150<span class="plan-per">/month</span></div>
+          <p class="plan-note">No setup fee. Cancel anytime. Payments are handled securely by Stripe.</p>
+          <div class="plan-status" id="plus-status" role="status">Checking your membership…</div>
+          <div class="plus-row" id="plus-pay-row">
+            <a id="plus-pay-link" class="btn btn-solid" target="_blank" rel="noopener"
+               href="https://buy.stripe.com/fZu9AM1f89Wz2DjbWA4ko05">Get Acuros Plus →</a>
+            <button id="plus-recheck" class="btn btn-outline" type="button">I&rsquo;ve paid — check again</button>
+          </div>
+        </div>
+        <ul class="ai-points plan-points">
+          <li>Your branded portal, live at acuros.ca/c/your-address</li>
+          <li>AI editor - change your live page by describing it</li>
+          <li>Online bookings, confirmed within one business day</li>
+          <li>Clinic shop and loyalty rewards</li>
+          <li>AI health assistant for your patients, 24/7</li>
+          <li>PIPEDA-compliant records on Canadian servers</li>
+        </ul>
+      </div>
+
+      <div class="nav-row">
+        <button class="btn btn-ghost" data-prev="3">← Back</button>
+        <div class="nav-right">
+          <span class="save-state" id="save-4"></span>
+          <button class="btn btn-solid" data-next="5" id="btn-plus-continue" disabled title="Complete your membership to continue">Continue →</button>
+        </div>
+      </div>
+      </div></div>
+    </div>
+
+    <!-- ── Step 5: Review & Publish ─────────────────────────────────── -->
+    <div class="step" data-step="5">
+      <div class="pill"><span class="dot"></span>Step 5 of 5</div>
       <h1 class="hd">Ready to <em>publish.</em></h1>
       <p class="sub">Quick review. After you publish, your portal goes live and starts accepting bookings.</p>
 
       <div class="panel"><div class="panel-core">
       <div id="review-summary"></div>
-
-      <!-- Membership gate: publishing requires Acuros Plus (also enforced server-side) -->
-      <div id="plus-gate" style="display:none">
-        <span class="plus-kicker">Membership</span>
-        <h3>Acuros Plus required to publish</h3>
-        <p>Your portal design, hosting at acuros.ca/c/your-slug, and the AI editor are part of the
-           Acuros Plus membership. Complete the payment, then publishing unlocks automatically.</p>
-        <div class="plus-row">
-          <a id="plus-pay-link" class="btn btn-solid" target="_blank" rel="noopener"
-             href="https://buy.stripe.com/fZu9AM1f89Wz2DjbWA4ko05">Get Acuros Plus →</a>
-          <button id="plus-recheck" class="btn btn-outline" type="button">I&rsquo;ve paid — check again</button>
-        </div>
-        <p id="plus-gate-note" role="status"></p>
-      </div>
 
       <!-- Shown instead of the publish button once a clinic is live -->
       <div id="published-lock" style="display:none">
@@ -613,7 +674,7 @@ src="https://www.facebook.com/tr?id=4162905814000026&ev=PageView&noscript=1"
       </div>
 
       <div class="nav-row">
-        <button class="btn btn-ghost" data-prev="3">← Back</button>
+        <button class="btn btn-ghost" data-prev="4">← Back</button>
         <button class="btn btn-solid" id="btn-publish" disabled title="Checking your membership…">Publish my clinic</button>
       </div>
       </div></div>
@@ -737,7 +798,7 @@ async function loadState(){
     // draft is NEVER restored silently; the resume card asks first.
     if (org?.is_published || org?.published_at || org?.portal_html) {
       showView('wizard');
-      goStep(4, true);
+      goStep(5, true);
       return;
     }
     // "Meaningful draft" ignores the auto-created shell row (its name is
@@ -882,7 +943,7 @@ $$('.palette-chip').forEach((c) => c.addEventListener('click', (e) => {
 }));
 
 // ── Step navigation ──
-const STEP_COUNT = 4;
+const STEP_COUNT = 5;
 function goStep(n, fromLoad){
   n = Math.max(1, Math.min(STEP_COUNT, n));
   $$('.step').forEach((s) => s.classList.toggle('active', +s.dataset.step === n));
@@ -896,10 +957,11 @@ function goStep(n, fromLoad){
   });
   const prog = $('#setup-prog');
   if (prog) prog.style.width = ((n - 1) / (STEP_COUNT - 1) * 100) + '%';
-  $('#topbar-meta').textContent = ['ABOUT YOU','WHAT YOU OFFER','BRAND & ADDRESS','REVIEW'][n - 1] || 'CLINIC ONBOARDING';
+  $('#topbar-meta').textContent = ['ABOUT YOU','WHAT YOU OFFER','BRAND & ADDRESS','MEMBERSHIP','REVIEW'][n - 1] || 'CLINIC ONBOARDING';
   currentStep = n;
   if (n === 3) prefillSlug();
-  if (n === 4) renderReview();
+  if (n === 4 && window.plusApply) window.plusApply();
+  if (n === 5) renderReview();
   if (!fromLoad) saveProgress(true);
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -1089,9 +1151,7 @@ $('#btn-choice-manual').addEventListener('click', () => { showView('wizard'); go
 // Saved-draft resume card — continuing is explicit, never automatic.
 $('#btn-resume').addEventListener('click', () => {
   showView('wizard');
-  // Drafts saved by the old 6-step wizard map onto the merged 4-step flow.
-  const stored = +(org?.onboarding_state?.step) || 1;
-  goStep(stored > 4 ? (stored === 5 ? 3 : 4) : Math.max(1, stored), true);
+  goStep(Math.max(1, Math.min(STEP_COUNT, +(org?.onboarding_state?.step) || 1)), true);
 });
 $('#btn-start-over').addEventListener('click', async () => {
   if (!confirm('Start over? This permanently deletes your saved draft - services, products, brand, and logo.')) return;
@@ -1245,7 +1305,7 @@ $('#btn-design-ai').addEventListener('click', async () => {
     scheduleSave();
     setTimeout(() => {
       showView('wizard');
-      goStep(4, true);
+      goStep(5, true);
       toast('Your portal is drafted - review it below. Every step stays editable.');
     }, 900);
   } catch (err) {
@@ -1382,12 +1442,11 @@ $('#btn-publish').addEventListener('click', async () => {
     setTimeout(() => { window.location.href = out.url || '/'; }, 1200);
   } catch(err){
     btn.disabled = false; btn.textContent = 'Publish my clinic';
-    // Unpaid owners get routed to the membership card, not a raw error —
+    // Unpaid owners get routed to the Membership step, not a raw error —
     // the server enforces this with 402 regardless of what the UI shows.
     if (err.code === 'PAYMENT_REQUIRED') {
-      const gate = document.getElementById('plus-gate');
-      if (gate) { gate.style.display = 'block'; gate.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
       btn.disabled = true; btn.title = 'Publishing requires Acuros Plus';
+      goStep(4);
       showBanner('Almost there - publishing unlocks with an Acuros Plus membership.');
       return;
     }
@@ -1409,9 +1468,11 @@ bootAuth();
 (function () {
   const PAY_LINK = 'https://buy.stripe.com/fZu9AM1f89Wz2DjbWA4ko05';
   const $id = (i) => document.getElementById(i);
-  const gate = $id('plus-gate');
   const pub = $id('btn-publish');
-  if (!gate || !pub) return;
+  const status = $id('plus-status');
+  const payRow = $id('plus-pay-row');
+  const cont = $id('btn-plus-continue');
+  if (!pub || !status) return;
 
   const payLinkEl = $id('plus-pay-link');
   if (payLinkEl) payLinkEl.addEventListener('click', () => { if (window.fbq) fbq('track', 'InitiateCheckout'); });
@@ -1422,9 +1483,8 @@ bootAuth();
     try {
       const { data: { session } = {} } = await sb.auth.getSession();
       if (!session) return null;
-      const payLink = $id('plus-pay-link');
-      if (payLink) {
-        payLink.href = PAY_LINK + '?' + new URLSearchParams({
+      if (payLinkEl) {
+        payLinkEl.href = PAY_LINK + '?' + new URLSearchParams({
           client_reference_id: session.user.id,
           prefilled_email: session.user.email || '',
         });
@@ -1435,11 +1495,12 @@ bootAuth();
   }
 
   async function apply() {
-    // Published clinics show the lock instead — the gate is moot there.
     const published = !!(typeof org !== 'undefined' && org && (org.is_published || org.published_at));
-    if (published) { gate.style.display = 'none'; return true; }
     const tier = await fetchTier();
-    if (tier === null) return false; // signed out / offline — leave defaults
+    if (tier === null) {
+      status.textContent = 'Could not check your membership - use "I’ve paid" to retry.';
+      return false;
+    }
     paid = tier === 'plus' || tier === 'admin';
     // Subscribe fires only on the unpaid → paid transition seen in this page
     // session (returning subscribers never enter the unpaid branch first).
@@ -1455,21 +1516,22 @@ bootAuth();
       fbq('track', 'Subscribe', { value: '150.00', currency: 'CAD' }, eid ? { eventID: eid } : undefined);
       try { localStorage.setItem('ah-fb-subscribed', '1'); } catch (_e) {}
     }
-    gate.style.display = paid ? 'none' : 'block';
+    status.textContent = paid ? 'Membership active - you’re all set.' : 'No active membership yet - publishing unlocks the moment you subscribe.';
+    status.classList.toggle('ok', paid);
+    if (payRow) payRow.style.display = paid ? 'none' : '';
+    if (cont) { cont.disabled = !paid && !published; cont.title = (paid || published) ? '' : 'Complete your membership to continue'; }
     pub.disabled = !paid;
     pub.title = paid ? '' : 'Publishing requires Acuros Plus';
     return paid;
   }
+  window.plusApply = apply;
 
   const recheck = $id('plus-recheck');
   if (recheck) recheck.addEventListener('click', async () => {
-    const note = $id('plus-gate-note');
     recheck.disabled = true;
-    if (note) note.textContent = 'Checking your membership…';
+    status.textContent = 'Checking your membership…';
     const ok = await apply();
-    if (note) note.textContent = ok
-      ? 'Membership active — you can publish now.'
-      : 'No active membership found yet. Card payments usually confirm within a minute — try again shortly.';
+    if (!ok) status.textContent = 'No active membership found yet. Card payments usually confirm within a minute - try again shortly.';
     recheck.disabled = false;
   });
 
