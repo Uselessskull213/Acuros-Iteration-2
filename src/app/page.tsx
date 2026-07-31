@@ -321,13 +321,47 @@ export default function Home() {
           </ol>
         </section>
 
+        {/* ── App download ── */}
+        <section className="section appband" id="app">
+          <Reveal variant="fade">
+            <span className="eyebrow">
+              <span className="eyebrow-n">04</span> The app
+            </span>
+          </Reveal>
+          <div className="appband-grid">
+            <div className="appband-copy">
+              <Reveal as="h2" className="sec-title" variant="left">
+                Your clinic, <em>in your pocket.</em>
+              </Reveal>
+              <Reveal as="p" className="appband-lead" variant="left" delay={90}>
+                Book appointments, ask the AI assistant, earn rewards, and track your recovery - anywhere. The free
+                Acuros app is on the App Store and Google Play.
+              </Reveal>
+              <Reveal variant="left" delay={160}>
+                <StoreBadges />
+              </Reveal>
+              <Reveal as="p" className="appband-note" variant="left" delay={220}>
+                Free for patients. Same secure sign-in as the web portal.
+              </Reveal>
+            </div>
+            <Reveal variant="right" delay={120}>
+              <ul className="ai-points appband-points">
+                <li>AI health answers, 24/7</li>
+                <li>Bookings confirmed in one business day</li>
+                <li>Loyalty points on every visit</li>
+                <li>Guided post-treatment recovery scans</li>
+              </ul>
+            </Reveal>
+          </div>
+        </section>
+
         {/* ── AI spotlight ── */}
         <section className="section ai">
           <div className="ai-grid">
             <div className="ai-copy">
               <Reveal variant="fade">
                 <span className="eyebrow">
-                  <span className="eyebrow-n">04</span> Acuros AI
+                  <span className="eyebrow-n">05</span> Acuros AI
                 </span>
               </Reveal>
               <Reveal as="h2" className="sec-title" variant="left">
@@ -380,40 +414,6 @@ export default function Home() {
                 </div>
                 </div>
               </div>
-            </Reveal>
-          </div>
-        </section>
-
-        {/* ── App download ── */}
-        <section className="section appband" id="app">
-          <Reveal variant="fade">
-            <span className="eyebrow">
-              <span className="eyebrow-n">05</span> The app
-            </span>
-          </Reveal>
-          <div className="appband-grid">
-            <div className="appband-copy">
-              <Reveal as="h2" className="sec-title" variant="left">
-                Your clinic, <em>in your pocket.</em>
-              </Reveal>
-              <Reveal as="p" className="appband-lead" variant="left" delay={90}>
-                Book appointments, ask the AI assistant, earn rewards, and track your recovery - anywhere. The free
-                Acuros app is on the App Store and Google Play.
-              </Reveal>
-              <Reveal variant="left" delay={160}>
-                <StoreBadges />
-              </Reveal>
-              <Reveal as="p" className="appband-note" variant="left" delay={220}>
-                Free for patients. Same secure sign-in as the web portal.
-              </Reveal>
-            </div>
-            <Reveal variant="right" delay={120}>
-              <ul className="ai-points appband-points">
-                <li>AI health answers, 24/7</li>
-                <li>Bookings confirmed in one business day</li>
-                <li>Loyalty points on every visit</li>
-                <li>Guided post-treatment recovery scans</li>
-              </ul>
             </Reveal>
           </div>
         </section>
