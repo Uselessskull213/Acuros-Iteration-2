@@ -698,7 +698,9 @@ async function api(path, opts){
   const resp = await fetch('/api/onboarding?action=' + path, { ...opts, headers: { ...headers, ...(opts?.headers || {}) } });
   if (!resp.ok) {
     const err = await resp.json().catch(() => ({}));
-    throw new Error(err?.error || ('Request failed: ' + resp.status));
+    const e = new Error(err?.error || ('Request failed: ' + resp.status));
+    e.code = err?.code || null;
+    throw e;
   }
   return resp.json();
 }
@@ -1334,6 +1336,15 @@ $('#btn-publish').addEventListener('click', async () => {
     setTimeout(() => { window.location.href = out.url || '/'; }, 1200);
   } catch(err){
     btn.disabled = false; btn.textContent = 'Publish my clinic';
+    // Unpaid owners get routed to the membership card, not a raw error —
+    // the server enforces this with 402 regardless of what the UI shows.
+    if (err.code === 'PAYMENT_REQUIRED') {
+      const gate = document.getElementById('plus-gate');
+      if (gate) { gate.style.display = 'block'; gate.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+      btn.disabled = true; btn.title = 'Publishing requires Acuros Plus';
+      showBanner('Almost there - publishing unlocks with an Acuros Plus membership.');
+      return;
+    }
     showBanner('Publish failed: ' + err.message);
   }
 });
