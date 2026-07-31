@@ -168,6 +168,27 @@
     @keyframes tdPulse{0%,100%{opacity:.3;transform:scale(.85)}50%{opacity:1;transform:scale(1.1)}}
     @media(prefers-reduced-motion:reduce){.typing-dots span{animation:none;opacity:.7}}
 
+    /* Setup progress — thin metal bar pinned to the very top */
+    .setup-prog-track{position:fixed;top:0;left:0;right:0;height:2px;z-index:200;pointer-events:none}
+    #setup-prog{display:block;height:100%;width:0;background:linear-gradient(90deg,color-mix(in srgb,var(--ac) 70%,#fff),var(--ac));transition:width .5s var(--ease)}
+
+    /* "Or" divider between the AI path and the manual fields */
+    .or-divider{display:flex;align-items:center;gap:1rem;margin:1.8rem 0 1.6rem;color:var(--mute);font-size:.62rem;letter-spacing:.22em;text-transform:uppercase;font-weight:500}
+    .or-divider::before,.or-divider::after{content:'';flex:1;border-top:1px dashed var(--border)}
+
+    /* Sub-section kicker inside a merged step */
+    .block-kicker{display:flex;align-items:center;gap:.55rem;font-size:.62rem;letter-spacing:.24em;text-transform:uppercase;font-weight:500;color:var(--ac-ink);margin-bottom:1rem}
+    .block-kicker::before{content:'';width:5px;height:5px;flex:none;background:var(--ac);clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)}
+
+    /* Compact stepper shown only where the sidebar is hidden */
+    .step-list-mobile{display:none;list-style:none;gap:.2rem;margin:0 0 1.6rem;flex-direction:row;flex-wrap:wrap}
+    @media(max-width:880px){
+      .step-list-mobile{display:flex}
+      .step-list-mobile li{flex-direction:column;gap:.35rem;flex:1;text-align:center;font-size:.66rem;padding:.35rem .2rem}
+      .step-list-mobile li+li{margin-top:0}
+      .step-list-mobile li+li::before{display:none}
+    }
+
     /* Toast */
     .toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(14px);padding:.85rem 1.3rem;background:var(--text);color:var(--bg);font-size:.74rem;letter-spacing:.06em;border-radius:10px;box-shadow:0 18px 44px -18px rgba(var(--shadow-tint),.5);opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;z-index:300;max-width:90vw;text-align:center}
     .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -242,6 +263,7 @@ src="https://www.facebook.com/tr?id=4162905814000026&ev=PageView&noscript=1"
 <body>
 <a href="#main" class="skip-link">Skip to content</a>
 
+<div class="setup-prog-track" aria-hidden="true"><span id="setup-prog"></span></div>
 <header class="topbar">
   <a href="/" class="topbar-logo">ACUROS HEALTH</a>
   <span class="topbar-meta" id="topbar-meta">CLINIC ONBOARDING</span>
@@ -260,44 +282,52 @@ src="https://www.facebook.com/tr?id=4162905814000026&ev=PageView&noscript=1"
   <aside class="sidebar">
     <div class="pill"><span class="dot"></span>Setup</div>
     <ol class="step-list" id="step-nav">
-      <li data-step="1"><span class="step-num">1</span><span>Basics</span></li>
-      <li data-step="2"><span class="step-num">2</span><span>Services</span></li>
-      <li data-step="3"><span class="step-num">3</span><span>Products</span></li>
-      <li data-step="4"><span class="step-num">4</span><span>Brand</span></li>
-      <li data-step="5"><span class="step-num">5</span><span>URL</span></li>
-      <li data-step="6"><span class="step-num">6</span><span>Review &amp; publish</span></li>
+      <li data-step="1"><span class="step-num">1</span><span>About you</span></li>
+      <li data-step="2"><span class="step-num">2</span><span>What you offer</span></li>
+      <li data-step="3"><span class="step-num">3</span><span>Brand &amp; address</span></li>
+      <li data-step="4"><span class="step-num">4</span><span>Review &amp; publish</span></li>
     </ol>
     <p class="side-note">Your progress saves automatically. You can pick this up anywhere.</p>
   </aside>
 
   <section class="canvas" id="main">
+    <!-- Compact stepper for small screens (sidebar is hidden there) -->
+    <ol class="step-list step-list-mobile" aria-label="Setup steps">
+      <li data-step="1"><span class="step-num">1</span><span>About</span></li>
+      <li data-step="2"><span class="step-num">2</span><span>Offer</span></li>
+      <li data-step="3"><span class="step-num">3</span><span>Brand</span></li>
+      <li data-step="4"><span class="step-num">4</span><span>Publish</span></li>
+    </ol>
     <div class="banner" id="banner"></div>
     <div id="existing-portal-note" role="status" style="display:none"></div>
 
-    <!-- ── Step 1: Basics ───────────────────────────────────────────── -->
+    <!-- ── Step 1: About you ────────────────────────────────────────── -->
     <div class="step" data-step="1">
-      <div class="pill"><span class="dot"></span>Step 1 of 6</div>
+      <div class="pill"><span class="dot"></span>Step 1 of 4</div>
       <h1 class="hd">Tell us about your <em>practice.</em></h1>
-      <p class="sub">The basics. Two minutes. You can edit any of this later from your dashboard.</p>
+      <p class="sub">One paragraph is enough - the AI sets up everything else. Or fill it in yourself below.</p>
 
       <div class="panel"><div class="panel-core">
       <!-- Auto-design shortcut: one paragraph in, full portal out. -->
       <div class="quickstart">
-        <div class="ai-helper-h"><span class="dot"></span>AI quickstart, design my whole portal</div>
-        <p>Paste one or two sentences about your clinic. Claude will name your services, polish your tagline, pick an accent palette, and pre-fill every step of this wizard. You can edit anything afterwards.</p>
+        <div class="ai-helper-h"><span class="dot"></span>Set up with AI &middot; about 60 seconds</div>
+        <p>Describe your clinic the way you would on a phone call. Claude names your services, polishes your tagline, picks a palette, and fills in every step. You can edit anything before publishing.</p>
         <textarea id="f-design-text" class="txa" aria-label="Describe your clinic in one or two sentences for AI quickstart" placeholder="We're a family-run aesthetics clinic in midtown Toronto. We focus on natural results, conservative dosing, and long-term skin health, botox, fillers, microneedling, and IV vitamin therapy."></textarea>
         <div class="ai-helper" style="display:none" id="ai-design">
           <div class="ai-helper-status" id="ai-design-status"><span class="typing-dots"><span></span><span></span><span></span></span></div>
         </div>
         <div class="btn-row">
           <button class="btn btn-solid" id="btn-design-ai">Design my portal with AI →</button>
+          <button class="btn btn-solid" id="btn-design-review" style="display:none">Looks good, review &amp; publish →</button>
           <button class="btn btn-ghost" id="btn-design-skip" type="button">I'll fill it in manually</button>
         </div>
       </div>
 
+      <div class="or-divider"><span>Or fill in the basics yourself</span></div>
+
       <div class="field">
         <label class="field-lbl" for="f-name">Clinic name</label>
-        <input id="f-name" class="inp" type="text" placeholder="Wellspring Family Clinic" maxlength="120"/>
+        <input id="f-name" class="inp" type="text" placeholder="Wellspring Family Clinic" maxlength="120" autocomplete="organization"/>
       </div>
       <div class="grid-2">
         <div class="field">
@@ -312,11 +342,11 @@ src="https://www.facebook.com/tr?id=4162905814000026&ev=PageView&noscript=1"
       <div class="grid-2">
         <div class="field">
           <label class="field-lbl" for="f-email">Contact email</label>
-          <input id="f-email" class="inp" type="email" placeholder="info@yourclinic.com" maxlength="160"/>
+          <input id="f-email" class="inp" type="email" placeholder="info@yourclinic.com" maxlength="160" autocomplete="email"/>
         </div>
         <div class="field">
           <label class="field-lbl" for="f-phone">Phone (optional)</label>
-          <input id="f-phone" class="inp" type="tel" placeholder="(416) 555-0140" maxlength="40"/>
+          <input id="f-phone" class="inp" type="tel" placeholder="(416) 555-0140" maxlength="40" autocomplete="tel"/>
         </div>
       </div>
 
@@ -327,13 +357,14 @@ src="https://www.facebook.com/tr?id=4162905814000026&ev=PageView&noscript=1"
       </div></div>
     </div>
 
-    <!-- ── Step 2: Services ─────────────────────────────────────────── -->
+    <!-- ── Step 2: What you offer (services + products) ─────────────── -->
     <div class="step" data-step="2">
-      <div class="pill"><span class="dot"></span>Step 2 of 6</div>
+      <div class="pill"><span class="dot"></span>Step 2 of 4</div>
       <h1 class="hd">What do you <em>offer?</em></h1>
-      <p class="sub">Type your service list however you'd describe it on a phone call. We'll structure it.</p>
+      <p class="sub">Type it however you'd describe it on a phone call - it's structured for you automatically when you continue.</p>
 
       <div class="panel"><div class="panel-core">
+      <div class="block-kicker">Services</div>
       <div class="field">
         <label class="field-lbl" for="f-services-text">Free-text description</label>
         <textarea id="f-services-text" class="txa" placeholder="We offer botox and dermal fillers, microneedling, chemical peels, IV vitamin therapy, and consultations…"></textarea>
@@ -352,26 +383,10 @@ src="https://www.facebook.com/tr?id=4162905814000026&ev=PageView&noscript=1"
 
       <div class="row-list" id="services-list"></div>
 
-      <div class="nav-row">
-        <button class="btn btn-ghost" data-prev="1">← Back</button>
-        <div class="nav-right">
-          <span class="save-state" id="save-2"></span>
-          <button class="btn btn-solid" data-next="3">Continue →</button>
-        </div>
-      </div>
-      </div></div>
-    </div>
-
-    <!-- ── Step 3: Products ─────────────────────────────────────────── -->
-    <div class="step" data-step="3">
-      <div class="pill"><span class="dot"></span>Step 3 of 6</div>
-      <h1 class="hd">Anything you <em>sell?</em></h1>
-      <p class="sub">Skincare, supplements, recovery products. Skip if you don't sell physical products yet.</p>
-
-      <div class="panel"><div class="panel-core">
+      <div class="block-kicker" style="margin-top:2.2rem">Products &middot; optional</div>
       <div class="field">
-        <label class="field-lbl" for="f-products-text">Free-text description</label>
-        <textarea id="f-products-text" class="txa" placeholder="SPF 50 mineral sunscreen, vitamin C serum, post-treatment recovery balm, collagen peptides…"></textarea>
+        <label class="field-lbl" for="f-products-text">Skincare, supplements, recovery products - skip if you don't sell any yet</label>
+        <textarea id="f-products-text" class="txa" style="min-height:84px" placeholder="SPF 50 mineral sunscreen, vitamin C serum, post-treatment recovery balm, collagen peptides…"></textarea>
       </div>
 
       <div class="ai-helper" style="display:none" id="ai-products">
@@ -387,20 +402,20 @@ src="https://www.facebook.com/tr?id=4162905814000026&ev=PageView&noscript=1"
       <div class="row-list" id="products-list"></div>
 
       <div class="nav-row">
-        <button class="btn btn-ghost" data-prev="2">← Back</button>
+        <button class="btn btn-ghost" data-prev="1">← Back</button>
         <div class="nav-right">
-          <span class="save-state" id="save-3"></span>
-          <button class="btn btn-solid" data-next="4">Continue →</button>
+          <span class="save-state" id="save-2"></span>
+          <button class="btn btn-solid" data-next="3">Continue →</button>
         </div>
       </div>
       </div></div>
     </div>
 
-    <!-- ── Step 4: Brand ────────────────────────────────────────────── -->
-    <div class="step" data-step="4">
-      <div class="pill"><span class="dot"></span>Step 4 of 6</div>
-      <h1 class="hd">Find your <em>voice.</em></h1>
-      <p class="sub">Describe your clinic in two or three sentences. We'll polish it into a tagline and a homepage paragraph.</p>
+    <!-- ── Step 3: Brand & address ──────────────────────────────────── -->
+    <div class="step" data-step="3">
+      <div class="pill"><span class="dot"></span>Step 3 of 4</div>
+      <h1 class="hd">Make it <em>yours.</em></h1>
+      <p class="sub">Your voice, your colours, and the address patients will visit. The AI polishes wording for you.</p>
 
       <div class="panel"><div class="panel-core">
       <div class="field">
@@ -456,48 +471,32 @@ src="https://www.facebook.com/tr?id=4162905814000026&ev=PageView&noscript=1"
         <input id="f-logo-input" type="file" accept="image/png,image/svg+xml,image/jpeg" style="display:none"/>
       </div>
 
-      <div class="nav-row">
-        <button class="btn btn-ghost" data-prev="3">← Back</button>
-        <div class="nav-right">
-          <span class="save-state" id="save-4"></span>
-          <button class="btn btn-solid" data-next="5">Continue →</button>
-        </div>
-      </div>
-      </div></div>
-    </div>
-
-    <!-- ── Step 5: Slug ─────────────────────────────────────────────── -->
-    <div class="step" data-step="5">
-      <div class="pill"><span class="dot"></span>Step 5 of 6</div>
-      <h1 class="hd">Pick your <em>address.</em></h1>
-      <p class="sub">This is the public URL where patients find your portal. You can change it later.</p>
-
-      <div class="panel"><div class="panel-core">
+      <div class="block-kicker" style="margin-top:2.2rem">Your address</div>
       <div class="field">
         <label class="field-lbl" for="f-slug">Your portal URL</label>
         <div class="slug-row">
           <span class="slug-prefix">acuros.ca/c/</span>
-          <input id="f-slug" class="inp" type="text" placeholder="your-clinic" maxlength="32"/>
+          <input id="f-slug" class="inp" type="text" placeholder="your-clinic" maxlength="32" autocomplete="off" spellcheck="false"/>
           <span class="slug-status" id="slug-status"></span>
         </div>
-        <div class="field-help">3–32 characters · lowercase letters, numbers, and hyphens only.</div>
+        <div class="field-help">Suggested from your clinic name - change it if you like. 3–32 characters, lowercase letters, numbers, and hyphens. You can change it later.</div>
         <div class="slug-suggest-row" id="slug-suggest"></div>
         <button class="btn btn-ai" id="btn-slug-suggest" style="margin-top:.625rem;align-self:flex-start">Suggest with AI</button>
       </div>
 
       <div class="nav-row">
-        <button class="btn btn-ghost" data-prev="4">← Back</button>
+        <button class="btn btn-ghost" data-prev="2">← Back</button>
         <div class="nav-right">
-          <span class="save-state" id="save-5"></span>
-          <button class="btn btn-solid" data-next="6" id="btn-step5-next">Continue →</button>
+          <span class="save-state" id="save-3"></span>
+          <button class="btn btn-solid" data-next="4" id="btn-step5-next">Continue →</button>
         </div>
       </div>
       </div></div>
     </div>
 
-    <!-- ── Step 6: Review & Publish ─────────────────────────────────── -->
-    <div class="step" data-step="6">
-      <div class="pill"><span class="dot"></span>Step 6 of 6</div>
+    <!-- ── Step 4: Review & Publish ─────────────────────────────────── -->
+    <div class="step" data-step="4">
+      <div class="pill"><span class="dot"></span>Step 4 of 4</div>
       <h1 class="hd">Ready to <em>publish.</em></h1>
       <p class="sub">Quick review. After you publish, your portal goes live and starts accepting bookings.</p>
 
@@ -531,7 +530,7 @@ src="https://www.facebook.com/tr?id=4162905814000026&ev=PageView&noscript=1"
       </div>
 
       <div class="nav-row">
-        <button class="btn btn-ghost" data-prev="5">← Back</button>
+        <button class="btn btn-ghost" data-prev="3">← Back</button>
         <button class="btn btn-solid" id="btn-publish">Publish my clinic</button>
       </div>
       </div></div>
@@ -639,7 +638,9 @@ async function loadState(){
     }
     hydrateForm();
     maybeShowExistingPortalNote();
-    const startStep = Math.max(1, Math.min(6, +(org?.onboarding_state?.step) || 1));
+    // Drafts saved by the old 6-step wizard map onto the merged 4-step flow.
+    const stored = +(org?.onboarding_state?.step) || 1;
+    const startStep = stored > 4 ? (stored === 5 ? 3 : 4) : Math.max(1, stored);
     goStep(startStep, true);
   } catch(err){
     showBanner(err.message, 'error');
@@ -678,7 +679,8 @@ function hydrateForm(){
   $('#f-name').value      = org.name      || '';
   $('#f-specialty').value = org.specialty || '';
   $('#f-location').value  = org.location  || '';
-  $('#f-email').value     = org.contact_email || '';
+  // Default the contact email to the signed-in account — one less field to type.
+  $('#f-email').value     = org.contact_email || session?.user?.email || '';
   $('#f-phone').value     = org.brand?.phone || '';
 
   $('#f-services-text').value = org.onboarding_state?.servicesText || '';
@@ -770,31 +772,74 @@ $$('.palette-chip').forEach((c) => c.addEventListener('click', (e) => {
 }));
 
 // ── Step navigation ──
+const STEP_COUNT = 4;
 function goStep(n, fromLoad){
-  n = Math.max(1, Math.min(6, n));
+  n = Math.max(1, Math.min(STEP_COUNT, n));
   $$('.step').forEach((s) => s.classList.toggle('active', +s.dataset.step === n));
-  $$('#step-nav li').forEach((li) => {
+  $$('.step-list li').forEach((li) => {
     const s = +li.dataset.step;
     li.classList.toggle('active', s === n);
     li.classList.toggle('done', s < n);
-    li.querySelector('.step-num').classList.toggle('done', s < n);
+    const num = li.querySelector('.step-num');
+    num.classList.toggle('done', s < n);
+    num.textContent = s < n ? '✓' : s;
   });
-  $('#topbar-meta').textContent = ['BASICS','SERVICES','PRODUCTS','BRAND','URL','REVIEW'][n - 1] || 'CLINIC ONBOARDING';
+  const prog = $('#setup-prog');
+  if (prog) prog.style.width = ((n - 1) / (STEP_COUNT - 1) * 100) + '%';
+  $('#topbar-meta').textContent = ['ABOUT YOU','WHAT YOU OFFER','BRAND & ADDRESS','REVIEW'][n - 1] || 'CLINIC ONBOARDING';
   currentStep = n;
-  if (n === 6) renderReview();
+  if (n === 3) prefillSlug();
+  if (n === 4) renderReview();
   if (!fromLoad) saveProgress(true);
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
-$$('button[data-next]').forEach((b) => b.addEventListener('click', (e) => {
+// Leaving a step with free text but no structured rows runs the AI for you —
+// nobody should have to know which button structures what.
+async function autoStructure(btn){
+  const jobs = [];
+  if ($('#f-services-text').value.trim() && !services.length) jobs.push(runServicesAI(true));
+  if ($('#f-products-text').value.trim() && !products.length) jobs.push(runProductsAI(true));
+  if (!jobs.length) return;
+  const old = btn.textContent;
+  btn.disabled = true; btn.textContent = 'Structuring…';
+  try { await Promise.all(jobs); } catch(_e){}
+  btn.disabled = false; btn.textContent = old;
+}
+// Entering the brand step with no URL yet: derive one from the clinic name so
+// the field is never empty; availability check runs like a manual entry.
+function prefillSlug(){
+  const slugEl = $('#f-slug');
+  if (slugEl.value.trim()) return;
+  const name = $('#f-name').value.trim();
+  if (!name) return;
+  const s = name.toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/&/g, ' and ')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 32).replace(/-+$/g, '');
+  if (s.length < 3) return;
+  slugEl.value = s;
+  slugEl.dispatchEvent(new Event('input'));
+}
+$$('button[data-next]').forEach((b) => b.addEventListener('click', async (e) => {
   e.preventDefault();
   const n = +b.dataset.next;
   // Step-specific validation before advancing
-  if (n === 2 && !$('#f-name').value.trim()) { toast('Clinic name is required.', 'error'); return; }
-  if (n === 6 && !($('#f-slug').value.trim())) { toast('Pick a URL slug first.', 'error'); return; }
+  if (n === 2 && !$('#f-name').value.trim()) { toast('Clinic name is required.', 'error'); $('#f-name').focus(); return; }
+  if (n === 4 && !($('#f-slug').value.trim())) { toast('Pick a URL first - it\'s at the bottom of this step.', 'error'); return; }
+  if (n === 3) await autoStructure(b);
   goStep(n);
 }));
 $$('button[data-prev]').forEach((b) => b.addEventListener('click', (e) => { e.preventDefault(); goStep(+b.dataset.prev); }));
-$$('#step-nav li').forEach((li) => li.addEventListener('click', () => goStep(+li.dataset.step)));
+$$('.step-list li').forEach((li) => li.addEventListener('click', () => goStep(+li.dataset.step)));
+// Enter advances from single-line inputs (textareas keep Enter for newlines)
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'Enter' || e.target.tagName !== 'INPUT') return;
+  const step = e.target.closest('.step'); if (!step) return;
+  const next = step.querySelector('button[data-next]');
+  if (next) { e.preventDefault(); next.click(); }
+});
 
 // ── Step 2/3: services + products list editor ──
 function renderServices(){ renderRowList('#services-list', services, 'service'); }
@@ -879,9 +924,9 @@ async function aiExtract(kind, text, statusEl){
   return resp;
 }
 
-$('#btn-services-ai').addEventListener('click', async () => {
+async function runServicesAI(quiet){
   const txt = $('#f-services-text').value.trim();
-  if (!txt) { toast('Type your service list first.', 'error'); return; }
+  if (!txt) { if (!quiet) toast('Type your service list first.', 'error'); return; }
   $('#ai-services').style.display = '';
   $('#ai-services-status').innerHTML = '<span class="typing-dots"><span></span><span></span><span></span></span>';
   try {
@@ -900,10 +945,11 @@ $('#btn-services-ai').addEventListener('click', async () => {
   } catch(err){
     $('#ai-services-status').textContent = 'AI structure failed: ' + err.message;
   }
-});
-$('#btn-products-ai').addEventListener('click', async () => {
+}
+$('#btn-services-ai').addEventListener('click', () => runServicesAI());
+async function runProductsAI(quiet){
   const txt = $('#f-products-text').value.trim();
-  if (!txt) { toast('Type a product list first.', 'error'); return; }
+  if (!txt) { if (!quiet) toast('Type a product list first.', 'error'); return; }
   $('#ai-products').style.display = '';
   $('#ai-products-status').innerHTML = '<span class="typing-dots"><span></span><span></span><span></span></span>';
   try {
@@ -921,7 +967,8 @@ $('#btn-products-ai').addEventListener('click', async () => {
   } catch(err){
     $('#ai-products-status').textContent = 'AI structure failed: ' + err.message;
   }
-});
+}
+$('#btn-products-ai').addEventListener('click', () => runProductsAI());
 
 // Step 1 quickstart — Claude designs the entire portal from one paragraph,
 // then fans the result out across every wizard field. The owner can still
@@ -982,7 +1029,10 @@ $('#btn-design-ai').addEventListener('click', async () => {
       $('#f-slug').dispatchEvent(new Event('input'));
     }
 
-    stat.innerHTML = 'Done. Review each step. Anything you don\'t like, edit before publishing.';
+    stat.innerHTML = 'Done - your whole portal is drafted. Jump straight to review, or step through and fine-tune.';
+    const reviewBtn = $('#btn-design-review');
+    reviewBtn.style.display = '';
+    btn.textContent = 'Run it again';
     scheduleSave();
   } catch (err) {
     stat.textContent = 'AI design failed: ' + err.message;
@@ -990,6 +1040,7 @@ $('#btn-design-ai').addEventListener('click', async () => {
     btn.disabled = false;
   }
 });
+$('#btn-design-review').addEventListener('click', () => goStep(4));
 
 // Step 4 — brand polish
 $('#btn-brand-ai').addEventListener('click', async () => {
@@ -1042,7 +1093,7 @@ $('#f-slug').addEventListener('input', (e) => {
   if (slugCheckTimer) clearTimeout(slugCheckTimer);
   slugCheckTimer = setTimeout(() => {
     checkSlug(v);
-    org.slug = v; scheduleSave();
+    if (org) { org.slug = v; scheduleSave(); }
   }, 350);
 });
 $('#btn-slug-suggest').addEventListener('click', async () => {
@@ -1104,7 +1155,7 @@ function renderReview(){
 }
 $('#btn-publish').addEventListener('click', async () => {
   const btn = $('#btn-publish');
-  if (!$('#f-slug').value.trim()) { toast('Pick a slug first.', 'error'); goStep(5); return; }
+  if (!$('#f-slug').value.trim()) { toast('Pick a URL first.', 'error'); goStep(3); return; }
   if (!$('#f-name').value.trim()) { toast('Clinic name is required.', 'error'); goStep(1); return; }
 
   btn.disabled = true; btn.textContent = 'Designing your portal…';
