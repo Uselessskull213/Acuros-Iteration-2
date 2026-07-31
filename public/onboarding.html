@@ -115,6 +115,12 @@
     .choice-card p{font-size:.92rem;color:var(--sub);line-height:1.65;flex:1}
     .choice-cta{font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;font-weight:500;color:var(--ac-ink);margin-top:.6rem}
 
+    /* Saved-draft resume card on the choice screen */
+    .resume-card{display:flex;align-items:center;justify-content:space-between;gap:1.2rem;flex-wrap:wrap;text-align:left;background:color-mix(in srgb,var(--ac) 7%,var(--bg2));border:1px dashed color-mix(in srgb,var(--ac) 50%,var(--border));border-radius:16px;padding:1.2rem 1.4rem;margin:0 0 1.4rem}
+    .resume-card strong{display:block;font-family:'Cormorant Garamond',serif;font-weight:400;font-size:1.25rem;letter-spacing:-.01em;margin-bottom:.2rem}
+    .resume-card span{font-size:.82rem;color:var(--sub);line-height:1.6}
+    .resume-actions{display:flex;gap:.6rem;flex-wrap:wrap}
+
     /* ── Dedicated AI setup screen ── */
     .ai-wrap{max-width:760px;margin:0 auto;padding:8.5rem 1.5rem 5rem;text-align:center}
     .ai-wrap .choice-hd{margin-bottom:.6rem}
@@ -311,7 +317,18 @@ src="https://www.facebook.com/tr?id=4162905814000026&ev=PageView&noscript=1"
 <section id="choice" class="choice-wrap" style="display:none">
   <div class="pill" style="justify-content:center;margin-bottom:1.4rem"><span class="dot"></span>Clinic setup</div>
   <h1 class="choice-hd">How would you like to <em>begin?</em></h1>
-  <p class="choice-sub">Either way, nothing goes live until you review and publish - and everything stays editable.</p>
+  <p class="choice-sub">Either way, nothing goes live until you review, pay, and publish - and everything stays editable.</p>
+  <!-- Saved-draft resume: never silently restore old work — always ask. -->
+  <div class="resume-card" id="resume-card" style="display:none">
+    <div>
+      <strong id="resume-name">Saved draft</strong>
+      <span id="resume-sub">You started setting up before - pick up where you left off, or wipe it and start fresh.</span>
+    </div>
+    <div class="resume-actions">
+      <button class="btn btn-solid" id="btn-resume" type="button">Continue setup →</button>
+      <button class="btn btn-outline" id="btn-start-over" type="button">Start over</button>
+    </div>
+  </div>
   <div class="choice-grid">
     <button class="choice-card primary" id="btn-choice-ai" type="button">
       <span class="choice-tag">Recommended</span>
@@ -597,7 +614,7 @@ src="https://www.facebook.com/tr?id=4162905814000026&ev=PageView&noscript=1"
 
       <div class="nav-row">
         <button class="btn btn-ghost" data-prev="3">← Back</button>
-        <button class="btn btn-solid" id="btn-publish">Publish my clinic</button>
+        <button class="btn btn-solid" id="btn-publish" disabled title="Checking your membership…">Publish my clinic</button>
       </div>
       </div></div>
     </div>
@@ -715,15 +732,24 @@ async function loadState(){
     }
     hydrateForm();
     maybeShowExistingPortalNote();
-    // Fresh accounts choose their path; anyone with a draft resumes the wizard.
-    const hasDraft = !!(org?.name || org?.slug ||
-      (org?.onboarding_state && (org.onboarding_state.services?.length || org.onboarding_state.servicesText || org.onboarding_state.designText)));
-    if (!hasDraft) { showView('choice'); return; }
-    showView('wizard');
-    // Drafts saved by the old 6-step wizard map onto the merged 4-step flow.
-    const stored = +(org?.onboarding_state?.step) || 1;
-    const startStep = stored > 4 ? (stored === 5 ? 3 : 4) : Math.max(1, stored);
-    goStep(startStep, true);
+    // Published clinics go straight to the wizard (which shows the
+    // published lock). Everyone else lands on the choice screen — a saved
+    // draft is NEVER restored silently; the resume card asks first.
+    if (org?.is_published || org?.published_at || org?.portal_html) {
+      showView('wizard');
+      goStep(4, true);
+      return;
+    }
+    // "Meaningful draft" ignores the auto-created shell row (its name is
+    // just derived from the account email).
+    const st = org?.onboarding_state || {};
+    const hasDraft = !!(org?.slug || org?.description || org?.logo_url ||
+      st.services?.length || st.products?.length || st.servicesText || st.designText || st.brandText);
+    if (hasDraft) {
+      $('#resume-name').textContent = org?.name || 'Your saved draft';
+      $('#resume-card').style.display = '';
+    }
+    showView('choice');
   } catch(err){
     showBanner(err.message, 'error');
   }
@@ -1059,6 +1085,26 @@ $('#btn-products-ai').addEventListener('click', () => runProductsAI());
 // owner on the review step. Everything stays editable.
 $('#btn-choice-ai').addEventListener('click', () => { showView('ai'); $('#f-design-text').focus(); });
 $('#btn-choice-manual').addEventListener('click', () => { showView('wizard'); goStep(1, true); $('#f-name').focus(); });
+
+// Saved-draft resume card — continuing is explicit, never automatic.
+$('#btn-resume').addEventListener('click', () => {
+  showView('wizard');
+  // Drafts saved by the old 6-step wizard map onto the merged 4-step flow.
+  const stored = +(org?.onboarding_state?.step) || 1;
+  goStep(stored > 4 ? (stored === 5 ? 3 : 4) : Math.max(1, stored), true);
+});
+$('#btn-start-over').addEventListener('click', async () => {
+  if (!confirm('Start over? This permanently deletes your saved draft - services, products, brand, and logo.')) return;
+  const btn = $('#btn-start-over');
+  btn.disabled = true; btn.textContent = 'Deleting…';
+  try {
+    await api('delete', { method: 'POST', body: JSON.stringify({ confirm_name: org?.name || '' }) });
+    window.location.reload();
+  } catch(err){
+    btn.disabled = false; btn.textContent = 'Start over';
+    toast('Could not delete the draft: ' + err.message, 'error');
+  }
+});
 $('#btn-side-ai').addEventListener('click', () => { showView('ai'); $('#f-design-text').focus(); });
 $('#btn-design-skip').addEventListener('click', () => { showView('wizard'); goStep(1, true); $('#f-name').focus(); });
 
