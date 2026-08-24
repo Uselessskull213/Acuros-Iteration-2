@@ -593,14 +593,14 @@ export default async function handler(req, res) {
         return data;
       };
 
-      // Reuse the existing CA$150/month price when one exists (it backs the
+      // Reuse the existing CA$200/month price when one exists (it backs the
       // payment link) instead of minting a new product per session.
       let priceId = process.env.STRIPE_PLUS_PRICE_ID || null;
       if (!priceId) {
         try {
           const prices = await stripeForm('prices?active=true&type=recurring&limit=100', null);
           const match = (prices.data || []).find((p) =>
-            p.currency === 'cad' && p.unit_amount === 15000 && p.recurring?.interval === 'month');
+            p.currency === 'cad' && p.unit_amount === 20000 && p.recurring?.interval === 'month');
           if (match) priceId = match.id;
         } catch (_e) { /* fall through to inline price_data */ }
       }
@@ -630,7 +630,7 @@ export default async function handler(req, res) {
         p.set('line_items[0][price]', priceId);
       } else {
         p.set('line_items[0][price_data][currency]', 'cad');
-        p.set('line_items[0][price_data][unit_amount]', '15000');
+        p.set('line_items[0][price_data][unit_amount]', '20000');
         p.set('line_items[0][price_data][recurring][interval]', 'month');
         p.set('line_items[0][price_data][product_data][name]', 'Acuros Plus');
       }

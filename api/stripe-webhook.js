@@ -103,7 +103,7 @@ async function handleCheckoutCompleted(admin, session) {
     eventName: 'Subscribe',
     eventId: 'sub_' + userId,
     email: session.customer_details?.email || session.customer_email || null,
-    value: session.amount_total != null ? session.amount_total / 100 : 150,
+    value: session.amount_total != null ? session.amount_total / 100 : 200,
     currency: (session.currency || 'cad').toUpperCase(),
     eventSourceUrl: 'https://www.acuros.ca/onboarding',
   });

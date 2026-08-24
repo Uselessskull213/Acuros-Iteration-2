@@ -670,7 +670,7 @@ src="https://www.facebook.com/tr?id=4162905814000026&ev=PageView&noscript=1"
       <div class="plan-grid">
         <div class="plan-head">
           <span class="plus-kicker">Acuros Plus</span>
-          <div class="plan-price"><span class="plan-cur">CA$</span>150<span class="plan-per">/month</span></div>
+          <div class="plan-price"><span class="plan-cur">CA$</span>200<span class="plan-per">/month</span></div>
           <p class="plan-note">No setup fee. Cancel anytime. Payments are handled securely by Stripe.</p>
           <div class="plan-status" id="plus-status" role="status">Checking your membership…</div>
           <div class="plus-row" id="plus-pay-row">
@@ -1766,7 +1766,7 @@ bootAuth();
         const { data: { session } = {} } = await sb.auth.getSession();
         if (session) eid = 'sub_' + session.user.id;
       } catch (_e) {}
-      fbq('track', 'Subscribe', { value: '150.00', currency: 'CAD' }, eid ? { eventID: eid } : undefined);
+      fbq('track', 'Subscribe', { value: '200.00', currency: 'CAD' }, eid ? { eventID: eid } : undefined);
       try { localStorage.setItem('ah-fb-subscribed', '1'); } catch (_e) {}
     }
     status.textContent = paid ? 'Membership active - you’re all set.' : 'No active membership yet - publishing unlocks the moment you subscribe.';
